@@ -11,13 +11,14 @@ import map from '@tinkoff/utils/array/map';
 
 import exampleApi from './api/example';
 import actions from './actions';
-import getStore from '../src/store/getStore';
-import renderPage from '../index';
+import getStore from '../src/apps/app/store/getStore';
+import renderAppPage from '../src/apps/app/html';
+import renderAdminPage from '../src/apps/admin/html';
 
 import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router-dom';
 import Helmet from 'react-helmet';
-import App from '../src/App.jsx';
+import App from '../src/apps/app/App.jsx';
 
 const rootPath = path.resolve(__dirname, '..');
 const PORT = process.env.PORT || 3000;
@@ -37,7 +38,14 @@ app.use(cookieParser());
 // api
 app.use('/api/example', exampleApi);
 
-// index
+// admin
+app.get(/^\/admin/, function (req, res) {
+    const page = renderAdminPage();
+
+    res.send(page);
+});
+
+// app
 app.get('*', function (req, res) {
     const store = getStore();
 
@@ -61,7 +69,7 @@ app.get('*', function (req, res) {
             );
             const helmet = Helmet.renderStatic();
             const preloadedState = store.getState();
-            const page = renderPage(html, helmet, preloadedState);
+            const page = renderAppPage(html, helmet, preloadedState);
 
             res.send(page);
         });

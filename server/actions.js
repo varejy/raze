@@ -1,4 +1,4 @@
-import getMobileDetect from '../src/services/getMobileDetect';
+import getMobileDetect from '../src/apps/app/services/getMobileDetect';
 
 export default [
     getMobileDetect

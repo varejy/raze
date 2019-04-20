@@ -13,7 +13,8 @@ const isSourceMapEnabled = !!process.env.SOURCE_MAP;
 let
     common = {
         entry: {
-            app: './src/AppProvider.jsx'
+            app: './src/apps/app/AppProvider.jsx',
+            admin: './src/apps/admin/App'
         },
         resolve: {
             extensions: ['.js', '.jsx'],

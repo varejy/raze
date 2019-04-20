@@ -2,7 +2,7 @@
   "name": "edc",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/apps/app/index.js",
   "scripts": {
     "lint": "eslint src server --ext .js,.jsx",
     "lint-fix": "eslint src server --ext .js,.jsx --fix",
