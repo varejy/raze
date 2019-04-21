@@ -14,7 +14,7 @@ let
     common = {
         entry: {
             app: './src/apps/app/AppProvider.jsx',
-            admin: './src/apps/admin/App'
+            admin: './src/apps/admin/AppProvider.jsx'
         },
         resolve: {
             extensions: ['.js', '.jsx'],
