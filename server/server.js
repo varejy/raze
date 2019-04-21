@@ -3,13 +3,16 @@ import React from 'react';
 import path from 'path';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
 import compression from 'compression';
 import expressStaticGzip from 'express-static-gzip';
 import { renderToString } from 'react-dom/server';
 
 import map from '@tinkoff/utils/array/map';
 
-import exampleApi from './api/example';
+import adminAuthenticationApi from './api/admin/authentication';
+
+import { DATABASE_URL } from './constants/constants';
 import actions from './actions';
 import getStore from '../src/apps/app/store/getStore';
 import renderAppPage from '../src/apps/app/html';
@@ -24,6 +27,9 @@ const rootPath = path.resolve(__dirname, '..');
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+// mongodb
+mongoose.connect(DATABASE_URL, { useNewUrlParser: true });
+
 // static
 app.get(/\.chunk\.(js|css)$/, expressStaticGzip(rootPath, {
     enableBrotli: true,
@@ -32,11 +38,12 @@ app.get(/\.chunk\.(js|css)$/, expressStaticGzip(rootPath, {
 app.use(compression());
 app.use(express.static(rootPath));
 
+// helpers
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 // api
-app.use('/api/example', exampleApi);
+app.use('/api/admin/authentication', adminAuthenticationApi);
 
 // admin
 app.get(/^\/admin/, function (req, res) {
