@@ -5,9 +5,10 @@ import { connect } from 'react-redux';
 
 import checkAuthentication from './services/checkAuthentication';
 
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 
 import MainPage from './ui/pages/MainPage/MainPage.jsx';
+import Header from './ui/components/Header/Header.jsx';
 import Authentication from './ui/components/Authentication/Authentication.jsx';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -47,16 +48,17 @@ class App extends Component {
             </div>;
         }
 
+        if (!authenticated) {
+            return <Authentication />;
+        }
+
         return <main>
-            {
-                authenticated
-                    ? <Switch>
-                        <Route exact path='/admin' component={MainPage} />
-                    </Switch>
-                    : <Authentication />
-            }
+            <Header />
+            <Switch>
+                <Route exact path='/admin' component={MainPage} />
+            </Switch>
         </main>;
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

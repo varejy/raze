@@ -2,7 +2,7 @@ import request from 'superagent';
 
 import authenticateAction from '../actions/authenticate';
 
-import { TOKEN_LOCAL_STORAGE_NAME } from '../contacts/contacts';
+import { TOKEN_LOCAL_STORAGE_NAME } from '../constants/constants';
 
 export default function authenticate () {
     return dispatch => {
