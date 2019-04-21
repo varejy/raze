@@ -18,13 +18,30 @@ import Popper from '@material-ui/core/Popper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+
+import { connect } from 'react-redux';
+import logout from '../../../services/logout';
 
 import propOr from '@tinkoff/utils/object/propOr';
 import find from '@tinkoff/utils/array/find';
 
+const materialStyles = {
+    title: {
+        flexGrow: 1
+    }
+};
+
+const mapDispatchToProps = (dispatch) => ({
+    logout: payload => dispatch(logout(payload))
+});
+
 class Header extends Component {
     static propTypes = {
-        location: PropTypes.object
+        location: PropTypes.object,
+        classes: PropTypes.func.isRequired,
+        logout: PropTypes.object.isRequired
     };
 
     static defaultProps = {
@@ -56,7 +73,12 @@ class Header extends Component {
         this.setState({ menuShowed: false });
     };
 
+    handleLogout = () => {
+        this.props.logout();
+    };
+
     render () {
+        const { classes } = this.props;
         const { menuShowed } = this.state;
 
         return <AppBar position='static'>
@@ -89,12 +111,13 @@ class Header extends Component {
                         </Grow>
                     )}
                 </Popper>
-                <Typography variant='h6' color='inherit'>
+                <Typography variant='h6' color='inherit' className={classes.title}>
                     {this.getHeaderTitle()}
                 </Typography>
+                <Button color='inherit' onClick={this.handleLogout}>Выйти</Button>
             </Toolbar>
         </AppBar>;
     }
 }
 
-export default withRouter(Header);
+export default withRouter(connect(null, mapDispatchToProps)(withStyles(materialStyles)(Header)));
