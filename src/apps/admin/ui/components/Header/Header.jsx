@@ -30,6 +30,9 @@ import find from '@tinkoff/utils/array/find';
 const materialStyles = {
     title: {
         flexGrow: 1
+    },
+    popper: {
+        zIndex: 1
     }
 };
 
@@ -40,8 +43,8 @@ const mapDispatchToProps = (dispatch) => ({
 class Header extends Component {
     static propTypes = {
         location: PropTypes.object,
-        classes: PropTypes.func.isRequired,
-        logout: PropTypes.object.isRequired
+        classes: PropTypes.object.isRequired,
+        logout: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -93,7 +96,7 @@ class Header extends Component {
                 >
                     <MenuIcon />
                 </IconButton>
-                <Popper open={menuShowed} anchorEl={this.anchorEl} transition disablePortal>
+                <Popper open={menuShowed} anchorEl={this.anchorEl} className={classes.popper} transition disablePortal>
                     {({ TransitionProps, placement }) => (
                         <Grow
                             {...TransitionProps}

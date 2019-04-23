@@ -7,7 +7,7 @@ import checkAuthentication from './services/checkAuthentication';
 
 import { Switch, Route, withRouter } from 'react-router-dom';
 
-import MainPage from './ui/pages/MainPage/MainPage.jsx';
+import ProductsPage from './ui/pages/ProductsPage/ProductsPage.jsx';
 import Header from './ui/components/Header/Header.jsx';
 import Authentication from './ui/components/Authentication/Authentication.jsx';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -55,7 +55,7 @@ class App extends Component {
         return <main>
             <Header />
             <Switch>
-                <Route exact path='/admin' component={MainPage} />
+                <Route exact path='/admin' component={ProductsPage} />
             </Switch>
         </main>;
     }
