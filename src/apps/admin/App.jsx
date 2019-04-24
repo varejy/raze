@@ -8,6 +8,7 @@ import checkAuthentication from './services/checkAuthentication';
 import { Switch, Route, withRouter } from 'react-router-dom';
 
 import ProductsPage from './ui/pages/ProductsPage/ProductsPage.jsx';
+import CategoryPage from './ui/pages/CategoryPage/CategoryPage.jsx';
 import Header from './ui/components/Header/Header.jsx';
 import Authentication from './ui/components/Authentication/Authentication.jsx';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -56,6 +57,7 @@ class App extends Component {
             <Header />
             <Switch>
                 <Route exact path='/admin' component={ProductsPage} />
+                <Route exact path='/admin/categories' component={CategoryPage} />
             </Switch>
         </main>;
     }

@@ -1,3 +1,4 @@
 export default [
-    { id: 'add', path: '/admin', exact: true, title: 'Товары' }
+    { id: 'products', path: '/admin', exact: true, title: 'Товары' },
+    { id: 'categories', path: '/admin/categories', exact: true, title: 'Категории' }
 ];
