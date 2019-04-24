@@ -15,7 +15,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 import Modal from '@material-ui/core/Modal';
-import NewCategoryForm from '../NewProductForm/NewProductForm.jsx';
+import NewCategoryForm from '../NewCategoryForm/NewCategoryForm.jsx';
 
 import noop from '@tinkoff/utils/function/noop';
 
@@ -59,8 +59,9 @@ const materialStyles = theme => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing.unit * 4,
         outline: 'none',
+        top: '50%',
         left: '50%',
-        transform: 'translate(-50%, 0%)'
+        transform: 'translate(-50%, -50%)'
     }
 });
 
