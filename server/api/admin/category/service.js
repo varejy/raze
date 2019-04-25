@@ -1,0 +1,27 @@
+import uniqid from 'uniqid';
+
+import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../constants/constants';
+import { getAllCategories, saveCategoryQuery } from './queries';
+
+export function getCategories (req, res) {
+    getAllCategories()
+        .then(categories => {
+            res.status(OKEY_STATUS_CODE).send(categories);
+        })
+        .catch(() => {
+            res.status(SERVER_ERROR_STATUS_CODE).end();
+        });
+}
+
+export function saveCategory (req, res) {
+    const { name, path } = req.body;
+    const id = uniqid();
+
+    saveCategoryQuery({ name, path, id })
+        .then(() => {
+            res.status(OKEY_STATUS_CODE).end();
+        })
+        .catch(() => {
+            res.status(SERVER_ERROR_STATUS_CODE).end();
+        });
+}

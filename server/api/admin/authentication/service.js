@@ -10,8 +10,7 @@ const privateKey = fs.readFileSync(path.resolve(__dirname, 'privateKeys/adminPri
 const publicKey = fs.readFileSync(path.resolve(__dirname, 'privateKeys/adminPublicKey.ppk'), 'utf8');
 
 export function authenticate (req, res) {
-    const login = req.body.login;
-    const password = req.body.password;
+    const { login, password } = req.body;
 
     getAdminByLogin(login)
         .then((admin) => {

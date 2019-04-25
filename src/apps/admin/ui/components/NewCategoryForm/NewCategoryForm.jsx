@@ -1,16 +1,40 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
+import { connect } from 'react-redux';
+import saveCategory from '../../../services/saveCategory';
+
+import noop from '@tinkoff/utils/function/noop';
+
+const mapDispatchToProps = (dispatch) => ({
+    saveCategory: payload => dispatch(saveCategory(payload))
+});
+
 class NewCategoryForm extends Component {
+    static propTypes = {
+        saveCategory: PropTypes.func.isRequired,
+        onDone: PropTypes.func
+    };
+
+    static defaultProps = {
+        onDone: noop
+    };
+
     state = {
         category: {}
     };
 
     handleSubmit = event => {
         event.preventDefault();
+
+        this.props.saveCategory(this.state.category)
+            .then(() => {
+                this.props.onDone();
+            });
     };
 
     handleChange = prop => event => {
@@ -38,8 +62,8 @@ class NewCategoryForm extends Component {
             />
             <TextField
                 label='Путь'
-                value={category.name}
-                onChange={this.handleChange('name')}
+                value={category.path}
+                onChange={this.handleChange('path')}
                 margin='normal'
                 variant='outlined'
                 fullWidth
@@ -52,4 +76,4 @@ class NewCategoryForm extends Component {
     }
 }
 
-export default NewCategoryForm;
+export default connect(null, mapDispatchToProps)(NewCategoryForm);

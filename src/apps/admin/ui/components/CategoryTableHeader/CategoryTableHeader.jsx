@@ -140,7 +140,7 @@ class CategoryTableHeader extends Component {
             </Toolbar>
             <Modal open={newCategoryFormShowed} onClose={this.handleCloseNewCategoryForm}>
                 <Paper className={classes.modalContent}>
-                    <NewCategoryForm />
+                    <NewCategoryForm onDone={this.handleCloseNewCategoryForm}/>
                 </Paper>
             </Modal>
         </div>;

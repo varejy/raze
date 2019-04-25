@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -11,6 +12,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import CategoryTableHeader from '../CategoryTableHeader/CategoryTableHeader.jsx';
 
@@ -21,11 +23,7 @@ import map from '@tinkoff/utils/array/map';
 import concat from '@tinkoff/utils/array/concat';
 import without from '@tinkoff/utils/array/without';
 
-const categories = [
-    { id: '1', name: 'Ножи', path: 'knives' },
-    { id: '2', name: 'Топоры', path: 'axes' },
-    { id: '3', name: 'Аксессуары', path: 'accessories' }
-];
+import getCategories from '../../../services/getCategories';
 
 const rows = [
     { id: 'name', disablePadding: false, label: 'Название' },
@@ -41,26 +39,72 @@ const materialStyles = theme => ({
     },
     tableWrapper: {
         overflowX: 'auto'
+    },
+    loader: {
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 
 const ROWS_PER_PAGE = 10;
 
+const mapStateToProps = ({ application }) => {
+    return {
+        categories: application.categories
+    };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+    getCategories: payload => dispatch(getCategories(payload))
+});
+
 class CategoryTable extends React.Component {
     static propTypes = {
-        classes: PropTypes.object.isRequired
+        classes: PropTypes.object.isRequired,
+        getCategories: PropTypes.func.isRequired,
+        categories: PropTypes.array
     };
 
-    state = {
-        selected: [],
-        page: 0,
-        rowsPerPage: categories.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : categories.length,
-        checkboxIndeterminate: false,
-        categories
+    static defaultProps = {
+        categories: []
     };
+
+    constructor (...args) {
+        super(...args);
+
+        const { categories } = this.props;
+
+        this.state = {
+            selected: [],
+            page: 0,
+            rowsPerPage: categories.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : categories.length,
+            checkboxIndeterminate: false,
+            loading: true
+        };
+    }
+
+    componentDidMount () {
+        this.props.getCategories()
+            .then(() => {
+                this.setState({
+                    loading: false
+                });
+            });
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.categories.length !== this.props.categories.length) {
+            this.setState({
+                rowsPerPage: nextProps.categories.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : nextProps.categories.length
+            });
+        }
+    }
 
     handleSelectAllClick = event => {
-        const { categories, selected, rowsPerPage, page, checkboxIndeterminate } = this.state;
+        const { categories } = this.props;
+        const { selected, rowsPerPage, page, checkboxIndeterminate } = this.state;
 
         if (event.target.checked && !checkboxIndeterminate) {
             const newSelected = compose(
@@ -127,6 +171,7 @@ class CategoryTable extends React.Component {
     };
 
     handleChangeRowsPerPage = ({ target: { value } }) => {
+        const { categories } = this.props;
         const rowsPerPage = categories.length > value ? value : categories.length;
         const checkboxIndeterminate = this.checkCheckboxIndeterminate({ rowsPerPage });
 
@@ -144,7 +189,7 @@ class CategoryTable extends React.Component {
             selected = this.state.selected
         } = {}
     ) => {
-        const { categories } = this.state;
+        const { categories } = this.props;
         const visibleProjects = categories
             .map(category => category.id)
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -161,8 +206,15 @@ class CategoryTable extends React.Component {
     };
 
     render () {
-        const { classes } = this.props;
-        const { categories, selected, rowsPerPage, page, checkboxIndeterminate } = this.state;
+        const { classes, categories } = this.props;
+        const { selected, rowsPerPage, page, checkboxIndeterminate, loading } = this.state;
+
+        if (loading) {
+            return <div className={classes.loader}>
+                <CircularProgress />
+            </div>;
+        }
+
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, categories.length - page * rowsPerPage);
 
         return (
@@ -180,9 +232,9 @@ class CategoryTable extends React.Component {
                                     />
                                 </TableCell>
                                 {rows.map(
-                                    row => (
+                                    (row, i) => (
                                         <TableCell
-                                            key={row.id}
+                                            key={i}
                                             padding={row.disablePadding ? 'none' : 'default'}
                                         >
                                             {row.label}
@@ -194,7 +246,7 @@ class CategoryTable extends React.Component {
                         <TableBody>
                             {categories
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map(category => {
+                                .map((category, i) => {
                                     const isSelected = this.isSelected(category.id);
 
                                     return (
@@ -204,7 +256,7 @@ class CategoryTable extends React.Component {
                                             role='checkbox'
                                             aria-checked={isSelected}
                                             tabIndex={-1}
-                                            key={category.id}
+                                            key={i}
                                             selected={isSelected}
                                         >
                                             <TableCell padding='checkbox'>
@@ -245,4 +297,4 @@ class CategoryTable extends React.Component {
     }
 }
 
-export default withStyles(materialStyles)(CategoryTable);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(materialStyles)(CategoryTable));

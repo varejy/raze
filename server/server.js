@@ -11,6 +11,7 @@ import { renderToString } from 'react-dom/server';
 import map from '@tinkoff/utils/array/map';
 
 import adminAuthenticationApi from './api/admin/authentication';
+import adminCategoryApi from './api/admin/category';
 
 import { DATABASE_URL } from './constants/constants';
 import actions from './actions';
@@ -44,6 +45,7 @@ app.use(cookieParser());
 
 // api
 app.use('/api/admin/authentication', adminAuthenticationApi);
+app.use('/api/admin/category', adminCategoryApi);
 
 // admin
 app.get(/^\/admin/, function (req, res) {

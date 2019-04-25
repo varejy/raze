@@ -117,6 +117,7 @@
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
-    "superagent": "3.7.0"
+    "superagent": "5.0.2",
+    "uniqid": "^5.0.3"
   }
 }
