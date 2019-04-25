@@ -19,7 +19,10 @@ export function saveCategory (req, res) {
 
     saveCategoryQuery({ name, path, id })
         .then(() => {
-            res.status(OKEY_STATUS_CODE).end();
+            getAllCategories()
+                .then(categories => {
+                    res.status(OKEY_STATUS_CODE).send(categories);
+                });
         })
         .catch(() => {
             res.status(SERVER_ERROR_STATUS_CODE).end();

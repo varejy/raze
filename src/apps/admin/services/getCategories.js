@@ -1,4 +1,5 @@
 import request from 'superagent';
+import base from './base';
 
 import setCategoriesAction from '../actions/setCategories';
 
@@ -12,16 +13,15 @@ export default function getCategories () {
             return Promise.resolve();
         }
 
-        return request
-            .get('/api/admin/category/all')
-            .query({ token })
+        return base(
+            request
+                .get('/api/admin/category/all')
+                .query({ token })
+        )
             .then(payload => {
                 const categories = payload.body;
 
                 return dispatch(setCategoriesAction(categories));
-            })
-            .catch(() => {
-                // TODO: обработать ошибки
             });
     };
 }

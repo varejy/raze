@@ -1,4 +1,5 @@
 import request from 'superagent';
+import base from './base';
 
 import authenticateAction from '../actions/authenticate';
 
@@ -12,9 +13,11 @@ export default function authenticate () {
             return dispatch(authenticateAction(false));
         }
 
-        request
-            .get('/api/admin/authentication/check')
-            .query({ token })
+        base(
+            request
+                .get('/api/admin/authentication/check')
+                .query({ token })
+        )
             .then(() => {
                 return dispatch(authenticateAction(true));
             })
