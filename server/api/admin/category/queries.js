@@ -4,10 +4,14 @@ export function getAllCategories () {
     return Category.find({});
 }
 
-export function saveCategoryQuery (category) {
+export function saveCategory (category) {
     return Category.create(category);
 }
 
-export function deleteByIdsQuery (ids) {
+export function editCategory (category) {
+    return Category.updateOne({ id: category.id }, category);
+}
+
+export function deleteByIds (ids) {
     return Category.deleteMany({ id: { $in: ids } });
 }

@@ -7,31 +7,49 @@ import Button from '@material-ui/core/Button';
 
 import { connect } from 'react-redux';
 import saveCategory from '../../../services/saveCategory';
+import editCategory from '../../../services/editCategory';
 
 import noop from '@tinkoff/utils/function/noop';
+import prop from '@tinkoff/utils/object/prop';
+import pick from '@tinkoff/utils/object/pick';
+
+const CATEGORY_VALUES = ['name', 'path'];
 
 const mapDispatchToProps = (dispatch) => ({
-    saveCategory: payload => dispatch(saveCategory(payload))
+    saveCategory: payload => dispatch(saveCategory(payload)),
+    editCategory: payload => dispatch(editCategory(payload))
 });
 
-class NewCategoryForm extends Component {
+class CategoryForm extends Component {
     static propTypes = {
         saveCategory: PropTypes.func.isRequired,
-        onDone: PropTypes.func
+        editCategory: PropTypes.func.isRequired,
+        onDone: PropTypes.func,
+        category: PropTypes.object
     };
 
     static defaultProps = {
-        onDone: noop
-    };
-
-    state = {
+        onDone: noop,
         category: {}
     };
+
+    constructor (...args) {
+        super(...args);
+
+        const { category } = this.props;
+
+        this.state = {
+            category: pick(CATEGORY_VALUES, category),
+            id: prop('id', category)
+        };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        this.props.saveCategory(this.state.category)
+        const { id } = this.state;
+
+        (id ? this.props.editCategory({ ...this.state.category, id }) : this.props.saveCategory(this.state.category))
             .then(() => {
                 this.props.onDone();
             });
@@ -76,4 +94,4 @@ class NewCategoryForm extends Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(NewCategoryForm);
+export default connect(null, mapDispatchToProps)(CategoryForm);

@@ -15,7 +15,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 import Modal from '@material-ui/core/Modal';
-import NewCategoryForm from '../NewCategoryForm/NewCategoryForm.jsx';
+import CategoryForm from '../CategoryForm/CategoryForm.jsx';
 
 import noop from '@tinkoff/utils/function/noop';
 
@@ -152,7 +152,7 @@ class CategoryTableHeader extends Component {
             </Toolbar>
             <Modal open={newCategoryFormShowed} onClose={this.handleCloseNewCategoryForm}>
                 <Paper className={classes.modalContent}>
-                    <NewCategoryForm onDone={this.handleCloseNewCategoryForm}/>
+                    <CategoryForm onDone={this.handleCloseNewCategoryForm}/>
                 </Paper>
             </Modal>
         </div>;

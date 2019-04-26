@@ -10,11 +10,15 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Modal from '@material-ui/core/Modal';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 
 import CategoryTableHeader from '../CategoryTableHeader/CategoryTableHeader.jsx';
+import CategoryForm from '../CategoryForm/CategoryForm.jsx';
 
 import compose from '@tinkoff/utils/function/compose';
 import difference from '@tinkoff/utils/array/difference';
@@ -26,8 +30,8 @@ import without from '@tinkoff/utils/array/without';
 import getCategories from '../../../services/getCategories';
 
 const rows = [
-    { id: 'name', disablePadding: false, label: 'Название' },
-    { id: 'category', disablePadding: false, label: 'Путь' }
+    { id: 'name', label: 'Название' },
+    { id: 'category', label: 'Путь' }
 ];
 
 const materialStyles = theme => ({
@@ -45,6 +49,28 @@ const materialStyles = theme => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    mainCell: {
+        flex: 1
+    },
+    row: {
+        '&:hover $editIcon': {
+            visibility: 'visible'
+        }
+    },
+    editIcon: {
+        visibility: 'hidden'
+    },
+    modalContent: {
+        position: 'absolute',
+        width: '1200px',
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing.unit * 4,
+        outline: 'none',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)'
     }
 });
 
@@ -81,7 +107,8 @@ class CategoryTable extends React.Component {
             page: 0,
             rowsPerPage: categories.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : categories.length,
             checkboxIndeterminate: false,
-            loading: true
+            loading: true,
+            editableCategory: null
         };
     }
 
@@ -142,7 +169,7 @@ class CategoryTable extends React.Component {
         });
     };
 
-    handleClick = (event, id) => {
+    handleClick = id => () => {
         const { selected } = this.state;
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
@@ -183,6 +210,20 @@ class CategoryTable extends React.Component {
         event.stopPropagation();
     };
 
+    handleEditClick = category => event => {
+        event.stopPropagation();
+
+        this.setState({
+            editableCategory: category
+        });
+    };
+
+    handleCloseEditCategoryForm = () => {
+        this.setState({
+            editableCategory: null
+        });
+    };
+
     checkCheckboxIndeterminate = (
         {
             rowsPerPage = this.state.rowsPerPage,
@@ -208,7 +249,7 @@ class CategoryTable extends React.Component {
 
     render () {
         const { classes, categories } = this.props;
-        const { selected, rowsPerPage, page, checkboxIndeterminate, loading } = this.state;
+        const { selected, rowsPerPage, page, checkboxIndeterminate, loading, editableCategory } = this.state;
 
         if (loading) {
             return <div className={classes.loader}>
@@ -234,14 +275,12 @@ class CategoryTable extends React.Component {
                                 </TableCell>
                                 {rows.map(
                                     (row, i) => (
-                                        <TableCell
-                                            key={i}
-                                            padding={row.disablePadding ? 'none' : 'default'}
-                                        >
+                                        <TableCell key={i}>
                                             {row.label}
                                         </TableCell>
                                     )
                                 )}
+                                <TableCell align='right' />
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -253,18 +292,19 @@ class CategoryTable extends React.Component {
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={event => this.handleClick(event, category.id)}
+                                            onClick={this.handleClick(category.id)}
                                             role='checkbox'
                                             aria-checked={isSelected}
                                             tabIndex={-1}
                                             key={i}
                                             selected={isSelected}
+                                            className={classes.row}
                                         >
                                             <TableCell padding='checkbox'>
                                                 <Checkbox checked={isSelected} />
                                             </TableCell>
-                                            <TableCell component='th' scope='row'>{category.name}</TableCell>
-                                            <TableCell component='th' scope='row'>
+                                            <TableCell className={classes.mainCell}>{category.name}</TableCell>
+                                            <TableCell className={classes.mainCell}>
                                                 <Link
                                                     onClick={this.handleLinkClick}
                                                     href={`${this.getHost()}/${category.path}`}
@@ -272,6 +312,14 @@ class CategoryTable extends React.Component {
                                                 >
                                                     /{category.path}
                                                 </Link>
+                                            </TableCell>
+                                            <TableCell padding='checkbox' align='right'>
+                                                <IconButton
+                                                    className={classes.editIcon}
+                                                    onClick={this.handleEditClick(category)}
+                                                >
+                                                    <EditIcon />
+                                                </IconButton>
                                             </TableCell>
                                         </TableRow>
                                     );
@@ -293,6 +341,11 @@ class CategoryTable extends React.Component {
                     onChangePage={this.handleChangePage}
                     onChangeRowsPerPage={this.handleChangeRowsPerPage}
                 />
+                <Modal open={!!editableCategory} onClose={this.handleCloseEditCategoryForm}>
+                    <Paper className={classes.modalContent}>
+                        <CategoryForm category={editableCategory} onDone={this.handleCloseEditCategoryForm}/>
+                    </Paper>
+                </Modal>
             </Paper>
         );
     }
