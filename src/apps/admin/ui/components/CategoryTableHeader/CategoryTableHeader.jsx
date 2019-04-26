@@ -8,6 +8,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
@@ -65,6 +73,9 @@ const materialStyles = theme => ({
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)'
+    },
+    warningContent: {
+        paddingBottom: '0'
     }
 });
 
@@ -86,7 +97,8 @@ class CategoryTableHeader extends Component {
     };
 
     state = {
-        newCategoryFormShowed: false
+        newCategoryFormShowed: false,
+        warningShowed: false
     };
 
     handleSelectedCloseClick = () => {
@@ -105,13 +117,32 @@ class CategoryTableHeader extends Component {
         });
     };
 
+    handleWarningDisagree = () => {
+        this.setState({
+            warningShowed: false
+        });
+    };
+
+    handleWarningAgree = () => {
+        const ids = this.props.selected.map(category => category.id);
+
+        this.props.deleteCategories(ids)
+            .then(() => {
+                this.setState({
+                    warningShowed: false
+                });
+            });
+    };
+
     handleDelete = () => {
-        this.props.deleteCategories(this.props.selected);
+        this.setState({
+            warningShowed: true
+        });
     };
 
     render () {
         const { classes, selected } = this.props;
-        const { newCategoryFormShowed } = this.state;
+        const { newCategoryFormShowed, warningShowed } = this.state;
 
         return <div>
             <Toolbar
@@ -155,6 +186,31 @@ class CategoryTableHeader extends Component {
                     <CategoryForm onDone={this.handleCloseNewCategoryForm}/>
                 </Paper>
             </Modal>
+            <Dialog
+                open={warningShowed}
+                onClose={this.handleWarningDisagree}
+            >
+                <DialogTitle>Вы точно хотите удалить следующие категории?</DialogTitle>
+                <DialogContent className={classes.warningContent}>
+                    <List>
+                        {
+                            selected.map((category, i) => <ListItem key={i}>
+                                <ListItemText
+                                    primary={category.name}
+                                />
+                            </ListItem>)
+                        }
+                    </List>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleWarningDisagree} color='primary'>
+                        Disagree
+                    </Button>
+                    <Button onClick={this.handleWarningAgree} color='primary' autoFocus>
+                        Agree
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>;
     }
 }

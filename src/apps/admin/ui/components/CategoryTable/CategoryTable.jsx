@@ -23,7 +23,8 @@ import CategoryForm from '../CategoryForm/CategoryForm.jsx';
 import compose from '@tinkoff/utils/function/compose';
 import difference from '@tinkoff/utils/array/difference';
 import slice from '@tinkoff/utils/array/slice';
-import map from '@tinkoff/utils/array/map';
+import findIndex from '@tinkoff/utils/array/findIndex';
+import any from '@tinkoff/utils/array/any';
 import concat from '@tinkoff/utils/array/concat';
 import without from '@tinkoff/utils/array/without';
 
@@ -138,8 +139,7 @@ class CategoryTable extends React.Component {
             const newSelected = compose(
                 concat(selected),
                 without(selected),
-                slice(rowsPerPage * page, rowsPerPage * (page + 1)),
-                map(category => category.id)
+                slice(rowsPerPage * page, rowsPerPage * (page + 1))
             )(categories);
 
             return this.setState({
@@ -149,10 +149,7 @@ class CategoryTable extends React.Component {
         }
 
         const newSelected = without(
-            compose(
-                slice(rowsPerPage * page, rowsPerPage * (page + 1)),
-                map(category => category.id)
-            )(categories),
+            slice(rowsPerPage * page, rowsPerPage * (page + 1), categories),
             selected
         );
 
@@ -169,13 +166,13 @@ class CategoryTable extends React.Component {
         });
     };
 
-    handleClick = id => () => {
+    handleClick = selectedCategory => () => {
         const { selected } = this.state;
-        const selectedIndex = selected.indexOf(id);
+        const selectedIndex = findIndex(category => category.id === selectedCategory.id, selected);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
+            newSelected = newSelected.concat(selected, selectedCategory);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -233,13 +230,12 @@ class CategoryTable extends React.Component {
     ) => {
         const { categories } = this.props;
         const visibleProjects = categories
-            .map(category => category.id)
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
         return !difference(visibleProjects, selected).length;
     };
 
-    isSelected = id => this.state.selected.indexOf(id) !== -1;
+    isSelected = id => any(category => category.id === id, this.state.selected);
 
     getHost = () => {
         const protocol = location.hostname === 'localhost' ? 'http://' : 'https://';
@@ -292,7 +288,7 @@ class CategoryTable extends React.Component {
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={this.handleClick(category.id)}
+                                            onClick={this.handleClick(category)}
                                             role='checkbox'
                                             aria-checked={isSelected}
                                             tabIndex={-1}
