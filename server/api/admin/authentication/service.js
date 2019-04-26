@@ -44,8 +44,7 @@ export function checkAuthentication (req, res) {
     }
 
     jsonwebtoken.verify(token, publicKey, {
-        algorithm: 'RS256',
-        expiresIn: '1440m' // expires in 24 hours
+        algorithm: 'RS256'
     }, err => {
         if (err) {
             return res.status(FORBIDDEN_STATUS_CODE).end();

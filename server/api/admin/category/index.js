@@ -1,8 +1,12 @@
 import express from 'express';
 
+import verification from '../../../middlewares/verification';
+
 import { getCategories, saveCategory, editCategory, deleteByIds } from './service';
 
 const router = express.Router();
+
+router.use(verification);
 
 router.route('/all')
     .get(getCategories);
