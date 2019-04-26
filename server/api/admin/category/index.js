@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { getCategories, saveCategory } from './service';
+import { getCategories, saveCategory, deleteByIds } from './service';
 
 const router = express.Router();
 
@@ -9,5 +9,8 @@ router.route('/all')
 
 router.route('/save')
     .post(saveCategory);
+
+router.route('/delete-few')
+    .post(deleteByIds);
 
 export default router;

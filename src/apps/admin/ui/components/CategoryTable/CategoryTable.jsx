@@ -97,7 +97,8 @@ class CategoryTable extends React.Component {
     componentWillReceiveProps (nextProps) {
         if (nextProps.categories.length !== this.props.categories.length) {
             this.setState({
-                rowsPerPage: nextProps.categories.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : nextProps.categories.length
+                rowsPerPage: nextProps.categories.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : nextProps.categories.length,
+                selected: []
             });
         }
     }

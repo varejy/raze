@@ -19,6 +19,9 @@ import NewCategoryForm from '../NewCategoryForm/NewCategoryForm.jsx';
 
 import noop from '@tinkoff/utils/function/noop';
 
+import { connect } from 'react-redux';
+import deleteCategoriesByIds from '../../../services/deleteCategoriesByIds';
+
 const materialStyles = theme => ({
     highlight:
         theme.palette.type === 'light'
@@ -65,9 +68,14 @@ const materialStyles = theme => ({
     }
 });
 
+const mapDispatchToProps = (dispatch) => ({
+    deleteCategories: payload => dispatch(deleteCategoriesByIds(payload))
+});
+
 class CategoryTableHeader extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
+        deleteCategories: PropTypes.func.isRequired,
         selected: PropTypes.array,
         onSelectedCloseClick: PropTypes.func
     };
@@ -95,6 +103,10 @@ class CategoryTableHeader extends Component {
         this.setState({
             newCategoryFormShowed: false
         });
+    };
+
+    handleDelete = () => {
+        this.props.deleteCategories(this.props.selected);
     };
 
     render () {
@@ -125,7 +137,7 @@ class CategoryTableHeader extends Component {
                 <div className={classes.actions}>
                     {selected.length > 0 ? (
                         <Tooltip title='Delete'>
-                            <IconButton aria-label='Delete'>
+                            <IconButton aria-label='Delete' onClick={this.handleDelete}>
                                 <DeleteIcon />
                             </IconButton>
                         </Tooltip>
@@ -147,4 +159,4 @@ class CategoryTableHeader extends Component {
     }
 }
 
-export default withStyles(materialStyles)(CategoryTableHeader);
+export default connect(null, mapDispatchToProps)(withStyles(materialStyles)(CategoryTableHeader));

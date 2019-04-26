@@ -7,3 +7,7 @@ export function getAllCategories () {
 export function saveCategoryQuery (category) {
     return Category.create(category);
 }
+
+export function deleteByIdsQuery (ids) {
+    return Category.deleteMany({ id: { $in: ids } });
+}
