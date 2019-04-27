@@ -204,10 +204,10 @@ class CategoryTableHeader extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.handleWarningDisagree} color='primary'>
-                        Disagree
+                        Нет
                     </Button>
                     <Button onClick={this.handleWarningAgree} color='primary' autoFocus>
-                        Agree
+                        ДА
                     </Button>
                 </DialogActions>
             </Dialog>
