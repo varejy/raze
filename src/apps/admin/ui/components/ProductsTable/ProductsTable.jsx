@@ -10,39 +10,26 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+import Modal from '@material-ui/core/Modal';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import ProductTableHeader from '../ProductTableHeader/ProductTableHeader.jsx';
+import ProductForm from '../ProductForm/ProductForm';
 
 import compose from '@tinkoff/utils/function/compose';
 import difference from '@tinkoff/utils/array/difference';
 import slice from '@tinkoff/utils/array/slice';
-import map from '@tinkoff/utils/array/map';
 import concat from '@tinkoff/utils/array/concat';
 import without from '@tinkoff/utils/array/without';
+import find from '@tinkoff/utils/array/find';
+import findIndex from '@tinkoff/utils/array/findIndex';
+import any from '@tinkoff/utils/array/any';
 
-const products = [
-    { id: '1', name: 'Нож 1', category: 'knife', price: 2000 },
-    { id: '2', name: 'Нож 2', category: 'knife', price: 2300 },
-    { id: '3', name: 'Нож 3', category: 'knife', price: 2100 },
-    { id: '4', name: 'Нож 1', category: 'knife', price: 2000 },
-    { id: '5', name: 'Нож 2', category: 'knife', price: 2300 },
-    { id: '6', name: 'Нож 3', category: 'knife', price: 2100 },
-    { id: '7', name: 'Нож 1', category: 'knife', price: 2000 },
-    { id: '8', name: 'Нож 2', category: 'knife', price: 2300 },
-    { id: '9', name: 'Нож 3', category: 'knife', price: 2100 },
-    { id: '10', name: 'Нож 1', category: 'knife', price: 2000 },
-    { id: '11', name: 'Нож 2', category: 'knife', price: 2300 },
-    { id: '12', name: 'Нож 3', category: 'knife', price: 2100 },
-    { id: '13', name: 'Нож 1', category: 'knife', price: 2000 },
-    { id: '14', name: 'Нож 2', category: 'knife', price: 2300 },
-    { id: '15', name: 'Нож 3', category: 'knife', price: 2100 },
-    { id: '16', name: 'Нож 1', category: 'knife', price: 2000 },
-    { id: '17', name: 'Нож 2', category: 'knife', price: 2300 },
-    { id: '18', name: 'Нож 3', category: 'knife', price: 2100 },
-    { id: '19', name: 'Нож 1', category: 'knife', price: 2000 },
-    { id: '20', name: 'Нож 2', category: 'knife', price: 2300 },
-    { id: '21', name: 'Нож 3', category: 'knife', price: 2100 }
-];
+import { connect } from 'react-redux';
+import getProducts from '../../../services/getProducts';
+import getCategories from '../../../services/getCategories';
 
 const rows = [
     { id: 'name', disablePadding: false, label: 'Название' },
@@ -59,23 +46,117 @@ const materialStyles = theme => ({
     },
     tableWrapper: {
         overflowX: 'auto'
+    },
+    loader: {
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    row: {
+        '&:hover $editIcon': {
+            visibility: 'visible'
+        }
+    },
+    editIcon: {
+        visibility: 'hidden'
+    },
+    modalContent: {
+        position: 'absolute',
+        width: '1200px',
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing.unit * 4,
+        outline: 'none',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)'
     }
 });
 
 const ROWS_PER_PAGE = 10;
 
+const mapStateToProps = ({ application }) => {
+    return {
+        products: application.products,
+        categories: application.categories
+    };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+    getProducts: payload => dispatch(getProducts(payload)),
+    getCategories: payload => dispatch(getCategories(payload))
+});
+
 class ProductsTable extends React.Component {
     static propTypes = {
-        classes: PropTypes.object.isRequired
+        classes: PropTypes.object.isRequired,
+        getProducts: PropTypes.func.isRequired,
+        getCategories: PropTypes.func.isRequired,
+        products: PropTypes.array,
+        categories: PropTypes.array
     };
 
-    state = {
-        selected: [],
-        page: 0,
-        rowsPerPage: products.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : products.length,
-        checkboxIndeterminate: false,
-        products
+    static defaultProps = {
+        products: [],
+        categories: []
     };
+
+    constructor (...args) {
+        super(...args);
+
+        const { products, categories } = this.props;
+
+        const readyProducts = products.map(product => {
+            const category = find(category => category.id === product.categoryId, categories);
+
+            return {
+                ...product,
+                categoryName: category.name
+            };
+        });
+
+        this.state = {
+            selected: [],
+            products: readyProducts,
+            page: 0,
+            rowsPerPage: products.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : products.length,
+            checkboxIndeterminate: false,
+            loading: true,
+            editableProduct: null
+        };
+    }
+
+    componentDidMount () {
+        Promise.all([
+            this.props.getProducts(),
+            this.props.getCategories()
+        ])
+            .then(() => {
+                this.setState({
+                    loading: false
+                });
+            });
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.products !== this.props.products || nextProps.categories !== this.props.categories) {
+            const readyProducts = nextProps.products.map(product => {
+                const category = find(category => category.id === product.categoryId, nextProps.categories) || {};
+
+                return {
+                    ...product,
+                    categoryName: category.name
+                };
+            });
+
+            this.setState({
+                rowsPerPage: nextProps.products.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : nextProps.products.length,
+                products: readyProducts,
+                selected: []
+            });
+        }
+    }
 
     handleSelectAllClick = event => {
         const { products, selected, rowsPerPage, page, checkboxIndeterminate } = this.state;
@@ -84,8 +165,7 @@ class ProductsTable extends React.Component {
             const newSelected = compose(
                 concat(selected),
                 without(selected),
-                slice(rowsPerPage * page, rowsPerPage * (page + 1)),
-                map(product => product.id)
+                slice(rowsPerPage * page, rowsPerPage * (page + 1))
             )(products);
 
             return this.setState({
@@ -95,10 +175,7 @@ class ProductsTable extends React.Component {
         }
 
         const newSelected = without(
-            compose(
-                slice(rowsPerPage * page, rowsPerPage * (page + 1)),
-                map(product => product.id)
-            )(products),
+            slice(rowsPerPage * page, rowsPerPage * (page + 1), products),
             selected
         );
 
@@ -115,13 +192,13 @@ class ProductsTable extends React.Component {
         });
     };
 
-    handleClick = (event, id) => {
+    handleClick = selectedProduct => () => {
         const { selected } = this.state;
-        const selectedIndex = selected.indexOf(id);
+        const selectedIndex = findIndex(product => product.id === selectedProduct.id, selected);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
+            newSelected = newSelected.concat(selected, selectedProduct);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -145,10 +222,25 @@ class ProductsTable extends React.Component {
     };
 
     handleChangeRowsPerPage = ({ target: { value } }) => {
+        const { products } = this.state;
         const rowsPerPage = products.length > value ? value : products.length;
         const checkboxIndeterminate = this.checkCheckboxIndeterminate({ rowsPerPage });
 
         this.setState({ rowsPerPage, checkboxIndeterminate });
+    };
+
+    handleEditClick = product => event => {
+        event.stopPropagation();
+
+        this.setState({
+            editableProduct: product
+        });
+    };
+
+    handleCloseEditProductForm = () => {
+        this.setState({
+            editableProduct: null
+        });
     };
 
     checkCheckboxIndeterminate = (
@@ -160,17 +252,23 @@ class ProductsTable extends React.Component {
     ) => {
         const { products } = this.state;
         const visibleProjects = products
-            .map(product => product.id)
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
         return !difference(visibleProjects, selected).length;
     };
 
-    isSelected = id => this.state.selected.indexOf(id) !== -1;
+    isSelected = id => any(product => product.id === id, this.state.selected);
 
     render () {
         const { classes } = this.props;
-        const { products, selected, rowsPerPage, page, checkboxIndeterminate } = this.state;
+        const { products, selected, rowsPerPage, page, checkboxIndeterminate, loading, editableProduct } = this.state;
+
+        if (loading) {
+            return <div className={classes.loader}>
+                <CircularProgress />
+            </div>;
+        }
+
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, products.length - page * rowsPerPage);
 
         return (
@@ -188,39 +286,46 @@ class ProductsTable extends React.Component {
                                     />
                                 </TableCell>
                                 {rows.map(
-                                    row => (
-                                        <TableCell
-                                            key={row.id}
-                                            padding={row.disablePadding ? 'none' : 'default'}
-                                        >
+                                    (row, i) => (
+                                        <TableCell key={i}>
                                             {row.label}
                                         </TableCell>
                                     )
                                 )}
+                                <TableCell align='right' />
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {products
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map(product => {
+                                .map((product, i) => {
                                     const isSelected = this.isSelected(product.id);
 
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={event => this.handleClick(event, product.id)}
+                                            onClick={this.handleClick(product)}
                                             role='checkbox'
                                             aria-checked={isSelected}
                                             tabIndex={-1}
-                                            key={product.id}
+                                            key={i}
                                             selected={isSelected}
+                                            className={classes.row}
                                         >
                                             <TableCell padding='checkbox'>
                                                 <Checkbox checked={isSelected} />
                                             </TableCell>
-                                            <TableCell component='th' scope='row'>{product.name}</TableCell>
-                                            <TableCell component='th' scope='row'>{product.category}</TableCell>
-                                            <TableCell component='th' scope='row'>{product.price}</TableCell>
+                                            <TableCell>{product.name}</TableCell>
+                                            <TableCell>{product.categoryName}</TableCell>
+                                            <TableCell>{product.price}</TableCell>
+                                            <TableCell padding='checkbox' align='right'>
+                                                <IconButton
+                                                    className={classes.editIcon}
+                                                    onClick={this.handleEditClick(product)}
+                                                >
+                                                    <EditIcon />
+                                                </IconButton>
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -241,9 +346,14 @@ class ProductsTable extends React.Component {
                     onChangePage={this.handleChangePage}
                     onChangeRowsPerPage={this.handleChangeRowsPerPage}
                 />
+                <Modal open={!!editableProduct} onClose={this.handleCloseEditProductForm}>
+                    <Paper className={classes.modalContent}>
+                        <ProductForm product={editableProduct} onDone={this.handleCloseEditProductForm}/>
+                    </Paper>
+                </Modal>
             </Paper>
         );
     }
 }
 
-export default withStyles(materialStyles)(ProductsTable);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(materialStyles)(ProductsTable));

@@ -51,9 +51,6 @@ const materialStyles = theme => ({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    mainCell: {
-        flex: 1
-    },
     row: {
         '&:hover $editIcon': {
             visibility: 'visible'
@@ -123,7 +120,7 @@ class CategoryTable extends React.Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        if (nextProps.categories.length !== this.props.categories.length) {
+        if (nextProps.categories !== this.props.categories) {
             this.setState({
                 rowsPerPage: nextProps.categories.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : nextProps.categories.length,
                 selected: []
@@ -299,8 +296,8 @@ class CategoryTable extends React.Component {
                                             <TableCell padding='checkbox'>
                                                 <Checkbox checked={isSelected} />
                                             </TableCell>
-                                            <TableCell className={classes.mainCell}>{category.name}</TableCell>
-                                            <TableCell className={classes.mainCell}>
+                                            <TableCell>{category.name}</TableCell>
+                                            <TableCell>
                                                 <Link
                                                     onClick={this.handleLinkClick}
                                                     href={`${this.getHost()}/${category.path}`}

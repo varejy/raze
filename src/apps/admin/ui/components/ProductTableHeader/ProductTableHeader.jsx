@@ -11,14 +11,25 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { withStyles } from '@material-ui/core/styles';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 import Modal from '@material-ui/core/Modal';
-import NewProductForm from '../NewProductForm/NewProductForm.jsx';
+import ProductForm from '../ProductForm/ProductForm.jsx';
 
 import noop from '@tinkoff/utils/function/noop';
+
+import { connect } from 'react-redux';
+import deleteProductsByIds from '../../../services/deleteProductsByIds';
 
 const materialStyles = theme => ({
     highlight:
@@ -65,13 +76,19 @@ const materialStyles = theme => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing.unit * 4,
         outline: 'none',
+        top: '50%',
         left: '50%',
-        transform: 'translate(-50%, 0%)'
+        transform: 'translate(-50%, -50%)'
     }
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    deleteProducts: payload => dispatch(deleteProductsByIds(payload))
 });
 
 class ProductTableHeader extends Component {
     static propTypes = {
+        deleteProducts: PropTypes.func.isRequired,
         classes: PropTypes.object.isRequired,
         selected: PropTypes.array,
         onSelectedCloseClick: PropTypes.func
@@ -83,7 +100,8 @@ class ProductTableHeader extends Component {
     };
 
     state = {
-        newProductFormShowed: false
+        newProductFormShowed: false,
+        warningShowed: false
     };
 
     handleSelectedCloseClick = () => {
@@ -102,9 +120,32 @@ class ProductTableHeader extends Component {
         });
     };
 
+    handleWarningDisagree = () => {
+        this.setState({
+            warningShowed: false
+        });
+    };
+
+    handleWarningAgree = () => {
+        const ids = this.props.selected.map(category => category.id);
+
+        this.props.deleteProducts(ids)
+            .then(() => {
+                this.setState({
+                    warningShowed: false
+                });
+            });
+    };
+
+    handleDelete = () => {
+        this.setState({
+            warningShowed: true
+        });
+    };
+
     render () {
         const { classes, selected } = this.props;
-        const { newProductFormShowed } = this.state;
+        const { newProductFormShowed, warningShowed } = this.state;
 
         return <div>
             <Toolbar
@@ -130,7 +171,7 @@ class ProductTableHeader extends Component {
                 <div className={classes.actions}>
                     {selected.length > 0 ? (
                         <Tooltip title='Delete'>
-                            <IconButton aria-label='Delete'>
+                            <IconButton aria-label='Delete' onClick={this.handleDelete}>
                                 <DeleteIcon />
                             </IconButton>
                         </Tooltip>
@@ -152,11 +193,36 @@ class ProductTableHeader extends Component {
             </Toolbar>
             <Modal open={newProductFormShowed} onClose={this.handleCloseNewProductForm}>
                 <Paper className={classes.modalContent}>
-                    <NewProductForm />
+                    <ProductForm onDone={this.handleCloseNewProductForm} />
                 </Paper>
             </Modal>
+            <Dialog
+                open={warningShowed}
+                onClose={this.handleWarningDisagree}
+            >
+                <DialogTitle>Вы точно хотите удалить следующие товары?</DialogTitle>
+                <DialogContent className={classes.warningContent}>
+                    <List>
+                        {
+                            selected.map((category, i) => <ListItem key={i}>
+                                <ListItemText
+                                    primary={category.name}
+                                />
+                            </ListItem>)
+                        }
+                    </List>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleWarningDisagree} color='primary'>
+                        Нет
+                    </Button>
+                    <Button onClick={this.handleWarningAgree} color='primary' autoFocus>
+                        ДА
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>;
     }
 }
 
-export default withStyles(materialStyles)(ProductTableHeader);
+export default connect(null, mapDispatchToProps)(withStyles(materialStyles)(ProductTableHeader));
