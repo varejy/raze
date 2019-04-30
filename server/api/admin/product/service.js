@@ -19,10 +19,10 @@ export function getProducts (req, res) {
 }
 
 export function saveProduct (req, res) {
-    const { name, price, categoryId, hidden } = req.body;
+    const { name, price, description, features, categoryId, hidden } = req.body;
     const id = uniqid();
 
-    saveProductQuery({ name, price: +price, categoryId, hidden, id })
+    saveProductQuery({ name, price: +price, description, features, categoryId, hidden, id })
         .then(() => {
             getAllProducts()
                 .then(categories => {
@@ -35,9 +35,9 @@ export function saveProduct (req, res) {
 }
 
 export function editProduct (req, res) {
-    const { name, price, categoryId, hidden, id } = req.body;
+    const { name, price, description, features, categoryId, hidden, id } = req.body;
 
-    editProductQuery({ name, price: +price, categoryId, hidden, id })
+    editProductQuery({ name, price: +price, description, features, categoryId, hidden, id })
         .then(() => {
             getAllProducts()
                 .then(categories => {

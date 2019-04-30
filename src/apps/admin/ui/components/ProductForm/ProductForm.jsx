@@ -6,9 +6,15 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import FormGroup from '@material-ui/core/FormGroup';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Fab from '@material-ui/core/Fab';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { withStyles } from '@material-ui/core/styles';
 
 import { connect } from 'react-redux';
 import getCategories from '../../../services/getCategories';
@@ -19,11 +25,41 @@ import noop from '@tinkoff/utils/function/noop';
 import prop from '@tinkoff/utils/object/prop';
 import pick from '@tinkoff/utils/object/pick';
 import find from '@tinkoff/utils/array/find';
+import remove from '@tinkoff/utils/array/remove';
 
-import styles from './ProductForm.css';
 import Tooltip from '@material-ui/core/Tooltip';
 
-const PRODUCTS_VALUES = ['name', 'price', 'categoryId', 'hidden'];
+const PRODUCTS_VALUES = ['name', 'price', 'categoryId', 'hidden', 'description', 'features'];
+
+const materialStyles = {
+    loader: {
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    features: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '210px'
+    },
+    feature: {
+        display: 'flex',
+        flexWrap: 'nowrap',
+        alignItems: 'center'
+    },
+    featureGroup: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%'
+    },
+    featureField: {
+        width: 'calc(50% - 10px)'
+    }
+};
 
 const mapStateToProps = ({ application }) => {
     return {
@@ -39,6 +75,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 class ProductForm extends Component {
     static propTypes = {
+        classes: PropTypes.object.isRequired,
         getCategories: PropTypes.func.isRequired,
         saveProduct: PropTypes.func.isRequired,
         editProduct: PropTypes.func.isRequired,
@@ -60,6 +97,7 @@ class ProductForm extends Component {
         const category = find(category => category.id === product.categoryId, categories);
         const newProduct = {
             hidden: false,
+            features: [],
             ...pick(PRODUCTS_VALUES, product)
         };
 
@@ -108,6 +146,45 @@ class ProductForm extends Component {
             });
     };
 
+    handleFeatureAdd = () => {
+        const { product } = this.state;
+
+        this.setState({
+            product: {
+                ...product,
+                features: [
+                    ...product.features,
+                    { prop: '', value: '' }
+                ]
+            }
+        });
+    };
+
+    handleFeatureChange = (prop, i) => event => {
+        const { product } = this.state;
+        const features = product.features;
+
+        features[i][prop] = event.target.value;
+
+        this.setState({
+            product: {
+                ...product,
+                features: features
+            }
+        });
+    };
+
+    handleFeatureDelete = i => () => {
+        const { product } = this.state;
+
+        this.setState({
+            product: {
+                ...product,
+                features: remove(i, 1, product.features)
+            }
+        });
+    };
+
     handleChange = prop => event => {
         if (prop === 'categoryId') {
             this.handleCategoryIdChange(event);
@@ -123,7 +200,7 @@ class ProductForm extends Component {
 
     handleCheckboxChange = prop => (event, value) => {
         if (prop === 'hidden') {
-            this.prevProductHidden = value
+            this.prevProductHidden = value;
         }
 
         this.setState({
@@ -150,10 +227,11 @@ class ProductForm extends Component {
     };
 
     render () {
+        const { classes } = this.props;
         const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables } = this.state;
 
         if (loading) {
-            return <div className={styles.loader}>
+            return <div className={classes.loader}>
                 <CircularProgress />
             </div>;
         }
@@ -199,6 +277,51 @@ class ProductForm extends Component {
                 fullWidth
                 required
             />
+            <TextField
+                label='Описание'
+                value={product.description}
+                onChange={this.handleChange('description')}
+                margin='normal'
+                variant='outlined'
+                multiline
+                fullWidth
+                required
+            />
+            <div className={classes.features}>
+                <Typography variant='h6'>Характеристики</Typography>
+                <Fab color='primary' size='small' onClick={this.handleFeatureAdd}>
+                    <AddIcon />
+                </Fab>
+            </div>
+            <div>
+                {
+                    product.features.map((feature, i) => <FormGroup key={i} className={classes.feature} row>
+                        <div className={classes.featureGroup}>
+                            <TextField
+                                className={classes.featureField}
+                                label='Свойство'
+                                value={feature.prop}
+                                onChange={this.handleFeatureChange('prop', i)}
+                                margin='normal'
+                                variant='outlined'
+                                required
+                            />
+                            <TextField
+                                className={classes.featureField}
+                                label='Значение'
+                                value={feature.value}
+                                onChange={this.handleFeatureChange('value', i)}
+                                margin='normal'
+                                variant='outlined'
+                                required
+                            />
+                        </div>
+                        <IconButton aria-label='Delete' onClick={this.handleFeatureDelete(i)}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </FormGroup>)
+                }
+            </div>
             <div>
                 <Tooltip
                     title={hiddenCheckboxIsDisables ? 'Товар будет скрыт, т.к. выбранная категория скрыта' : ''}
@@ -226,4 +349,4 @@ class ProductForm extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductForm);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(materialStyles)(ProductForm));
