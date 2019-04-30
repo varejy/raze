@@ -105,16 +105,9 @@ class ProductsTable extends React.Component {
     constructor (...args) {
         super(...args);
 
-        const { products, categories } = this.props;
+        const { products } = this.props;
 
-        const readyProducts = products.map(product => {
-            const category = find(category => category.id === product.categoryId, categories);
-
-            return {
-                ...product,
-                categoryName: category.name
-            };
-        });
+        const readyProducts = this.getProducts();
 
         this.state = {
             selected: [],
@@ -126,6 +119,19 @@ class ProductsTable extends React.Component {
             editableProduct: null
         };
     }
+
+    getProducts = (props = this.props) => {
+        const { products, categories } = props;
+
+        return products.map(product => {
+            const category = find(category => category.id === product.categoryId, categories);
+
+            return {
+                ...product,
+                categoryName: category ? category.name : 'Без категории'
+            };
+        });
+    };
 
     componentDidMount () {
         Promise.all([
@@ -141,14 +147,7 @@ class ProductsTable extends React.Component {
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.products !== this.props.products || nextProps.categories !== this.props.categories) {
-            const readyProducts = nextProps.products.map(product => {
-                const category = find(category => category.id === product.categoryId, nextProps.categories) || {};
-
-                return {
-                    ...product,
-                    categoryName: category.name
-                };
-            });
+            const readyProducts = this.getProducts(nextProps);
 
             this.setState({
                 rowsPerPage: nextProps.products.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : nextProps.products.length,

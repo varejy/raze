@@ -7,6 +7,7 @@ import {
     editCategory as editCategoryQuery,
     deleteByIds as deleteByIdsQuery
 } from './queries';
+import { nullifyCategories } from '../product/queries';
 
 export function getCategories (req, res) {
     getAllCategories()
@@ -54,9 +55,12 @@ export function deleteByIds (req, res) {
 
     deleteByIdsQuery(ids)
         .then(() => {
-            getAllCategories()
-                .then(categories => {
-                    res.status(OKEY_STATUS_CODE).send(categories);
+            nullifyCategories(ids)
+                .then(() => {
+                    getAllCategories()
+                        .then(categories => {
+                            res.status(OKEY_STATUS_CODE).send(categories);
+                        });
                 });
         })
         .catch(() => {
