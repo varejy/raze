@@ -82,6 +82,9 @@ const materialStyles = theme => ({
         transform: 'translate(-50%, -50%)',
         overflowY: 'auto',
         maxHeight: '100vh'
+    },
+    warningContent: {
+        paddingBottom: '0'
     }
 });
 

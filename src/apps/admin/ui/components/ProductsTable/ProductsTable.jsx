@@ -12,10 +12,17 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import Modal from '@material-ui/core/Modal';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
 
 import ProductTableHeader from '../ProductTableHeader/ProductTableHeader.jsx';
 import ProductForm from '../ProductForm/ProductForm';
@@ -32,6 +39,7 @@ import any from '@tinkoff/utils/array/any';
 import { connect } from 'react-redux';
 import getProducts from '../../../services/getProducts';
 import getCategories from '../../../services/getCategories';
+import deleteProductsByIds from '../../../services/deleteProductsByIds';
 
 const rows = [
     { id: 'name', label: 'Название' },
@@ -57,11 +65,11 @@ const materialStyles = theme => ({
         alignItems: 'center'
     },
     row: {
-        '&:hover $editIcon': {
+        '&:hover $productActions': {
             visibility: 'visible'
         }
     },
-    editIcon: {
+    productActions: {
         visibility: 'hidden'
     },
     modalContent: {
@@ -76,6 +84,9 @@ const materialStyles = theme => ({
         transform: 'translate(-50%, -50%)',
         overflowY: 'auto',
         maxHeight: '100vh'
+    },
+    warningContent: {
+        paddingBottom: '0'
     }
 });
 
@@ -90,7 +101,8 @@ const mapStateToProps = ({ application, products }) => {
 
 const mapDispatchToProps = (dispatch) => ({
     getProducts: payload => dispatch(getProducts(payload)),
-    getCategories: payload => dispatch(getCategories(payload))
+    getCategories: payload => dispatch(getCategories(payload)),
+    deleteProducts: payload => dispatch(deleteProductsByIds(payload))
 });
 
 class ProductsTable extends React.Component {
@@ -98,6 +110,7 @@ class ProductsTable extends React.Component {
         classes: PropTypes.object.isRequired,
         getProducts: PropTypes.func.isRequired,
         getCategories: PropTypes.func.isRequired,
+        deleteProducts: PropTypes.func.isRequired,
         products: PropTypes.array,
         categories: PropTypes.array
     };
@@ -121,7 +134,8 @@ class ProductsTable extends React.Component {
             rowsPerPage: products.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : products.length,
             checkboxIndeterminate: false,
             loading: true,
-            editableProduct: null
+            editableProduct: null,
+            productForDelete: null
         };
     }
 
@@ -233,9 +247,30 @@ class ProductsTable extends React.Component {
         this.setState({ rowsPerPage, checkboxIndeterminate });
     };
 
-    handleEditClick = product => event => {
-        event.stopPropagation();
+    handleDelete = product => () => {
+        this.setState({
+            productForDelete: product
+        });
+    };
 
+    handleWarningDisagree = () => {
+        this.setState({
+            productForDelete: null
+        });
+    };
+
+    handleWarningAgree = () => {
+        const { productForDelete } = this.state;
+
+        this.props.deleteProducts([productForDelete.id])
+            .then(() => {
+                this.setState({
+                    productForDelete: null
+                });
+            });
+    };
+
+    handleEditClick = product => event => {
         this.setState({
             editableProduct: product
         });
@@ -265,7 +300,7 @@ class ProductsTable extends React.Component {
 
     render () {
         const { classes } = this.props;
-        const { products, selected, rowsPerPage, page, checkboxIndeterminate, loading, editableProduct } = this.state;
+        const { products, selected, rowsPerPage, page, checkboxIndeterminate, loading, editableProduct, productForDelete } = this.state;
 
         if (loading) {
             return <div className={classes.loader}>
@@ -308,7 +343,6 @@ class ProductsTable extends React.Component {
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={this.handleClick(product)}
                                             role='checkbox'
                                             aria-checked={isSelected}
                                             tabIndex={-1}
@@ -317,7 +351,7 @@ class ProductsTable extends React.Component {
                                             className={classes.row}
                                         >
                                             <TableCell padding='checkbox'>
-                                                <Checkbox checked={isSelected} />
+                                                <Checkbox checked={isSelected} onClick={this.handleClick(product)} />
                                             </TableCell>
                                             <TableCell>{product.name}</TableCell>
                                             <TableCell>{product.categoryName}</TableCell>
@@ -326,12 +360,14 @@ class ProductsTable extends React.Component {
                                                 {product.hidden ? <CloseIcon /> : <CheckIcon />}
                                             </TableCell>
                                             <TableCell padding='checkbox' align='right'>
-                                                <IconButton
-                                                    className={classes.editIcon}
-                                                    onClick={this.handleEditClick(product)}
-                                                >
-                                                    <EditIcon />
-                                                </IconButton>
+                                                <div className={classes.productActions}>
+                                                    <IconButton onClick={this.handleEditClick(product)}>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                    <IconButton onClick={this.handleDelete(product)}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     );
@@ -358,6 +394,23 @@ class ProductsTable extends React.Component {
                         <ProductForm product={editableProduct} onDone={this.handleCloseEditProductForm}/>
                     </Paper>
                 </Modal>
+                <Dialog
+                    open={!!productForDelete}
+                    onClose={this.handleWarningDisagree}
+                >
+                    <DialogTitle>Вы точно хотите удалить товар?</DialogTitle>
+                    <DialogContent className={classes.warningContent}>
+                        <DialogContentText>{ productForDelete && productForDelete.name }</DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleWarningDisagree} color='primary'>
+                            Нет
+                        </Button>
+                        <Button onClick={this.handleWarningAgree} color='primary' autoFocus>
+                            ДА
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Paper>
         );
     }

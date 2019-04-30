@@ -18,6 +18,13 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
 
 import CategoryTableHeader from '../CategoryTableHeader/CategoryTableHeader.jsx';
 import CategoryForm from '../CategoryForm/CategoryForm.jsx';
@@ -31,6 +38,7 @@ import concat from '@tinkoff/utils/array/concat';
 import without from '@tinkoff/utils/array/without';
 
 import getCategories from '../../../services/getCategories';
+import deleteCategoriesByIds from '../../../services/deleteCategoriesByIds';
 
 const rows = [
     { id: 'name', label: 'Название' },
@@ -55,11 +63,11 @@ const materialStyles = theme => ({
         alignItems: 'center'
     },
     row: {
-        '&:hover $editIcon': {
+        '&:hover $categoryActions': {
             visibility: 'visible'
         }
     },
-    editIcon: {
+    categoryActions: {
         visibility: 'hidden'
     },
     modalContent: {
@@ -84,13 +92,15 @@ const mapStateToProps = ({ application }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    getCategories: payload => dispatch(getCategories(payload))
+    getCategories: payload => dispatch(getCategories(payload)),
+    deleteCategories: payload => dispatch(deleteCategoriesByIds(payload))
 });
 
 class CategoryTable extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         getCategories: PropTypes.func.isRequired,
+        deleteCategories: PropTypes.func.isRequired,
         categories: PropTypes.array
     };
 
@@ -109,7 +119,8 @@ class CategoryTable extends React.Component {
             rowsPerPage: categories.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : categories.length,
             checkboxIndeterminate: false,
             loading: true,
-            editableCategory: null
+            editableCategory: null,
+            categoryForDelete: null
         };
     }
 
@@ -203,13 +214,7 @@ class CategoryTable extends React.Component {
         this.setState({ rowsPerPage, checkboxIndeterminate });
     };
 
-    handleLinkClick = event => {
-        event.stopPropagation();
-    };
-
     handleEditClick = category => event => {
-        event.stopPropagation();
-
         this.setState({
             editableCategory: category
         });
@@ -243,9 +248,32 @@ class CategoryTable extends React.Component {
         return `${protocol}${location.host}`;
     };
 
+    handleDelete = category => () => {
+        this.setState({
+            categoryForDelete: category
+        });
+    };
+
+    handleWarningDisagree = () => {
+        this.setState({
+            categoryForDelete: null
+        });
+    };
+
+    handleWarningAgree = () => {
+        const { categoryForDelete } = this.state;
+
+        this.props.deleteCategories([categoryForDelete.id])
+            .then(() => {
+                this.setState({
+                    categoryForDelete: null
+                });
+            });
+    };
+
     render () {
         const { classes, categories } = this.props;
-        const { selected, rowsPerPage, page, checkboxIndeterminate, loading, editableCategory } = this.state;
+        const { selected, rowsPerPage, page, checkboxIndeterminate, loading, editableCategory, categoryForDelete } = this.state;
 
         if (loading) {
             return <div className={classes.loader}>
@@ -288,7 +316,6 @@ class CategoryTable extends React.Component {
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={this.handleClick(category)}
                                             role='checkbox'
                                             aria-checked={isSelected}
                                             tabIndex={-1}
@@ -297,12 +324,11 @@ class CategoryTable extends React.Component {
                                             className={classes.row}
                                         >
                                             <TableCell padding='checkbox'>
-                                                <Checkbox checked={isSelected} />
+                                                <Checkbox checked={isSelected} onClick={this.handleClick(category)} />
                                             </TableCell>
                                             <TableCell>{category.name}</TableCell>
                                             <TableCell>
                                                 <Link
-                                                    onClick={this.handleLinkClick}
                                                     href={`${this.getHost()}/${category.path}`}
                                                     target='_blank'
                                                 >
@@ -313,12 +339,14 @@ class CategoryTable extends React.Component {
                                                 {category.hidden ? <CloseIcon /> : <CheckIcon />}
                                             </TableCell>
                                             <TableCell padding='checkbox' align='right'>
-                                                <IconButton
-                                                    className={classes.editIcon}
-                                                    onClick={this.handleEditClick(category)}
-                                                >
-                                                    <EditIcon />
-                                                </IconButton>
+                                                <div className={classes.categoryActions}>
+                                                    <IconButton onClick={this.handleEditClick(category)}>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                    <IconButton onClick={this.handleDelete(category)}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     );
@@ -345,6 +373,23 @@ class CategoryTable extends React.Component {
                         <CategoryForm category={editableCategory} onDone={this.handleCloseEditCategoryForm}/>
                     </Paper>
                 </Modal>
+                <Dialog
+                    open={!!categoryForDelete}
+                    onClose={this.handleWarningDisagree}
+                >
+                    <DialogTitle>Вы точно хотите удалить категорию?</DialogTitle>
+                    <DialogContent className={classes.warningContent}>
+                        <DialogContentText>{ categoryForDelete && categoryForDelete.name }</DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleWarningDisagree} color='primary'>
+                            Нет
+                        </Button>
+                        <Button onClick={this.handleWarningAgree} color='primary' autoFocus>
+                            ДА
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Paper>
         );
     }
