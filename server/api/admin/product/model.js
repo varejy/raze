@@ -6,7 +6,8 @@ const Product = new Schema({
     id: { type: String, required: true },
     name: { type: String, required: true },
     price: { type: Number, required: true },
-    categoryId: { type: String, required: true }
+    categoryId: { type: String, required: true },
+    hidden: { type: Boolean, required: true }
 });
 
 export default mongoose.model('Product', Product);

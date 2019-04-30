@@ -6,6 +6,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import { connect } from 'react-redux';
 import getCategories from '../../../services/getCategories';
@@ -18,7 +21,7 @@ import pick from '@tinkoff/utils/object/pick';
 
 import styles from './ProductForm.css';
 
-const PRODUCTS_VALUES = ['name', 'price', 'categoryId'];
+const PRODUCTS_VALUES = ['name', 'price', 'categoryId', 'hidden'];
 
 const mapStateToProps = ({ application }) => {
     return {
@@ -54,7 +57,10 @@ class ProductForm extends Component {
         const { product, categories } = this.props;
 
         this.state = {
-            product: pick(PRODUCTS_VALUES, product),
+            product: {
+                hidden: false,
+                ...pick(PRODUCTS_VALUES, product)
+            },
             id: prop('id', product),
             loading: true,
             categoriesOptions: categories.map(category => ({
@@ -100,6 +106,15 @@ class ProductForm extends Component {
             product: {
                 ...this.state.product,
                 [prop]: event.target.value
+            }
+        });
+    };
+
+    handleCheckboxChange = prop => (event, value) => {
+        this.setState({
+            product: {
+                ...this.state.product,
+                [prop]: value
             }
         });
     };
@@ -150,13 +165,27 @@ class ProductForm extends Component {
                 InputProps={{ inputProps: { min: 0 } }}
                 margin='normal'
                 variant='outlined'
-                type="number"
+                type='number'
                 fullWidth
                 required
             />
-            <Button variant='contained' color='primary' type='submit'>
-                Сохранить
-            </Button>
+            <div>
+                <FormControlLabel
+                    control ={
+                        <Checkbox
+                            checked={product.hidden}
+                            onChange={this.handleCheckboxChange('hidden')}
+                            color='primary'
+                        />
+                    }
+                    label='Скрыть товар'
+                />
+            </div>
+            <FormControl margin='normal'>
+                <Button variant='contained' color='primary' type='submit'>
+                    Сохранить
+                </Button>
+            </FormControl>
         </form>;
     }
 }

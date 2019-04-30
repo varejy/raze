@@ -12,6 +12,8 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
+import Check from '@material-ui/icons/Check';
+import Close from '@material-ui/icons/Close';
 import Modal from '@material-ui/core/Modal';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -34,7 +36,8 @@ import getCategories from '../../../services/getCategories';
 const rows = [
     { id: 'name', disablePadding: false, label: 'Название' },
     { id: 'category', disablePadding: false, label: 'Категория' },
-    { id: 'price', disablePadding: false, label: 'Цена' }
+    { id: 'price', disablePadding: false, label: 'Цена' },
+    { id: 'hidden', disablePadding: false, label: 'Active' }
 ];
 
 const materialStyles = theme => ({
@@ -317,6 +320,9 @@ class ProductsTable extends React.Component {
                                             <TableCell>{product.name}</TableCell>
                                             <TableCell>{product.categoryName}</TableCell>
                                             <TableCell>{product.price}</TableCell>
+                                            <TableCell>
+                                                {product.hidden ? <Close /> : <Check />}
+                                            </TableCell>
                                             <TableCell padding='checkbox' align='right'>
                                                 <IconButton
                                                     className={classes.editIcon}
