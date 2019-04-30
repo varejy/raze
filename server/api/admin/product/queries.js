@@ -19,3 +19,7 @@ export function deleteByIds (ids) {
 export function nullifyCategories (ids) {
     return Product.updateMany({ categoryId: { $in: ids } }, { categoryId: 'none' });
 }
+
+export function hideProductsByCategory (categoryId, hidden) {
+    return Product.updateMany({ categoryId: categoryId }, { hidden });
+}

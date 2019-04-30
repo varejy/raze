@@ -16,6 +16,8 @@ import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
 
 import CategoryTableHeader from '../CategoryTableHeader/CategoryTableHeader.jsx';
 import CategoryForm from '../CategoryForm/CategoryForm.jsx';
@@ -32,7 +34,8 @@ import getCategories from '../../../services/getCategories';
 
 const rows = [
     { id: 'name', label: 'Название' },
-    { id: 'category', label: 'Путь' }
+    { id: 'category', label: 'Путь' },
+    { id: 'active', label: 'Active' }
 ];
 
 const materialStyles = theme => ({
@@ -305,6 +308,9 @@ class CategoryTable extends React.Component {
                                                 >
                                                     /{category.path}
                                                 </Link>
+                                            </TableCell>
+                                            <TableCell>
+                                                {category.hidden ? <CloseIcon /> : <CheckIcon />}
                                             </TableCell>
                                             <TableCell padding='checkbox' align='right'>
                                                 <IconButton

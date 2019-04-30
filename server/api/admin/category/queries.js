@@ -4,6 +4,10 @@ export function getAllCategories () {
     return Category.find({});
 }
 
+export function getCategory (id) {
+    return Category.findOne({ id });
+}
+
 export function saveCategory (category) {
     return Category.create(category);
 }

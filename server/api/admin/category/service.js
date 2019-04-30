@@ -3,11 +3,15 @@ import uniqid from 'uniqid';
 import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../constants/constants';
 import {
     getAllCategories,
+    getCategory,
     saveCategory as saveCategoryQuery,
     editCategory as editCategoryQuery,
     deleteByIds as deleteByIdsQuery
 } from './queries';
-import { nullifyCategories } from '../product/queries';
+import {
+    nullifyCategories,
+    hideProductsByCategory
+} from '../product/queries';
 
 export function getCategories (req, res) {
     getAllCategories()
@@ -20,10 +24,10 @@ export function getCategories (req, res) {
 }
 
 export function saveCategory (req, res) {
-    const { name, path } = req.body;
+    const { name, path, hidden } = req.body;
     const id = uniqid();
 
-    saveCategoryQuery({ name, path, id })
+    saveCategoryQuery({ name, path, hidden, id })
         .then(() => {
             getAllCategories()
                 .then(categories => {
@@ -36,17 +40,27 @@ export function saveCategory (req, res) {
 }
 
 export function editCategory (req, res) {
-    const { name, path, id } = req.body;
+    const { name, path, hidden, id } = req.body;
 
-    editCategoryQuery({ name, path, id })
-        .then(() => {
-            getAllCategories()
-                .then(categories => {
-                    res.status(OKEY_STATUS_CODE).send(categories);
+    getCategory(id)
+        .then(oldCategory => {
+            editCategoryQuery({ name, hidden, path, id })
+                .then(() => {
+                    if (oldCategory.hidden === hidden) {
+                        return;
+                    }
+
+                    return hideProductsByCategory(id, hidden);
+                })
+                .then(() => {
+                    getAllCategories()
+                        .then(categories => {
+                            res.status(OKEY_STATUS_CODE).send(categories);
+                        });
+                })
+                .catch(() => {
+                    res.status(SERVER_ERROR_STATUS_CODE).end();
                 });
-        })
-        .catch(() => {
-            res.status(SERVER_ERROR_STATUS_CODE).end();
         });
 }
 

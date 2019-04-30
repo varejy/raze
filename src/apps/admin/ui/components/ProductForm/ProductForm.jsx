@@ -18,8 +18,10 @@ import editProduct from '../../../services/editProduct';
 import noop from '@tinkoff/utils/function/noop';
 import prop from '@tinkoff/utils/object/prop';
 import pick from '@tinkoff/utils/object/pick';
+import find from '@tinkoff/utils/array/find';
 
 import styles from './ProductForm.css';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const PRODUCTS_VALUES = ['name', 'price', 'categoryId', 'hidden'];
 
@@ -55,12 +57,17 @@ class ProductForm extends Component {
         super(...args);
 
         const { product, categories } = this.props;
+        const category = find(category => category.id === product.categoryId, categories);
+        const newProduct = {
+            hidden: false,
+            ...pick(PRODUCTS_VALUES, product)
+        };
+
+        this.prevProductHidden = newProduct.hidden;
 
         this.state = {
-            product: {
-                hidden: false,
-                ...pick(PRODUCTS_VALUES, product)
-            },
+            product: newProduct,
+            hiddenCheckboxIsDisables: category && category.hidden,
             id: prop('id', product),
             loading: true,
             categoriesOptions: categories.map(category => ({
@@ -102,6 +109,10 @@ class ProductForm extends Component {
     };
 
     handleChange = prop => event => {
+        if (prop === 'categoryId') {
+            this.handleCategoryIdChange(event);
+        }
+
         this.setState({
             product: {
                 ...this.state.product,
@@ -111,6 +122,10 @@ class ProductForm extends Component {
     };
 
     handleCheckboxChange = prop => (event, value) => {
+        if (prop === 'hidden') {
+            this.prevProductHidden = value
+        }
+
         this.setState({
             product: {
                 ...this.state.product,
@@ -119,8 +134,23 @@ class ProductForm extends Component {
         });
     };
 
+    handleCategoryIdChange = (event) => {
+        const { categories } = this.props;
+        const categoryId = event.target.value;
+        const category = find(category => category.id === categoryId, categories);
+
+        this.setState({
+            hiddenCheckboxIsDisables: category.hidden
+        }, () => this.setState({
+            product: {
+                ...this.state.product,
+                hidden: category.hidden ? category.hidden : this.prevProductHidden
+            }
+        }));
+    };
+
     render () {
-        const { product, loading, categoriesOptions, id } = this.state;
+        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables } = this.state;
 
         if (loading) {
             return <div className={styles.loader}>
@@ -170,16 +200,22 @@ class ProductForm extends Component {
                 required
             />
             <div>
-                <FormControlLabel
-                    control ={
-                        <Checkbox
-                            checked={product.hidden}
-                            onChange={this.handleCheckboxChange('hidden')}
-                            color='primary'
-                        />
-                    }
-                    label='Скрыть товар'
-                />
+                <Tooltip
+                    title={hiddenCheckboxIsDisables ? 'Товар будет скрыт, т.к. выбранная категория скрыта' : ''}
+                    placement='right'
+                >
+                    <FormControlLabel
+                        control ={
+                            <Checkbox
+                                checked={product.hidden}
+                                onChange={this.handleCheckboxChange('hidden')}
+                                color='primary'
+                            />
+                        }
+                        label='Скрыть товар'
+                        disabled={hiddenCheckboxIsDisables}
+                    />
+                </Tooltip>
             </div>
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>

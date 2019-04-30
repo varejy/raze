@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import { connect } from 'react-redux';
 import saveCategory from '../../../services/saveCategory';
@@ -13,7 +16,7 @@ import noop from '@tinkoff/utils/function/noop';
 import prop from '@tinkoff/utils/object/prop';
 import pick from '@tinkoff/utils/object/pick';
 
-const CATEGORY_VALUES = ['name', 'path'];
+const CATEGORY_VALUES = ['name', 'path', 'hidden'];
 
 const mapDispatchToProps = (dispatch) => ({
     saveCategory: payload => dispatch(saveCategory(payload)),
@@ -39,7 +42,10 @@ class CategoryForm extends Component {
         const { category } = this.props;
 
         this.state = {
-            category: pick(CATEGORY_VALUES, category),
+            category: {
+                hidden: false,
+                ...pick(CATEGORY_VALUES, category)
+            },
             id: prop('id', category)
         };
     }
@@ -60,6 +66,15 @@ class CategoryForm extends Component {
             category: {
                 ...this.state.category,
                 [prop]: event.target.value
+            }
+        });
+    };
+
+    handleCheckboxChange = prop => (event, value) => {
+        this.setState({
+            category: {
+                ...this.state.category,
+                [prop]: value
             }
         });
     };
@@ -87,9 +102,23 @@ class CategoryForm extends Component {
                 fullWidth
                 required
             />
-            <Button variant='contained' color='primary' type='submit'>
-                Сохранить
-            </Button>
+            <div>
+                <FormControlLabel
+                    control ={
+                        <Checkbox
+                            checked={category.hidden}
+                            onChange={this.handleCheckboxChange('hidden')}
+                            color='primary'
+                        />
+                    }
+                    label='Скрыть категорию и товары в ней'
+                />
+            </div>
+            <FormControl margin='normal'>
+                <Button variant='contained' color='primary' type='submit'>
+                    Сохранить
+                </Button>
+            </FormControl>
         </form>;
     }
 }
