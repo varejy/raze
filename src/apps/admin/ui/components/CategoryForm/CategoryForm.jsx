@@ -65,10 +65,10 @@ class CategoryForm extends Component {
     };
 
     render () {
-        const { category } = this.state;
+        const { category, id } = this.state;
 
         return <form onSubmit={this.handleSubmit}>
-            <Typography variant='h5'>Добавление новой категории</Typography>
+            <Typography variant='h5'>{id ? 'Редактирование категории' : 'Добавление новой категории'}</Typography>
             <TextField
                 label='Название'
                 value={category.name}

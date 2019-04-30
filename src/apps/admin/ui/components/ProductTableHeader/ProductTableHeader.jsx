@@ -25,6 +25,7 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 import Modal from '@material-ui/core/Modal';
 import ProductForm from '../ProductForm/ProductForm.jsx';
+import ProductFilters from '../ProductFilters/ProductFilters.jsx';
 
 import noop from '@tinkoff/utils/function/noop';
 
@@ -101,7 +102,8 @@ class ProductTableHeader extends Component {
 
     state = {
         newProductFormShowed: false,
-        warningShowed: false
+        warningShowed: false,
+        filtersShowed: false
     };
 
     handleSelectedCloseClick = () => {
@@ -111,6 +113,12 @@ class ProductTableHeader extends Component {
     handleAddProduct = () => {
         this.setState({
             newProductFormShowed: true
+        });
+    };
+
+    handleFiltersClick = () => {
+        this.setState({
+            filtersShowed: true
         });
     };
 
@@ -143,9 +151,15 @@ class ProductTableHeader extends Component {
         });
     };
 
+    handleCloseFilters = () => {
+        this.setState({
+            filtersShowed: false
+        });
+    };
+
     render () {
         const { classes, selected } = this.props;
-        const { newProductFormShowed, warningShowed } = this.state;
+        const { newProductFormShowed, warningShowed, filtersShowed } = this.state;
 
         return <div>
             <Toolbar
@@ -178,7 +192,7 @@ class ProductTableHeader extends Component {
                     ) : (
                         <div className={classes.productActions}>
                             <Tooltip title='Фильтрация'>
-                                <IconButton aria-label='Filters'>
+                                <IconButton aria-label='Filters' onClick={this.handleFiltersClick}>
                                     <FilterListIcon />
                                 </IconButton>
                             </Tooltip>
@@ -194,6 +208,11 @@ class ProductTableHeader extends Component {
             <Modal open={newProductFormShowed} onClose={this.handleCloseNewProductForm}>
                 <Paper className={classes.modalContent}>
                     <ProductForm onDone={this.handleCloseNewProductForm} />
+                </Paper>
+            </Modal>
+            <Modal open={filtersShowed} onClose={this.handleCloseFilters} keepMounted>
+                <Paper className={classes.modalContent}>
+                    <ProductFilters />
                 </Paper>
             </Modal>
             <Dialog

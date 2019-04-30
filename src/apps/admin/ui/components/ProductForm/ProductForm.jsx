@@ -105,7 +105,7 @@ class ProductForm extends Component {
     };
 
     render () {
-        const { product, loading, categoriesOptions } = this.state;
+        const { product, loading, categoriesOptions, id } = this.state;
 
         if (loading) {
             return <div className={styles.loader}>
@@ -113,8 +113,8 @@ class ProductForm extends Component {
             </div>;
         }
 
-        return <form onSubmit={this.handleSubmit} autoComplete="off">
-            <Typography variant='h5'>Добавление новой категории</Typography>
+        return <form onSubmit={this.handleSubmit}>
+            <Typography variant='h5'>{id ? 'Редактирование товара' : 'Добавление нового товара'}</Typography>
             <TextField
                 label='Название'
                 value={product.name}

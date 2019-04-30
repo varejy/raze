@@ -98,7 +98,8 @@ class CategoryTableHeader extends Component {
 
     state = {
         newCategoryFormShowed: false,
-        warningShowed: false
+        warningShowed: false,
+        filtersShowed: false
     };
 
     handleSelectedCloseClick = () => {

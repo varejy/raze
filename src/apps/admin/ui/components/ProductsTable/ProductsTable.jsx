@@ -76,9 +76,9 @@ const materialStyles = theme => ({
 
 const ROWS_PER_PAGE = 10;
 
-const mapStateToProps = ({ application }) => {
+const mapStateToProps = ({ application, products }) => {
     return {
-        products: application.products,
+        products: products.filtered,
         categories: application.categories
     };
 };
