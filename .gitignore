@@ -6,3 +6,4 @@ npm-debug.log*
 public/
 server/compiled/
 webpackAssets.json
+src/apps/admin/files

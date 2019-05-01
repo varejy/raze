@@ -15,9 +15,7 @@ export default function saveProduct (ids) {
                 .send({ ids })
                 .query({ token })
         )
-            .then(payload => {
-                const products = payload.body;
-
+            .then(products => {
                 return dispatch(setProductsAction(products));
             });
     };

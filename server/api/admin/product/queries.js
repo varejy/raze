@@ -9,7 +9,7 @@ export function saveProduct (product) {
 }
 
 export function editProduct (product) {
-    return Product.updateOne({ id: product.id }, product);
+    return Product.findOneAndUpdate({ id: product.id }, product, { new: true });
 }
 
 export function deleteByIds (ids) {

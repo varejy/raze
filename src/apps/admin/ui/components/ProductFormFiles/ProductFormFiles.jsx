@@ -72,7 +72,7 @@ class ProductForm extends Component {
 
     handleFileUpload = (event) => {
         const newFiles = map(file => file, event.target.files);
-        const files = [...this.getClearFiles(this.state.files), newFiles];
+        const files = [...this.getClearFiles(this.state.files), ...newFiles];
 
         this.props.onFilesUpload(files);
 

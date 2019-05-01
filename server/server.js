@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 // mongodb
-mongoose.connect(DATABASE_URL, { useNewUrlParser: true });
+mongoose.connect(DATABASE_URL, { useNewUrlParser: true, useFindAndModify: false });
 
 // static
 app.get(/\.chunk\.(js|css)$/, expressStaticGzip(rootPath, {

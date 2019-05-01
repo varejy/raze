@@ -2,7 +2,7 @@ import express from 'express';
 
 import verification from '../../../middlewares/verification';
 
-import { getProducts, saveProduct, editProduct, deleteByIds } from './service';
+import { getProducts, saveProduct, editProduct, deleteByIds, updateFiles } from './service';
 
 const router = express.Router();
 
@@ -19,5 +19,8 @@ router.route('/edit')
 
 router.route('/delete-few')
     .post(deleteByIds);
+
+router.route('/update-files')
+    .post(updateFiles);
 
 export default router;

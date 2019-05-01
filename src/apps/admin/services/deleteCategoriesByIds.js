@@ -15,9 +15,7 @@ export default function saveCategory (ids) {
                 .send({ ids })
                 .query({ token })
         )
-            .then(payload => {
-                const categories = payload.body;
-
+            .then(categories => {
                 return dispatch(setCategoriesAction(categories));
             });
     };

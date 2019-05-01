@@ -6,7 +6,7 @@ export default function base (request) {
                     return reject(err);
                 }
 
-                resolve(res);
+                resolve(res.body);
             });
     });
 }

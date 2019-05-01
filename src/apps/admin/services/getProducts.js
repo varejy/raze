@@ -18,9 +18,7 @@ export default function getProducts () {
                 .get('/api/admin/product/all')
                 .query({ token })
         )
-            .then(payload => {
-                const products = payload.body;
-
+            .then(products => {
                 return dispatch(setProductsAction(products));
             });
     };

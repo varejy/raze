@@ -20,9 +20,11 @@ import { withStyles } from '@material-ui/core/styles';
 import ProductFormFiles from '../ProductFormFiles/ProductFormFiles.jsx';
 
 import { connect } from 'react-redux';
+import getProducts from '../../../services/getProducts';
 import getCategories from '../../../services/getCategories';
 import saveProduct from '../../../services/saveProduct';
 import editProduct from '../../../services/editProduct';
+import updateProductFiles from '../../../services/updateProductFiles';
 
 import noop from '@tinkoff/utils/function/noop';
 import prop from '@tinkoff/utils/object/prop';
@@ -77,15 +79,18 @@ const mapStateToProps = ({ application }) => {
 const mapDispatchToProps = (dispatch) => ({
     getCategories: payload => dispatch(getCategories(payload)),
     saveProduct: payload => dispatch(saveProduct(payload)),
-    editProduct: payload => dispatch(editProduct(payload))
+    editProduct: payload => dispatch(editProduct(payload)),
+    updateProductFiles: (...payload) => dispatch(updateProductFiles(...payload))
 });
 
 class ProductForm extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
+        getProducts: PropTypes.func.isRequired,
         getCategories: PropTypes.func.isRequired,
         saveProduct: PropTypes.func.isRequired,
         editProduct: PropTypes.func.isRequired,
+        updateProductFiles: PropTypes.func.isRequired,
         onDone: PropTypes.func,
         product: PropTypes.object,
         categories: PropTypes.array
@@ -149,6 +154,17 @@ class ProductForm extends Component {
         const { id, product } = this.state;
 
         (id ? this.props.editProduct({ ...product, id }) : this.props.saveProduct(product))
+            .then(product => {
+                const formData = new FormData();
+                this.state.files.forEach((file, i) => {
+                    formData.append(`product-${product.id}-file-${i}`, file);
+                });
+
+                return this.props.updateProductFiles(formData, product.id);
+            })
+            .then(() => {
+                return this.props.getProducts();
+            })
             .then(() => {
                 this.props.onDone();
             });

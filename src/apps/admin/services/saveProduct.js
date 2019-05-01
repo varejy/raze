@@ -1,12 +1,10 @@
 import request from 'superagent';
 import base from './base';
 
-import setProductsAction from '../actions/setProducts';
-
 import { TOKEN_LOCAL_STORAGE_NAME } from '../constants/constants';
 
 export default function saveProduct (product) {
-    return dispatch => {
+    return () => {
         const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_NAME);
 
         return base(
@@ -14,11 +12,6 @@ export default function saveProduct (product) {
                 .post('/api/admin/product/save')
                 .send(product)
                 .query({ token })
-        )
-            .then(payload => {
-                const products = payload.body;
-
-                return dispatch(setProductsAction(products));
-            });
+        );
     };
 }
