@@ -81,6 +81,10 @@ class ProductFilters extends Component {
             selectedCategories: {
                 ...props.categories.reduce((result, category) => ({ ...result, [category.id]: true }), {}),
                 none: true
+            },
+            selectedActivity: {
+                active: true,
+                hidden: true
             }
         };
     };
@@ -104,6 +108,29 @@ class ProductFilters extends Component {
 
         this.setState({
             selectedCategories: newSelectedCategories,
+            filters: newFilters
+        }, this.handleFiltersChanged);
+    };
+
+    handleActivityChange = prop => (event, value) => {
+        const { selectedActivity, filters } = this.state;
+        const newSelectedActivity = {
+            ...selectedActivity,
+            [prop]: value
+        };
+        const selectedActivities = compose(
+            keys,
+            pickBy(value => !!value)
+        )(newSelectedActivity);
+        const newFilters = {
+            ...filters,
+            activity: product => {
+                return product.hidden && includes('hidden', selectedActivities) || !product.hidden && includes('active', selectedActivities);
+            }
+        };
+
+        this.setState({
+            selectedActivity: newSelectedActivity,
             filters: newFilters
         }, this.handleFiltersChanged);
     };
@@ -160,10 +187,50 @@ class ProductFilters extends Component {
         </div>;
     };
 
+    renderActivity = () => {
+        const { classes } = this.props;
+        const { selectedActivity } = this.state;
+
+        return <div>
+            <Typography variant='h6'>Activity</Typography>
+            <List dense>
+                <ListItem>
+                    <FormControlLabel
+                        control ={
+                            <Checkbox
+                                checked={selectedActivity.active}
+                                onChange={this.handleActivityChange('active')}
+                                value='none'
+                                color='primary'
+                                className={classes.checkbox}
+                            />
+                        }
+                        label='Active'
+                    />
+                </ListItem>
+                <ListItem>
+                    <FormControlLabel
+                        control ={
+                            <Checkbox
+                                checked={selectedActivity.hidden}
+                                onChange={this.handleActivityChange('hidden')}
+                                value='none'
+                                color='primary'
+                                className={classes.checkbox}
+                            />
+                        }
+                        label='Hidden'
+                    />
+                </ListItem>
+            </List>
+        </div>;
+    };
+
     render () {
         return <div>
             <Typography variant='h5' gutterBottom>Фильтрация</Typography>
             {this.renderCategories()}
+            {this.renderActivity()}
         </div>;
     }
 }
