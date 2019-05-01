@@ -70,6 +70,11 @@ const materialStyles = theme => ({
         width: '100%',
         marginTop: theme.spacing.unit * 3
     },
+    modal: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     modalContent: {
         position: 'absolute',
         width: '1200px',
@@ -77,9 +82,6 @@ const materialStyles = theme => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing.unit * 4,
         outline: 'none',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
         overflowY: 'auto',
         maxHeight: '100vh'
     },
@@ -210,12 +212,12 @@ class ProductTableHeader extends Component {
                     )}
                 </div>
             </Toolbar>
-            <Modal open={newProductFormShowed} onClose={this.handleCloseNewProductForm}>
+            <Modal open={newProductFormShowed} onClose={this.handleCloseNewProductForm} className={classes.modal}>
                 <Paper className={classes.modalContent}>
                     <ProductForm onDone={this.handleCloseNewProductForm} />
                 </Paper>
             </Modal>
-            <Modal open={filtersShowed} onClose={this.handleCloseFilters} keepMounted>
+            <Modal open={filtersShowed} onClose={this.handleCloseFilters} className={classes.modal} keepMounted>
                 <Paper className={classes.modalContent}>
                     <ProductFilters />
                 </Paper>

@@ -72,6 +72,11 @@ const materialStyles = theme => ({
     productActions: {
         visibility: 'hidden'
     },
+    modal: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     modalContent: {
         position: 'absolute',
         width: '1200px',
@@ -79,9 +84,6 @@ const materialStyles = theme => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing.unit * 4,
         outline: 'none',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
         overflowY: 'auto',
         maxHeight: '100vh'
     },
@@ -389,7 +391,7 @@ class ProductsTable extends React.Component {
                     onChangePage={this.handleChangePage}
                     onChangeRowsPerPage={this.handleChangeRowsPerPage}
                 />
-                <Modal open={!!editableProduct} onClose={this.handleCloseEditProductForm}>
+                <Modal open={!!editableProduct} onClose={this.handleCloseEditProductForm} className={classes.modal}>
                     <Paper className={classes.modalContent}>
                         <ProductForm product={editableProduct} onDone={this.handleCloseEditProductForm}/>
                     </Paper>

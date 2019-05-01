@@ -14,7 +14,10 @@ import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core/styles';
+
+import ProductFormFiles from '../ProductFormFiles/ProductFormFiles.jsx';
 
 import { connect } from 'react-redux';
 import getCategories from '../../../services/getCategories';
@@ -31,7 +34,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 const PRODUCTS_VALUES = ['name', 'price', 'categoryId', 'hidden', 'description', 'features'];
 
-const materialStyles = {
+const materialStyles = theme => ({
     loader: {
         width: '100%',
         height: '100%',
@@ -58,8 +61,12 @@ const materialStyles = {
     },
     featureField: {
         width: 'calc(50% - 10px)'
+    },
+    divider: {
+        marginTop: 2 * theme.spacing.unit,
+        marginBottom: 2 * theme.spacing.unit
     }
-};
+});
 
 const mapStateToProps = ({ application }) => {
     return {
@@ -111,7 +118,8 @@ class ProductForm extends Component {
             categoriesOptions: categories.map(category => ({
                 label: category.name,
                 value: category.id
-            }))
+            })),
+            files: []
         };
     }
 
@@ -226,9 +234,15 @@ class ProductForm extends Component {
         }));
     };
 
+    handleFilesUpload = files => {
+        this.setState({
+            files
+        });
+    };
+
     render () {
         const { classes } = this.props;
-        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables } = this.state;
+        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, files } = this.state;
 
         if (loading) {
             return <div className={classes.loader}>
@@ -322,6 +336,9 @@ class ProductForm extends Component {
                     </FormGroup>)
                 }
             </div>
+            <Divider className={classes.divider}/>
+            <ProductFormFiles onFilesUpload={this.handleFilesUpload} initialFiles={files}/>
+            <Divider className={classes.divider}/>
             <div>
                 <Tooltip
                     title={hiddenCheckboxIsDisables ? 'Товар будет скрыт, т.к. выбранная категория скрыта' : ''}
