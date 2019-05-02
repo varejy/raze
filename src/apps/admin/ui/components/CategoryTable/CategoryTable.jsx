@@ -57,7 +57,7 @@ const materialStyles = theme => ({
         overflowX: 'auto'
     },
     loader: {
-        height: '100vh',
+        height: 'calc(100vh - 64px)',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
