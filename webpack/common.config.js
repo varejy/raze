@@ -27,7 +27,7 @@ let
             minimize: false,
             splitChunks: {
                 chunks: 'all',
-                name: 'vendor'
+                automaticNameDelimiter: '-'
             },
             runtimeChunk: false
         },

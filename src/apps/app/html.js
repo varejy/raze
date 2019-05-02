@@ -18,7 +18,8 @@ export default function (html, helmet, preloadedState = {}) {
                 // http://redux.js.org/recipes/ServerRendering.html#security-considerations
                 window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\\\\\\\\u003c')}
             </script>
-            <script src='/public/vendor.chunk.js' defer='defer'></script>
+            <script src='/public/vendors-admin-app.chunk.js' defer='defer'></script>
+            <script src='/public/vendors-app.chunk.js' defer='defer'></script>
             <script src='/public/app.chunk.js' defer='defer'></script>
         </body>
     </html>`;

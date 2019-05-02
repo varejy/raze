@@ -14,7 +14,8 @@ export default function () {
         </head>
         <body>
             <div id='app'></div>
-            <script src='/public/vendor.chunk.js' defer='defer'></script>
+            <script src='/public/vendors-admin-app.chunk.js' defer='defer'></script>
+            <script src='/public/vendors-admin.chunk.js' defer='defer'></script>
             <script src='/public/admin.chunk.js' defer='defer'></script>
         </body>
     </html>`;
