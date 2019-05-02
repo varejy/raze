@@ -88,8 +88,6 @@ class ProductForm extends Component {
         };
     }
 
-    getClearFiles = files => map(file => file.path || file.content, files);
-
     handleFileUpload = (event) => {
         const newFiles = map(file => ({
             content: file,
