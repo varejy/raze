@@ -10,6 +10,9 @@ import {
 } from './queries';
 import multipart from '../../../helpers/multipart';
 
+import last from '@tinkoff/utils/array/last';
+import noop from '@tinkoff/utils/function/noop';
+
 const uploader = multipart();
 
 export function getProducts (req, res) {
@@ -63,16 +66,25 @@ export function deleteByIds (req, res) {
 }
 
 export function updateFiles (req, res) {
-    const { id } = req.query;
-
     uploader(req, res, (err) => {
         if (err) {
             return res.status(SERVER_ERROR_STATUS_CODE).end();
         }
 
+        const filesPaths = [];
         const files = req.files;
-        const filesPaths = files.map((file) => {
-            return `/${file.path.replace(/\\/g, '/')}`;
+        const { id } = req.query;
+        const oldFiles = JSON.parse(req.body.oldFiles);
+        const removedFiles = JSON.parse(req.body.removedFiles);
+
+        files.forEach(file => {
+            filesPaths[last(file.fieldname)] = `/${file.path.replace(/\\/g, '/')}`;
+        });
+        oldFiles.forEach((file) => {
+            filesPaths[file.index] = file.path;
+        });
+        removedFiles.forEach(function (file) {
+            fs.unlink(file.path.slice(1), noop);
         });
 
         editProductQuery({ files: filesPaths, id })
@@ -81,7 +93,7 @@ export function updateFiles (req, res) {
             })
             .catch(() => {
                 filesPaths.forEach(function (filename) {
-                    fs.unlink(filename.slice(1));
+                    fs.unlink(filename.slice(1), noop);
                 });
 
                 return res.status(SERVER_ERROR_STATUS_CODE).end();

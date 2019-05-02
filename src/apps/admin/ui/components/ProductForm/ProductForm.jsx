@@ -80,6 +80,7 @@ const mapDispatchToProps = (dispatch) => ({
     getCategories: payload => dispatch(getCategories(payload)),
     saveProduct: payload => dispatch(saveProduct(payload)),
     editProduct: payload => dispatch(editProduct(payload)),
+    getProducts: payload => dispatch(getProducts(payload)),
     updateProductFiles: (...payload) => dispatch(updateProductFiles(...payload))
 });
 
@@ -124,7 +125,8 @@ class ProductForm extends Component {
                 label: category.name,
                 value: category.id
             })),
-            files: []
+            files: product.files,
+            removedFiles: []
         };
     }
 
@@ -155,10 +157,22 @@ class ProductForm extends Component {
 
         (id ? this.props.editProduct({ ...product, id }) : this.props.saveProduct(product))
             .then(product => {
+                const { files, removedFiles } = this.state;
                 const formData = new FormData();
-                this.state.files.forEach((file, i) => {
-                    formData.append(`product-${product.id}-file-${i}`, file);
+                const oldFiles = [];
+
+                files.forEach((file, i) => {
+                    if (file.content) {
+                        formData.append(`product-${product.id}-file-${i}`, file.content);
+                    } else {
+                        oldFiles.push({
+                            path: file.path,
+                            index: i
+                        });
+                    }
                 });
+                formData.append('removedFiles', JSON.stringify(removedFiles));
+                formData.append('oldFiles', JSON.stringify(oldFiles));
 
                 return this.props.updateProductFiles(formData, product.id);
             })
@@ -250,9 +264,10 @@ class ProductForm extends Component {
         }));
     };
 
-    handleFilesUpload = files => {
+    handleFilesUpload = (files, removedFiles) => {
         this.setState({
-            files
+            files,
+            removedFiles
         });
     };
 
@@ -361,7 +376,7 @@ class ProductForm extends Component {
                     placement='right'
                 >
                     <FormControlLabel
-                        control ={
+                        control={
                             <Checkbox
                                 checked={product.hidden}
                                 onChange={this.handleCheckboxChange('hidden')}

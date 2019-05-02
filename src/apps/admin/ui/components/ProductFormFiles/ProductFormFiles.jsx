@@ -6,12 +6,15 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { withStyles } from '@material-ui/core/styles';
 
 import uniqid from 'uniqid';
 
 import noop from '@tinkoff/utils/function/noop';
 import map from '@tinkoff/utils/array/map';
+import remove from '@tinkoff/utils/array/remove';
 
 const materialStyles = theme => ({
     uploadInput: {
@@ -29,13 +32,25 @@ const materialStyles = theme => ({
         overflow: 'auto'
     },
     fileItem: {
+        position: 'relative',
         userSelect: 'none',
         padding: '16px',
         margin: '0 8px 0 0',
-        width: '200px'
+        width: '200px',
+        '&:hover $fileItemDeleteContainer': {
+            visibility: 'visible'
+        }
     },
     fileImage: {
         width: '100%'
+    },
+    fileItemDeleteContainer: {
+        position: 'absolute',
+        right: '0',
+        top: '0',
+        visibility: 'hidden',
+        background: 'white',
+        borderRadius: '100%'
     }
 });
 
@@ -63,28 +78,28 @@ class ProductForm extends Component {
     constructor (...args) {
         super(...args);
 
+        this.removedFiles = [];
+
         this.state = {
-            files: this.props.initialFiles
+            files: map(file => ({
+                path: file,
+                id: uniqid()
+            }), this.props.initialFiles)
         };
     }
 
-    getClearFiles = files => map(file => file.image, files);
+    getClearFiles = files => map(file => file.path || file.content, files);
 
     handleFileUpload = (event) => {
-        const newFiles = map(file => file, event.target.files);
-        const files = [...this.getClearFiles(this.state.files), ...newFiles];
-
-        this.props.onFilesUpload(files);
+        const newFiles = map(file => ({
+            content: file,
+            id: uniqid()
+        }), event.target.files);
+        const files = [...this.state.files, ...newFiles];
 
         this.setState({
-            files: [
-                ...this.state.files,
-                ...map((file, i) => ({
-                    image: newFiles[i],
-                    id: uniqid()
-                }), newFiles)
-            ]
-        });
+            files
+        }, this.handleFilesChange);
     };
 
     onDragEnd = (result) => {
@@ -98,11 +113,27 @@ class ProductForm extends Component {
             result.destination.index
         );
 
-        this.props.onFilesUpload(this.getClearFiles(files));
-
         this.setState({
             files
-        });
+        }, this.handleFilesChange);
+    };
+
+    handleFileDelete = i => () => {
+        const { files } = this.state;
+
+        if (files[i].path) {
+            this.removedFiles.push(files[i]);
+        }
+
+        this.setState({
+            files: remove(i, 1, files)
+        }, this.handleFilesChange);
+    };
+
+    handleFilesChange = () => {
+        const { files } = this.state;
+
+        this.props.onFilesUpload(files, this.removedFiles);
     };
 
     renderFilesPreview = () => {
@@ -118,7 +149,7 @@ class ProductForm extends Component {
                         {...provided.droppableProps}
                     >
                         {files.map((file, index) => {
-                            const imagePreviewUrl = URL.createObjectURL(file.image);
+                            const imagePreviewUrl = file.path || URL.createObjectURL(file.content);
 
                             return <Draggable key={file.id} draggableId={file.id} index={index}>
                                 {provided => (
@@ -129,6 +160,14 @@ class ProductForm extends Component {
                                         {...provided.dragHandleProps}
                                         style={provided.draggableProps.style}
                                     >
+                                        <div className={classes.fileItemDeleteContainer}>
+                                            <IconButton
+                                                aria-label='Delete'
+                                                onClick={this.handleFileDelete(index)}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </div>
                                         <img className={classes.fileImage} src={imagePreviewUrl} />
                                     </div>
                                 )}
