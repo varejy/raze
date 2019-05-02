@@ -59,20 +59,12 @@ class ProductFilters extends Component {
             filters: {}
         };
 
-        this.props.setFilteredProducts(this.props.products);
+        this.setFilteredProducts();
     }
 
     componentWillReceiveProps (nextProps) {
-        if (nextProps.categories !== this.props.categories) {
-            const state = this.getNewState(nextProps);
-
-            this.setState(state);
-        }
-
         if (nextProps.products !== this.props.products) {
-            const filteredProducts = nextProps.products;
-
-            this.props.setFilteredProducts(filteredProducts);
+            this.setFilteredProducts(nextProps);
         }
     }
 
@@ -87,6 +79,17 @@ class ProductFilters extends Component {
                 hidden: true
             }
         };
+    };
+
+    setFilteredProducts = (props = this.props) => {
+        const { products } = props;
+        const { filters } = this.state;
+
+        const filteredProducts = reduce((filteredProducts, filter) => {
+            return filteredProducts.filter(filter);
+        }, products, filters);
+
+        this.props.setFilteredProducts(filteredProducts);
     };
 
     handleCategoriesChange = id => (event, value) => {
@@ -136,14 +139,7 @@ class ProductFilters extends Component {
     };
 
     handleFiltersChanged = () => {
-        const { products } = this.props;
-        const { filters } = this.state;
-
-        const filteredProducts = reduce((filteredProducts, filter) => {
-            return filteredProducts.filter(filter);
-        }, products, filters);
-
-        this.props.setFilteredProducts(filteredProducts);
+        this.setFilteredProducts();
     };
 
     renderCategories = () => {

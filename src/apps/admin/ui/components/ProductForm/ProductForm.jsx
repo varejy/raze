@@ -125,7 +125,7 @@ class ProductForm extends Component {
                 label: category.name,
                 value: category.id
             })),
-            files: product.files,
+            files: product.files || [],
             removedFiles: []
         };
     }
