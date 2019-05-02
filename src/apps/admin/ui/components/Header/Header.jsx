@@ -106,8 +106,12 @@ class Header extends Component {
                             <Paper>
                                 <ClickAwayListener onClickAway={this.handleClose}>
                                     <MenuList>
-                                        {routes.map((route, i) =>
-                                            <MenuItem key={i} component={Link} onClick={this.handleClose} to={route.path}>{route.title}</MenuItem>)}
+                                        {routes.map((route, i) => {
+                                            if (route.notMenu) {
+                                                return null;
+                                            }
+                                            return <MenuItem key={i} component={Link} onClick={this.handleClose} to={route.path}>{route.title}</MenuItem>
+                                        })}
                                     </MenuList>
                                 </ClickAwayListener>
                             </Paper>
@@ -117,6 +121,7 @@ class Header extends Component {
                 <Typography variant='h6' color='inherit' className={classes.title}>
                     {this.getHeaderTitle()}
                 </Typography>
+                <Button color='inherit' component={Link} to='/admin/credentials'>Сменить учетные данные</Button>
                 <Button color='inherit' onClick={this.handleLogout}>Выйти</Button>
             </Toolbar>
         </AppBar>;

@@ -3,8 +3,10 @@ import md5 from 'md5';
 import fs from 'fs';
 import path from 'path';
 
+import uniqid from 'uniqid';
+
 import { OKEY_STATUS_CODE, FORBIDDEN_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../constants/constants';
-import { getAdminByLogin, addAdmin } from './queries';
+import { getAdminByLogin, changeCredentials as changeCredentialsQuery, addAdmin } from './queries';
 
 const privateKey = fs.readFileSync(path.resolve(__dirname, 'privateKeys/adminPrivateKey.ppk'), 'utf8');
 const publicKey = fs.readFileSync(path.resolve(__dirname, 'privateKeys/adminPublicKey.ppk'), 'utf8');
@@ -54,10 +56,37 @@ export function checkAuthentication (req, res) {
     });
 }
 
+export function changeCredentials (req, res) {
+    const { oldCredentials, newCredentials } = req.body;
+
+    getAdminByLogin(oldCredentials.login)
+        .then((admin) => {
+            if (admin.password !== md5(oldCredentials.password)) {
+                return res.status(FORBIDDEN_STATUS_CODE).end();
+            }
+
+            changeCredentialsQuery({
+                login: newCredentials.login,
+                password: md5(newCredentials.password),
+                id: admin.id
+            })
+                .then(() => {
+                    res.status(OKEY_STATUS_CODE).end();
+                })
+                .catch(() => {
+                    res.status(SERVER_ERROR_STATUS_CODE).end();
+                });
+        })
+        .catch(() => {
+            res.status(FORBIDDEN_STATUS_CODE).end();
+        });
+}
+
 export function createTestAdmin (req, res) {
     const testAdmin = {
         login: 'admin',
-        password: md5('admin')
+        password: md5('admin'),
+        id: uniqid()
     };
 
     addAdmin(testAdmin)

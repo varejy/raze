@@ -70,8 +70,12 @@ class Authentication extends Component {
         event.preventDefault();
 
         const { login, password } = this.state;
+        const credentials = {
+            login: login.trim(),
+            password: password.trim()
+        };
 
-        if (!login || !password) {
+        if (!credentials.login || !credentials.password) {
             return this.setState({
                 errors: {
                     login: !login,
@@ -79,11 +83,6 @@ class Authentication extends Component {
                 }
             });
         }
-
-        const credentials = {
-            login,
-            password
-        };
 
         this.props.authenticate(credentials)
             .catch(() => {
@@ -146,7 +145,7 @@ class Authentication extends Component {
                 <SnackbarContent
                     className={classNames(classes.error, classes.margin)}
                     message={
-                        <span id="client-snackbar" className={classes.message}>
+                        <span id='client-snackbar' className={classes.message}>
                             <ErrorIcon className={classNames(classes.icon, classes.iconVariant)} />
                             Вы ввели неправильный логин или пароль
                         </span>
