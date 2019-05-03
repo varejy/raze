@@ -9,10 +9,6 @@ export default function getProducts () {
     return dispatch => {
         const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_NAME);
 
-        if (!token) {
-            return Promise.resolve();
-        }
-
         return base(
             request
                 .get('/api/admin/product/all')

@@ -110,7 +110,7 @@ class Header extends Component {
                                             if (route.notMenu) {
                                                 return null;
                                             }
-                                            return <MenuItem key={i} component={Link} onClick={this.handleClose} to={route.path}>{route.title}</MenuItem>
+                                            return <MenuItem key={i} component={Link} onClick={this.handleClose} to={route.path}>{route.title}</MenuItem>;
                                         })}
                                     </MenuList>
                                 </ClickAwayListener>

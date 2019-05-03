@@ -9,10 +9,6 @@ export default function getCategories () {
     return dispatch => {
         const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_NAME);
 
-        if (!token) {
-            return Promise.resolve();
-        }
-
         return base(
             request
                 .get('/api/admin/category/all')

@@ -1,5 +1,7 @@
 import express from 'express';
 
+import verification from '../../../middlewares/verification';
+
 import { authenticate, checkAuthentication, changeCredentials, createTestAdmin } from './service';
 
 const router = express.Router();
@@ -10,10 +12,12 @@ router.route('/authenticate')
 router.route('/check')
     .get(checkAuthentication);
 
-router.route('/change')
-    .post(changeCredentials);
-
 router.route('/create-test-admin')
     .get(createTestAdmin);
+
+router.use(verification);
+
+router.route('/change')
+    .post(changeCredentials);
 
 export default router;
