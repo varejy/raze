@@ -125,7 +125,7 @@ class ProductForm extends Component {
                 label: category.name,
                 value: category.id
             })),
-            files: product.files || [],
+            initialFiles: product.files,
             removedFiles: []
         };
     }
@@ -273,7 +273,7 @@ class ProductForm extends Component {
 
     render () {
         const { classes } = this.props;
-        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, files } = this.state;
+        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles } = this.state;
 
         if (loading) {
             return <div className={classes.loader}>
@@ -368,7 +368,7 @@ class ProductForm extends Component {
                 }
             </div>
             <Divider className={classes.divider}/>
-            <ProductFormFiles onFilesUpload={this.handleFilesUpload} initialFiles={files}/>
+            <ProductFormFiles onFilesUpload={this.handleFilesUpload} initialFiles={initialFiles}/>
             <Divider className={classes.divider}/>
             <div>
                 <Tooltip

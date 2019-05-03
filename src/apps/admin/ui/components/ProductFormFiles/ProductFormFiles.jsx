@@ -82,10 +82,12 @@ class ProductForm extends Component {
 
         this.state = {
             files: map(file => ({
-                path: file,
+                path: file || '/wrong-path',
                 id: uniqid()
             }), this.props.initialFiles)
         };
+
+        this.handleFilesChange();
     }
 
     handleFileUpload = (event) => {
