@@ -7,6 +7,7 @@ import checkAuthentication from './services/checkAuthentication';
 
 import { Switch, Route, withRouter } from 'react-router-dom';
 
+import MainPage from './ui/pages/MainPage/MainPage.jsx';
 import ProductsPage from './ui/pages/ProductsPage/ProductsPage.jsx';
 import CategoryPage from './ui/pages/CategoryPage/CategoryPage.jsx';
 import CredentialsPage from './ui/pages/CredentialsPage/CredentialsPage.jsx';
@@ -57,7 +58,8 @@ class App extends Component {
         return <main>
             <Header />
             <Switch>
-                <Route exact path='/admin' component={ProductsPage} />
+                <Route exact path='/admin' component={MainPage} />
+                <Route exact path='/admin/products' component={ProductsPage} />
                 <Route exact path='/admin/categories' component={CategoryPage} />
                 <Route exact path='/admin/credentials' component={CredentialsPage} />
             </Switch>
