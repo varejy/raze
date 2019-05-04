@@ -1,7 +1,7 @@
 import uniqid from 'uniqid';
 
 import fs from 'fs';
-import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../constants/constants';
+import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE, FILE_FIELD_NAME_REGEX } from '../../../constants/constants';
 import {
     getAllProducts,
     saveProduct as saveProductQuery,
@@ -10,7 +10,6 @@ import {
 } from './queries';
 import multipart from '../../../helpers/multipart';
 
-import last from '@tinkoff/utils/array/last';
 import noop from '@tinkoff/utils/function/noop';
 
 const uploader = multipart();
@@ -78,7 +77,7 @@ export function updateFiles (req, res) {
         const removedFiles = JSON.parse(req.body.removedFiles);
 
         files.forEach(file => {
-            filesPaths[last(file.fieldname)] = `/${file.path.replace(/\\/g, '/')}`;
+            filesPaths[file.fieldname.replace(FILE_FIELD_NAME_REGEX, '')] = `/${file.path.replace(/\\/g, '/')}`;
         });
         oldFiles.forEach((file) => {
             filesPaths[file.index] = file.path;

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import classNames from 'classnames';
+
+import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -15,6 +17,7 @@ import uniqid from 'uniqid';
 import noop from '@tinkoff/utils/function/noop';
 import map from '@tinkoff/utils/array/map';
 import remove from '@tinkoff/utils/array/remove';
+import arrayMove from '../../../utils/arrayMove';
 
 const materialStyles = theme => ({
     uploadInput: {
@@ -27,8 +30,6 @@ const materialStyles = theme => ({
         marginLeft: theme.spacing.unit
     },
     filesList: {
-        display: 'flex',
-        padding: '8px',
         overflow: 'auto'
     },
     fileItem: {
@@ -37,8 +38,16 @@ const materialStyles = theme => ({
         padding: '16px',
         margin: '0 8px 0 0',
         width: '200px',
+        float: 'left',
+        zIndex: '9999',
+        cursor: 'grab',
         '&:hover $fileItemDeleteContainer': {
             visibility: 'visible'
+        }
+    },
+    fileItemSorting: {
+        '&:hover $fileItemDeleteContainer': {
+            visibility: 'hidden'
         }
     },
     fileImage: {
@@ -54,14 +63,34 @@ const materialStyles = theme => ({
     }
 });
 
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
+const FilePreview = SortableElement(({ file, index, classes, onFileDelete, isSorting }) =>
+    <div className={classNames(classes.fileItem, {
+        [classes.fileItemSorting]: isSorting
+    })}>
+        <div className={classes.fileItemDeleteContainer}>
+            <IconButton
+                aria-label='Delete'
+                onClick={onFileDelete(index)}
+            >
+                <DeleteIcon />
+            </IconButton>
+        </div>
+        <img className={classes.fileImage} src={file.path} />
+    </div>);
 
-    result.splice(endIndex, 0, removed);
-
-    return result;
-};
+const FilesPreviews = SortableContainer(({ files, classes, ...rest }) => {
+    return (
+        <div className={classes.filesList}>
+            {files.map((file, i) => <FilePreview
+                key={i}
+                index={i}
+                file={file}
+                classes={classes}
+                {...rest}
+            />)}
+        </div>
+    );
+});
 
 class ProductForm extends Component {
     static propTypes = {
@@ -84,7 +113,8 @@ class ProductForm extends Component {
             files: map(file => ({
                 path: file || '/wrong-path',
                 id: uniqid()
-            }), this.props.initialFiles)
+            }), this.props.initialFiles),
+            isSorting: false
         };
 
         this.handleFilesChange();
@@ -93,6 +123,7 @@ class ProductForm extends Component {
     handleFileUpload = (event) => {
         const newFiles = map(file => ({
             content: file,
+            path: URL.createObjectURL(file),
             id: uniqid()
         }), event.target.files);
         const files = [...this.state.files, ...newFiles];
@@ -100,21 +131,19 @@ class ProductForm extends Component {
         this.setState({
             files
         }, this.handleFilesChange);
+
+        event.target.value = '';
     };
 
-    onDragEnd = (result) => {
-        if (!result.destination) {
-            return;
-        }
-
-        const files = reorder(
-            this.state.files,
-            result.source.index,
-            result.destination.index
-        );
-
+    onDragStart = () => {
         this.setState({
-            files
+            isSorting: true
+        });
+    };
+
+    onDragEnd = ({ oldIndex, newIndex }) => {
+        this.setState({
+            files: arrayMove(this.state.files, oldIndex, newIndex)
         }, this.handleFilesChange);
     };
 
@@ -136,51 +165,9 @@ class ProductForm extends Component {
         this.props.onFilesUpload(files, this.removedFiles);
     };
 
-    renderFilesPreview = () => {
-        const { classes } = this.props;
-        const { files } = this.state;
-
-        return <DragDropContext onDragEnd={this.onDragEnd}>
-            <Droppable droppableId='droppable' direction='horizontal'>
-                {provided => (
-                    <div
-                        className={classes.filesList}
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                    >
-                        {files.map((file, index) => {
-                            const imagePreviewUrl = file.path || URL.createObjectURL(file.content);
-
-                            return <Draggable key={file.id} draggableId={file.id} index={index}>
-                                {provided => (
-                                    <div
-                                        ref={provided.innerRef}
-                                        className={classes.fileItem}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        style={provided.draggableProps.style}
-                                    >
-                                        <div className={classes.fileItemDeleteContainer}>
-                                            <IconButton
-                                                aria-label='Delete'
-                                                onClick={this.handleFileDelete(index)}
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </div>
-                                        <img className={classes.fileImage} src={imagePreviewUrl} />
-                                    </div>
-                                )}
-                            </Draggable>;
-                        })}
-                    </div>
-                )}
-            </Droppable>
-        </DragDropContext>;
-    };
-
     render () {
         const { classes } = this.props;
+        const { files, isSorting } = this.state;
 
         return <div>
             <Typography variant='h6'>Фотографии</Typography>
@@ -198,7 +185,15 @@ class ProductForm extends Component {
                     <CloudUploadIcon className={classes.uploadIcon} />
                 </Button>
             </label>
-            {this.renderFilesPreview()}
+            <FilesPreviews
+                axis='xy'
+                classes={classes}
+                files={files}
+                onFileDelete={this.handleFileDelete}
+                onSortStart={this.onDragStart}
+                onSortEnd={this.onDragEnd}
+                isSorting={isSorting}
+            />
         </div>;
     }
 }
