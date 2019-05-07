@@ -22,6 +22,7 @@ function retry (cb) {
             cb();
             client.end();
             timeoutId && process.stdout.write(' Done');
+            timeoutId = null;
         }
     );
 

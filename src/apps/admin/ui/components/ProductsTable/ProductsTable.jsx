@@ -272,10 +272,15 @@ class ProductsTable extends React.Component {
             });
     };
 
-    handleEditClick = product => event => {
+    handleEditClick = product => () => {
         this.setState({
             editableProduct: product
         });
+    };
+
+    handleFormDone = () => {
+        this.props.getProducts()
+            .then(this.handleCloseEditProductForm);
     };
 
     handleCloseEditProductForm = () => {
@@ -393,7 +398,7 @@ class ProductsTable extends React.Component {
                 />
                 <Modal open={!!editableProduct} onClose={this.handleCloseEditProductForm} className={classes.modal}>
                     <Paper className={classes.modalContent}>
-                        <ProductForm product={editableProduct} onDone={this.handleCloseEditProductForm}/>
+                        <ProductForm product={editableProduct} onDone={this.handleFormDone}/>
                     </Paper>
                 </Modal>
                 <Dialog

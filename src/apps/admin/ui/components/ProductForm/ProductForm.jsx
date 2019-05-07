@@ -20,7 +20,6 @@ import { withStyles } from '@material-ui/core/styles';
 import ProductFormFiles from '../ProductFormFiles/ProductFormFiles.jsx';
 
 import { connect } from 'react-redux';
-import getProducts from '../../../services/getProducts';
 import getCategories from '../../../services/getCategories';
 import saveProduct from '../../../services/saveProduct';
 import editProduct from '../../../services/editProduct';
@@ -80,14 +79,12 @@ const mapDispatchToProps = (dispatch) => ({
     getCategories: payload => dispatch(getCategories(payload)),
     saveProduct: payload => dispatch(saveProduct(payload)),
     editProduct: payload => dispatch(editProduct(payload)),
-    getProducts: payload => dispatch(getProducts(payload)),
     updateProductFiles: (...payload) => dispatch(updateProductFiles(...payload))
 });
 
 class ProductForm extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
-        getProducts: PropTypes.func.isRequired,
         getCategories: PropTypes.func.isRequired,
         saveProduct: PropTypes.func.isRequired,
         editProduct: PropTypes.func.isRequired,
@@ -175,9 +172,6 @@ class ProductForm extends Component {
                 formData.append('oldFiles', JSON.stringify(oldFiles));
 
                 return this.props.updateProductFiles(formData, product.id);
-            })
-            .then(() => {
-                return this.props.getProducts();
             })
             .then(() => {
                 this.props.onDone();

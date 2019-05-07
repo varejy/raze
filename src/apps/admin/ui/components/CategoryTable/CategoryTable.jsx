@@ -214,10 +214,15 @@ class CategoryTable extends React.Component {
         this.setState({ rowsPerPage, checkboxIndeterminate });
     };
 
-    handleEditClick = category => event => {
+    handleEditClick = category => () => {
         this.setState({
             editableCategory: category
         });
+    };
+
+    handleFormDone = () => {
+        this.props.getCategories()
+            .then(this.handleCloseEditCategoryForm);
     };
 
     handleCloseEditCategoryForm = () => {
@@ -370,7 +375,7 @@ class CategoryTable extends React.Component {
                 />
                 <Modal open={!!editableCategory} onClose={this.handleCloseEditCategoryForm}>
                     <Paper className={classes.modalContent}>
-                        <CategoryForm category={editableCategory} onDone={this.handleCloseEditCategoryForm}/>
+                        <CategoryForm category={editableCategory} onDone={this.handleFormDone}/>
                     </Paper>
                 </Modal>
                 <Dialog

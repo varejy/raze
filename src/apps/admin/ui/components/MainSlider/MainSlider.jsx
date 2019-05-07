@@ -7,6 +7,7 @@ import { SortableContainer, SortableElement, SortableHandle } from 'react-sortab
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
@@ -19,6 +20,7 @@ import updateSlides from '../../../services/updateSlides';
 
 import map from '@tinkoff/utils/array/map';
 import remove from '@tinkoff/utils/array/remove';
+import equal from '@tinkoff/utils/is/equal';
 import find from '@tinkoff/utils/array/find';
 import arrayMove from '../../../utils/arrayMove';
 
@@ -93,6 +95,12 @@ const materialStyles = theme => ({
     },
     warningText: {
         fontSize: '16px'
+    },
+    loader: {
+        height: 'calc(100vh - 64px)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 
@@ -175,19 +183,31 @@ class MainSlider extends Component {
                 showed: slide.showed
             })),
             removedSlides: [],
-            isSorting: false
+            isSorting: false,
+            loading: true,
+            disabled: true
         };
+
+        this.slidesPaths = this.state.slides.map(slide => slide.path);
     }
 
     componentDidMount () {
-        this.props.getMainSlider();
+        this.props.getMainSlider()
+            .then(() => {
+                this.setState({
+                    loading: false
+                });
+            });
     }
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.slider.slides !== this.props.slider.slides) {
             this.setState({
-                slides: nextProps.slider.slides
+                slides: nextProps.slider.slides,
+                disabled: true
             });
+
+            this.slidesPaths = nextProps.slider.slides.map(slide => slide.path);
         }
     }
 
@@ -201,6 +221,14 @@ class MainSlider extends Component {
         this.setState({
             slides: arrayMove(this.state.slides, oldIndex, newIndex),
             isSorting: false
+        }, this.handleSlidesChanged);
+    };
+
+    handleSlidesChanged = () => {
+        const newSlidesPaths = this.state.slides.map(slide => slide.path);
+
+        this.setState({
+            disabled: equal(this.slidesPaths, newSlidesPaths)
         });
     };
 
@@ -215,7 +243,7 @@ class MainSlider extends Component {
 
         this.setState({
             slides
-        });
+        }, this.handleSlidesChanged);
 
         event.target.value = '';
     };
@@ -242,7 +270,7 @@ class MainSlider extends Component {
         this.setState({
             slides: remove(i, 1, slides),
             removedSlides
-        });
+        }, this.handleSlidesChanged);
     };
 
     handleSubmit = event => {
@@ -269,15 +297,18 @@ class MainSlider extends Component {
         formData.append('removedSlides', JSON.stringify(removedSlides));
         formData.append('slides', JSON.stringify(cleanedSlides));
 
-        this.props.updateSlides(formData)
-            .then(() => {
-                // this.props.onDone();
-            });
+        this.props.updateSlides(formData);
     };
 
     render () {
         const { classes } = this.props;
-        const { slides, isSorting } = this.state;
+        const { slides, isSorting, loading, disabled } = this.state;
+
+        if (loading) {
+            return <div className={classes.loader}>
+                <CircularProgress />
+            </div>;
+        }
 
         return <div className={classes.root}>
             <form onSubmit={this.handleSubmit}>
@@ -307,7 +338,7 @@ class MainSlider extends Component {
                     isSorting={isSorting}
                     useDragHandle
                 />
-                <Button variant='contained' color='primary' type='submit'>Сохранить</Button>
+                <Button variant='contained' color='primary' type='submit' disabled={disabled}>Сохранить</Button>
             </form>
         </div>;
     }
