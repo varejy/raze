@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import classNames from 'classnames';
 
-import { SortableContainer, SortableElement } from 'react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -15,8 +15,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import { connect } from 'react-redux';
 import getMainSlider from '../../../services/getMainSlider';
-
-import uniqid from 'uniqid';
+import updateSlides from '../../../services/updateSlides';
 
 import map from '@tinkoff/utils/array/map';
 import remove from '@tinkoff/utils/array/remove';
@@ -46,16 +45,14 @@ const materialStyles = theme => ({
         marginLeft: theme.spacing.unit
     },
     filesList: {
-        display: 'flex',
-        padding: '8px',
-        overflow: 'auto',
-        height: '500px'
+        overflow: 'auto'
     },
     fileItem: {
         position: 'relative',
         userSelect: 'none',
         padding: '16px',
         margin: '0 8px 0 0',
+        float: 'left',
         width: '200px',
         cursor: 'grab',
         '&:hover $fileItemDeleteContainer': {
@@ -99,6 +96,10 @@ const materialStyles = theme => ({
     }
 });
 
+const Image = SortableHandle(({ imageClassName, src, onFileLoad }) => (
+    <img className={imageClassName} src={src} onLoad={onFileLoad} />
+));
+
 const SlidePreview = SortableElement(({ slide, index, classes, onFileDelete, onFileLoad, isSorting }) =>
     <div className={classNames(classes.fileItem, {
         [classes.fileItemSorting]: isSorting
@@ -111,9 +112,9 @@ const SlidePreview = SortableElement(({ slide, index, classes, onFileDelete, onF
                 <DeleteIcon />
             </IconButton>
         </div>
-        <img className={classNames(classes.fileImage, {
+        <Image src={slide.path} onLoad={onFileLoad(index)} imageClassName={classNames(classes.fileImage, {
             [classes.fileImageError]: slide.wrongDimensions
-        })} src={slide.path} onLoad={onFileLoad(index)} />
+        })} />
     </div>);
 
 const SlidesPreviews = SortableContainer(({ slides, classes, ...rest }) => {
@@ -149,13 +150,15 @@ const mapStateToProps = ({ application }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    getMainSlider: payload => dispatch(getMainSlider(payload))
+    getMainSlider: payload => dispatch(getMainSlider(payload)),
+    updateSlides: payload => dispatch(updateSlides(payload))
 });
 
 class MainSlider extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         getMainSlider: PropTypes.func.isRequired,
+        updateSlides: PropTypes.func.isRequired,
         slider: PropTypes.object
     };
 
@@ -167,13 +170,25 @@ class MainSlider extends Component {
         super(...args);
 
         this.state = {
-            slides: this.props.slider.slides,
+            slides: this.props.slider.slides.map(slide => ({
+                path: slide.path || '/wrong-path',
+                showed: slide.showed
+            })),
+            removedSlides: [],
             isSorting: false
         };
     }
 
     componentDidMount () {
         this.props.getMainSlider();
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.slider.slides !== this.props.slider.slides) {
+            this.setState({
+                slides: nextProps.slider.slides
+            });
+        }
     }
 
     onDragStart = () => {
@@ -193,7 +208,7 @@ class MainSlider extends Component {
         const newFiles = map(file => ({
             content: file,
             path: URL.createObjectURL(file),
-            id: uniqid()
+            showed: true
         }), event.target.files);
 
         const slides = [...this.state.slides, ...newFiles];
@@ -218,11 +233,46 @@ class MainSlider extends Component {
     };
 
     handleFileDelete = i => () => {
-        const { slides } = this.state;
+        const { slides, removedSlides } = this.state;
+
+        if (slides[i].path) {
+            removedSlides.push(slides[i]);
+        }
 
         this.setState({
-            slides: remove(i, 1, slides)
+            slides: remove(i, 1, slides),
+            removedSlides
         });
+    };
+
+    handleSubmit = event => {
+        event.preventDefault();
+
+        const { slides, removedSlides } = this.state;
+        const formData = new FormData();
+        const cleanedSlides = slides.map(slide => {
+            const isOld = !slide.content;
+
+            return {
+                showed: slide.showed,
+                old: isOld,
+                path: isOld && slide.path
+            };
+        });
+
+        slides.forEach((file, i) => {
+            if (file.content) {
+                formData.append(`slide-file-${i}`, file.content);
+            }
+        });
+
+        formData.append('removedSlides', JSON.stringify(removedSlides));
+        formData.append('slides', JSON.stringify(cleanedSlides));
+
+        this.props.updateSlides(formData)
+            .then(() => {
+                // this.props.onDone();
+            });
     };
 
     render () {
@@ -230,31 +280,35 @@ class MainSlider extends Component {
         const { slides, isSorting } = this.state;
 
         return <div className={classes.root}>
-            <Typography variant='h6'>Фотографии</Typography>
-            <input
-                className={classes.uploadInput}
-                id='uploadInput'
-                type='file'
-                accept='image/*'
-                onChange={this.handleFilesUpload}
-                multiple
-            />
-            <label htmlFor='uploadInput'>
-                <Button variant='contained' component='span' color='default' className={classes.upload}>
-                    Загрузить
-                    <CloudUploadIcon className={classes.uploadIcon} />
-                </Button>
-            </label>
-            <SlidesPreviews
-                axis='xy'
-                classes={classes}
-                slides={slides}
-                onFileDelete={this.handleFileDelete}
-                onFileLoad={this.handleFileLoad}
-                onSortStart={this.onDragStart}
-                onSortEnd={this.onDragEnd}
-                isSorting={isSorting}
-            />
+            <form onSubmit={this.handleSubmit}>
+                <Typography variant='h6'>Фотографии</Typography>
+                <input
+                    className={classes.uploadInput}
+                    id='uploadInput'
+                    type='file'
+                    accept='image/*'
+                    onChange={this.handleFilesUpload}
+                    multiple
+                />
+                <label htmlFor='uploadInput'>
+                    <Button variant='contained' component='span' color='default' className={classes.upload}>
+                        Загрузить
+                        <CloudUploadIcon className={classes.uploadIcon} />
+                    </Button>
+                </label>
+                <SlidesPreviews
+                    axis='xy'
+                    classes={classes}
+                    slides={slides}
+                    onFileDelete={this.handleFileDelete}
+                    onFileLoad={this.handleFileLoad}
+                    onSortStart={this.onDragStart}
+                    onSortEnd={this.onDragEnd}
+                    isSorting={isSorting}
+                    useDragHandle
+                />
+                <Button variant='contained' color='primary' type='submit'>Сохранить</Button>
+            </form>
         </div>;
     }
 }

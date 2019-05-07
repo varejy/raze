@@ -4,4 +4,5 @@ export const SERVER_ERROR_STATUS_CODE = 500;
 
 export const DATABASE_URL = 'mongodb://localhost/edc';
 
-export const FILE_FIELD_NAME_REGEX = /product-.*-file-/g;
+export const PRODUCT_FILE_FIELD_NAME_REGEX = /product-.*-file-/g;
+export const SLIDE_FILE_FIELD_NAME_REGEX = /slide-file-/g;

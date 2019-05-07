@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import classNames from 'classnames';
 
-import { SortableContainer, SortableElement } from 'react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -11,8 +11,6 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { withStyles } from '@material-ui/core/styles';
-
-import uniqid from 'uniqid';
 
 import noop from '@tinkoff/utils/function/noop';
 import map from '@tinkoff/utils/array/map';
@@ -63,6 +61,10 @@ const materialStyles = theme => ({
     }
 });
 
+const Image = SortableHandle(({ imageClassName, src }) => (
+    <img className={imageClassName} src={src} />
+));
+
 const FilePreview = SortableElement(({ file, index, classes, onFileDelete, isSorting }) =>
     <div className={classNames(classes.fileItem, {
         [classes.fileItemSorting]: isSorting
@@ -75,7 +77,7 @@ const FilePreview = SortableElement(({ file, index, classes, onFileDelete, isSor
                 <DeleteIcon />
             </IconButton>
         </div>
-        <img className={classes.fileImage} src={file.path} />
+        <Image src={file.path} imageClassName={classNames(classes.fileImage)} />
     </div>);
 
 const FilesPreviews = SortableContainer(({ files, classes, ...rest }) => {
@@ -111,8 +113,7 @@ class ProductForm extends Component {
 
         this.state = {
             files: map(file => ({
-                path: file || '/wrong-path',
-                id: uniqid()
+                path: file || '/wrong-path'
             }), this.props.initialFiles),
             isSorting: false
         };
@@ -123,8 +124,7 @@ class ProductForm extends Component {
     handleFileUpload = (event) => {
         const newFiles = map(file => ({
             content: file,
-            path: URL.createObjectURL(file),
-            id: uniqid()
+            path: URL.createObjectURL(file)
         }), event.target.files);
         const files = [...this.state.files, ...newFiles];
 
@@ -143,7 +143,8 @@ class ProductForm extends Component {
 
     onDragEnd = ({ oldIndex, newIndex }) => {
         this.setState({
-            files: arrayMove(this.state.files, oldIndex, newIndex)
+            files: arrayMove(this.state.files, oldIndex, newIndex),
+            isSorting: false
         }, this.handleFilesChange);
     };
 
@@ -193,6 +194,7 @@ class ProductForm extends Component {
                 onSortStart={this.onDragStart}
                 onSortEnd={this.onDragEnd}
                 isSorting={isSorting}
+                useDragHandle
             />
         </div>;
     }

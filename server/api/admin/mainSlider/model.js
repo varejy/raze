@@ -3,8 +3,10 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const mainSlider = new Schema({
+    id: { type: String, required: true },
     slides: [{
-        image: { type: String, required: true }
+        path: { type: String, required: true },
+        showed: { type: Boolean, required: true }
     }]
 });
 

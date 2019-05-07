@@ -2,9 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 
-import { FILE_FIELD_NAME_REGEX } from '../constants/constants';
-
-export default function multipart () {
+export default function multipart (regex) {
     const destination = 'src/apps/admin/files';
     const destinationPath = path.resolve(__dirname, '..', destination);
 
@@ -16,7 +14,7 @@ export default function multipart () {
             cb(null, destination);
         },
         filename: function (req, file, cb) {
-            cb(null, `${file.fieldname.match(FILE_FIELD_NAME_REGEX)}${Date.now()}${path.extname(file.originalname)}`);
+            cb(null, `${file.fieldname.match(regex)}${Date.now()}${path.extname(file.originalname)}`);
         }
     });
 
