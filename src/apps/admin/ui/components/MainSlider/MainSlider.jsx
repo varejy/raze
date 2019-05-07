@@ -41,6 +41,8 @@ const materialStyles = theme => ({
         display: 'none'
     },
     upload: {
+        display: 'flex',
+        alignItems: 'center',
         marginTop: theme.spacing.unit
     },
     uploadIcon: {
@@ -53,7 +55,6 @@ const materialStyles = theme => ({
         position: 'relative',
         userSelect: 'none',
         padding: '16px',
-        margin: '0 8px 0 0',
         float: 'left',
         width: '200px',
         cursor: 'grab',
@@ -83,7 +84,7 @@ const materialStyles = theme => ({
     warning: {
         display: 'flex',
         alignItems: 'center',
-        marginTop: '20px'
+        marginLeft: '20px'
     },
     warningIcon: {
         color: '#ffae42',
@@ -101,11 +102,14 @@ const materialStyles = theme => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    submitButtonNoSlides: {
+        marginTop: '16px'
     }
 });
 
-const Image = SortableHandle(({ imageClassName, src, onFileLoad }) => (
-    <img className={imageClassName} src={src} onLoad={onFileLoad} />
+const Image = SortableHandle(({ imageClassName, src, onLoad }) => (
+    <img className={imageClassName} src={src} onLoad={onLoad} />
 ));
 
 const SlidePreview = SortableElement(({ slide, index, classes, onFileDelete, onFileLoad, isSorting }) =>
@@ -125,31 +129,16 @@ const SlidePreview = SortableElement(({ slide, index, classes, onFileDelete, onF
         })} />
     </div>);
 
-const SlidesPreviews = SortableContainer(({ slides, classes, ...rest }) => {
-    const isWrongDimensions = checkWrongDimensions(slides);
-
-    return (
-        <div>
-            <div className={classes.warning}>
-                <WarningIcon className={classNames(classes.warningIcon, {
-                    [classes.errorIcon]: isWrongDimensions
-                })} color={isWrongDimensions ? 'error' : 'inherit'} fontSize='small'/>
-                <Typography className={classes.warningText} color={isWrongDimensions ? 'error' : 'inherit'} variant='h6'>
-                    Ширина фото дожна быть {SLIDE_WIDTH}px, а высота {SLIDE_HEIGHT}px
-                </Typography>
-            </div>
-            <div className={classes.filesList}>
-                {slides.map((slide, i) => <SlidePreview
-                    key={i}
-                    index={i}
-                    slide={slide}
-                    classes={classes}
-                    {...rest}
-                />)}
-            </div>
-        </div>
-    );
-});
+const SlidesPreviews = SortableContainer(({ slides, classes, ...rest }) =>
+    <div className={classes.filesList}>
+        {slides.map((slide, i) => <SlidePreview
+            key={i}
+            index={i}
+            slide={slide}
+            classes={classes}
+            {...rest}
+        />)}
+    </div>);
 
 const mapStateToProps = ({ application }) => {
     return {
@@ -303,6 +292,7 @@ class MainSlider extends Component {
     render () {
         const { classes } = this.props;
         const { slides, isSorting, loading, disabled } = this.state;
+        const isWrongDimensions = checkWrongDimensions(slides);
 
         if (loading) {
             return <div className={classes.loader}>
@@ -313,20 +303,30 @@ class MainSlider extends Component {
         return <div className={classes.root}>
             <form onSubmit={this.handleSubmit}>
                 <Typography variant='h6'>Фотографии</Typography>
-                <input
-                    className={classes.uploadInput}
-                    id='uploadInput'
-                    type='file'
-                    accept='image/*'
-                    onChange={this.handleFilesUpload}
-                    multiple
-                />
-                <label htmlFor='uploadInput'>
-                    <Button variant='contained' component='span' color='default' className={classes.upload}>
-                        Загрузить
-                        <CloudUploadIcon className={classes.uploadIcon} />
-                    </Button>
-                </label>
+                <div className={classes.upload}>
+                    <input
+                        className={classes.uploadInput}
+                        id='uploadInput'
+                        type='file'
+                        accept='image/*'
+                        onChange={this.handleFilesUpload}
+                        multiple
+                    />
+                    <label htmlFor='uploadInput'>
+                        <Button variant='contained' component='span' color='default' className={classes.uploadButton}>
+                            Загрузить
+                            <CloudUploadIcon className={classes.uploadIcon} />
+                        </Button>
+                    </label>
+                    <div className={classes.warning}>
+                        <WarningIcon className={classNames(classes.warningIcon, {
+                            [classes.errorIcon]: isWrongDimensions
+                        })} color={isWrongDimensions ? 'error' : 'inherit'} fontSize='small'/>
+                        <Typography className={classes.warningText} color={isWrongDimensions ? 'error' : 'inherit'} variant='h6'>
+                            Ширина фото дожна быть {SLIDE_WIDTH}px, а высота {SLIDE_HEIGHT}px
+                        </Typography>
+                    </div>
+                </div>
                 <SlidesPreviews
                     axis='xy'
                     classes={classes}
@@ -338,7 +338,17 @@ class MainSlider extends Component {
                     isSorting={isSorting}
                     useDragHandle
                 />
-                <Button variant='contained' color='primary' type='submit' disabled={disabled}>Сохранить</Button>
+                <Button
+                    className={classNames({
+                        [classes.submitButtonNoSlides]: !slides.length
+                    })}
+                    variant='contained'
+                    color='primary'
+                    type='submit'
+                    disabled={disabled}
+                >
+                    Сохранить
+                </Button>
             </form>
         </div>;
     }
