@@ -6,7 +6,8 @@ import {
     getAllProducts,
     saveProduct as saveProductQuery,
     editProduct as editProductQuery,
-    deleteByIds as deleteByIdsQuery
+    deleteByIds as deleteByIdsQuery,
+    findProductsByName as findProductsByNameQuery
 } from './queries';
 import multipart from '../../../helpers/multipart';
 
@@ -16,8 +17,8 @@ const uploader = multipart(PRODUCT_FILE_FIELD_NAME_REGEX);
 
 export function getProducts (req, res) {
     getAllProducts()
-        .then(categories => {
-            res.status(OKEY_STATUS_CODE).send(categories);
+        .then(products => {
+            res.status(OKEY_STATUS_CODE).send(products);
         })
         .catch(() => {
             res.status(SERVER_ERROR_STATUS_CODE).end();
@@ -25,10 +26,10 @@ export function getProducts (req, res) {
 }
 
 export function saveProduct (req, res) {
-    const { name, price, description, features, categoryId, hidden } = req.body;
+    const product = getProduct(req.body)
     const id = uniqid();
 
-    saveProductQuery({ name, price: +price, description, features, categoryId, hidden, id })
+    saveProductQuery({ ...product, id })
         .then(product => {
             res.status(OKEY_STATUS_CODE).send(product);
         })
@@ -38,15 +39,30 @@ export function saveProduct (req, res) {
 }
 
 export function editProduct (req, res) {
-    const { name, price, description, features, categoryId, hidden, id } = req.body;
+    const product = getProduct(req.body)
 
-    editProductQuery({ name, price: +price, description, features, categoryId, hidden, id })
+    editProductQuery(product)
         .then(product => {
             res.status(OKEY_STATUS_CODE).send(product);
         })
         .catch(() => {
             res.status(SERVER_ERROR_STATUS_CODE).end();
         });
+}
+
+function getProduct (body) {
+    const { name, company, price, description, features, categoryId, hidden, id } = body;
+
+    return {
+        name,
+        company,
+        price: +price,
+        description,
+        features,
+        categoryId,
+        hidden,
+        id
+    };
 }
 
 export function deleteByIds (req, res) {
@@ -98,4 +114,16 @@ export function updateFiles (req, res) {
                 return res.status(SERVER_ERROR_STATUS_CODE).end();
             });
     });
+}
+
+export function findProductsByName (req, res) {
+    const { text } = req.query;
+
+    findProductsByNameQuery(text)
+        .then(products => {
+            res.status(OKEY_STATUS_CODE).send(products);
+        })
+        .catch(() => {
+            res.status(SERVER_ERROR_STATUS_CODE).end();
+        });
 }

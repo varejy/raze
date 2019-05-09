@@ -33,7 +33,7 @@ import remove from '@tinkoff/utils/array/remove';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
-const PRODUCTS_VALUES = ['name', 'price', 'categoryId', 'hidden', 'description', 'features'];
+const PRODUCTS_VALUES = ['name', 'company', 'price', 'categoryId', 'hidden', 'description', 'features'];
 
 const materialStyles = theme => ({
     loader: {
@@ -281,6 +281,15 @@ class ProductForm extends Component {
                 label='Название'
                 value={product.name}
                 onChange={this.handleChange('name')}
+                margin='normal'
+                variant='outlined'
+                fullWidth
+                required
+            />
+            <TextField
+                label='Компания'
+                value={product.company}
+                onChange={this.handleChange('company')}
                 margin='normal'
                 variant='outlined'
                 fullWidth

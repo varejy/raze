@@ -23,3 +23,10 @@ export function nullifyCategories (ids) {
 export function hideProductsByCategory (categoryId, hidden) {
     return Product.updateMany({ categoryId: categoryId }, { hidden });
 }
+
+export function findProductsByName (text) {
+    return Product.find({ '$or': [
+        { name: { $regex: text, $options: 'i' } },
+        { company: { $regex: text, $options: 'i' } }
+    ] });
+}

@@ -6,6 +6,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 import pickBy from '@tinkoff/utils/object/pickBy';
 import keys from '@tinkoff/utils/object/keys';
@@ -17,11 +19,15 @@ import { withStyles } from '@material-ui/core/styles';
 
 import { connect } from 'react-redux';
 import setFilteredProducts from '../../../actions/setFilteredProducts';
+import search from '../../../services/search';
 
 const materialStyles = {
     checkbox: {
         paddingTop: '0',
         paddingBottom: '0'
+    },
+    search: {
+        marginBottom: '20px'
     }
 };
 
@@ -33,13 +39,15 @@ const mapStateToProps = ({ application, products }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    setFilteredProducts: payload => dispatch(setFilteredProducts(payload))
+    setFilteredProducts: payload => dispatch(setFilteredProducts(payload)),
+    search: payload => dispatch(search(payload))
 });
 
 class ProductFilters extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         setFilteredProducts: PropTypes.func.isRequired,
+        search: PropTypes.func.isRequired,
         categories: PropTypes.array,
         products: PropTypes.array
     };
@@ -56,8 +64,11 @@ class ProductFilters extends Component {
 
         this.state = {
             ...state,
-            filters: {}
+            filters: {},
+            search: '',
+            searchDisabled: true
         };
+        this.lastSearch = '';
 
         this.setFilteredProducts();
     }
@@ -90,6 +101,28 @@ class ProductFilters extends Component {
         }, products, filters);
 
         this.props.setFilteredProducts(filteredProducts);
+    };
+
+    handleSearchChange = event => {
+        const newSearch = event.target.value;
+
+        this.setState({
+            search: newSearch,
+            searchDisabled: this.lastSearch === newSearch
+        });
+    };
+
+    handleSearchSubmit = event => {
+        event.preventDefault();
+
+        this.props.search(this.state.search)
+            .then(() => {
+                this.setState({
+                    searchDisabled: true
+                });
+
+                this.lastSearch = this.state.search;
+            });
     };
 
     handleCategoriesChange = id => (event, value) => {
@@ -140,6 +173,31 @@ class ProductFilters extends Component {
 
     handleFiltersChanged = () => {
         this.setFilteredProducts();
+    };
+
+    renderSearchForm = () => {
+        const { classes } = this.props;
+        const { search, searchDisabled } = this.state;
+
+        return <div className={classes.search}>
+            <Typography variant='h6'>Поиск</Typography>
+            <form onSubmit={this.handleSearchSubmit}>
+                <TextField
+                    label='Название товара или компании'
+                    value={search}
+                    onChange={this.handleSearchChange}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                    InputLabelProps={{
+                        shrink: !!search
+                    }}
+                />
+                <Button variant='contained' color='primary' type='submit' disabled={searchDisabled}>
+                    Найти
+                </Button>
+            </form>
+        </div>;
     };
 
     renderCategories = () => {
@@ -225,6 +283,7 @@ class ProductFilters extends Component {
     render () {
         return <div>
             <Typography variant='h5' gutterBottom>Фильтрация</Typography>
+            {this.renderSearchForm()}
             {this.renderCategories()}
             {this.renderActivity()}
         </div>;

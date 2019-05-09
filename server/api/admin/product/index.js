@@ -2,7 +2,7 @@ import express from 'express';
 
 import verification from '../../../middlewares/verification';
 
-import { getProducts, saveProduct, editProduct, deleteByIds, updateFiles } from './service';
+import { getProducts, saveProduct, editProduct, deleteByIds, updateFiles, findProductsByName } from './service';
 
 const router = express.Router();
 
@@ -22,5 +22,8 @@ router.route('/delete-few')
 
 router.route('/update-files')
     .post(updateFiles);
+
+router.route('/find')
+    .get(findProductsByName);
 
 export default router;
