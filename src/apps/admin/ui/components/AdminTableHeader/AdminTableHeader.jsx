@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import classNames from 'classnames';
 
-import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -23,14 +22,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { withStyles } from '@material-ui/core/styles';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
-import Modal from '@material-ui/core/Modal';
-import ProductForm from '../ProductForm/ProductForm.jsx';
-import ProductFilters from '../ProductFilters/ProductFilters.jsx';
-
 import noop from '@tinkoff/utils/function/noop';
-
-import { connect } from 'react-redux';
-import deleteProductsByIds from '../../../services/deleteProductsByIds';
 
 const materialStyles = theme => ({
     highlight:
@@ -58,7 +50,7 @@ const materialStyles = theme => ({
         width: '130px',
         justifyContent: 'space-between'
     },
-    productActions: {
+    valuesActions: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between'
@@ -90,49 +82,34 @@ const materialStyles = theme => ({
     }
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    deleteProducts: payload => dispatch(deleteProductsByIds(payload))
-});
-
-class ProductTableHeader extends Component {
+class AdminTableHeader extends Component {
     static propTypes = {
-        deleteProducts: PropTypes.func.isRequired,
         classes: PropTypes.object.isRequired,
+        deleteValuesWarningTitle: PropTypes.string,
         selected: PropTypes.array,
-        onSelectedCloseClick: PropTypes.func
+        onDelete: PropTypes.func,
+        onFormOpen: PropTypes.func,
+        onFiltersOpen: PropTypes.func,
+        onSelectedCloseClick: PropTypes.func,
+        filters: PropTypes.bool
     };
 
     static defaultProps = {
+        deleteValuesWarningTitle: '',
         selected: [],
-        onSelectedCloseClick: noop
+        onDelete: noop,
+        onFormOpen: noop,
+        onFiltersOpen: noop,
+        onSelectedCloseClick: noop,
+        filters: true
     };
 
     state = {
-        newProductFormShowed: false,
-        warningShowed: false,
-        filtersShowed: false
+        warningShowed: false
     };
 
     handleSelectedCloseClick = () => {
         this.props.onSelectedCloseClick();
-    };
-
-    handleAddProduct = () => {
-        this.setState({
-            newProductFormShowed: true
-        });
-    };
-
-    handleFiltersClick = () => {
-        this.setState({
-            filtersShowed: true
-        });
-    };
-
-    handleCloseNewProductForm = () => {
-        this.setState({
-            newProductFormShowed: false
-        });
     };
 
     handleWarningDisagree = () => {
@@ -144,7 +121,7 @@ class ProductTableHeader extends Component {
     handleWarningAgree = () => {
         const ids = this.props.selected.map(category => category.id);
 
-        this.props.deleteProducts(ids)
+        this.props.onDelete(ids)
             .then(() => {
                 this.setState({
                     warningShowed: false
@@ -158,15 +135,9 @@ class ProductTableHeader extends Component {
         });
     };
 
-    handleCloseFilters = () => {
-        this.setState({
-            filtersShowed: false
-        });
-    };
-
     render () {
-        const { classes, selected } = this.props;
-        const { newProductFormShowed, warningShowed, filtersShowed } = this.state;
+        const { classes, selected, deleteValuesWarningTitle, filters } = this.props;
+        const { warningShowed } = this.state;
 
         return <div>
             <Toolbar
@@ -197,14 +168,14 @@ class ProductTableHeader extends Component {
                             </IconButton>
                         </Tooltip>
                     ) : (
-                        <div className={classes.productActions}>
-                            <Tooltip title='Фильтрация'>
-                                <IconButton aria-label='Filters' onClick={this.handleFiltersClick}>
+                        <div className={classes.valuesActions}>
+                            { filters && <Tooltip title='Фильтрация'>
+                                <IconButton aria-label='Filters' onClick={this.props.onFiltersOpen}>
                                     <FilterListIcon />
                                 </IconButton>
-                            </Tooltip>
-                            <Tooltip title='Добавление товара'>
-                                <IconButton aria-label='Add product' onClick={this.handleAddProduct}>
+                            </Tooltip> }
+                            <Tooltip title='Добавление'>
+                                <IconButton aria-label='Add' onClick={this.props.onFormOpen()}>
                                     <AddIcon />
                                 </IconButton>
                             </Tooltip>
@@ -212,21 +183,11 @@ class ProductTableHeader extends Component {
                     )}
                 </div>
             </Toolbar>
-            <Modal open={newProductFormShowed} onClose={this.handleCloseNewProductForm} className={classes.modal}>
-                <Paper className={classes.modalContent}>
-                    <ProductForm onDone={this.handleCloseNewProductForm} />
-                </Paper>
-            </Modal>
-            <Modal open={filtersShowed} onClose={this.handleCloseFilters} className={classes.modal} keepMounted>
-                <Paper className={classes.modalContent}>
-                    <ProductFilters />
-                </Paper>
-            </Modal>
             <Dialog
                 open={warningShowed}
                 onClose={this.handleWarningDisagree}
             >
-                <DialogTitle>Вы точно хотите удалить следующие товары?</DialogTitle>
+                <DialogTitle>{deleteValuesWarningTitle}</DialogTitle>
                 <DialogContent className={classes.warningContent}>
                     <List>
                         {
@@ -243,7 +204,7 @@ class ProductTableHeader extends Component {
                         Нет
                     </Button>
                     <Button onClick={this.handleWarningAgree} color='primary' autoFocus>
-                        ДА
+                        Да
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -251,4 +212,4 @@ class ProductTableHeader extends Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(materialStyles)(ProductTableHeader));
+export default withStyles(materialStyles)(AdminTableHeader);

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,14 +9,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Modal from '@material-ui/core/Modal';
 import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
-import CheckIcon from '@material-ui/icons/Check';
-import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -26,25 +20,16 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 
-import CategoryTableHeader from '../CategoryTableHeader/CategoryTableHeader.jsx';
-import CategoryForm from '../CategoryForm/CategoryForm.jsx';
+import AdminTableHeader from '../AdminTableHeader/AdminTableHeader.jsx';
 
 import compose from '@tinkoff/utils/function/compose';
 import difference from '@tinkoff/utils/array/difference';
 import slice from '@tinkoff/utils/array/slice';
-import findIndex from '@tinkoff/utils/array/findIndex';
-import any from '@tinkoff/utils/array/any';
 import concat from '@tinkoff/utils/array/concat';
 import without from '@tinkoff/utils/array/without';
-
-import getCategories from '../../../services/getCategories';
-import deleteCategoriesByIds from '../../../services/deleteCategoriesByIds';
-
-const rows = [
-    { id: 'name', label: 'Название' },
-    { id: 'category', label: 'Путь' },
-    { id: 'active', label: 'Active' }
-];
+import noop from '@tinkoff/utils/function/noop';
+import findIndex from '@tinkoff/utils/array/findIndex';
+import any from '@tinkoff/utils/array/any';
 
 const materialStyles = theme => ({
     paper: {
@@ -56,94 +41,68 @@ const materialStyles = theme => ({
     tableWrapper: {
         overflowX: 'auto'
     },
-    loader: {
-        height: 'calc(100vh - 64px)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
     row: {
-        '&:hover $categoryActions': {
+        '&:hover $valueActions': {
             visibility: 'visible'
         }
     },
-    categoryActions: {
+    valueActions: {
         visibility: 'hidden'
-    },
-    modalContent: {
-        position: 'absolute',
-        width: '1200px',
-        backgroundColor: theme.palette.background.paper,
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing.unit * 4,
-        outline: 'none',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)'
     }
 });
 
 const ROWS_PER_PAGE = 10;
 
-const mapStateToProps = ({ application }) => {
-    return {
-        categories: application.categories
-    };
-};
-
-const mapDispatchToProps = (dispatch) => ({
-    getCategories: payload => dispatch(getCategories(payload)),
-    deleteCategories: payload => dispatch(deleteCategoriesByIds(payload))
-});
-
-class CategoryTable extends React.Component {
+class AdminTable extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
-        getCategories: PropTypes.func.isRequired,
-        deleteCategories: PropTypes.func.isRequired,
-        categories: PropTypes.array
+        headerRows: PropTypes.array,
+        tableCells: PropTypes.array,
+        values: PropTypes.array,
+        deleteValueWarningTitle: PropTypes.string,
+        deleteValuesWarningTitle: PropTypes.string,
+        onDelete: PropTypes.func,
+        onFormOpen: PropTypes.func,
+        onFiltersOpen: PropTypes.func,
+        filters: PropTypes.bool
     };
 
     static defaultProps = {
-        categories: []
+        headerRows: [],
+        tableCells: [],
+        values: [],
+        deleteValueWarningTitle: '',
+        deleteValuesWarningTitle: '',
+        onDelete: noop,
+        onFormOpen: noop,
+        onFiltersOpen: noop,
+        filters: true
     };
 
     constructor (...args) {
         super(...args);
 
-        const { categories } = this.props;
+        const { values } = this.props;
 
         this.state = {
             selected: [],
             page: 0,
-            rowsPerPage: categories.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : categories.length,
-            checkboxIndeterminate: false,
-            loading: true,
-            editableCategory: null,
-            categoryForDelete: null
+            rowsPerPage: values.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : values.length,
+            checkboxIndeterminate: false
         };
     }
 
-    componentDidMount () {
-        this.props.getCategories()
-            .then(() => {
-                this.setState({
-                    loading: false
-                });
-            });
-    }
-
     componentWillReceiveProps (nextProps) {
-        if (nextProps.categories !== this.props.categories) {
+        if (nextProps.values !== this.props.values) {
             this.setState({
-                rowsPerPage: nextProps.categories.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : nextProps.categories.length,
+                rowsPerPage: nextProps.values.length > ROWS_PER_PAGE ? ROWS_PER_PAGE : nextProps.values.length,
                 selected: []
             });
         }
     }
 
     handleSelectAllClick = event => {
-        const { categories } = this.props;
+        const { values } = this.props;
         const { selected, rowsPerPage, page, checkboxIndeterminate } = this.state;
 
         if (event.target.checked && !checkboxIndeterminate) {
@@ -151,7 +110,7 @@ class CategoryTable extends React.Component {
                 concat(selected),
                 without(selected),
                 slice(rowsPerPage * page, rowsPerPage * (page + 1))
-            )(categories);
+            )(values);
 
             return this.setState({
                 selected: newSelected,
@@ -160,7 +119,7 @@ class CategoryTable extends React.Component {
         }
 
         const newSelected = without(
-            slice(rowsPerPage * page, rowsPerPage * (page + 1), categories),
+            slice(rowsPerPage * page, rowsPerPage * (page + 1), values),
             selected
         );
 
@@ -177,13 +136,13 @@ class CategoryTable extends React.Component {
         });
     };
 
-    handleClick = selectedCategory => () => {
+    handleClick = selectedValue => () => {
         const { selected } = this.state;
-        const selectedIndex = findIndex(category => category.id === selectedCategory.id, selected);
+        const selectedIndex = findIndex(value => value.id === selectedValue.id, selected);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, selectedCategory);
+            newSelected = newSelected.concat(selected, selectedValue);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -207,28 +166,34 @@ class CategoryTable extends React.Component {
     };
 
     handleChangeRowsPerPage = ({ target: { value } }) => {
-        const { categories } = this.props;
-        const rowsPerPage = categories.length > value ? value : categories.length;
+        const { values } = this.props;
+        const rowsPerPage = values.length > value ? value : values.length;
         const checkboxIndeterminate = this.checkCheckboxIndeterminate({ rowsPerPage });
 
         this.setState({ rowsPerPage, checkboxIndeterminate });
     };
 
-    handleEditClick = category => () => {
+    handleDelete = value => () => {
         this.setState({
-            editableCategory: category
+            valueForDelete: value
         });
     };
 
-    handleFormDone = () => {
-        this.props.getCategories()
-            .then(this.handleCloseEditCategoryForm);
+    handleWarningDisagree = () => {
+        this.setState({
+            valueForDelete: null
+        });
     };
 
-    handleCloseEditCategoryForm = () => {
-        this.setState({
-            editableCategory: null
-        });
+    handleWarningAgree = () => {
+        const { valueForDelete } = this.state;
+
+        this.props.onDelete([valueForDelete.id])
+            .then(() => {
+                this.setState({
+                    valueForDelete: null
+                });
+            });
     };
 
     checkCheckboxIndeterminate = (
@@ -238,59 +203,31 @@ class CategoryTable extends React.Component {
             selected = this.state.selected
         } = {}
     ) => {
-        const { categories } = this.props;
-        const visibleProjects = categories
+        const { values } = this.props;
+        const visibleValues = values
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-        return !difference(visibleProjects, selected).length;
+        return !difference(visibleValues, selected).length;
     };
 
-    isSelected = id => any(category => category.id === id, this.state.selected);
-
-    getHost = () => {
-        const protocol = location.hostname === 'localhost' ? 'http://' : 'https://';
-
-        return `${protocol}${location.host}`;
-    };
-
-    handleDelete = category => () => {
-        this.setState({
-            categoryForDelete: category
-        });
-    };
-
-    handleWarningDisagree = () => {
-        this.setState({
-            categoryForDelete: null
-        });
-    };
-
-    handleWarningAgree = () => {
-        const { categoryForDelete } = this.state;
-
-        this.props.deleteCategories([categoryForDelete.id])
-            .then(() => {
-                this.setState({
-                    categoryForDelete: null
-                });
-            });
-    };
+    isSelected = id => any(value => value.id === id, this.state.selected);
 
     render () {
-        const { classes, categories } = this.props;
-        const { selected, rowsPerPage, page, checkboxIndeterminate, loading, editableCategory, categoryForDelete } = this.state;
-
-        if (loading) {
-            return <div className={classes.loader}>
-                <CircularProgress />
-            </div>;
-        }
-
-        const emptyRows = rowsPerPage - Math.min(rowsPerPage, categories.length - page * rowsPerPage);
+        const { classes, headerRows, tableCells, values, deleteValueWarningTitle, deleteValuesWarningTitle, filters } = this.props;
+        const { selected, rowsPerPage, page, checkboxIndeterminate, valueForDelete } = this.state;
+        const emptyRows = rowsPerPage - Math.min(rowsPerPage, values.length - page * rowsPerPage);
 
         return (
             <Paper className={classes.paper}>
-                <CategoryTableHeader selected={selected} onSelectedCloseClick={this.handleSelectedCloseClick} />
+                <AdminTableHeader
+                    deleteValuesWarningTitle={deleteValuesWarningTitle}
+                    selected={selected}
+                    onDelete={this.props.onDelete}
+                    onSelectedCloseClick={this.handleSelectedCloseClick}
+                    onFormOpen={this.props.onFormOpen}
+                    onFiltersOpen={this.props.onFiltersOpen}
+                    filters={filters}
+                />
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby='tableTitle'>
                         <TableHead>
@@ -302,7 +239,7 @@ class CategoryTable extends React.Component {
                                         onChange={this.handleSelectAllClick}
                                     />
                                 </TableCell>
-                                {rows.map(
+                                {headerRows.map(
                                     (row, i) => (
                                         <TableCell key={i}>
                                             {row.label}
@@ -313,10 +250,10 @@ class CategoryTable extends React.Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {categories
+                            {values
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((category, i) => {
-                                    const isSelected = this.isSelected(category.id);
+                                .map((value, i) => {
+                                    const isSelected = this.isSelected(value.id);
 
                                     return (
                                         <TableRow
@@ -329,26 +266,15 @@ class CategoryTable extends React.Component {
                                             className={classes.row}
                                         >
                                             <TableCell padding='checkbox'>
-                                                <Checkbox checked={isSelected} onClick={this.handleClick(category)} />
+                                                <Checkbox checked={isSelected} onClick={this.handleClick(value)} />
                                             </TableCell>
-                                            <TableCell>{category.name}</TableCell>
-                                            <TableCell>
-                                                <Link
-                                                    href={`${this.getHost()}/${category.path}`}
-                                                    target='_blank'
-                                                >
-                                                    /{category.path}
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell>
-                                                {category.hidden ? <CloseIcon /> : <CheckIcon />}
-                                            </TableCell>
+                                            { tableCells.map((tableCell, i) => <TableCell key={i}>{tableCell.prop(value)}</TableCell>) }
                                             <TableCell padding='checkbox' align='right'>
-                                                <div className={classes.categoryActions}>
-                                                    <IconButton onClick={this.handleEditClick(category)}>
+                                                <div className={classes.valueActions}>
+                                                    <IconButton onClick={this.props.onFormOpen(value)}>
                                                         <EditIcon />
                                                     </IconButton>
-                                                    <IconButton onClick={this.handleDelete(category)}>
+                                                    <IconButton onClick={this.handleDelete(value)}>
                                                         <DeleteIcon />
                                                     </IconButton>
                                                 </div>
@@ -367,31 +293,26 @@ class CategoryTable extends React.Component {
                 <TablePagination
                     rowsPerPageOptions={[10, 20, 30]}
                     component='div'
-                    count={categories.length}
+                    count={values.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={this.handleChangePage}
                     onChangeRowsPerPage={this.handleChangeRowsPerPage}
                 />
-                <Modal open={!!editableCategory} onClose={this.handleCloseEditCategoryForm}>
-                    <Paper className={classes.modalContent}>
-                        <CategoryForm category={editableCategory} onDone={this.handleFormDone}/>
-                    </Paper>
-                </Modal>
                 <Dialog
-                    open={!!categoryForDelete}
+                    open={!!valueForDelete}
                     onClose={this.handleWarningDisagree}
                 >
-                    <DialogTitle>Вы точно хотите удалить категорию?</DialogTitle>
+                    <DialogTitle>{deleteValueWarningTitle}</DialogTitle>
                     <DialogContent className={classes.warningContent}>
-                        <DialogContentText>{ categoryForDelete && categoryForDelete.name }</DialogContentText>
+                        <DialogContentText>{ valueForDelete && valueForDelete.name }</DialogContentText>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleWarningDisagree} color='primary'>
                             Нет
                         </Button>
                         <Button onClick={this.handleWarningAgree} color='primary' autoFocus>
-                            ДА
+                            Да
                         </Button>
                     </DialogActions>
                 </Dialog>
@@ -400,4 +321,4 @@ class CategoryTable extends React.Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(materialStyles)(CategoryTable));
+export default withStyles(materialStyles)(AdminTable);
