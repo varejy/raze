@@ -26,7 +26,7 @@ export function getProducts (req, res) {
 }
 
 export function saveProduct (req, res) {
-    const product = getProduct(req.body)
+    const product = getProduct(req.body);
     const id = uniqid();
 
     saveProductQuery({ ...product, id })
@@ -39,7 +39,7 @@ export function saveProduct (req, res) {
 }
 
 export function editProduct (req, res) {
-    const product = getProduct(req.body)
+    const product = getProduct(req.body);
 
     editProductQuery(product)
         .then(product => {

@@ -5,8 +5,10 @@ import path from 'path';
 
 import uniqid from 'uniqid';
 
+import getRecoveryEmailTemplate from './templates/recoveryEmail';
+
 import { OKEY_STATUS_CODE, FORBIDDEN_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../constants/constants';
-import { getAdminByLogin, changeCredentials as changeCredentialsQuery, addAdmin } from './queries';
+import { getAdminByLogin, getAdminByEmail, changeCredentials as changeCredentialsQuery, addAdmin, sendRecoveryEmail } from './queries';
 
 const privateKey = fs.readFileSync(path.resolve(__dirname, 'privateKeys/adminPrivateKey.ppk'), 'utf8');
 const publicKey = fs.readFileSync(path.resolve(__dirname, 'privateKeys/adminPublicKey.ppk'), 'utf8');
@@ -22,7 +24,7 @@ export function authenticate (req, res) {
 
             jsonwebtoken.sign(admin.toJSON(), privateKey, {
                 algorithm: 'RS256',
-                expiresIn: '1440m' // expires in 24 hours
+                expiresIn: '24h'
             }, (err, token) => {
                 if (err || !token) {
                     return res.status(SERVER_ERROR_STATUS_CODE).end();
@@ -54,6 +56,33 @@ export function checkAuthentication (req, res) {
 
         res.status(OKEY_STATUS_CODE).end();
     });
+}
+
+export function recover (req, res) {
+    const email = req.query.email;
+
+    getAdminByEmail(email)
+        .then(admin => {
+            jsonwebtoken.sign(admin.toJSON(), privateKey, {
+                algorithm: 'RS256',
+                expiresIn: '24h'
+            }, (err, token) => {
+                if (err || !token) {
+                    return res.status(SERVER_ERROR_STATUS_CODE).end();
+                }
+
+                const subject = 'Восстановление учетной записи';
+                const host = req.get('host');
+                const recoveryUrl = `${req.protocol}://${host}/admin/recovery?token=${token}`;
+                const successCallback = () => res.sendStatus(OKEY_STATUS_CODE);
+                const failureCallback = () => res.sendStatus(SERVER_ERROR_STATUS_CODE);
+
+                sendRecoveryEmail(admin.email, subject, getRecoveryEmailTemplate(recoveryUrl), successCallback, failureCallback);
+            });
+        })
+        .catch(() => {
+            res.status(FORBIDDEN_STATUS_CODE).end();
+        });
 }
 
 export function changeCredentials (req, res) {

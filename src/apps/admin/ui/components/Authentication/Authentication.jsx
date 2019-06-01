@@ -132,6 +132,11 @@ class Authentication extends Component {
                         Войти
                     </Button>
                 </div>
+                <div className={styles.button}>
+                    <Button variant='contained' color='default' fullWidth href='/admin/recovery'>
+                        Забыли пароль?
+                    </Button>
+                </div>
             </form>
             <Snackbar
                 anchorOrigin={{

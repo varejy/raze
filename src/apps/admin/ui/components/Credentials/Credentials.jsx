@@ -96,14 +96,14 @@ class Credentials extends Component {
     };
 
     newCredentialsValidators = [
-        ({ login }) => /[а-яА-Я]/g.test(login) ? 'Логин не должен содержать кириллицу' : null,
-        ({ login }) => / /g.test(login) ? 'Логин не должен содержать пробелов' : null,
-        ({ password }) => password.length >= 8 ? null : 'Длина пароля должна быть не меньше восьми',
-        ({ password }) => /[а-яА-Я]/g.test(password) ? 'Пароль не должен содержать кириллицу' : null,
-        ({ password }) => / /g.test(password) ? 'Пароль не должен содержать пробелов' : null,
-        ({ password }) => /[0-9]/g.test(password) ? null : 'В пароле должны использоваться цифры',
-        ({ password, password2 }) => password === password2 ? null : 'Пароли должны совпадать',
-        ({ email }) => EMAIL_PATTERN.test(email) ? null : 'Введите валидный имейл'
+        // ({ login }) => /[а-яА-Я]/g.test(login) ? 'Логин не должен содержать кириллицу' : null,
+        // ({ login }) => / /g.test(login) ? 'Логин не должен содержать пробелов' : null,
+        // ({ password }) => password.length >= 8 ? null : 'Длина пароля должна быть не меньше восьми',
+        // ({ password }) => /[а-яА-Я]/g.test(password) ? 'Пароль не должен содержать кириллицу' : null,
+        // ({ password }) => / /g.test(password) ? 'Пароль не должен содержать пробелов' : null,
+        // ({ password }) => /[0-9]/g.test(password) ? null : 'В пароле должны использоваться цифры',
+        // ({ password, password2 }) => password === password2 ? null : 'Пароли должны совпадать',
+        // ({ email }) => EMAIL_PATTERN.test(email) ? null : 'Введите валидный имейл'
     ];
 
     validateCredentials = credentials => {
