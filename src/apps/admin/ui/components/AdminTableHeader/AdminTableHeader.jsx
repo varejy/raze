@@ -85,6 +85,7 @@ const materialStyles = theme => ({
 class AdminTableHeader extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
+        headerText: PropTypes.string,
         deleteValuesWarningTitle: PropTypes.string,
         selected: PropTypes.array,
         onDelete: PropTypes.func,
@@ -95,6 +96,7 @@ class AdminTableHeader extends Component {
     };
 
     static defaultProps = {
+        headerText: '',
         deleteValuesWarningTitle: '',
         selected: [],
         onDelete: noop,
@@ -136,7 +138,7 @@ class AdminTableHeader extends Component {
     };
 
     render () {
-        const { classes, selected, deleteValuesWarningTitle, filters } = this.props;
+        const { classes, selected, headerText, deleteValuesWarningTitle, filters } = this.props;
         const { warningShowed } = this.state;
 
         return <div>
@@ -155,7 +157,7 @@ class AdminTableHeader extends Component {
                         </div>
                     ) : (
                         <Typography variant='h6' id='tableTitle'>
-                            Товары
+                            {headerText}
                         </Typography>
                     )}
                 </div>

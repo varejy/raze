@@ -180,6 +180,7 @@ class ProductsPage extends Component {
                 headerRows={headerRows}
                 tableCells={tableCells}
                 values={products}
+                headerText='Товары'
                 deleteValueWarningTitle='Вы точно хотите удалить товар?'
                 deleteValuesWarningTitle='Вы точно хотите удалить следующие товары?'
                 onDelete={this.props.deleteProducts}

@@ -59,6 +59,7 @@ class AdminTable extends React.Component {
         headerRows: PropTypes.array,
         tableCells: PropTypes.array,
         values: PropTypes.array,
+        headerText: PropTypes.string,
         deleteValueWarningTitle: PropTypes.string,
         deleteValuesWarningTitle: PropTypes.string,
         onDelete: PropTypes.func,
@@ -71,6 +72,7 @@ class AdminTable extends React.Component {
         headerRows: [],
         tableCells: [],
         values: [],
+        headerText: '',
         deleteValueWarningTitle: '',
         deleteValuesWarningTitle: '',
         onDelete: noop,
@@ -213,13 +215,14 @@ class AdminTable extends React.Component {
     isSelected = id => any(value => value.id === id, this.state.selected);
 
     render () {
-        const { classes, headerRows, tableCells, values, deleteValueWarningTitle, deleteValuesWarningTitle, filters } = this.props;
+        const { classes, headerRows, tableCells, values, headerText, deleteValueWarningTitle, deleteValuesWarningTitle, filters } = this.props;
         const { selected, rowsPerPage, page, checkboxIndeterminate, valueForDelete } = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, values.length - page * rowsPerPage);
 
         return (
             <Paper className={classes.paper}>
                 <AdminTableHeader
+                    headerText={headerText}
                     deleteValuesWarningTitle={deleteValuesWarningTitle}
                     selected={selected}
                     onDelete={this.props.onDelete}

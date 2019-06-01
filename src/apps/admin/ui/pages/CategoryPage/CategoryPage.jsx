@@ -147,6 +147,7 @@ class CategoryPage extends Component {
                 headerRows={headerRows}
                 tableCells={tableCells}
                 values={categories}
+                headerText='Категории'
                 deleteValueWarningTitle='Вы точно хотите удалить категорию?'
                 deleteValuesWarningTitle='Вы точно хотите удалить следующие категории?'
                 onDelete={this.props.deleteCategories}
