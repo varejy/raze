@@ -68,6 +68,7 @@ export function changeCredentials (req, res) {
             changeCredentialsQuery({
                 login: newCredentials.login,
                 password: md5(newCredentials.password),
+                email: newCredentials.email,
                 id: admin.id
             })
                 .then(() => {
@@ -86,6 +87,7 @@ export function createTestAdmin (req, res) {
     const testAdmin = {
         login: 'admin',
         password: md5('admin'),
+        email: 'dev.occam@gmail.com',
         id: uniqid()
     };
 
