@@ -111,6 +111,9 @@ class RecoveryResult extends Component {
                 <Typography variant='h5'>Восстановление учетной записи</Typography>
                 <NewCredentialsForm
                     type='recovery'
+                    initial={{
+                        email
+                    }}
                     recovery={{
                         token,
                         email

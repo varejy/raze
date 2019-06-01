@@ -35,7 +35,11 @@ export function authenticate (req, res) {
                 }
 
                 res.status(OKEY_STATUS_CODE).json({
-                    token: token
+                    token: token,
+                    user: {
+                        email: admin.email,
+                        login: admin.login
+                    }
                 });
             });
         })

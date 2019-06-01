@@ -38,21 +38,30 @@ class NewCredentialsForm extends Component {
         changeRecoveryCredentials: PropTypes.func.isRequired,
         authentication: PropTypes.object,
         recovery: PropTypes.object,
+        initial: PropTypes.object,
         onDone: PropTypes.func
     };
 
     static defaultProps = {
         onDone: noop,
         authentication: {},
-        recovery: {}
+        recovery: {},
+        initial: {}
     };
 
-    state = {
-        login: '',
-        password: '',
-        password2: '',
-        errors: []
-    };
+    constructor (...args) {
+        super(...args);
+
+        const { initial: { email, login } } = this.props;
+
+        this.state = {
+            email: email || '',
+            login: login || '',
+            password: '',
+            password2: '',
+            errors: []
+        };
+    }
 
     changeCredentials = newCredentials => {
         switch (this.props.type) {
@@ -142,6 +151,18 @@ class NewCredentialsForm extends Component {
         return <div>
             <form className={classes.form} onSubmit={this.handleSubmit}>
                 <TextField
+                    label='Email'
+                    value={email}
+                    onChange={this.handleChange('email')}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                    required
+                    InputLabelProps={{
+                        shrink: !!email
+                    }}
+                />
+                <TextField
                     label='Логин'
                     value={login}
                     onChange={this.handleChange('login')}
@@ -178,18 +199,6 @@ class NewCredentialsForm extends Component {
                         shrink: !!password2
                     }}
                     type='password'
-                />
-                <TextField
-                    label='Email'
-                    value={email}
-                    onChange={this.handleChange('email')}
-                    margin='normal'
-                    variant='outlined'
-                    fullWidth
-                    required
-                    InputLabelProps={{
-                        shrink: !!email
-                    }}
                 />
                 <Button variant='contained' color='primary' type='submit' fullWidth>
                     Сменить

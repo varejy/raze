@@ -77,6 +77,7 @@ class Credentials extends Component {
             login: '',
             password: ''
         },
+        user: {},
         activeStep: 0,
         authFailed: false,
         newCredentialsErrors: []
@@ -92,7 +93,15 @@ class Credentials extends Component {
         case 0:
             return this.renderAuthenticationForm();
         case 1:
-            return <NewCredentialsForm type='authentication' authentication={this.state.authentication} onDone={this.props.logout} />;
+            return <NewCredentialsForm
+                type='authentication'
+                initial={{
+                    email: this.state.user.email,
+                    login: this.state.user.login
+                }}
+                authentication={this.state.authentication}
+                onDone={this.props.logout}
+            />;
         }
     };
 
@@ -116,13 +125,12 @@ class Credentials extends Component {
         };
 
         this.props.authenticate(credentials)
-            .then(() => {
+            .then(({ user }) => {
                 this.setState({
                     activeStep: 1,
-                    newCredentials: {
-                        login,
-                        password: '',
-                        password2: ''
+                    user: {
+                        login: user.login,
+                        email: user.email
                     }
                 });
             })

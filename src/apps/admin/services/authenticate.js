@@ -14,6 +14,8 @@ export default function authenticate (credentials) {
         .then(payload => {
             localStorage.setItem(TOKEN_LOCAL_STORAGE_NAME, payload.token);
 
-            return dispatch(authenticateAction(true));
+            dispatch(authenticateAction(true));
+
+            return payload;
         });
 }
