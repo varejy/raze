@@ -18,6 +18,10 @@ export function authenticate (req, res) {
 
     getAdminByLogin(login)
         .then((admin) => {
+            if (!admin) {
+                return res.status(FORBIDDEN_STATUS_CODE).end();
+            }
+
             if (admin.password !== md5(password)) {
                 return res.status(FORBIDDEN_STATUS_CODE).end();
             }
@@ -63,6 +67,10 @@ export function recover (req, res) {
 
     getAdminByEmail(email)
         .then(admin => {
+            if (!admin) {
+                return res.status(FORBIDDEN_STATUS_CODE).end();
+            }
+
             jsonwebtoken.sign(admin.toJSON(), privateKey, {
                 algorithm: 'RS256',
                 expiresIn: '24h'
@@ -73,7 +81,7 @@ export function recover (req, res) {
 
                 const subject = 'Восстановление учетной записи';
                 const host = req.get('host');
-                const recoveryUrl = `${req.protocol}://${host}/admin/recovery?token=${token}`;
+                const recoveryUrl = `${req.protocol}://${host}/admin/recovery?recovery-token=${token}&&email=${admin.email}`;
                 const successCallback = () => res.sendStatus(OKEY_STATUS_CODE);
                 const failureCallback = () => res.sendStatus(SERVER_ERROR_STATUS_CODE);
 
@@ -85,8 +93,36 @@ export function recover (req, res) {
         });
 }
 
+export function checkRecoveryToken (req, res) {
+    const { token, email } = req.query;
+
+    if (!token || !email) {
+        return res.status(FORBIDDEN_STATUS_CODE).end();
+    }
+
+    getAdminByEmail(email)
+        .then((admin) => {
+            if (!admin) {
+                return res.status(FORBIDDEN_STATUS_CODE).end();
+            }
+
+            jsonwebtoken.verify(token, publicKey, {
+                algorithm: 'RS256'
+            }, err => {
+                if (err) {
+                    return res.status(FORBIDDEN_STATUS_CODE).end();
+                }
+
+                res.status(OKEY_STATUS_CODE).end();
+            });
+        })
+        .catch(() => {
+            res.status(FORBIDDEN_STATUS_CODE).end();
+        });
+}
+
 export function changeCredentials (req, res) {
-    const { oldCredentials, newCredentials } = req.body;
+    const { oldCredentials = {}, newCredentials = {} } = req.body;
 
     getAdminByLogin(oldCredentials.login)
         .then((admin) => {
@@ -106,6 +142,41 @@ export function changeCredentials (req, res) {
                 .catch(() => {
                     res.status(SERVER_ERROR_STATUS_CODE).end();
                 });
+        })
+        .catch(() => {
+            res.status(FORBIDDEN_STATUS_CODE).end();
+        });
+}
+
+export function changeRecoveryCredentials (req, res) {
+    const { recovery = {}, newCredentials = {} } = req.body;
+
+    getAdminByEmail(recovery.email)
+        .then((admin) => {
+            if (!admin) {
+                return res.status(FORBIDDEN_STATUS_CODE).end();
+            }
+
+            jsonwebtoken.verify(recovery.token, publicKey, {
+                algorithm: 'RS256'
+            }, err => {
+                if (err) {
+                    return res.status(FORBIDDEN_STATUS_CODE).end();
+                }
+
+                changeCredentialsQuery({
+                    login: newCredentials.login,
+                    password: md5(newCredentials.password),
+                    email: newCredentials.email,
+                    id: admin.id
+                })
+                    .then(() => {
+                        res.status(OKEY_STATUS_CODE).end();
+                    })
+                    .catch(() => {
+                        res.status(SERVER_ERROR_STATUS_CODE).end();
+                    });
+            });
         })
         .catch(() => {
             res.status(FORBIDDEN_STATUS_CODE).end();

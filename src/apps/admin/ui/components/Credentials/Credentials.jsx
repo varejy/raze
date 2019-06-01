@@ -11,16 +11,14 @@ import TextField from '@material-ui/core/TextField';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import ErrorIcon from '@material-ui/icons/Error';
 import Snackbar from '@material-ui/core/Snackbar';
-import Typography from '@material-ui/core/Typography';
+
+import NewCredentialsForm from '../NewCredentialsForm/NewCredentialsForm.jsx';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import { connect } from 'react-redux';
 import logout from '../../../services/logout';
 import authenticate from '../../../services/authenticate';
-import changeCredentials from '../../../services/changeCredentials';
-
-const EMAIL_PATTERN = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i; // eslint-disable-line no-control-regex, no-useless-escape, max-len
 
 const materialStyles = (theme) => ({
     root: {
@@ -57,25 +55,19 @@ const materialStyles = (theme) => ({
     },
     margin: {
         margin: theme.spacing.unit
-    },
-    errorPoint: {
-        marginTop: '10px',
-        fontSize: '14px'
     }
 });
 
 const mapDispatchToProps = (dispatch) => ({
     logout: payload => dispatch(logout(payload)),
-    authenticate: payload => dispatch(authenticate(payload)),
-    changeCredentials: (...payload) => dispatch(changeCredentials(...payload))
+    authenticate: payload => dispatch(authenticate(payload))
 });
 
 class Credentials extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         logout: PropTypes.func.isRequired,
-        authenticate: PropTypes.func.isRequired,
-        changeCredentials: PropTypes.func.isRequired
+        authenticate: PropTypes.func.isRequired
     };
 
     static defaultProps = {};
@@ -85,37 +77,9 @@ class Credentials extends Component {
             login: '',
             password: ''
         },
-        newCredentials: {
-            login: '',
-            password: '',
-            password2: ''
-        },
         activeStep: 0,
         authFailed: false,
         newCredentialsErrors: []
-    };
-
-    newCredentialsValidators = [
-        // ({ login }) => /[а-яА-Я]/g.test(login) ? 'Логин не должен содержать кириллицу' : null,
-        // ({ login }) => / /g.test(login) ? 'Логин не должен содержать пробелов' : null,
-        // ({ password }) => password.length >= 8 ? null : 'Длина пароля должна быть не меньше восьми',
-        // ({ password }) => /[а-яА-Я]/g.test(password) ? 'Пароль не должен содержать кириллицу' : null,
-        // ({ password }) => / /g.test(password) ? 'Пароль не должен содержать пробелов' : null,
-        // ({ password }) => /[0-9]/g.test(password) ? null : 'В пароле должны использоваться цифры',
-        // ({ password, password2 }) => password === password2 ? null : 'Пароли должны совпадать',
-        // ({ email }) => EMAIL_PATTERN.test(email) ? null : 'Введите валидный имейл'
-    ];
-
-    validateCredentials = credentials => {
-        const errors = [];
-
-        this.newCredentialsValidators.forEach(validator => {
-            const error = validator(credentials);
-
-            error && errors.push(error);
-        });
-
-        return errors;
     };
 
     getSteps = () => [
@@ -128,7 +92,7 @@ class Credentials extends Component {
         case 0:
             return this.renderAuthenticationForm();
         case 1:
-            return this.renderNewCredentialsForm();
+            return <NewCredentialsForm type='authentication' authentication={this.state.authentication} onDone={this.props.logout} />;
         }
     };
 
@@ -136,15 +100,6 @@ class Credentials extends Component {
         this.setState({
             authentication: {
                 ...this.state.authentication,
-                [credential]: event.target.value
-            }
-        });
-    };
-
-    handleNewCredentialsChange = credential => event => {
-        this.setState({
-            newCredentials: {
-                ...this.state.newCredentials,
                 [credential]: event.target.value
             }
         });
@@ -178,49 +133,6 @@ class Credentials extends Component {
                         password: ''
                     },
                     authFailed: true
-                });
-            });
-    };
-
-    handleNewCredentialsSubmit = () => {
-        event.preventDefault();
-
-        const { newCredentials: { login, password, password2, email }, authentication } = this.state;
-        const newCredentials = {
-            login: login.trim(),
-            password: password.trim(),
-            email: email.trim()
-        };
-        const errors = this.validateCredentials({
-            ...newCredentials,
-            password2: password2.trim()
-        });
-
-        this.setState({
-            newCredentialsErrors: errors
-        });
-
-        if (errors.length) {
-            return;
-        }
-
-        this.props.changeCredentials({
-            oldCredentials: {
-                login: authentication.login.trim(),
-                password: authentication.password.trim()
-            },
-            newCredentials
-        })
-            .then(() => {
-                this.props.logout();
-            })
-            .catch(() => {
-                this.setState({
-                    authentication: {
-                        login,
-                        password: '',
-                        password2: ''
-                    }
                 });
             });
     };
@@ -285,70 +197,6 @@ class Credentials extends Component {
                     }
                 />
             </Snackbar>
-        </div>;
-    };
-
-    renderNewCredentialsForm = () => {
-        const { classes } = this.props;
-        const { newCredentials, newCredentialsErrors } = this.state;
-
-        return <div>
-            <form className={classes.form} onSubmit={this.handleNewCredentialsSubmit}>
-                <TextField
-                    label='Логин'
-                    value={newCredentials.login}
-                    onChange={this.handleNewCredentialsChange('login')}
-                    margin='normal'
-                    variant='outlined'
-                    fullWidth
-                    InputLabelProps={{
-                        shrink: !!newCredentials.login
-                    }}
-                    required
-                />
-                <TextField
-                    label='Пароль'
-                    value={newCredentials.password}
-                    onChange={this.handleNewCredentialsChange('password')}
-                    margin='normal'
-                    variant='outlined'
-                    fullWidth
-                    required
-                    InputLabelProps={{
-                        shrink: !!newCredentials.password
-                    }}
-                    type='password'
-                />
-                <TextField
-                    label='Повторите пароль'
-                    value={newCredentials.password2}
-                    onChange={this.handleNewCredentialsChange('password2')}
-                    margin='normal'
-                    variant='outlined'
-                    fullWidth
-                    required
-                    InputLabelProps={{
-                        shrink: !!newCredentials.password2
-                    }}
-                    type='password'
-                />
-                <TextField
-                    label='Email'
-                    value={newCredentials.email}
-                    onChange={this.handleNewCredentialsChange('email')}
-                    margin='normal'
-                    variant='outlined'
-                    fullWidth
-                    required
-                    InputLabelProps={{
-                        shrink: !!newCredentials.email
-                    }}
-                />
-                <Button variant='contained' color='primary' type='submit' fullWidth>
-                    Сменить
-                </Button>
-                { newCredentialsErrors.map((error, i) => <Typography className={classes.errorPoint} color='error' key={i}>&bull; {error}</Typography>) }
-            </form>
         </div>;
     };
 

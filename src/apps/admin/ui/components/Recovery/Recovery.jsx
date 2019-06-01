@@ -1,174 +1,52 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import classNames from 'classnames';
+import queryString from 'query-string';
 
-import { connect } from 'react-redux';
+import RecoveryForm from '../RecoveryForm/RecoveryForm.jsx';
+import RecoveryResult from '../RecoveryResult/RecoveryResult.jsx';
 
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Snackbar from '@material-ui/core/Snackbar';
-import SnackbarContent from '@material-ui/core/SnackbarContent';
-import ErrorIcon from '@material-ui/icons/Error';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import green from '@material-ui/core/colors/green';
 import { withStyles } from '@material-ui/core/styles';
 
-import recover from '../../../services/recover';
+import { withRouter } from 'react-router-dom';
 
-const materialStyles = theme => ({
+const materialStyles = {
     root: {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    buttons: {
-        display: 'flex',
-        justifyContent: 'space-between'
-    },
-    successBlock: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '110px'
-    },
-    success: {
-        backgroundColor: green[600]
-    },
-    error: {
-        backgroundColor: theme.palette.error.dark
-    },
-    icon: {
-        fontSize: 20
-    },
-    iconVariant: {
-        opacity: 0.9,
-        marginRight: theme.spacing.unit
-    },
-    message: {
-        display: 'flex',
-        alignItems: 'center'
-    },
-    margin: {
-        margin: theme.spacing.unit
     }
-});
+};
 
-const mapDispatchToProps = (dispatch) => ({
-    recover: payload => dispatch(recover(payload))
-});
-
-class Authentication extends Component {
+class Recovery extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
-        recover: PropTypes.func.isRequired
+        location: PropTypes.object
     };
 
-    state = {
-        email: '',
-        wrongEmail: false,
-        success: false
+    static defaultProps = {
+        location: {}
     };
 
-    handleChange = credential => event => {
-        this.setState({
-            [credential]: event.target.value
-        });
-    };
+    constructor (...args) {
+        super(...args);
 
-    handleSubmit = (event) => {
-        event.preventDefault();
+        const { location: { search } } = this.props;
+        const query = queryString.parse(search);
 
-        const { email } = this.state;
-
-        this.props.recover(email)
-            .then(() => this.setState({
-                success: true
-            }))
-            .catch(() => this.setState({
-                wrongEmail: true
-            }));
-    };
-
-    handleHideFailMessage = () => {
-        this.setState({
-            wrongEmail: false
-        });
-    };
-
-    renderContent = () => {
-        const { classes } = this.props;
-        const { email, wrongEmail, success } = this.state;
-
-        if (success) {
-            return <div className={classes.successBlock}>
-                <SnackbarContent
-                    className={classNames(classes.success, classes.margin)}
-                    message={
-                        <span id='client-snackbar' className={classes.message}>
-                            <CheckCircleIcon className={classNames(classes.icon, classes.iconVariant)} />
-                            Вы ввели неправильный логин или пароль
-                        </span>
-                    }
-                />
-                <Button variant='contained' color='default' href='/admin'>
-                    Перейти на главную
-                </Button>
-            </div>;
-        }
-
-        return <form onSubmit={this.handleSubmit}>
-            <Typography variant='h5'>Восстановление учетной записи</Typography>
-            <TextField
-                label='Email'
-                value={email}
-                onChange={this.handleChange('email')}
-                margin='normal'
-                variant='outlined'
-                fullWidth
-                required
-            />
-            <div className={classes.buttons}>
-                <Button variant='contained' color='default' href='/admin'>
-                    Перейти на главную
-                </Button>
-                <Button variant='contained' color='primary' type='submit'>
-                    Восстановить
-                </Button>
-            </div>
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right'
-                }}
-                onClose={this.handleHideFailMessage}
-                open={wrongEmail}
-                autoHideDuration={2000}
-            >
-                <SnackbarContent
-                    className={classNames(classes.error, classes.margin)}
-                    message={
-                        <span id='client-snackbar' className={classes.message}>
-                            <ErrorIcon className={classNames(classes.icon, classes.iconVariant)} />
-                            Вы ввели неправильный логин или пароль
-                        </span>
-                    }
-                />
-            </Snackbar>
-        </form>;
-    };
+        this.recoveryToken = query['recovery-token'];
+        this.email = query.email;
+    }
 
     render () {
         const { classes } = this.props;
 
         return <div className={classes.root}>
-            {this.renderContent()}
+            {!this.recoveryToken ? <RecoveryForm /> : <RecoveryResult token={this.recoveryToken} email={this.email} />}
         </div>;
     }
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(materialStyles)(Authentication));
+export default withRouter(withStyles(materialStyles)(Recovery));
