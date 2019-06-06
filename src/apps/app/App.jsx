@@ -6,8 +6,9 @@ import '../../../client/vendor';
 import '../../css/main.css';
 
 import MainPage from './ui/pages/MainPage/MainPage.jsx';
+import ProductsPage from './ui/pages/ProductsPage/ProductsPage.jsx';
 
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 
 @media
 class App extends Component {
@@ -15,9 +16,10 @@ class App extends Component {
         return <main>
             <Switch>
                 <Route exact path='/' component={MainPage} />
+                <Route path='/ProductsPage' component={ProductsPage} />
             </Switch>
         </main>;
     }
 }
 
-export default App;
+export default withRouter(App);
