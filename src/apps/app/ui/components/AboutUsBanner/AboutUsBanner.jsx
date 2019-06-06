@@ -3,7 +3,9 @@ import styles from './AboutUsBanner.css';
 
 class AboutUsBanner extends Component {
     render () {
-        return <section/>;
+        return <div className={styles.banner_container}>
+            <div/>
+        </div>;
     }
 }
 
