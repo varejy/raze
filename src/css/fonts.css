@@ -15,3 +15,9 @@
 
   src: url('./font/HelveticaNeueCyr-Bold.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: 'Montserrat';
+
+  src: url('./font/montserrat-black.ttf') format('truetype');
+}
