@@ -2,7 +2,7 @@ import jsonwebtoken from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
 
-import { OKEY_STATUS_CODE, FORBIDDEN_STATUS_CODE } from '../../../constants/constants';
+import { OKEY_STATUS_CODE, FORBIDDEN_STATUS_CODE } from '../../../../constants/constants';
 
 const publicKey = fs.readFileSync(path.resolve(__dirname, 'privateKeys/adminPublicKey.ppk'), 'utf8');
 

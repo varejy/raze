@@ -2,9 +2,9 @@ import jsonwebtoken from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
 
-import getRecoveryEmailTemplate from './templates/recoveryEmail';
+import getRecoveryEmailTemplate from '../templates/recoveryEmail';
 
-import { OKEY_STATUS_CODE, FORBIDDEN_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../constants/constants';
+import { OKEY_STATUS_CODE, FORBIDDEN_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
 import getAdminByEmail from '../queries/getAdminByEmail';
 import sendRecoveryEmail from '../queries/sendRecoveryEmail';
 
