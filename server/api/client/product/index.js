@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { getAvailableProducts } from './service';
+import getAvailableProducts from './services/getAvailableProducts';
 
 const router = express.Router();
 

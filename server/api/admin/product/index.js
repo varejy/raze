@@ -2,7 +2,12 @@ import express from 'express';
 
 import verification from '../../../middlewares/verification';
 
-import { getProducts, saveProduct, editProduct, deleteByIds, updateFiles, findProductsByName } from './service';
+import getProducts from './services/getProducts';
+import saveProduct from './services/saveProduct';
+import editProduct from './services/editProduct';
+import deleteByIds from './services/deleteByIds';
+import updateFiles from './services/updateFiles';
+import findProductsByName from './services/findProductsByName';
 
 const router = express.Router();
 

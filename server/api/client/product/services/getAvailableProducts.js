@@ -1,9 +1,8 @@
-import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../constants/constants';
-import {
-    getAllProducts
-} from './queries';
+import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
 
-export function getAvailableProducts (req, res) {
+import getAllProducts from '../queries/getAllProducts';
+
+export default function getAvailableProducts (req, res) {
     getAllProducts()
         .then(products => {
             const availableProducts = products.map(product => !product.hidden);
