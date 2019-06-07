@@ -1,7 +1,4 @@
-﻿*{
-    outline: none;
-}
-.banner_container{
+﻿.bannerContainer{
     width: 100%;
     background-color: #ffffff;
     display: flex;
@@ -15,11 +12,11 @@
     width: 100%;
     min-width: 1170px;
     max-width: 1438px;
-    background-image: url('../../../../../../client/images/about-us-image.jpg');
+    background-image: url('/src/apps/app/ui/components/AboutUsBanner/images/aboutUsImage.jpg');
     background-size: cover;
     margin: 0 auto;
 }
-.banner_header{
+.bannerHeader{
     text-transform: uppercase;
     font-family: MontserratBold;
     font-size: 23px;
@@ -31,7 +28,7 @@
     justify-content: center;
     padding: 66px 0;
 }
-.banner_text{
+.bannerText{
     font-family: MontserratRegular;
     font-size: 11px;
     line-height: 28px;
@@ -43,7 +40,7 @@
     margin: 0 auto 30px auto;
     width: 816px;
 }
-.banner_button button{
+.readMoreButton{
     text-transform: uppercase;
     background: none;
     border: 2px solid #ffffff;
@@ -54,8 +51,10 @@
     line-height: 24px;
     letter-spacing: 0.8px;
     color: #ffffff;
+    outline: none;
+    cursor: pointer;
 }
-.banner_button{
+.bannerButton{
     display: flex;
     align-items: center;
     justify-content: center;
