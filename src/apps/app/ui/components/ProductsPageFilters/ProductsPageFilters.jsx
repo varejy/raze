@@ -1,72 +1,36 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
-import styles from './ProductsPageFilters.css';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import ProductsPageFilter from '../ProductsPageFilter/ProductsPageFilter';
 
 class ProductsPageFilters extends Component {
+    static propTypes = {
+        filtersNav: PropTypes.array.isRequired
+    };
+
+    static defaultProps = {
+        filtersNav: []
+    };
     render () {
-        return <section className={styles.filterWrapper}>
-            <div className={styles.filterWrapp}>
-                <div className={styles.filter}>
-                    <h3 className={classNames(styles.filterName, styles.filterTxt)}>Производители</h3>
-                    <ul>
-                        <li className={styles.filterOption}>
-                            <label className="filterCheckbox">
-                                <input className={styles.filterCheckbox} type='checkbox'/>
-                                <p className={classNames(styles.filterOptionTxt, styles.filterTxt)}>EMERSON</p>
-                            </label>
-                        </li>
-                        <li className={styles.filterOption}>
-                            <label className="filterCheckbox">
-                                <input className={styles.filterCheckbox} type='checkbox'/>
-                                <p className={classNames(styles.filterOptionTxt, styles.filterTxt)}>EMERSON</p>
-                            </label>
-                        </li>
-                        <li className={styles.filterOption}>
-                            <label className="filterCheckbox">
-                                <input className={styles.filterCheckbox} type='checkbox'/>
-                                <p className={classNames(styles.filterOptionTxt, styles.filterTxt)}>EMERSON</p>
-                            </label>
-                        </li>
-                        <li className={styles.filterOption}>
-                            <label className="filterCheckbox">
-                                <input className={styles.filterCheckbox} type='checkbox'/>
-                                <p className={classNames(styles.filterOptionTxt, styles.filterTxt)}>EMERSON</p>
-                            </label>
-                        </li>
-                    </ul>
-                </div>
-                <div className={classNames(styles.filter, styles.filterTxt)}>
-                    <h3 className={styles.filterName}>Производители</h3>
-                    <ul>
-                        <li className={styles.filterOption}>
-                            <label className="filterCheckbox">
-                                <input className={styles.filterCheckbox} type='checkbox'/>
-                                <p className={classNames(styles.filterOptionTxt, styles.filterTxt)}>EMERSON</p>
-                            </label>
-                        </li>
-                        <li className={styles.filterOption}>
-                            <label className="filterCheckbox">
-                                <input className={styles.filterCheckbox} type='checkbox'/>
-                                <p className={classNames(styles.filterOptionTxt, styles.filterTxt)}>EMERSON</p>
-                            </label>
-                        </li>
-                        <li className={styles.filterOption}>
-                            <label className="filterCheckbox">
-                                <input className={styles.filterCheckbox} type='checkbox'/>
-                                <p className={classNames(styles.filterOptionTxt, styles.filterTxt)}>EMERSON</p>
-                            </label>
-                        </li>
-                        <li className={styles.filterOption}>
-                            <label className="filterCheckbox">
-                                <input className={styles.filterCheckbox} type='checkbox'/>
-                                <p className={classNames(styles.filterOptionTxt, styles.filterTxt)}>EMERSON</p>
-                            </label>
-                        </li>
-                    </ul>
-                </div>
+        const { filtersNav } = this.props;
+        return <section>
+            <div>
+                {
+                    filtersNav.map((filter, i) => {
+                        return (
+                            <ProductsPageFilter key={i} title={filter.name} options={filter.options}/>
+                        );
+                    })
+                }
             </div>
         </section>;
     }
 }
+const mapStateToProps = ({ filters }) => {
+    return {
+        filtersNav: filters.filtersNav
+    };
+};
 
-export default ProductsPageFilters;
+export default connect(mapStateToProps)(ProductsPageFilters);

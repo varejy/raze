@@ -1,33 +1,22 @@
-.filterWrapper{
-
-}
-.filterWrapp{
-
-}
 .filter{
     margin-bottom: 45px
 }
-ul {
+.ul {
     margin-top: 23px;
 }
 .filterTxt{
     font-family: Montserrat, arial;
     font-weight: bold;
-    font-style: normal;
-    font-stretch: normal;
-    letter-spacing: normal;
     text-align: left;
     color: #232323;
 }
 .filterName{
-    width: 118px;
-    height: 13px;
     font-size: 14px;
-    line-height: 0.57;
 }
-label {
+.label {
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 .filterOption{
     display: flex;
@@ -35,42 +24,31 @@ label {
     margin-top: 19px;
 }
 .filterOptionTxt{
-    width: 51px;
-    height: 7px;
     font-size: 10px;
-    line-height: 0.7;
     margin-left: 14px;
 }
-.filterCheckbox:not(checked){
+.filterCheckbox {
     width: 8px;
     height: 8px;
     border: solid 1px #000000;
     background-color: transparent;
-    margin: 0px 0px;
+    margin: 0 0;
     -webkit-appearance: button;
+    outline: -webkit-focus-ring-color auto 0;
+}
+.filterCheckbox:not(checked){
+    border: solid 1px #000000;
+    background-color: transparent;
 }
 .filterCheckbox:checked{
-    width: 8px;
-    height: 8px;
     border: solid 1px #bababa;
     background-color: #00a046;
-    margin: 0px 0px;
-    -webkit-appearance: button;
 }
-
 .filterCheckbox:not(checked) + .filterOptionTxt::before {
-    width: 8px;
-    height: 8px;
     border: solid 1px #000000;
     background-color: transparent;
-    margin: 0px 0px;
-    -webkit-appearance: button;
 }
 .filterCheckbox:checked + .filterOptionTxt::after {
-    width: 8px;
-    height: 8px;
     border: solid 1px #bababa;
     background-color: #00a046;
-    margin: 0px 0px;
-    -webkit-appearance: button;
 }
