@@ -7,11 +7,11 @@ import {
     saveCategory as saveCategoryQuery,
     editCategory as editCategoryQuery,
     deleteByIds as deleteByIdsQuery
-} from './queries';
+} from '../../client/category/queries';
 import {
     nullifyCategories,
     hideProductsByCategory
-} from '../product/queries';
+} from '../../client/product/queries';
 
 export function getCategories (req, res) {
     getAllCategories()

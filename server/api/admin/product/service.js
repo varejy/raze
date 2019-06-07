@@ -8,7 +8,7 @@ import {
     editProduct as editProductQuery,
     deleteByIds as deleteByIdsQuery,
     findProductsByName as findProductsByNameQuery
-} from './queries';
+} from '../../client/product/queries';
 import multipart from '../../../helpers/multipart';
 
 import noop from '@tinkoff/utils/function/noop';

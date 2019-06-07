@@ -14,6 +14,9 @@ import adminAuthenticationApi from './api/admin/authentication';
 import adminCategoryApi from './api/admin/category';
 import adminProductApi from './api/admin/product';
 import adminMainSliderApi from './api/admin/mainSlider';
+import categoryCategoryApi from './api/client/category';
+import categoryProductApi from './api/client/product';
+import categoryMainSliderApi from './api/client/mainSlider';
 
 import { DATABASE_URL } from './constants/constants';
 import actions from './actions';
@@ -50,6 +53,9 @@ app.use('/api/admin/authentication', adminAuthenticationApi);
 app.use('/api/admin/category', adminCategoryApi);
 app.use('/api/admin/product', adminProductApi);
 app.use('/api/admin/main-slider', adminMainSliderApi);
+app.use('/api/client/category', categoryCategoryApi);
+app.use('/api/client/product', categoryProductApi);
+app.use('/api/client/main-slider', categoryMainSliderApi);
 
 // admin
 app.get(/^\/admin/, function (req, res) {
