@@ -1,1 +1,31 @@
-﻿
+﻿.carousel {
+    overflow: hidden;
+    height: 480px;
+    width: 100%;
+    position: relative;
+}
+.dots_container{
+    position: absolute;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom: 32px;
+    left: 0;
+}
+.carousel_dots{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 114px;
+}
+.dot_button{
+    display: inline-block;
+    height: 22px;
+    width: 22px;
+    border-radius: 50%;
+    background-color: #ffffff;
+}
+.active{
+    background-color: #00a046;
+}
