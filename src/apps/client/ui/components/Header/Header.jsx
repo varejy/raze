@@ -11,7 +11,7 @@ class Header extends Component {
                 </div>
                 <div className={styles.searchForm}>
                     <input className={styles.searchFormInput} value='Поиск продуктов...'/>
-                    <button className={styles.searchFormIcon}><img src='/src/apps/app/ui/components/Header/images/search.png' alt=''/></button>
+                    <button className={styles.searchFormIcon}><img src='/src/apps/client/ui/components/Header/images/search.png' alt=''/></button>
                 </div>
                 <div className={styles.contactsWrapper}>
                     <div className={styles.contacts}>
@@ -21,15 +21,15 @@ class Header extends Component {
                         <div className={styles.tollEmail}>
                             <div className={styles.toll}>
                                 <div className={styles.iconWrapper}>
-                                    <img className={styles.iconPhone} src='/src/apps/app/ui/components/Header/images/iPhone.png' alt=''/>
-                                    <img className={styles.colorElement} src='/src/apps/app/ui/components/Header/images/colorElement1.png' alt=''/>
+                                    <img className={styles.iconPhone} src='/src/apps/client/ui/components/Header/images/iPhone.png' alt=''/>
+                                    <img className={styles.colorElement} src='/src/apps/client/ui/components/Header/images/colorElement1.png' alt=''/>
                                 </div>
                                 <a href="tel:+38 (044) 232 13 14" className={styles.link}>+38 (044) 232 13 14</a>
                             </div>
                             <div className={styles.email}>
                                 <div className={styles.iconWrapper}>
-                                    <img className={styles.iconMail} src='/src/apps/app/ui/components/Header/images/mail.png' alt=''/>
-                                    <img className={styles.colorElement} src='/src/apps/app/ui/components/Header/images/colorElement2.png' alt=''/>
+                                    <img className={styles.iconMail} src='/src/apps/client/ui/components/Header/images/mail.png' alt=''/>
+                                    <img className={styles.colorElement} src='/src/apps/client/ui/components/Header/images/colorElement2.png' alt=''/>
                                 </div>
                                 <a href="mailto:info@oneblade.org" className={styles.link}>info@oneblade.org</a>
                             </div>
@@ -48,10 +48,10 @@ class Header extends Component {
                 </div>
                 <div className={styles.likesBasket}>
                     <div className={styles.bottomIconWrapper}>
-                        <img className={styles.iconHeart} src='/src/apps/app/ui/components/Header/images/likeHeart.png' alt=''/>
+                        <img className={styles.iconHeart} src='/src/apps/client/ui/components/Header/images/likeHeart.png' alt=''/>
                     </div>
                     <div className={styles.bottomIconWrapper}>
-                        <img className={styles.iconBasket} src='/src/apps/app/ui/components/Header/images/basket.png' alt=''/>
+                        <img className={styles.iconBasket} src='/src/apps/client/ui/components/Header/images/basket.png' alt=''/>
                         <div className={styles.ordersCounter}><span className={styles.ordersNumber}>3</span></div>
                     </div>
                 </div>

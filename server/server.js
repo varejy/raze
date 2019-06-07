@@ -17,14 +17,14 @@ import adminMainSliderApi from './api/admin/mainSlider';
 
 import { DATABASE_URL } from './constants/constants';
 import actions from './actions';
-import getStore from '../src/apps/app/store/getStore';
-import renderAppPage from '../src/apps/app/html';
+import getStore from '../src/apps/client/store/getStore';
+import renderAppPage from '../src/apps/client/html';
 import renderAdminPage from '../src/apps/admin/html';
 
 import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router-dom';
 import Helmet from 'react-helmet';
-import App from '../src/apps/app/App.jsx';
+import App from '../src/apps/client/App.jsx';
 
 const rootPath = path.resolve(__dirname, '..');
 const PORT = process.env.PORT || 3000;
