@@ -162,12 +162,16 @@
     font-size: 11px;
     color: #ffffff;
     cursor: pointer;
+    text-decoration: none;
+
+    &:not(:first-child) {
+         margin-left: 85px;
+    }
 }
 .menuList{
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
-    width: 437px;
     padding: 25px 0;
 }
 .likesBasket{

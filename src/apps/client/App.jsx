@@ -35,10 +35,10 @@ class App extends Component {
         return <main>
             <Switch>
                 <Route exact path='/' component={MainPage} />
-                { categories.map((category, i) => <Route key={i} path='/ProductsPage' component={ProductsPage} />) }
+                { categories.map((category, i) => <Route exact key={i} path={`/${category.path}`} component={ProductsPage} />) }
             </Switch>
         </main>;
     }
 }
 
-export default connect(mapStateToProps)(withRouter(App));
+export default withRouter(connect(mapStateToProps)(App));

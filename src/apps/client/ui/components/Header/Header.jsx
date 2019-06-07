@@ -1,8 +1,30 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import { connect } from 'react-redux';
+
+import { Link } from 'react-router-dom';
+
 import styles from './Header.css';
 
+const mapStateToProps = ({ application }) => {
+    return {
+        categories: application.categories
+    };
+};
+
 class Header extends Component {
+    static propTypes = {
+        categories: PropTypes.array
+    };
+
+    static defaultProps = {
+        categories: []
+    };
+
     render () {
+        const { categories } = this.props;
+
         return <div className={styles.headerContainer}>
             <div className={styles.headerTop}>
                 <div className={styles.logo}>
@@ -10,7 +32,7 @@ class Header extends Component {
                     <span className={styles.logoRight}>Your<br/>knife<br/><span className={styles.logoGreen}>world</span></span>
                 </div>
                 <div className={styles.searchForm}>
-                    <input className={styles.searchFormInput} value='Поиск продуктов...'/>
+                    <input defaultValue='' className={styles.searchFormInput} placeholder='Поиск продуктов...'/>
                     <button className={styles.searchFormIcon}><img src='/src/apps/client/ui/components/Header/images/search.png' alt=''/></button>
                 </div>
                 <div className={styles.contactsWrapper}>
@@ -40,10 +62,7 @@ class Header extends Component {
             <div className={styles.headerBottom}>
                 <div className={styles.menu}>
                     <ul className={styles.menuList}>
-                        <li className={styles.menuListCategory}>Ножи</li>
-                        <li className={styles.menuListCategory}>Топоры</li>
-                        <li className={styles.menuListCategory}>Точила</li>
-                        <li className={styles.menuListCategory}>Аксессуары</li>
+                        { categories.map((category, i) => <Link className={styles.menuListCategory} key={i} to={`/${category.path}`}>{category.name}</Link>) }
                     </ul>
                 </div>
                 <div className={styles.likesBasket}>
@@ -60,4 +79,4 @@ class Header extends Component {
     }
 }
 
-export default Header;
+export default connect(mapStateToProps)(Header);
