@@ -4,7 +4,7 @@ import getAllCategories from '../queries/getAllCategories';
 export default function getAvailableCategories (req, res) {
     getAllCategories()
         .then(categories => {
-            const availableCategories = categories.map(category => !category.hidden);
+            const availableCategories = categories.filter(category => !category.hidden);
 
             res.status(OKEY_STATUS_CODE).send(availableCategories);
         })

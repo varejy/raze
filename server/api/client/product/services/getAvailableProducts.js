@@ -5,7 +5,7 @@ import getAllProducts from '../queries/getAllProducts';
 export default function getAvailableProducts (req, res) {
     getAllProducts()
         .then(products => {
-            const availableProducts = products.map(product => !product.hidden);
+            const availableProducts = products.filter(product => !product.hidden);
 
             res.status(OKEY_STATUS_CODE).send(availableProducts);
         })
