@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { getSlider } from './service';
+import getSlider from './services/getSlider';
 
 const router = express.Router();
 
