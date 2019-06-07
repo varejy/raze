@@ -5,7 +5,7 @@ const filtersNav = [
         options: [
             'EMERSON',
             'COLD STEEL',
-            'STEILES STEEL',
+            'STEINLES STEEL',
             'GANZO FIREBIRD'
         ]
     },

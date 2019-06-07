@@ -1,0 +1,39 @@
+.root{
+    width: 932px;
+    margin-left: 89px;
+}
+.productsFilter{
+    display: flex;
+    height: 17px;
+    justify-content: flex-end;
+}
+.filter{
+    display: flex;
+    justify-content: space-between;
+    max-width: 340px;
+    width: 340px;
+    font-family: Montserrat-Medium, arial;
+    font-size: 14px;
+    color: #232323;
+}
+.filterWrapp{
+    display: flex;
+    justify-content: space-between;
+    font-family: Montserrat-Bold, arial;
+    max-width: 230px;
+    width: 219px;
+    padding-left: 27px;
+    font-weight: bold;
+}
+
+.filterItem{
+    cursor: pointer;
+}
+.filterItem:hover {
+    border-bottom: #00a651 solid 5px;
+}
+.productsWrapper{
+   display: flex;
+   flex-wrap: wrap;
+   margin-top: 90px
+}
