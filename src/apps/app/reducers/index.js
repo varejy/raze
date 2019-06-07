@@ -1,11 +1,9 @@
 import { combineReducers } from 'redux';
 
 import application from './application';
-import filters from './filters';
 
 const reducers = combineReducers({
-    application,
-    filters
+    application
 });
 
 export default reducers;

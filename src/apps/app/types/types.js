@@ -1,3 +1,2 @@
 export const // eslint-disable-line one-var
-    SET_MEDIA_INFO = 'SET_MEDIA_INFO',
-    SET_FILTERS = 'SET_FILTERS';
+    SET_MEDIA_INFO = 'SET_MEDIA_INFO';

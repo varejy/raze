@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+
+import filtersNav from './filtersNav';
 
 import ProductsPageFilter from '../ProductsPageFilter/ProductsPageFilter';
 
@@ -12,12 +13,17 @@ class ProductsPageFilters extends Component {
     static defaultProps = {
         filtersNav: []
     };
+
+    state = {
+        filters: filtersNav
+    }
+
     render () {
-        const { filtersNav } = this.props;
+        const { filters } = this.state;
         return <section>
             <div>
                 {
-                    filtersNav.map((filter, i) => {
+                    filters.map((filter, i) => {
                         return (
                             <ProductsPageFilter key={i} title={filter.name} options={filter.options}/>
                         );
@@ -27,10 +33,4 @@ class ProductsPageFilters extends Component {
         </section>;
     }
 }
-const mapStateToProps = ({ filters }) => {
-    return {
-        filtersNav: filters.filtersNav
-    };
-};
-
-export default connect(mapStateToProps)(ProductsPageFilters);
+export default ProductsPageFilters;
