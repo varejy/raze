@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { getAvailableCategories } from './service';
+import getAvailableCategories from './services/getAvailableCategories';
 
 const router = express.Router();
 

@@ -1,9 +1,7 @@
-import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../constants/constants';
-import {
-    getAllCategories
-} from './queries';
+import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
+import getAllCategories from '../queries/getAllCategories';
 
-export function getAvailableCategories (req, res) {
+export default function getAvailableCategories (req, res) {
     getAllCategories()
         .then(categories => {
             const availableCategories = categories.map(category => !category.hidden);
