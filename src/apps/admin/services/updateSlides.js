@@ -1,7 +1,7 @@
 import request from 'superagent';
 import base from './base';
 
-import setMainSlider from '../actions/setMainSlider';
+import setMainSlides from '../actions/setMainSlides';
 
 import { TOKEN_LOCAL_STORAGE_NAME } from '../constants/constants';
 
@@ -14,7 +14,7 @@ export default function updateSlides (data) {
             .query({ token })
             .send(data)
     )
-        .then(slider => {
-            return dispatch(setMainSlider(slider));
+        .then(slides => {
+            return dispatch(setMainSlides(slides));
         });
 }

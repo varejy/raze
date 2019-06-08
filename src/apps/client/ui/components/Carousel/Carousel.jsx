@@ -1,25 +1,41 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import classNames from 'classnames';
+
+import { connect } from 'react-redux';
 
 import calcScrollbarWidth from 'scrollbar-width';
 
 import styles from './Carousel.css';
 
-const slides = [
-    { src: '/src/apps/client/ui/components/Carousel/images/slide1.png', title: 'SALE', description: 'New colors and creative prints!' },
-    { src: '/src/apps/client/ui/components/Carousel/images/slide2.png', title: '2019 NEW Collections', description: 'New colors and creative prints!' },
-    { src: '/src/apps/client/ui/components/Carousel/images/slide3.png', title: '2018 NEW Collections', description: 'New colors and creative prints!' }
-];
 const TIME_TO_NEXT_SWITCHING = 8000;
 const SWITCHING_DURATION = 800;
 
+const mapStateToProps = ({ application }) => {
+    return {
+        slides: application.mainSlides
+    };
+};
+
 class Carousel extends Component {
-    state = {
-        activeSlideIndex: 0
+    static propTypes = {
+        slides: PropTypes.array
     };
 
-    animation = false;
-    maxSlideIndex = slides.length - 1;
+    static defaultProps = {
+        slides: []
+    };
+
+    constructor (...args) {
+        super(...args);
+
+        this.animation = false;
+        this.maxSlideIndex = this.props.slides.length - 1;
+        this.state = {
+            activeSlideIndex: 0
+        };
+    }
 
     componentDidMount () {
         this.startSlider();
@@ -115,7 +131,7 @@ class Carousel extends Component {
     renderSlide = (slide, i) => <div className={styles.slide} key={i}>
         <div className={styles.imageWrapper}>
             <img
-                className={styles.image} src={slide.src}
+                className={styles.image} src={slide.path}
                 alt={`slide${i}`}
             />
         </div>
@@ -128,6 +144,7 @@ class Carousel extends Component {
     </div>;
 
     render () {
+        const { slides } = this.props;
         const { activeSlideIndex } = this.state;
 
         return <div className={styles.carousel}>
@@ -142,4 +159,4 @@ class Carousel extends Component {
     }
 }
 
-export default Carousel;
+export default connect(mapStateToProps)(Carousel);

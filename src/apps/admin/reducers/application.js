@@ -1,15 +1,13 @@
 import {
     SET_AUTHENTICATED,
     SET_CATEGORIES,
-    SET_MAIN_SLIDER
+    SET_MAIN_SLIDES
 } from '../types/types';
 
 const initialState = {
     authenticated: null,
     categories: [],
-    mainSlider: {
-        slides: []
-    }
+    mainSlides: []
 };
 
 export default function (state = initialState, action) {
@@ -18,8 +16,8 @@ export default function (state = initialState, action) {
         return { ...state, authenticated: action.payload };
     case SET_CATEGORIES:
         return { ...state, categories: action.payload };
-    case SET_MAIN_SLIDER:
-        return { ...state, mainSlider: action.payload };
+    case SET_MAIN_SLIDES:
+        return { ...state, mainSlides: action.payload };
     default:
         return state;
     }

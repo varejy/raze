@@ -1,19 +1,19 @@
 import request from 'superagent';
 import base from './base';
 
-import setMainSlider from '../actions/setMainSlider';
+import setMainSlides from '../actions/setMainSlides';
 
 import { TOKEN_LOCAL_STORAGE_NAME } from '../constants/constants';
 
-export default function getMainSlider () {
+export default function getMainSlides () {
     const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_NAME);
 
     return dispatch => base(
         request
-            .get('/api/client/main-slider')
+            .get('/api/client/main-slider/slides')
             .query({ token })
     )
-        .then(slider => {
-            return dispatch(setMainSlider(slider));
+        .then(slides => {
+            return dispatch(setMainSlides(slides));
         });
 }

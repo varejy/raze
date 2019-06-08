@@ -15,7 +15,7 @@ import WarningIcon from '@material-ui/icons/Warning';
 import { withStyles } from '@material-ui/core/styles';
 
 import { connect } from 'react-redux';
-import getMainSlider from '../../../services/getMainSlider';
+import getMainSlides from '../../../services/getMainSlides';
 import updateSlides from '../../../services/updateSlides';
 
 import map from '@tinkoff/utils/array/map';
@@ -24,8 +24,8 @@ import equal from '@tinkoff/utils/is/equal';
 import find from '@tinkoff/utils/array/find';
 import arrayMove from '../../../utils/arrayMove';
 
-const SLIDE_WIDTH = 720;
-const SLIDE_HEIGHT = 479;
+const SLIDE_WIDTH = 1500;
+const SLIDE_HEIGHT = 500;
 
 const checkWrongDimensions = slides => {
     const wrongFile = find(file => file.wrongDimensions, slides);
@@ -142,32 +142,32 @@ const SlidesPreviews = SortableContainer(({ slides, classes, ...rest }) =>
 
 const mapStateToProps = ({ application }) => {
     return {
-        slider: application.mainSlider
+        slides: application.mainSlides
     };
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    getMainSlider: payload => dispatch(getMainSlider(payload)),
+    getMainSlides: payload => dispatch(getMainSlides(payload)),
     updateSlides: payload => dispatch(updateSlides(payload))
 });
 
 class MainSlider extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
-        getMainSlider: PropTypes.func.isRequired,
+        getMainSlides: PropTypes.func.isRequired,
         updateSlides: PropTypes.func.isRequired,
-        slider: PropTypes.object
+        slides: PropTypes.array
     };
 
     static defaultProps = {
-        slider: {}
+        slides: []
     };
 
     constructor (...args) {
         super(...args);
 
         this.state = {
-            slides: this.props.slider.slides.map(slide => ({
+            slides: this.props.slides.map(slide => ({
                 path: slide.path || '/wrong-path',
                 showed: slide.showed
             })),
@@ -181,7 +181,7 @@ class MainSlider extends Component {
     }
 
     componentDidMount () {
-        this.props.getMainSlider()
+        this.props.getMainSlides()
             .then(() => {
                 this.setState({
                     loading: false
@@ -190,13 +190,13 @@ class MainSlider extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        if (nextProps.slider.slides !== this.props.slider.slides) {
+        if (nextProps.slides !== this.props.slides) {
             this.setState({
-                slides: nextProps.slider.slides,
+                slides: nextProps.slides,
                 disabled: true
             });
 
-            this.slidesPaths = nextProps.slider.slides.map(slide => slide.path);
+            this.slidesPaths = nextProps.slides.map(slide => slide.path);
         }
     }
 

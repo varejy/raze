@@ -36,7 +36,7 @@ export default function updateSlides (req, res) {
 
         updateSlider({ slides: resultSlides, id: SLIDER_ID })
             .then(slider => {
-                res.status(OKEY_STATUS_CODE).send(slider);
+                res.status(OKEY_STATUS_CODE).send(slider.slides);
             })
             .catch(() => {
                 resultSlides.forEach(slide => {
