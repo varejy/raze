@@ -1,5 +1,3 @@
-import uniqid from 'uniqid';
-
 import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
 
 import getAllProducts from '../../../client/product/queries/getAllProducts';
