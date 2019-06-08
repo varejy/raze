@@ -25,6 +25,7 @@
     left: 0;
     z-index: -1;
     width: 100vw;
+    display: flex;
 }
 
 .image {
@@ -32,8 +33,11 @@
 }
 
 .contentWrapper {
-    left: 0;
-    padding: 187px 130px;
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    transform: translate(0, -50%);
+    right: 130px;
     display: flex;
     justify-content: flex-end;
 }

@@ -5,13 +5,18 @@ import classNames from 'classnames';
 
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
+import MainSlideForm from '../MainSlideForm/MainSlideForm';
+
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import WarningIcon from '@material-ui/icons/Warning';
+import Modal from '@material-ui/core/Modal';
+import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 
 import { connect } from 'react-redux';
@@ -22,6 +27,7 @@ import map from '@tinkoff/utils/array/map';
 import remove from '@tinkoff/utils/array/remove';
 import equal from '@tinkoff/utils/is/equal';
 import find from '@tinkoff/utils/array/find';
+import noop from '@tinkoff/utils/function/noop';
 import arrayMove from '../../../utils/arrayMove';
 
 const SLIDE_WIDTH = 1500;
@@ -60,10 +66,16 @@ const materialStyles = theme => ({
         cursor: 'grab',
         '&:hover $fileItemDeleteContainer': {
             visibility: 'visible'
+        },
+        '&:hover $fileItemEditContainer': {
+            visibility: 'visible'
         }
     },
     fileItemSorting: {
         '&:hover $fileItemDeleteContainer': {
+            visibility: 'hidden'
+        },
+        '&:hover $fileItemEditContainer': {
             visibility: 'hidden'
         }
     },
@@ -72,6 +84,14 @@ const materialStyles = theme => ({
     },
     fileImageError: {
         outline: 'solid 4px #f44336'
+    },
+    fileItemEditContainer: {
+        position: 'absolute',
+        left: '0',
+        top: '0',
+        visibility: 'hidden',
+        background: 'white',
+        borderRadius: '100%'
     },
     fileItemDeleteContainer: {
         position: 'absolute',
@@ -105,6 +125,21 @@ const materialStyles = theme => ({
     },
     submitButtonNoSlides: {
         marginTop: '16px'
+    },
+    modal: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    modalContent: {
+        position: 'absolute',
+        width: '1200px',
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing.unit * 4,
+        outline: 'none',
+        overflowY: 'auto',
+        maxHeight: '100vh'
     }
 });
 
@@ -112,10 +147,18 @@ const Image = SortableHandle(({ imageClassName, src, onLoad }) => (
     <img className={imageClassName} src={src} onLoad={onLoad} />
 ));
 
-const SlidePreview = SortableElement(({ slide, index, classes, onFileDelete, onFileLoad, isSorting }) =>
+const SlidePreview = SortableElement(({ slide, index, classes, onFileDelete, onFileEdit, onFileLoad, isSorting }) =>
     <div className={classNames(classes.fileItem, {
         [classes.fileItemSorting]: isSorting
     })}>
+        <div className={classes.fileItemEditContainer}>
+            <IconButton
+                aria-label='Delete'
+                onClick={onFileEdit(index)}
+            >
+                <EditIcon />
+            </IconButton>
+        </div>
         <div className={classes.fileItemDeleteContainer}>
             <IconButton
                 aria-label='Delete'
@@ -174,7 +217,8 @@ class MainSlider extends Component {
             removedSlides: [],
             isSorting: false,
             loading: true,
-            disabled: true
+            disabled: true,
+            formShowed: false
         };
 
         this.slidesPaths = this.state.slides.map(slide => slide.path);
@@ -249,6 +293,18 @@ class MainSlider extends Component {
         }
     };
 
+    handleFileEdit = i => () => {
+        const { slides } = this.state;
+
+        this.setState({
+            formShowed: true,
+            editableSlideInfo: {
+                index: i,
+                slide: slides[i]
+            }
+        });
+    };
+
     handleFileDelete = i => () => {
         const { slides, removedSlides } = this.state;
 
@@ -262,6 +318,33 @@ class MainSlider extends Component {
         }, this.handleSlidesChanged);
     };
 
+    handleClosetForm = () => {
+        this.setState({
+            formShowed: false,
+            editableSlideInfo: null
+        });
+    };
+
+    handleFormDone = ({ slide, index }) => {
+        const { slides } = this.state;
+        const newSlides = [...slides];
+
+        newSlides[index] = slide;
+
+        this.setState({
+            slides: newSlides
+        }, () => {
+            this.handleSubmit({ preventDefault: noop })
+                .then(() => {
+                    this.setState({
+                        formShowed: false,
+                        editableSlideInfo: null,
+                        disabled: true
+                    });
+                });
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -271,7 +354,8 @@ class MainSlider extends Component {
             const isOld = !slide.content;
 
             return {
-                showed: slide.showed,
+                title: slide.title,
+                description: slide.description,
                 old: isOld,
                 path: isOld && slide.path
             };
@@ -286,12 +370,12 @@ class MainSlider extends Component {
         formData.append('removedSlides', JSON.stringify(removedSlides));
         formData.append('slides', JSON.stringify(cleanedSlides));
 
-        this.props.updateSlides(formData);
+        return this.props.updateSlides(formData);
     };
 
     render () {
         const { classes } = this.props;
-        const { slides, isSorting, loading, disabled } = this.state;
+        const { slides, isSorting, loading, disabled, formShowed, editableSlideInfo } = this.state;
         const isWrongDimensions = checkWrongDimensions(slides);
 
         if (loading) {
@@ -313,7 +397,7 @@ class MainSlider extends Component {
                         multiple
                     />
                     <label htmlFor='uploadInput'>
-                        <Button variant='contained' component='span' color='default' className={classes.uploadButton}>
+                        <Button variant='contained' component='span' color='default'>
                             Загрузить
                             <CloudUploadIcon className={classes.uploadIcon} />
                         </Button>
@@ -331,6 +415,7 @@ class MainSlider extends Component {
                     axis='xy'
                     classes={classes}
                     slides={slides}
+                    onFileEdit={this.handleFileEdit}
                     onFileDelete={this.handleFileDelete}
                     onFileLoad={this.handleFileLoad}
                     onSortStart={this.onDragStart}
@@ -350,6 +435,11 @@ class MainSlider extends Component {
                     Сохранить
                 </Button>
             </form>
+            <Modal open={formShowed} onClose={this.handleClosetForm} className={classes.modal}>
+                <Paper className={classes.modalContent}>
+                    <MainSlideForm editableSlideInfo={editableSlideInfo} onDone={this.handleFormDone}/>
+                </Paper>
+            </Modal>
         </div>;
     }
 }

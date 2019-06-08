@@ -20,7 +20,8 @@ export default function updateSlides (req, res) {
         const slides = JSON.parse(req.body.slides);
         const removedSlides = JSON.parse(req.body.removedSlides);
         const resultSlides = slides.map((slide) => ({
-            showed: slide.showed,
+            title: slide.title,
+            description: slide.description,
             path: slide.path
         }));
 

@@ -6,7 +6,8 @@ const mainSlider = new Schema({
     id: { type: String, required: true },
     slides: [{
         path: { type: String, required: true },
-        showed: { type: Boolean, required: true }
+        title: { type: String },
+        description: { type: String }
     }]
 });
 

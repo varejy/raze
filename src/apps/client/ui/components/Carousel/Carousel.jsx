@@ -137,8 +137,8 @@ class Carousel extends Component {
         </div>
         <div className={styles.contentWrapper}>
             <div className={styles.content}>
-                <h2 className={styles.title}>{ slide.title }</h2>
-                <div className={styles.description}>{ slide.description }</div>
+                { slide.title && <h2 className={styles.title}>{ slide.title }</h2> }
+                { slide.description && <div className={styles.description}>{ slide.description }</div> }
             </div>
         </div>
     </div>;
