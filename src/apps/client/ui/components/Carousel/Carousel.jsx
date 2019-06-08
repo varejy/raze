@@ -18,6 +18,7 @@ class Carousel extends Component {
         activeSlideIndex: 0
     };
 
+    animation = false;
     maxSlideIndex = slides.length - 1;
 
     componentDidMount () {
@@ -46,10 +47,14 @@ class Carousel extends Component {
         const { activeSlideIndex } = this.state;
         const scrollbarWidth = calcScrollbarWidth();
 
+        this.animation = true;
         this.sliderTrack.style.transition = `left ${SWITCHING_DURATION}ms`;
         this.sliderTrack.style.left = `-${(document.documentElement.clientWidth * activeSlideIndex) + scrollbarWidth * activeSlideIndex}px`;
 
-        this.sliderTimoutId = setTimeout(this.setTimeoutToNextSlide, SWITCHING_DURATION);
+        this.sliderTimoutId = setTimeout(() => {
+            this.animation = false;
+            this.setTimeoutToNextSlide();
+        }, SWITCHING_DURATION);
     };
 
     stopSlider = () => clearTimeout(this.sliderTimoutId);
@@ -57,10 +62,11 @@ class Carousel extends Component {
     setActiveSlide = (nextActiveSlideIndex) => () => {
         const { activeSlideIndex } = this.state;
 
-        if (activeSlideIndex === nextActiveSlideIndex) {
+        if (this.animation || activeSlideIndex === nextActiveSlideIndex) {
             return;
         }
 
+        this.animation = true;
         this.stopSlider();
 
         const scrollbarWidth = calcScrollbarWidth();
@@ -101,6 +107,7 @@ class Carousel extends Component {
             this.sliderTrack.style.transition = 'none';
             this.sliderTrack.style.left = `-${(document.documentElement.clientWidth * nextActiveSlideIndex) + scrollbarWidth * nextActiveSlideIndex}px`;
 
+            this.animation = false;
             this.setTimeoutToNextSlide();
         }, SWITCHING_DURATION);
     };
