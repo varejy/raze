@@ -2,7 +2,10 @@ import express from 'express';
 
 import verification from '../../../middlewares/verification';
 
-import { getCategories, saveCategory, editCategory, deleteByIds } from './service';
+import getCategories from './services/getCategories';
+import saveCategory from './services/saveCategory';
+import editCategory from './services/editCategory';
+import deleteByIds from './services/deleteByIds';
 
 const router = express.Router();
 

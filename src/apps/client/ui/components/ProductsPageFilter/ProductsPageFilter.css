@@ -1,0 +1,54 @@
+.filter{
+    margin-bottom: 45px
+}
+.ul {
+    margin-top: 23px;
+}
+.filterTxt{
+    font-family: Montserrat, arial;
+    font-weight: bold;
+    text-align: left;
+    color: #232323;
+}
+.filterName{
+    font-size: 14px;
+}
+.label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.filterOption{
+    display: flex;
+    align-items: center;
+    margin-top: 19px;
+}
+.filterOptionTxt{
+    font-size: 10px;
+    margin-left: 14px;
+}
+.filterCheckbox {
+    width: 8px;
+    height: 8px;
+    border: solid 1px #000000;
+    background-color: transparent;
+    margin: 0 0;
+    -webkit-appearance: button;
+    outline: -webkit-focus-ring-color auto 0;
+}
+.filterCheckbox:not(checked){
+    border: solid 1px #000000;
+    background-color: transparent;
+}
+.filterCheckbox:checked{
+    border: solid 1px #bababa;
+    background-color: #00a046;
+}
+.filterCheckbox:not(checked) + .filterOptionTxt::before {
+    border: solid 1px #000000;
+    background-color: transparent;
+}
+.filterCheckbox:checked + .filterOptionTxt::after {
+    border: solid 1px #bababa;
+    background-color: #00a046;
+}

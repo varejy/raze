@@ -2,7 +2,13 @@ import express from 'express';
 
 import verification from '../../../middlewares/verification';
 
-import { authenticate, checkAuthentication, changeCredentials, createTestAdmin, recover, checkRecoveryToken, changeRecoveryCredentials } from './service';
+import authenticate from './services/authenticate';
+import checkAuthentication from './services/checkAuthentication';
+import changeCredentials from './services/changeCredentials';
+import createTestAdmin from './services/createTestAdmin';
+import recover from './services/recover';
+import checkRecoveryToken from './services/checkRecoveryToken';
+import changeRecoveryCredentials from './services/changeRecoveryCredentials';
 
 const router = express.Router();
 

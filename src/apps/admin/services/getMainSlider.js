@@ -10,7 +10,7 @@ export default function getMainSlider () {
 
     return dispatch => base(
         request
-            .get('/api/admin/main-slider')
+            .get('/api/client/main-slider')
             .query({ token })
     )
         .then(slider => {
