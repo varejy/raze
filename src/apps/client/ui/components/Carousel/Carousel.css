@@ -1,1 +1,86 @@
-﻿
+﻿.carousel {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+    justify-content: center;
+}
+
+.sliderTrack {
+    height: 500px;
+    position: relative;
+    width: 9999px;
+    left: 0;
+}
+
+.slide {
+    height: 500px;
+    display: inline-block;
+    position: relative;
+    width: 100vw;
+}
+
+.imageWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100vw;
+}
+
+.image {
+    width: 100%;
+}
+
+.contentWrapper {
+    left: 0;
+    padding: 187px 130px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 1000px;
+}
+
+.title {
+    font-family: MontserratRegular;
+    color: #fff;
+    font-size: 70px;
+    font-weight: 700;
+    text-align: right;
+    line-height: 96px;
+}
+
+.description {
+    font-family: MontserratRegular;
+    color: #fff;
+    font-size: 26px;
+    text-align: right;
+}
+
+.dots {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    display: flex;
+}
+
+.dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 100%;
+    cursor: pointer;
+    background-color: #ffffff;
+
+    &:not(:first-child) {
+         margin-left: 24px;
+    }
+}
+
+.dotActive {
+    background-color: #00a046;
+}
