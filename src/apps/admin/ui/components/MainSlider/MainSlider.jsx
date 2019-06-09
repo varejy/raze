@@ -356,8 +356,8 @@ class MainSlider extends Component {
             return {
                 title: slide.title,
                 description: slide.description,
-                old: isOld,
-                path: isOld && slide.path
+                path: isOld && slide.path,
+                oldSlidePath: slide.oldSlidePath
             };
         });
 

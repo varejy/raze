@@ -19,11 +19,18 @@ export default function updateSlides (req, res) {
         const files = req.files;
         const slides = JSON.parse(req.body.slides);
         const removedSlides = JSON.parse(req.body.removedSlides);
-        const resultSlides = slides.map((slide) => ({
-            title: slide.title,
-            description: slide.description,
-            path: slide.path
-        }));
+        const outdatedSlidesPath = [];
+        const resultSlides = slides.map((slide) => {
+            if (slide.oldSlidePath) {
+                outdatedSlidesPath.push(slide.oldSlidePath);
+            }
+
+            return {
+                title: slide.title,
+                description: slide.description,
+                path: slide.path
+            };
+        });
 
         files.forEach(file => {
             const index = file.fieldname.replace(SLIDE_FILE_FIELD_NAME_REGEX, '');
@@ -33,6 +40,10 @@ export default function updateSlides (req, res) {
 
         removedSlides.forEach(slide => {
             fs.unlink(slide.path.slice(1), noop);
+        });
+
+        outdatedSlidesPath.forEach(path => {
+            fs.unlink(path.slice(1), noop);
         });
 
         updateSlider({ slides: resultSlides, id: SLIDER_ID })

@@ -7,6 +7,7 @@ import saveProduct from './services/saveProduct';
 import editProduct from './services/editProduct';
 import deleteByIds from './services/deleteByIds';
 import updateFiles from './services/updateFiles';
+import updateAvatar from './services/updateAvatar';
 import findProductsByName from './services/findProductsByName';
 
 const router = express.Router();
@@ -27,6 +28,9 @@ router.route('/delete-few')
 
 router.route('/update-files')
     .post(updateFiles);
+
+router.route('/update-avatar')
+    .post(updateAvatar);
 
 router.route('/find')
     .get(findProductsByName);

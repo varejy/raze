@@ -13,7 +13,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import WarningIcon from '@material-ui/icons/Warning';
 import { withStyles } from '@material-ui/core/styles';
 
-import noop from '@tinkoff/utils/function/noop';
 import map from '@tinkoff/utils/array/map';
 import remove from '@tinkoff/utils/array/remove';
 import arrayMove from '../../../utils/arrayMove';
@@ -135,7 +134,6 @@ class ProductForm extends Component {
     };
 
     static defaultProps = {
-        onDone: noop,
         initialFiles: []
     };
 
@@ -154,7 +152,7 @@ class ProductForm extends Component {
         this.handleFilesChange();
     }
 
-    handleFileUpload = (event) => {
+    handleFilesUpload = (event) => {
         const newFiles = map(file => ({
             content: file,
             path: URL.createObjectURL(file)
@@ -224,7 +222,7 @@ class ProductForm extends Component {
                     id='uploadInput'
                     type='file'
                     accept='image/*'
-                    onChange={this.handleFileUpload}
+                    onChange={this.handleFilesUpload}
                     multiple
                 />
                 <label htmlFor='uploadInput'>
