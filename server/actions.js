@@ -1,9 +1,9 @@
-import getMobileDetect from '../src/apps/client/services/getMobileDetect';
-import getCategories from '../src/apps/client/services/getCategories';
-import getMainSlides from '../src/apps/client/services/getMainSlides';
+import getMobileDetect from '../src/apps/client/services/server/getMobileDetect';
+import getCategoriesAndProducts from '../src/apps/client/services/server/getCategoriesAndProducts';
+import getMainSlides from '../src/apps/client/services/server/getMainSlides';
 
 export default [
     getMobileDetect,
-    getCategories,
+    getCategoriesAndProducts,
     getMainSlides
 ];

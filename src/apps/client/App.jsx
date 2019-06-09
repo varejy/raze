@@ -8,10 +8,14 @@ import '../../css/main.css';
 
 import MainPage from './ui/pages/MainPage/MainPage.jsx';
 import ProductsPage from './ui/pages/ProductsPage/ProductsPage.jsx';
+import Header from './ui/components/Header/Header';
+import Footer from './ui/components/Footer/Footer';
 
 import { connect } from 'react-redux';
 
 import { Switch, Route, withRouter } from 'react-router-dom';
+
+import styles from './App.css';
 
 const mapStateToProps = ({ application }) => {
     return {
@@ -33,10 +37,16 @@ class App extends Component {
         const { categories } = this.props;
 
         return <main>
-            <Switch>
-                <Route exact path='/' component={MainPage} />
-                { categories.map((category, i) => <Route exact key={i} path={`/${category.path}`} component={ProductsPage} />) }
-            </Switch>
+            <div className={styles.page}>
+                <Header/>
+                <div className={styles.pageContent}>
+                    <Switch>
+                        <Route exact path='/' component={MainPage} />
+                        { categories.map((category, i) => <Route exact key={i} path={`/${category.path}`} component={ProductsPage} />) }
+                    </Switch>
+                </div>
+                <Footer />
+            </div>
         </main>;
     }
 }

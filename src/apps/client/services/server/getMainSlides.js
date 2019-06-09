@@ -1,7 +1,7 @@
 import request from 'superagent';
-import base from './base';
+import base from '../base';
 
-import setMainSlides from '../actions/setMainSlides';
+import setMainSlides from '../../actions/setMainSlides';
 
 export default function getMainSlider (req) {
     return dispatch => {

@@ -1,6 +1,6 @@
 import device from 'device';
 
-import setMediaInfo from '../actions/setMediaInfo';
+import setMediaInfo from '../../actions/setMediaInfo';
 
 export default function getLangFromCookie ({ headers = {} } = {}) {
     return dispatch => {

@@ -1,10 +1,10 @@
 import express from 'express';
 
-import getAvailableProducts from './services/getAvailableProducts';
+import getAvailableProductsByCategoryId from './services/getAvailableProductsByCategoryId';
 
 const router = express.Router();
 
-router.route('/')
-    .get(getAvailableProducts);
+router.route('/by-category-id')
+    .get(getAvailableProductsByCategoryId);
 
 export default router;
