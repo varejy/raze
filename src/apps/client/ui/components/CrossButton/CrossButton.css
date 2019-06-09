@@ -1,0 +1,25 @@
+.buttonDefault {
+    @mixin removeDefaultButton
+}
+
+.button {
+    padding: 0;
+    cursor: pointer;
+}
+
+.line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #000;
+}
+
+.lineTop {
+    transform: rotate(45deg);
+    transform-origin: 55% 15%;
+}
+
+.lineBottom {
+    transform: rotate(-45deg);
+    transform-origin: 30% 15%;
+}

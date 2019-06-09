@@ -10,6 +10,7 @@ import MainPage from './ui/pages/MainPage/MainPage.jsx';
 import ProductsPage from './ui/pages/ProductsPage/ProductsPage.jsx';
 import Header from './ui/components/Header/Header';
 import Footer from './ui/components/Footer/Footer';
+import Popup from './ui/components/Popup/Popup';
 
 import { connect } from 'react-redux';
 
@@ -39,6 +40,7 @@ class App extends Component {
         return <main>
             <div className={styles.page}>
                 <Header/>
+                <Popup />
                 <div className={styles.pageContent}>
                     <Switch>
                         <Route exact path='/' component={MainPage} />
