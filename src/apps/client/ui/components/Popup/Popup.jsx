@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import CrossButton from '../CrossButton/CrossButton';
+import PopupBasket from '../PopupBasket/PopupBasket';
 
 import { connect } from 'react-redux';
 import closePopup from '../../../actions/closePopup';
+import openPopup from '../../../actions/openPopup';
 
 import styles from './Popup.css';
 
@@ -15,6 +17,7 @@ const mapStateToProps = ({ popup }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
+    openPopup: payload => dispatch(openPopup(payload)),
     closePopup: payload => dispatch(closePopup(payload))
 });
 
@@ -34,6 +37,7 @@ class Popup extends Component {
 
     componentDidMount () {
         window.addEventListener('keydown', this.handleKeyDown);
+        this.openPopup(this.renderPopup);
     }
 
     componentWillReceiveProps (nextProps) {
@@ -74,6 +78,7 @@ class Popup extends Component {
                 <div className={styles.cross} onClick={this.closePopup}>
                     <CrossButton />
                 </div>
+                <PopupBasket/>
                 { content }
             </div>
         </div>

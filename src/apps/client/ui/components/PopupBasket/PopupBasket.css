@@ -1,0 +1,138 @@
+.root{
+    width: 548px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 579px;
+    padding: 31px 28px;
+    background-color: #fff;
+}
+
+.item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.itemImageWrapp{
+    position: relative;
+}
+
+.deleteItem{
+    width: 34px;
+    height: 34px;
+    background-color: #ff0000;
+    position: absolute;
+    top: -17px;
+    left: -16px;
+    border-radius: 27px;
+    cursor: pointer;
+}
+
+.deleteItemIcon{
+    position: absolute;
+    top: 16px;
+    left: 12px;
+    width: 10px;
+    height: 3px;
+    background-color: #fff;
+}
+
+.itemImage{
+    width: 150px;
+    height: 135px;
+}
+
+.itemInfo{
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.itemName{
+    font-family: HelveticaNeueCyr;
+    font-size: 18px;
+}
+
+.itemCategory{
+    font-family: HelveticaNeueCyrRoman;
+    font-size: 11.5px;
+    margin-bottom: 10px;
+}
+
+.itemPrice{
+    font-family: HelveticaNeueCyr;
+    font-size: 21px;
+}
+
+.previouslyAddedTitle{
+    font-family: HelveticaNeueCyr;
+    font-size: 27px;
+    margin-bottom: 28px;
+}
+
+.itemAmount{
+    width: 78px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+.amountTxt{
+    font-family: HelveticaNeueCyr;
+    font-size: 8px;
+    color: #bcbcbc;
+}
+
+.amount{
+    width: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: HelveticaNeueCyr;
+    font-size: 22px;
+}
+
+.amountButton{
+    cursor: pointer;
+}
+
+.countWrapp{
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e8e8e8;
+    font-family: HelveticaNeueCyr;
+    font-size: 22px;
+}
+
+.buttonsWrapp{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.buttons{
+    font-family: HelveticaNeueCyr;
+    font-size: 14px;
+    width: 270px;
+    height: 44px;
+}
+
+.continueShopping{
+    margin-bottom: 14px;
+    background-color: #fff;
+    border: 1px solid #9a9a9a;
+
+}
+
+.ordering{
+    background-color: #4cb34f;
+    color: white;
+    border: 0px solid;
+}
