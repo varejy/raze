@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 import styles from './Header.css';
 
@@ -27,10 +27,10 @@ class Header extends Component {
 
         return <div className={styles.headerContainer}>
             <div className={styles.headerTop}>
-                <div className={styles.logo}>
-                    <span className={styles.logoLeft}>raze</span>
-                    <span className={styles.logoRight}>Your<br/>knife<br/><span className={styles.logoGreen}>world</span></span>
-                </div>
+                <Link className={styles.logo} to='/'>
+                    <div className={styles.logoLeft}>raze</div>
+                    <div className={styles.logoRight}>Your<br/>knife<br/><div className={styles.logoGreen}>world</div></div>
+                </Link>
                 <div className={styles.searchForm}>
                     <input defaultValue='' className={styles.searchFormInput} placeholder='Поиск продуктов...'/>
                     <button className={styles.searchFormIcon}><img src='/src/apps/client/ui/components/Header/images/search.png' alt=''/></button>
@@ -38,22 +38,26 @@ class Header extends Component {
                 <div className={styles.contactsWrapper}>
                     <div className={styles.contacts}>
                         <div className={styles.contactsLicense}>
-                            <span>Лицензионное соглашение</span>
+                            <div>Лицензионное соглашение</div>
                         </div>
                         <div className={styles.tollEmail}>
                             <div className={styles.toll}>
-                                <div className={styles.iconWrapper}>
-                                    <img className={styles.iconPhone} src='/src/apps/client/ui/components/Header/images/iPhone.png' alt=''/>
-                                    <img className={styles.colorElement} src='/src/apps/client/ui/components/Header/images/colorElement1.png' alt=''/>
-                                </div>
-                                <a href="tel:+38 (044) 232 13 14" className={styles.link}>+38 (044) 232 13 14</a>
+                                <a href="tel:+38 (044) 232 13 14" className={styles.link}>
+                                    <div className={styles.iconWrapper}>
+                                        <img className={styles.iconPhone} src='/src/apps/client/ui/components/Header/images/iPhone.png' alt=''/>
+                                        <img className={styles.colorElement} src='/src/apps/client/ui/components/Header/images/colorElement1.png' alt=''/>
+                                    </div>
+                                    <div>+38 (044) 232 13 14</div>
+                                </a>
                             </div>
                             <div className={styles.email}>
-                                <div className={styles.iconWrapper}>
-                                    <img className={styles.iconMail} src='/src/apps/client/ui/components/Header/images/mail.png' alt=''/>
-                                    <img className={styles.colorElement} src='/src/apps/client/ui/components/Header/images/colorElement2.png' alt=''/>
-                                </div>
-                                <a href="mailto:info@oneblade.org" className={styles.link}>info@oneblade.org</a>
+                                <a href="mailto:info@oneblade.org" className={styles.link}>
+                                    <div className={styles.iconWrapper}>
+                                        <img className={styles.iconMail} src='/src/apps/client/ui/components/Header/images/mail.png' alt=''/>
+                                        <img className={styles.colorElement} src='/src/apps/client/ui/components/Header/images/colorElement2.png' alt=''/>
+                                    </div>
+                                    <div>info@oneblade.org</div>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -62,7 +66,11 @@ class Header extends Component {
             <div className={styles.headerBottom}>
                 <div className={styles.menu}>
                     <ul className={styles.menuList}>
-                        { categories.map((category, i) => <Link className={styles.menuListCategory} key={i} to={`/${category.path}`}>{category.name}</Link>) }
+                        { categories.map((category, i) =>
+                            <NavLink className={styles.menuListCategory}
+                                activeClassName={styles.menuListCategoryActive}
+                                key={i} to={`/${category.path}`}>{category.name}
+                            </NavLink>) }
                     </ul>
                 </div>
                 <div className={styles.likesBasket}>
@@ -71,7 +79,7 @@ class Header extends Component {
                     </div>
                     <div className={styles.bottomIconWrapper}>
                         <img className={styles.iconBasket} src='/src/apps/client/ui/components/Header/images/basket.png' alt=''/>
-                        <div className={styles.ordersCounter}><span className={styles.ordersNumber}>3</span></div>
+                        <div className={styles.ordersCounter}><div className={styles.ordersNumber}>3</div></div>
                     </div>
                 </div>
             </div>

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import MainPageWrapper from '../../components/MainPageWrapper/MainPageWrapper.jsx';
+import Carousel from '../../components/Carousel/Carousel';
+import AboutUsBanner from '../../components/AboutUsBanner/AboutUsBanner';
 
 class MainPage extends Component {
     render () {
         return <section>
-            <MainPageWrapper />
+            <Carousel/>
+            <AboutUsBanner/>
         </section>;
     }
 }
