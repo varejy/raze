@@ -1,7 +1,5 @@
 .product{
-    max-width: 209px;
-    width: 209px;
-    max-height: 314px;
+    width: 210px;
     height: 314px;
     margin-right: 24px;
     margin-bottom: 70px;
@@ -43,9 +41,8 @@
     color: #ff0000;
 }
 .img{
-    min-height: 91px;
-    max-height: 120px;
-    max-width: 200px;
+    height: 120px;
+    width: 200px;
 }
 .infoWrapper{
     background-color: #fff;
@@ -92,11 +89,11 @@
     color: #fff;
     font-size: 7px;
     flex-wrap: wrap;
-    max-width: 36px;
+    width: 36px;
     height: 41px;
     cursor: pointer;
 }
 .toolBarIcon{
-    max-width: 17px;
+    width: 17px;
     max-height: 16px;
 }

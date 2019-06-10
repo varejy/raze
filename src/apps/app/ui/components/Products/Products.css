@@ -1,5 +1,5 @@
 .root{
-    width: 932px;
+    width: 936px;
     margin-left: 89px;
 }
 .productsFilter{
@@ -10,7 +10,6 @@
 .filter{
     display: flex;
     justify-content: space-between;
-    max-width: 340px;
     width: 340px;
     font-family: Montserrat-Medium, arial;
     font-size: 14px;
@@ -20,9 +19,8 @@
     display: flex;
     justify-content: space-between;
     font-family: Montserrat-Bold, arial;
-    max-width: 230px;
-    width: 219px;
-    padding-left: 27px;
+    width: 218px;
+    padding-left: 22px;
     font-weight: bold;
 }
 

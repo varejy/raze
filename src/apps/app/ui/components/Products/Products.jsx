@@ -25,16 +25,10 @@ class Products extends Component {
             <div className={styles.productsWrapper}>
                 {
                     products.map((product, i) => {
-                        const { image, name, manufacturer, price, discount, type } = product;
                         return (
                             <Product
                                 key={i}
-                                name={name}
-                                img={image}
-                                manufacturer={manufacturer}
-                                type={type}
-                                price={price}
-                                discount={discount}
+                                product={product}
                             />
                         );
                     })

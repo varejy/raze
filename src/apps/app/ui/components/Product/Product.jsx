@@ -6,30 +6,18 @@ import styles from './Product.css';
 
 class Product extends Component {
     static propTypes = {
-        img: PropTypes.string,
-        name: PropTypes.string,
-        manufacturer: PropTypes.string,
-        price: PropTypes.number,
-        discount: PropTypes.bool,
-        type: PropTypes.string
+        product: PropTypes.object
     };
 
     static defaultProps = {
-        img: '',
-        name: '',
-        manufacturer: '',
-        price: 0,
-        discount: false,
-        type: ''
+        product: {}
     };
     render () {
-        const { img, name, manufacturer, price, discount, type } = this.props;
-        return <div className={styles.product} onMouseLeave={this.handleProductHover} onMouseEnter={this.handleProductEnter}>
+        const { product } = this.props;
+        return <div className={styles.product}>
             <div className={styles.imageWrapper}>
-                {
-                    discount ? <div className={styles.discount}>SPECIAL PRICE</div> : <span></span>
-                }
-                <img className={styles.img} src={img} alt={type}/>
+                <div className={styles.discount}>{ product.discount && 'SPECIAL PRICE' }</div>
+                <img className={styles.img} src={product.image} alt={product.type}/>
             </div>
             <div className={styles.infoWrapper}>
                 <div className={styles.toolBar}>
@@ -47,9 +35,9 @@ class Product extends Component {
                     </div>
                 </div>
                 <div className={styles.info}>
-                    <div className={styles.manufacturer}>{manufacturer}</div>
-                    <div className={styles.name}>{name}</div>
-                    <div className={styles.price}>{price}$</div>
+                    <div className={styles.manufacturer}>{product.manufacturer}</div>
+                    <div className={styles.name}>{product.name}</div>
+                    <div className={styles.price}>{product.price}$</div>
                 </div>
             </div>
         </div>;
