@@ -14,6 +14,7 @@ class Product extends Component {
     };
     render () {
         const { product } = this.props;
+
         return <div className={styles.product}>
             <div className={styles.imageWrapper}>
                 <div className={styles.discount}>{ product.discount && 'SPECIAL PRICE' }</div>
@@ -22,15 +23,15 @@ class Product extends Component {
             <div className={styles.infoWrapper}>
                 <div className={styles.toolBar}>
                     <div className={classNames(styles.quickInspection, styles.toolBarItem)}>
-                        <img className={styles.toolBarIcon} src="/src/apps/app/ui/components/Product/icons/eye.png" />
+                        <img className={styles.toolBarIcon} src="/src/apps/client/ui/components/Product/icons/eye.png" />
                         Быстрый просмотр
                     </div>
                     <div className={classNames(styles.heart, styles.toolBarItem)}>
-                        <img className={styles.toolBarIcon} src="/src/apps/app/ui/components/Product/icons/heart.png" />
+                        <img className={styles.toolBarIcon} src="/src/apps/client/ui/components/Product/icons/heart.png" />
                         Избранное
                     </div>
                     <div className={classNames(styles.basket, styles.toolBarItem)}>
-                        <img className={styles.toolBarIcon} src="/src/apps/app/ui/components/Product/icons/basketGreen.png" />
+                        <img className={styles.toolBarIcon} src="/src/apps/client/ui/components/Product/icons/basketGreen.png" />
                         В корзину
                     </div>
                 </div>

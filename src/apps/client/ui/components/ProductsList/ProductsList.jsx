@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
-import products from './products';
-import styles from './Products.css';
+
+import productsList from './products';
 
 import Product from '../Product/Product';
 
-class Products extends Component {
+import styles from './ProductsList.css';
+
+class ProductsList extends Component {
     state = {
-        products
-    }
+        products: productsList
+    };
 
     render () {
         const { products } = this.state;
+
         return <section className={styles.root}>
             <div className={styles.productsFilter}>
                 <div className={styles.filter}>
@@ -38,4 +41,4 @@ class Products extends Component {
     }
 }
 
-export default Products;
+export default ProductsList;

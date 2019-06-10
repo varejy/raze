@@ -23,7 +23,7 @@ export default function updateAvatar (req, res) {
                 product.avatar && fs.unlink(product.avatar.slice(1), noop);
 
                 const files = req.files;
-                const avatar = `/${files[0].path.replace(/\\/g, '/')}`
+                const avatar = `/${files[0].path.replace(/\\/g, '/')}`;
 
                 editProductQuery({ avatar, id })
                     .then(product => {

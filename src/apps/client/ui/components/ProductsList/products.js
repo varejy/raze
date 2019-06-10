@@ -3,7 +3,7 @@ const products = [
         type: 'knife',
         name: 'Kwaiken SF',
         manufacturer: 'COLD STEEL',
-        image: 'https://www.fallkniven.com/wp-content/uploads/2016/05/compressedphk_png_1200px_72dpi.png',
+        image: 'src/apps/client/ui/components/ProductsList/tempImages/avatar1.jpg',
         discount: false,
         price: 100
     },
@@ -11,7 +11,7 @@ const products = [
         type: 'knife',
         name: 'Kwaiken SF',
         manufacturer: 'STEINLES STEEL',
-        image: 'https://www.fallkniven.com/wp-content/uploads/2016/05/compressedphk_png_1200px_72dpi.png',
+        image: 'src/apps/client/ui/components/ProductsList/tempImages/avatar2.jpg',
         discount: false,
         price: 130
     },
@@ -19,7 +19,7 @@ const products = [
         type: 'knife',
         name: 'Kwaiken SF',
         manufacturer: 'COLD STEEL',
-        image: 'https://www.fallkniven.com/wp-content/uploads/2016/05/compressedphk_png_1200px_72dpi.png',
+        image: 'src/apps/client/ui/components/ProductsList/tempImages/avatar3.jpg',
         discount: false,
         price: 1054
     },
@@ -27,7 +27,7 @@ const products = [
         type: 'knife',
         name: 'Kwaiken SF',
         manufacturer: 'BLACK FOX',
-        image: 'https://www.fallkniven.com/wp-content/uploads/2016/05/compressedphk_png_1200px_72dpi.png',
+        image: 'src/apps/client/ui/components/ProductsList/tempImages/avatar4.jpg',
         discount: true,
         price: 432
     },
@@ -35,7 +35,7 @@ const products = [
         type: 'knife',
         name: 'Kwaiken SF',
         manufacturer: 'BLACK FOX',
-        image: 'https://www.fallkniven.com/wp-content/uploads/2016/05/compressedphk_png_1200px_72dpi.png',
+        image: 'src/apps/client/ui/components/ProductsList/tempImages/avatar1.jpg',
         price: 10,
         discount: true
     },
@@ -43,7 +43,7 @@ const products = [
         type: 'knife',
         name: 'Kwaiken SF',
         manufacturer: 'BLACK FOX',
-        image: 'https://www.fallkniven.com/wp-content/uploads/2016/05/compressedphk_png_1200px_72dpi.png',
+        image: 'src/apps/client/ui/components/ProductsList/tempImages/avatar2.jpg',
         price: 2029,
         discount: true
     }
