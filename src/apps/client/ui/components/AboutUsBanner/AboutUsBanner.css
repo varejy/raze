@@ -1,0 +1,62 @@
+﻿.bannerContainer{
+    width: 100%;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    padding: 50px 40px;
+    margin: 0 auto;
+}
+.banner{
+    height: 329px;
+    width: 100%;
+    min-width: 1170px;
+    max-width: 1438px;
+    background-image: url('/src/apps/client/ui/components/AboutUsBanner/images/aboutUsImage.jpg');
+    background-size: cover;
+    margin: 0 auto;
+}
+.bannerHeader{
+    text-transform: uppercase;
+    font-family: MontserratBold;
+    font-size: 23px;
+    line-height: 8px;
+    color: #ffffff;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 66px 0;
+}
+.bannerText{
+    font-family: MontserratRegular;
+    font-size: 11px;
+    line-height: 28px;
+    text-align: center;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px auto;
+    width: 816px;
+}
+.readMoreButton{
+    text-transform: uppercase;
+    background: none;
+    border: 2px solid #ffffff;
+    width: 110px;
+    height: 40px;
+    font-family: MontserratBold;
+    font-size: 8px;
+    line-height: 24px;
+    letter-spacing: 1px;
+    color: #ffffff;
+    outline: none;
+    cursor: pointer;
+}
+.bannerButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+}

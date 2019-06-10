@@ -18,12 +18,14 @@ import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core/styles';
 
 import ProductFormFiles from '../ProductFormFiles/ProductFormFiles.jsx';
+import ProductAvatarFile from '../ProductAvatarFile/ProductAvatarFile.jsx';
 
 import { connect } from 'react-redux';
 import getCategories from '../../../services/getCategories';
 import saveProduct from '../../../services/saveProduct';
 import editProduct from '../../../services/editProduct';
 import updateProductFiles from '../../../services/updateProductFiles';
+import updateProductAvatar from '../../../services/updateProductAvatar';
 
 import noop from '@tinkoff/utils/function/noop';
 import prop from '@tinkoff/utils/object/prop';
@@ -79,7 +81,8 @@ const mapDispatchToProps = (dispatch) => ({
     getCategories: payload => dispatch(getCategories(payload)),
     saveProduct: payload => dispatch(saveProduct(payload)),
     editProduct: payload => dispatch(editProduct(payload)),
-    updateProductFiles: (...payload) => dispatch(updateProductFiles(...payload))
+    updateProductFiles: (...payload) => dispatch(updateProductFiles(...payload)),
+    updateProductAvatar: (...payload) => dispatch(updateProductAvatar(...payload))
 });
 
 class ProductForm extends Component {
@@ -89,6 +92,7 @@ class ProductForm extends Component {
         saveProduct: PropTypes.func.isRequired,
         editProduct: PropTypes.func.isRequired,
         updateProductFiles: PropTypes.func.isRequired,
+        updateProductAvatar: PropTypes.func.isRequired,
         onDone: PropTypes.func,
         product: PropTypes.object,
         categories: PropTypes.array
@@ -122,6 +126,7 @@ class ProductForm extends Component {
                 label: category.name,
                 value: category.id
             })),
+            initialAvatarFile: product.avatar,
             initialFiles: product.files,
             removedFiles: []
         };
@@ -172,6 +177,17 @@ class ProductForm extends Component {
                 formData.append('oldFiles', JSON.stringify(oldFiles));
 
                 return this.props.updateProductFiles(formData, product.id);
+            })
+            .then(product => {
+                const { avatar } = this.state;
+
+                if (avatar.content) {
+                    const formData = new FormData();
+
+                    formData.append(`product-${product.id}-avatar`, avatar.content);
+
+                    return this.props.updateProductAvatar(formData, product.id);
+                }
             })
             .then(() => {
                 this.props.onDone();
@@ -258,6 +274,12 @@ class ProductForm extends Component {
         }));
     };
 
+    handleAvatarFileUpload = avatar => {
+        this.setState({
+            avatar
+        });
+    };
+
     handleFilesUpload = (files, removedFiles) => {
         this.setState({
             files,
@@ -267,7 +289,7 @@ class ProductForm extends Component {
 
     render () {
         const { classes } = this.props;
-        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles } = this.state;
+        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
 
         if (loading) {
             return <div className={classes.loader}>
@@ -370,6 +392,8 @@ class ProductForm extends Component {
                     </FormGroup>)
                 }
             </div>
+            <Divider className={classes.divider}/>
+            <ProductAvatarFile onAvatarFileUpload={this.handleAvatarFileUpload} initialAvatarFile={initialAvatarFile}/>
             <Divider className={classes.divider}/>
             <ProductFormFiles onFilesUpload={this.handleFilesUpload} initialFiles={initialFiles}/>
             <Divider className={classes.divider}/>

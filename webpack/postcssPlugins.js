@@ -2,7 +2,7 @@
 
 const path = require('path');
 
-const mediaBreakpoints = require('../src/apps/app/constants/media.js');
+const mediaBreakpoints = require('../src/apps/client/constants/media.js');
 
 module.exports = () => {
     const plugins = [];

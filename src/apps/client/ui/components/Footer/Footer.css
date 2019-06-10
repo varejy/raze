@@ -1,0 +1,44 @@
+﻿.footerContainer{
+    width: 100%;
+    height: 66px;
+    padding: 0 52px;
+    background-color: #131313;
+}
+.iconsContainer{
+    max-width: 1438px;
+    min-width: 1170px;
+    margin: 0 auto;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: #131313;
+}
+.icons{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 200px;
+}
+.instagramIcon{
+    width: 19px;
+    height: 19px;
+    cursor: pointer;
+}
+.twitterIcon{
+    width: 19px;
+    height: 16px;
+    cursor: pointer;
+}
+.googleIcon{
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+.facebookIcon{
+    width: 9px;
+    height: 19px;
+    cursor: pointer;
+}
+.socialLink{
+}
