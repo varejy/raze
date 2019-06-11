@@ -30,14 +30,6 @@
     height: 186px;
 }
 
-.toolBarItem:hover {
-    color: #00a046;
-    filter: none;
-}
-.toolBarItem{
-    filter: saturate(0) brightness(10);
-}
-
 .discount{
     position: absolute;
     left: 0;
@@ -136,15 +128,43 @@
     width: 21px;
     height: 16px;
 }
-
 .heart .toolBarIcon{
     width: 17px;
-    height: 17px;
+    height: 16px;
 }
 
 .basket .toolBarIcon{
     width: 21px;
     height: 20px;
+}
+
+.toolBarItem:hover {
+    color: #00a046;
+}
+.eyeIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/eye.png') center;
+    background-size: 100% auto;
+}
+.toolBarItem:hover .eyeIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/eyeGreen.png') center;
+    background-size: 100% auto;
+}
+
+.heartIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/heart.png') center;
+    background-size: 100% auto;
+}
+.toolBarItem:hover .heartIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/heartGreen.png') center;
+    background-size: 100% auto;
+}
+.basketIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/basket.png') center;
+    background-size: 100% auto;
+}
+.toolBarItem:hover .basketIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/basketGreen.png') center;
+    background-size: 100% auto;
 }
 
 .name{

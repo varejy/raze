@@ -24,21 +24,15 @@ class Product extends Component {
             <div className={styles.infoWrapper}>
                 <div className={styles.toolBar}>
                     <div className={classNames(styles.quickInspection, styles.toolBarItem)}>
-                        <img className={styles.toolBarIcon}
-                            src='/src/apps/client/ui/components/Product/icons/eyeGreen.png'
-                            alt='quick inspection' />
+                        <div className={classNames(styles.toolBarIcon, styles.eyeIcon)}/>
                         <div>Быстрый просмотр</div>
                     </div>
                     <div className={classNames(styles.heart, styles.toolBarItem)}>
-                        <img className={styles.toolBarIcon}
-                            src='/src/apps/client/ui/components/Product/icons/heartGreen.png'
-                            alt='like' />
+                        <div className={classNames(styles.toolBarIcon, styles.heartIcon)}/>
                         <div>Избранное</div>
                     </div>
                     <div className={classNames(styles.basket, styles.toolBarItem)}>
-                        <img className={styles.toolBarIcon}
-                            src='/src/apps/client/ui/components/Product/icons/basketGreen.png'
-                            alt='basket' />
+                        <div className={classNames(styles.toolBarIcon, styles.basketIcon)}/>
                         <div>В корзину</div>
                     </div>
                 </div>
