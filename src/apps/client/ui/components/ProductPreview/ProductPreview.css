@@ -11,6 +11,7 @@
     display: flex;
     align-items: center;
     position: relative;
+    border: 3px solid #ffffff;
 }
 
 .slides{
@@ -51,8 +52,32 @@
     right: 0;
 }
 
-.buttonDisabled{
-    filter: invert(20%);
+.buttonRight .buttonEnabled{
+     background: url('/src/apps/client/ui/components/ProductPreview/images/arrowRight.png') center;
+     background-size: 100% auto;
+     width: 32px;
+     height: 32px;
+ }
+
+.buttonRight .buttonDisabled{
+    background: url('/src/apps/client/ui/components/ProductPreview/images/arrowRightGreen.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.buttonLeft .buttonEnabled{
+    background: url('/src/apps/client/ui/components/ProductPreview/images/arrowLeft.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.buttonLeft .buttonDisabled{
+    background: url('/src/apps/client/ui/components/ProductPreview/images/arrowLeftGreen.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
 }
 
 .dotsContainer{
@@ -134,11 +159,10 @@
     justify-content: space-between;
     width: 273px;
     height: 26px;
-    cursor: pointer;
     padding: 0 13px;
 }
 
-.parameterLine:hover{
+.parameterLineGrey{
     background-color: #f1f1f1;
 }
 
@@ -172,9 +196,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 27px 0 19px 0;
+    padding: 27px 0 19px 0;
+    background-color: #ffffff;
 }
-
+.buttonDefault{
+    @mixin removeDefaultButton
+}
 .addToBasketButton{
     width: 275px;
     height: 44px;
@@ -184,7 +211,5 @@
     font-size: 14px;
     line-height: 35px;
     text-transform: uppercase;
-    border: none;
-    outline: none;
     cursor: pointer;
 }

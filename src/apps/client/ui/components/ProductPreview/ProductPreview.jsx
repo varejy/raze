@@ -16,14 +16,12 @@ const PARAMETERS = [
         parameterValue: '15 см'
     }
 ];
-
 const PRODUCT_INFO = {
     productName: 'название товара',
     productDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n' +
         '                            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse\n' +
         '                            ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.'
 };
-
 const SLIDER_IMAGES = [
     { path: '/src/apps/client/ui/components/ProductPreview/images/ontario1.jpg' },
     { path: '/src/apps/client/ui/components/ProductPreview/images/ontario2.jpg' },
@@ -31,9 +29,7 @@ const SLIDER_IMAGES = [
     { path: '/src/apps/client/ui/components/ProductPreview/images/ontario4.jpg' },
     { path: '/src/apps/client/ui/components/ProductPreview/images/ontario5.jpg' }
 ];
-
 const PREVIEW_WIDTH = 700;
-
 const SLIDES_QUANTITY = SLIDER_IMAGES.length;
 
 class ProductPreview extends Component {
@@ -41,9 +37,9 @@ class ProductPreview extends Component {
         leftPosition: 0
     };
 
-    handleDotClick = (leftMove) => () => {
+    handleDotClick = (leftMoveIndex) => () => {
         this.setState({
-            leftPosition: leftMove
+            leftPosition: leftMoveIndex * PREVIEW_WIDTH
         });
     };
 
@@ -64,28 +60,28 @@ class ProductPreview extends Component {
             <div className={styles.productPreview}>
                 <div className={styles.productPhotoContainer}>
                     <div className={styles.slides} style={{ left: `-${this.state.leftPosition.toString()}px` }}>
-                        {SLIDER_IMAGES.map((SLIDER_IMAGE, i) =>
+                        {SLIDER_IMAGES.map((sliderImage, i) =>
                             <div className={styles.productPreviewSlide} key={i}>
-                                <img className={styles.slidePhoto} src={SLIDER_IMAGE.path} alt={`slide${i}`} />
+                                <img className={styles.slidePhoto} src={sliderImage.path} alt={`slide${i}`} />
                             </div>)}
                     </div>
                     <button
-                        className={classNames(styles.buttonLeft, this.state.leftPosition === 0 && styles.buttonDisabled)}
+                        className={classNames(styles.buttonLeft)}
                         onClick={this.state.leftPosition !== 0 && this.handleArrowClick('left')}
                     >
-                        <img src='/src/apps/client/ui/components/ProductPreview/images/arrowLeft.png' alt=''/>
+                        <div className={this.state.leftPosition === 0 && styles.buttonDisabled ? styles.buttonDisabled : styles.buttonEnabled}/>
                     </button>
                     <button
-                        className={classNames(styles.buttonRight, this.state.leftPosition === (PREVIEW_WIDTH * (SLIDES_QUANTITY - 1)) && styles.buttonDisabled)}
+                        className={classNames(styles.buttonRight)}
                         onClick={this.state.leftPosition !== (PREVIEW_WIDTH * (SLIDES_QUANTITY - 1)) && this.handleArrowClick('right')}
                     >
-                        <img src='/src/apps/client/ui/components/ProductPreview/images/arrowRight.png' alt=''/>
+                        <div className={this.state.leftPosition === (PREVIEW_WIDTH * (SLIDES_QUANTITY - 1)) ? styles.buttonDisabled : styles.buttonEnabled}/>
                     </button>
                     <div className={styles.dotsContainer}>
                         <div className={styles.buttonDots}>
-                            {SLIDER_IMAGES.map((SLIDER_IMAGE, i) =>
+                            {SLIDER_IMAGES.map((sliderImage, i) =>
                                 <div key={i} className={classNames(styles.dot, this.state.leftPosition === (PREVIEW_WIDTH * i) && styles.dotActive)}
-                                    onClick={this.handleDotClick(PREVIEW_WIDTH * i)}/>
+                                    onClick={this.handleDotClick(i)}/>
                             )}
                         </div>
                     </div>
@@ -97,10 +93,10 @@ class ProductPreview extends Component {
                     </div>
                     <div className={styles.productPreviewInfo}>
                         <div className={styles.parameters}>
-                            {PARAMETERS.map((PARAMETER, i) =>
-                                <div key={i} className={styles.parameterLine}>
-                                    <div className={styles.parameterName}>{PARAMETER.parameterName}</div>
-                                    <div className={styles.parameterValue}>{PARAMETER.parameterValue}</div>
+                            {PARAMETERS.map((parameter, i) =>
+                                <div key={i} className={classNames(styles.parameterLine, i % 2 !== 0 && styles.parameterLineGrey)}>
+                                    <div className={styles.parameterName}>{parameter.parameterName}</div>
+                                    <div className={styles.parameterValue}>{parameter.parameterValue}</div>
                                 </div>
                             )}
                         </div>
@@ -108,7 +104,7 @@ class ProductPreview extends Component {
                         </div>
                     </div>
                     <div className={styles.buttonContainer}>
-                        <button className={styles.addToBasketButton}>в корзину</button>
+                        <button className={classNames(styles.addToBasketButton, styles.buttonDefault)}>в корзину</button>
                     </div>
                 </div>
             </div>
