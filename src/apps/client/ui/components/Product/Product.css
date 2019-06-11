@@ -1,0 +1,176 @@
+.product{
+    width: 210px;
+    height: 314px;
+    margin-right: 24px;
+    margin-bottom: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+}
+
+.product:hover .info{
+    display: none;
+}
+
+.product:hover .toolBar{
+    transition: 0.3s;
+    display: flex;
+}
+.product:hover > .infoWrapper{
+    transition: 0.3s;
+    background-color: #131313;
+}
+
+.imageWrapper{
+    display: flex;
+    justify-content: center;
+    position: relative;
+    height: 186px;
+}
+
+.discount{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 36px;
+    height: 16px;
+    font-family: Myriad Pro Regular;
+    font-size: 9.5px;
+    letter-spacing: 1.9px;
+    color: #ff0000;
+    text-align: left;
+}
+.img{
+    height: 186px;
+    width: 200px;
+}
+.infoWrapper{
+    background-color: #fff;
+}
+.info{
+    width: 210px;
+    height: 59px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: Montserrat-Bold;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1.32;
+    text-align: center;
+    color: #0a0f0f;
+}
+
+.manufacturer{
+    font-size: 7.5px;
+    font-family: Montserrat-Bold;
+    line-height: 18px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.prices{
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.price{
+    font-family: Montserrat-Medium;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    color: #ff0000;
+}
+
+.previousPrice{
+    position: absolute;
+    color: #000000;
+    font-family: MontserratRegular;
+    font-size: 12.5px;
+    line-height: 18px;
+    text-align: center;
+    left: -35px;
+    top: 0;
+}
+
+.toolBar{
+    display: none;
+    height: 59px;
+    width: 210px;
+    justify-content: space-around;
+    align-items: center;
+}
+.toolBarItem{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: space-around;
+    font-family: Myriad Pro Regular;
+    color: #fff;
+    font-size: 8.5px;
+    flex-wrap: wrap;
+    width: 42px;
+    height: 41px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.toolBarIcon{
+    margin-bottom: 6px;
+}
+
+.quickInspection .toolBarIcon{
+    width: 21px;
+    height: 16px;
+}
+.heart .toolBarIcon{
+    width: 17px;
+    height: 16px;
+}
+
+.basket .toolBarIcon{
+    width: 21px;
+    height: 20px;
+}
+
+.toolBarItem:hover {
+    color: #00a046;
+}
+.eyeIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/eye.png') center;
+    background-size: 100% auto;
+}
+.toolBarItem:hover .eyeIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/eyeGreen.png') center;
+    background-size: 100% auto;
+}
+
+.heartIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/heart.png') center;
+    background-size: 100% auto;
+}
+.toolBarItem:hover .heartIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/heartGreen.png') center;
+    background-size: 100% auto;
+}
+.basketIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/basket.png') center;
+    background-size: 100% auto;
+}
+.toolBarItem:hover .basketIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/basketGreen.png') center;
+    background-size: 100% auto;
+}
+
+.name{
+    font-family: Montserrat-Bold;
+    font-size: 13.5px;
+    line-height: 18px;
+    text-align: center;
+    text-transform: uppercase;
+}
