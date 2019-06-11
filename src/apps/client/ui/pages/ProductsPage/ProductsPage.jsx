@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import ProductsPageFilters from '../../components/ProductsPageFilters/ProductsPageFilters';
-import Products from '../../components/Products/Products';
+import ProductsList from '../../components/ProductsList/ProductsList';
 
 import { connect } from 'react-redux';
 import getProductsByCategoryId from '../../../services/client/getProductsByCategoryId';
@@ -89,7 +89,7 @@ class ProductsPage extends Component {
             { products.map((product, i) => <div key={i}>{product.name}</div>) }
             <div className={styles.productsElemWrapp}>
                 <ProductsPageFilters />
-                <Products />
+                <ProductsList />
             </div>
         </section>;
     }

@@ -9,8 +9,8 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import WarningIcon from '@material-ui/icons/Warning';
 import { withStyles } from '@material-ui/core/styles';
 
-const SLIDE_WIDTH = 210;
-const SLIDE_HEIGHT = 314;
+const SLIDE_WIDTH = 232;
+const SLIDE_HEIGHT = 248;
 
 const materialStyles = theme => ({
     uploadInput: {
@@ -41,7 +41,6 @@ const materialStyles = theme => ({
         fontSize: '16px'
     },
     fileImage: {
-        width: '100%',
         marginTop: '20px'
     },
     fileImageError: {
@@ -97,6 +96,10 @@ class ProductAvatarFile extends Component {
         if (event.target.naturalWidth !== SLIDE_WIDTH || event.target.naturalHeight !== SLIDE_HEIGHT) {
             this.setState({
                 isWrongDimensions: true
+            });
+        } else {
+            this.setState({
+                isWrongDimensions: false
             });
         }
     };

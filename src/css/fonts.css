@@ -39,6 +39,18 @@
 }
 
 @font-face {
+  font-family: 'Montserrat-Bold';
+
+  src: url('./font/Montserrat-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat-Medium';
+
+  src: url('./font/Montserrat-Medium.ttf') format('truetype');
+}
+
+@font-face {
     font-family: 'Montserrat';
 
     src: url('./font/montserrat-black.ttf') format('truetype');
@@ -47,4 +59,10 @@
   font-family: 'HelveticaNeueCyrLight';
 
   src: url('./font/HelveticaNeueCyr-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Myriad Pro Regular';
+
+  src: url('./font/MyriadProRegular.ttf') format('truetype');
 }
