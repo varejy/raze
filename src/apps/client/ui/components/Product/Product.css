@@ -7,6 +7,7 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    position: relative;
 }
 
 .product:hover .info{
@@ -28,17 +29,26 @@
     position: relative;
     height: 186px;
 }
+
+.toolBarItem:hover {
+    color: #00a046;
+    filter: none;
+}
+.toolBarItem{
+    filter: saturate(0) brightness(10);
+}
+
 .discount{
     position: absolute;
-    left: -3px;
-    top: -15px;
+    left: 0;
+    top: 0;
     width: 36px;
     height: 16px;
     font-family: Myriad Pro Regular;
-    font-size: 7.5px;
-    font-weight: bold;
-    letter-spacing: 1.5px;
+    font-size: 9.5px;
+    letter-spacing: 1.9px;
     color: #ff0000;
+    text-align: left;
 }
 .img{
     height: 186px;
@@ -46,10 +56,9 @@
 }
 .infoWrapper{
     background-color: #fff;
-    width: -webkit-fill-available;
 }
 .info{
-    width: -webkit-fill-available;
+    width: 210px;
     height: 59px;
     display: flex;
     flex-direction: column;
@@ -62,20 +71,44 @@
     text-align: center;
     color: #0a0f0f;
 }
+
 .manufacturer{
-    font-size: 6px;
+    font-size: 7.5px;
+    font-family: Montserrat-Bold;
+    line-height: 18px;
+    text-align: center;
+    text-transform: uppercase;
 }
+
+.prices{
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
 .price{
     font-family: Montserrat-Medium;
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.5;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
     color: #ff0000;
 }
+
+.previousPrice{
+    position: absolute;
+    color: #000000;
+    font-family: MontserratRegular;
+    font-size: 12.5px;
+    line-height: 18px;
+    text-align: center;
+    left: -35px;
+    top: 0;
+}
+
 .toolBar{
     display: none;
     height: 59px;
-    width: -webkit-fill-available;
+    width: 210px;
     justify-content: space-around;
     align-items: center;
 }
@@ -87,13 +120,37 @@
     justify-content: space-around;
     font-family: Myriad Pro Regular;
     color: #fff;
-    font-size: 7px;
+    font-size: 8.5px;
     flex-wrap: wrap;
-    width: 36px;
+    width: 42px;
     height: 41px;
     cursor: pointer;
+    text-transform: uppercase;
 }
+
 .toolBarIcon{
+    margin-bottom: 6px;
+}
+
+.quickInspection .toolBarIcon{
+    width: 21px;
+    height: 16px;
+}
+
+.heart .toolBarIcon{
     width: 17px;
-    max-height: 16px;
+    height: 17px;
+}
+
+.basket .toolBarIcon{
+    width: 21px;
+    height: 20px;
+}
+
+.name{
+    font-family: Montserrat-Bold;
+    font-size: 13.5px;
+    line-height: 18px;
+    text-align: center;
+    text-transform: uppercase;
 }
