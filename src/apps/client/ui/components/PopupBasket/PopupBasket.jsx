@@ -58,8 +58,8 @@ class PopupBasket extends Component {
                     </div>
                 </div>
                 <div className={styles.buttonsWrapp}>
-                    <button className={classNames(styles.continueShopping, styles.buttons)}>продолжить покупки</button>
-                    <button className={classNames(styles.ordering, styles.buttons)}>оформление заказа</button>
+                    <button className={classNames(styles.continueShopping, styles.buttons, styles.buttonDefault)}>продолжить покупки</button>
+                    <button className={classNames(styles.ordering, styles.buttons, styles.buttonDefault)}>оформление заказа</button>
                 </div>
             </div>
         </section>;
