@@ -43,6 +43,10 @@ class ProductPreview extends Component {
         });
     };
 
+    handleLeftCalculation = (leftMoveIndex) => () => {
+        return leftMoveIndex * PREVIEW_WIDTH;
+    };
+
     handleArrowClick = (arrowType) => () => {
         if (arrowType === 'left') {
             this.setState({
@@ -80,7 +84,7 @@ class ProductPreview extends Component {
                     <div className={styles.dotsContainer}>
                         <div className={styles.buttonDots}>
                             {SLIDER_IMAGES.map((sliderImage, i) =>
-                                <div key={i} className={classNames(styles.dot, this.state.leftPosition === (PREVIEW_WIDTH * i) && styles.dotActive)}
+                                <div key={i} className={classNames(styles.dot, this.state.leftPosition === this.handleLeftCalculation(i) && styles.dotActive)}
                                     onClick={this.handleDotClick(i)}/>
                             )}
                         </div>
@@ -94,7 +98,9 @@ class ProductPreview extends Component {
                     <div className={styles.productPreviewInfo}>
                         <div className={styles.parameters}>
                             {PARAMETERS.map((parameter, i) =>
-                                <div key={i} className={classNames(styles.parameterLine, i % 2 !== 0 && styles.parameterLineGrey)}>
+                                <div key={i} className={classNames(styles.parameterLine, {
+                                    [styles.parameterLineGrey]: i % 2 !== 0
+                                })}>
                                     <div className={styles.parameterName}>{parameter.parameterName}</div>
                                     <div className={styles.parameterValue}>{parameter.parameterValue}</div>
                                 </div>
