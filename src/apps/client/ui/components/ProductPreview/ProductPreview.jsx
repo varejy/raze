@@ -43,10 +43,6 @@ class ProductPreview extends Component {
         });
     };
 
-    handleLeftCalculation = (leftMoveIndex) => () => {
-        return leftMoveIndex * PREVIEW_WIDTH;
-    };
-
     handleArrowClick = (arrowType) => () => {
         if (arrowType === 'left') {
             this.setState({
@@ -84,7 +80,7 @@ class ProductPreview extends Component {
                     <div className={styles.dotsContainer}>
                         <div className={styles.buttonDots}>
                             {SLIDER_IMAGES.map((sliderImage, i) =>
-                                <div key={i} className={classNames(styles.dot, this.state.leftPosition === this.handleLeftCalculation(i) && styles.dotActive)}
+                                <div key={i} className={classNames(styles.dot, this.state.leftPosition === i * PREVIEW_WIDTH && styles.dotActive)}
                                     onClick={this.handleDotClick(i)}/>
                             )}
                         </div>
