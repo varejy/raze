@@ -71,7 +71,7 @@ class Popup extends Component {
         <div className={styles.coverage} />
         <div className={styles.container}>
             <div className={styles.content}>
-                <div className={styles.cross} onClick={this.closePopup}>
+                <div className={styles.cross} onClick={this.props.closePopup}>
                     <CrossButton />
                 </div>
                 { content }

@@ -1,0 +1,215 @@
+﻿.productPreview{
+    width: 700px;
+    background-color: #ffffff;
+    position: relative;
+}
+
+.productPhotoContainer{
+    width: 700px;
+    height: 284px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border: 3px solid #ffffff;
+}
+
+.slides{
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: 800ms ease;
+}
+
+.productPreviewSlide{
+    width: 700px;
+    flex-shrink: 0;
+    height: auto;
+    display: inline-block;
+}
+
+.slidePhoto{
+    width: 100%;
+    height: auto;
+}
+
+.buttonLeft, .buttonRight{
+    position: absolute;
+    margin: 0 24px;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.buttonLeft{
+    left: 0;
+}
+
+.buttonRight{
+    right: 0;
+}
+
+.buttonRight .buttonEnabled{
+     background: url('/src/apps/client/ui/components/ProductPreview/images/arrowRight.png') center;
+     background-size: 100% auto;
+     width: 32px;
+     height: 32px;
+ }
+
+.buttonRight .buttonDisabled{
+    background: url('/src/apps/client/ui/components/ProductPreview/images/arrowRightGreen.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.buttonLeft .buttonEnabled{
+    background: url('/src/apps/client/ui/components/ProductPreview/images/arrowLeft.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.buttonLeft .buttonDisabled{
+    background: url('/src/apps/client/ui/components/ProductPreview/images/arrowLeftGreen.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.dotsContainer{
+    width: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.buttonDots{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.buttonDots :last-child{
+    margin-right: 0;
+}
+
+.dot{
+    width: 13px;
+    height: 13px;
+    margin-right: 14px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.dotActive{
+    background-color: #00a046;
+}
+
+.buttonDots .lastChildDot{
+    margin-right: 0;
+}
+
+.productPreviewHeader{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 34px 0 47px 0;
+}
+
+.productName{
+    text-transform: uppercase;
+    font-family: HelveticaNeueCyrBold;
+    font-size: 24.5px;
+    line-height: 30.5px;
+    color: #000000;
+}
+
+.likeIcon{
+    width: 21px;
+    height: 18px;
+    position: relative;
+    right: -40px;
+    margin-left: -20px;
+    cursor: pointer;
+}
+
+.productPreviewInfo{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    width: 700px;
+}
+
+.productPreviewInfo{
+    width: 273px;
+}
+
+.parameterLine{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 273px;
+    height: 26px;
+    padding: 0 13px;
+}
+
+.parameterLineGrey{
+    background-color: #f1f1f1;
+}
+
+.parameterName{
+    font-family: HelveticaNeueCyrLight;
+    font-size: 11px;
+    line-height: 24px;
+    color: #000000;
+}
+
+.parameterValue{
+    font-family: HelveticaNeueCyrBold;
+    font-size: 11px;
+    line-height: 24px;
+    color: #000000;
+    text-transform: uppercase;
+}
+
+.description{
+    width: 379px;
+    font-family: HelveticaNeueCyrRoman;
+    font-size: 12px;
+    line-height: 24px;
+    text-align: left;
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+.buttonContainer{
+    width: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 27px 0 19px 0;
+    background-color: #ffffff;
+}
+.buttonDefault{
+    @mixin removeDefaultButton
+}
+.addToBasketButton{
+    width: 275px;
+    height: 44px;
+    background-color: #00a046;
+    color: #ffffff;
+    font-family: HelveticaNeueCyrBold;
+    font-size: 14px;
+    line-height: 35px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
