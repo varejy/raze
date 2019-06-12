@@ -1,26 +1,51 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import filtersNav from './filtersNav';
+import uniq from '@tinkoff/utils/array/uniq';
+import map from '@tinkoff/utils/array/map';
+import compose from '@tinkoff/utils/function/compose';
 
 import ProductsPageFilter from '../ProductsPageFilter/ProductsPageFilter';
 
 class ProductsPageFilters extends Component {
-    state = {
-        filters: filtersNav
+    constructor (props) {
+        super(props);
+
+        this.state = {
+            products: this.props.products,
+            options: []
+        };
+    }
+    static propTypes = {
+        products: PropTypes.array
     };
 
+    static defaultProps = {
+        products: []
+    }
+
+    shouldComponentUpdate (nextProps, nextState) {
+        return this.props !== nextProps;
+    }
+
+    componentWillMount () {
+        const { products } = this.state;
+        const options = compose(
+            uniq,
+            map(product => product.company)
+        )(products);
+
+        this.setState({
+            options
+        });
+    }
+
     render () {
-        const { filters } = this.state;
+        const { products, options } = this.state;
 
         return <section>
             <div>
-                {
-                    filters.map((filter, i) => {
-                        return (
-                            <ProductsPageFilter key={i} title={filter.name} options={filter.options}/>
-                        );
-                    })
-                }
+                <ProductsPageFilter key={products.id} title='Производители' options={options}/>
             </div>
         </section>;
     }

@@ -12,7 +12,8 @@ const initialState = {
     },
     categories: [],
     productsMap: {},
-    mainSlides: []
+    mainSlides: [],
+    filtersCompany: []
 };
 
 export default function (state = initialState, action) {
