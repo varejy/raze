@@ -12,7 +12,7 @@ const Product = new Schema({
         prop: { type: String, required: true },
         value: { type: String, required: true }
     }],
-    avatar: { type: String, required: true },
+    avatar: { type: String },
     files: [{ type: String, required: true }],
     hidden: { type: Boolean, required: true },
     categoryId: { type: String, required: true }
