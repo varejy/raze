@@ -119,6 +119,8 @@
 
 .buttons{
     font-family: HelveticaNeueCyr;
+    text-transform: uppercase;
+    cursor: pointer;
     font-size: 14px;
     width: 270px;
     height: 44px;
