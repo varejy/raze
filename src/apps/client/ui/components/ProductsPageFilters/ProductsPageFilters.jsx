@@ -24,11 +24,7 @@ class ProductsPageFilters extends Component {
         products: []
     }
 
-    shouldComponentUpdate (nextProps, nextState) {
-        return this.props !== nextProps;
-    }
-
-    componentWillMount () {
+    componentDidMount () {
         const { products } = this.state;
         const options = compose(
             uniq,
