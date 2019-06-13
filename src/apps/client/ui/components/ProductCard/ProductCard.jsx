@@ -9,7 +9,7 @@ const SLIDER_IMAGES = [
     { path: '/src/apps/client/ui/components/ProductPreview/images/ontario4.jpg' },
     { path: '/src/apps/client/ui/components/ProductPreview/images/ontario5.jpg' }
 ];
-const BIG_SLIDE_WIDTH = 700;
+const BIG_SLIDE_WIDTH = 600;
 const LEFT_SLIDER_HEIGHT = 80;
 const SLIDES_QUANTITY = SLIDER_IMAGES.length;
 const LABELS = [
@@ -92,7 +92,7 @@ class ProductCard extends Component {
     handleLeftSliderClick = () => {
         if (this.state.i <= 2) {
             return 0;
-        } else if (this.state.i > 2) {
+        } else {
             return (-(this.state.topPosition - LEFT_SLIDER_HEIGHT * 2)).toString();
         }
     };
@@ -120,23 +120,7 @@ class ProductCard extends Component {
     render () {
         return <div className={styles.productCardContainer}>
             <div className={styles.topProductInfo}>
-                <div className={styles.sliderContainer}>
-                    <div className={styles.slides} style={{ left: `-${this.state.leftPosition.toString()}px` }}>
-                        {SLIDER_IMAGES.map((sliderImage, i) =>
-                            <div className={styles.productPreviewSlide} key={i}>
-                                <img className={styles.slidePhoto} src={sliderImage.path} alt={`slide${i}`}/>
-                            </div>)}
-                    </div>
-                    <div className={styles.dotsContainer}>
-                        <div className={styles.buttonDots}>
-                            {SLIDER_IMAGES.map((sliderImage, i) =>
-                                <div key={i}
-                                    className={classNames(styles.dot,
-                                        this.state.leftPosition === i * BIG_SLIDE_WIDTH && styles.dotActive)}
-                                    onClick={this.handleDotClick(i)}/>
-                            )}
-                        </div>
-                    </div>
+                <div className={styles.sliders}>
                     <div className={styles.sliderLeftContainer}>
                         {SLIDES_QUANTITY > 3 && <button
                             className={classNames(styles.buttonTop)}
@@ -149,7 +133,7 @@ class ProductCard extends Component {
                         </button>}
                         <div className={styles.slidesContainer}>
                             <div className={styles.sliderLeftSlides}
-                                style = {{ top: `${this.handleLeftSliderClick()}px` }}
+                                style={{ top: `${this.handleLeftSliderClick()}px` }}
                             >
                                 {SLIDER_IMAGES.map((sliderLeftImage, i) =>
                                     <div
@@ -172,6 +156,24 @@ class ProductCard extends Component {
                                     ? styles.buttonDisabled
                                     : styles.buttonEnabled}/>
                         </button>}
+                    </div>
+                    <div className={styles.sliderContainer}>
+                        <div className={styles.slides} style={{ left: `-${this.state.leftPosition.toString()}px` }}>
+                            {SLIDER_IMAGES.map((sliderImage, i) =>
+                                <div className={styles.productPreviewSlide} key={i}>
+                                    <img className={styles.slidePhoto} src={sliderImage.path} alt={`slide${i}`}/>
+                                </div>)}
+                        </div>
+                        <div className={styles.dotsContainer}>
+                            <div className={styles.buttonDots}>
+                                {SLIDER_IMAGES.map((sliderImage, i) =>
+                                    <div key={i}
+                                        className={classNames(styles.dot,
+                                            this.state.leftPosition === i * BIG_SLIDE_WIDTH && styles.dotActive)}
+                                        onClick={this.handleDotClick(i)}/>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className={styles.productInfo}>
