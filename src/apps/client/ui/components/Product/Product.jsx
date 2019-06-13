@@ -1,16 +1,27 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-
 import styles from './Product.css';
+import openPopup from '../../../actions/openPopup';
+import { connect } from 'react-redux';
+import ProductPreview from '../ProductPreview/ProductPreview';
+
+const mapDispatchToProps = (dispatch) => ({
+    openPopup: payload => dispatch(openPopup(payload))
+});
 
 class Product extends Component {
     static propTypes = {
-        product: PropTypes.object
+        product: PropTypes.object,
+        openPopup: PropTypes.func.isRequired
     };
 
     static defaultProps = {
         product: {}
+    };
+
+    handlePreviewClick = () => {
+        this.props.openPopup(<ProductPreview product={this.props.product}/>);
     };
 
     render () {
@@ -23,7 +34,7 @@ class Product extends Component {
             </div>
             <div className={styles.infoWrapper}>
                 <div className={styles.toolBar}>
-                    <div className={classNames(styles.quickInspection, styles.toolBarItem)}>
+                    <div className={classNames(styles.quickInspection, styles.toolBarItem)} onClick={this.handlePreviewClick}>
                         <div className={classNames(styles.toolBarIcon, styles.eyeIcon)}/>
                         <div>Быстрый просмотр</div>
                     </div>
@@ -49,4 +60,4 @@ class Product extends Component {
     }
 }
 
-export default Product;
+export default connect(null, mapDispatchToProps)(Product);
