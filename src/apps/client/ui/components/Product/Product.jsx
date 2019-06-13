@@ -22,7 +22,6 @@ class Product extends Component {
 
     handlePreviewClick = () => {
         this.props.openPopup(<ProductPreview product={this.props.product}/>);
-        console.log(this.props.product);
     };
 
     render () {

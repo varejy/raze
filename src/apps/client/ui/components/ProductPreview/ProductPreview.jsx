@@ -47,7 +47,7 @@ class ProductPreview extends Component {
                     <div className={styles.slides} style={{ left: `-${this.state.leftPosition.toString()}px` }}>
                         {product.files.map((sliderImage, i) =>
                             <div className={styles.productPreviewSlide} key={i}>
-                                <img className={styles.slidePhoto} src={product.files[i]} alt={`slide${i}`} />
+                                <img className={styles.slidePhoto} src={sliderImage} alt={`slide${i}`} />
                             </div>)}
                     </div>
                     <button
@@ -82,8 +82,8 @@ class ProductPreview extends Component {
                                 <div key={i} className={classNames(styles.parameterLine, {
                                     [styles.parameterLineGrey]: i % 2 !== 0
                                 })}>
-                                    <div className={styles.parameterName}>{product.features[i].prop}</div>
-                                    <div className={styles.parameterValue}>{product.features[i].value}</div>
+                                    <div className={styles.parameterName}>{parameter.prop}</div>
+                                    <div className={styles.parameterValue}>{parameter.value}</div>
                                 </div>
                             )}
                         </div>
