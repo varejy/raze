@@ -19,7 +19,7 @@ class Product extends Component {
         return <div className={styles.product}>
             <div className={styles.imageWrapper}>
                 { product.discount && <div className={styles.discount}>SPECIAL PRICE</div>}
-                <img className={styles.img} src={product.avatar}/>
+                <img className={styles.img} src={product.avatar} alt={product.avatar}/>
             </div>
             <div className={styles.infoWrapper}>
                 <div className={styles.toolBar}>

@@ -5,9 +5,9 @@ import uniq from '@tinkoff/utils/array/uniq';
 import map from '@tinkoff/utils/array/map';
 import compose from '@tinkoff/utils/function/compose';
 
-import ProductsPageFilter from '../ProductsPageFilter/ProductsPageFilter';
+import CheckboxFilter from '../CheckboxFilter/CheckboxFilter';
 
-class ProductsPageFilters extends Component {
+class CheckboxFilters extends Component {
     constructor (props) {
         super(props);
 
@@ -18,18 +18,14 @@ class ProductsPageFilters extends Component {
     }
     static propTypes = {
         products: PropTypes.array,
-        activeFilters: PropTypes.func
+        setInputFilters: PropTypes.func
     };
 
     static defaultProps = {
         products: []
     }
 
-    shouldComponentUpdate (nextProps, nextState) {
-        return this.props !== nextProps;
-    }
-
-    componentWillMount () {
+    componentDidMount () {
         const { products } = this.state;
         const options = compose(
             uniq,
@@ -46,9 +42,9 @@ class ProductsPageFilters extends Component {
 
         return <section>
             <div>
-                <ProductsPageFilter key={products.id} activeFilters={this.props.activeFilters} title='Производители' options={options}/>
+                <CheckboxFilter key={products.id} setInputFilters={this.props.setInputFilters} products={products} title='Производители' options={options}/>
             </div>
         </section>;
     }
 }
-export default ProductsPageFilters;
+export default CheckboxFilters;

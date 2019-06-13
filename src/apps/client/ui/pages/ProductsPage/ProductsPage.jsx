@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import ProductsPageFilters from '../../components/ProductsPageFilters/ProductsPageFilters';
+import CheckboxFilters from '../../components/CheckboxFilters/CheckboxFilters';
 import ProductsList from '../../components/ProductsList/ProductsList';
 
 import { connect } from 'react-redux';
@@ -52,7 +52,7 @@ class ProductsPage extends Component {
         this.state = {
             loading: !this.notFoundPage && !products,
             products: products || [],
-            productsForProductsList: [],
+            filteredProducts: products,
             category
         };
     }
@@ -72,12 +72,14 @@ class ProductsPage extends Component {
         }
     }
 
-    handleChangeFilters = (activeFilters, options) => {
-        // Todo: Доделать фильтрацию
+    handleChangeFilters = (activeFilters) => {
+        this.setState({
+            filteredProducts: activeFilters
+        });
     };
 
     render () {
-        const { loading, products } = this.state;
+        const { loading, products, filteredProducts } = this.state;
 
         // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
@@ -92,8 +94,8 @@ class ProductsPage extends Component {
 
         return <section className={styles.productsWrapp}>
             <div className={styles.productsElemWrapp}>
-                <ProductsPageFilters activeFilters={this.handleChangeFilters} products={products}/>
-                <ProductsList products={products}/>
+                <CheckboxFilters setInputFilters={this.handleChangeFilters} products={products}/>
+                <ProductsList products={filteredProducts}/>
             </div>
         </section>;
     }
