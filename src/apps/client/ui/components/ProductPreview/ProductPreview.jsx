@@ -1,40 +1,22 @@
 import React, { Component } from 'react';
 import styles from './ProductPreview.css';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
-const PARAMETERS = [
-    {
-        parameterName: 'Лезвие',
-        parameterValue: 'Сталь'
-    },
-    {
-        parameterName: 'Длина',
-        parameterValue: '25 см'
-    },
-    {
-        parameterName: 'Ширина',
-        parameterValue: '15 см'
-    }
-];
-const PRODUCT_INFO = {
-    productName: 'название товара',
-    productDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n' +
-        '                            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse\n' +
-        '                            ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.'
-};
-const SLIDER_IMAGES = [
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario1.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario2.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario3.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario4.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario5.jpg' }
-];
 const PREVIEW_WIDTH = 700;
-const SLIDES_QUANTITY = SLIDER_IMAGES.length;
 
 class ProductPreview extends Component {
     state = {
-        leftPosition: 0
+        leftPosition: 0,
+        slidesQuantity: this.props.product.files.length
+    };
+
+    static propTypes = {
+        product: PropTypes.object
+    };
+
+    static defaultProps = {
+        product: {}
     };
 
     handleDotClick = (leftMoveIndex) => () => {
@@ -56,13 +38,16 @@ class ProductPreview extends Component {
     };
 
     render () {
+        const { product } = this.props;
+        const { slidesQuantity } = this.state;
+
         return <div className={styles.productPreviewContainer}>
             <div className={styles.productPreview}>
                 <div className={styles.productPhotoContainer}>
                     <div className={styles.slides} style={{ left: `-${this.state.leftPosition.toString()}px` }}>
-                        {SLIDER_IMAGES.map((sliderImage, i) =>
+                        {product.files.map((sliderImage, i) =>
                             <div className={styles.productPreviewSlide} key={i}>
-                                <img className={styles.slidePhoto} src={sliderImage.path} alt={`slide${i}`} />
+                                <img className={styles.slidePhoto} src={product.files[i]} alt={`slide${i}`} />
                             </div>)}
                     </div>
                     <button
@@ -73,13 +58,13 @@ class ProductPreview extends Component {
                     </button>
                     <button
                         className={classNames(styles.buttonRight)}
-                        onClick={this.state.leftPosition !== (PREVIEW_WIDTH * (SLIDES_QUANTITY - 1)) && this.handleArrowClick('right')}
+                        onClick={this.state.leftPosition !== (PREVIEW_WIDTH * (slidesQuantity - 1)) && this.handleArrowClick('right')}
                     >
-                        <div className={this.state.leftPosition === (PREVIEW_WIDTH * (SLIDES_QUANTITY - 1)) ? styles.buttonDisabled : styles.buttonEnabled}/>
+                        <div className={this.state.leftPosition === (PREVIEW_WIDTH * (slidesQuantity - 1)) ? styles.buttonDisabled : styles.buttonEnabled}/>
                     </button>
                     <div className={styles.dotsContainer}>
                         <div className={styles.buttonDots}>
-                            {SLIDER_IMAGES.map((sliderImage, i) =>
+                            {product.files.map((sliderImage, i) =>
                                 <div key={i} className={classNames(styles.dot, this.state.leftPosition === i * PREVIEW_WIDTH && styles.dotActive)}
                                     onClick={this.handleDotClick(i)}/>
                             )}
@@ -88,21 +73,21 @@ class ProductPreview extends Component {
                 </div>
                 <div className={styles.productInfoContainer}>
                     <div className={styles.productPreviewHeader}>
-                        <div className={styles.productName}>{PRODUCT_INFO.productName}</div>
+                        <div className={styles.productName}>{product.name}</div>
                         <div className={styles.likeIcon}><img src='/src/apps/client/ui/components/ProductPreview/images/heartIcon.png' alt='' /></div>
                     </div>
                     <div className={styles.productPreviewInfo}>
                         <div className={styles.parameters}>
-                            {PARAMETERS.map((parameter, i) =>
+                            {product.features.map((parameter, i) =>
                                 <div key={i} className={classNames(styles.parameterLine, {
                                     [styles.parameterLineGrey]: i % 2 !== 0
                                 })}>
-                                    <div className={styles.parameterName}>{parameter.parameterName}</div>
-                                    <div className={styles.parameterValue}>{parameter.parameterValue}</div>
+                                    <div className={styles.parameterName}>{product.features[i].prop}</div>
+                                    <div className={styles.parameterValue}>{product.features[i].value}</div>
                                 </div>
                             )}
                         </div>
-                        <div className={styles.description}>{PRODUCT_INFO.productDescription}
+                        <div className={styles.description}>{product.description}
                         </div>
                     </div>
                     <div className={styles.buttonContainer}>
