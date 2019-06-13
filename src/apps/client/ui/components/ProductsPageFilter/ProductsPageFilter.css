@@ -26,6 +26,7 @@
 .filterOptionTxt{
     font-size: 10px;
     margin-left: 14px;
+    text-transform: uppercase;
 }
 .filterCheckbox {
     width: 8px;

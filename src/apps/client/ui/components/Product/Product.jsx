@@ -19,7 +19,7 @@ class Product extends Component {
         return <div className={styles.product}>
             <div className={styles.imageWrapper}>
                 { product.discount && <div className={styles.discount}>SPECIAL PRICE</div>}
-                <img className={styles.img} src={product.image} alt={product.type}/>
+                <img className={styles.img} src={product.avatar} alt={product.avatar}/>
             </div>
             <div className={styles.infoWrapper}>
                 <div className={styles.toolBar}>
@@ -37,7 +37,7 @@ class Product extends Component {
                     </div>
                 </div>
                 <div className={styles.info}>
-                    <div className={styles.manufacturer}>{product.manufacturer}</div>
+                    <div className={styles.manufacturer}>{product.company}</div>
                     <div className={styles.name}>{product.name}</div>
                     <div className={styles.prices}>
                         <div className={styles.price}>{product.price}$</div>
