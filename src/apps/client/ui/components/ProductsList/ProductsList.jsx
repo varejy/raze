@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
-
-import productsList from './products';
+import PropTypes from 'prop-types';
 
 import Product from '../Product/Product';
 
 import styles from './ProductsList.css';
 
 class ProductsList extends Component {
-    state = {
-        products: productsList
+    static propTypes = {
+        products: PropTypes.array
     };
 
+    static defaultProps = {
+        products: []
+    }
+
     render () {
-        const { products } = this.state;
+        const { products } = this.props;
 
         return <section className={styles.root}>
             <div className={styles.productsFilter}>
@@ -30,7 +33,7 @@ class ProductsList extends Component {
                     products.map((product, i) => {
                         return (
                             <Product
-                                key={i}
+                                key={product.id}
                                 product={product}
                             />
                         );

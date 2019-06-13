@@ -86,10 +86,9 @@ class ProductsPage extends Component {
         }
 
         return <section className={styles.productsWrapp}>
-            { products.map((product, i) => <div key={i}>{product.name}</div>) }
             <div className={styles.productsElemWrapp}>
-                <ProductsPageFilters />
-                <ProductsList />
+                <ProductsPageFilters products={products}/>
+                <ProductsList products={products}/>
             </div>
         </section>;
     }
