@@ -17,7 +17,8 @@ class ProductsPageFilters extends Component {
         };
     }
     static propTypes = {
-        products: PropTypes.array
+        products: PropTypes.array,
+        activeFilters: PropTypes.func
     };
 
     static defaultProps = {
@@ -45,7 +46,7 @@ class ProductsPageFilters extends Component {
 
         return <section>
             <div>
-                <ProductsPageFilter key={products.id} title='Производители' options={options}/>
+                <ProductsPageFilter key={products.id} activeFilters={this.props.activeFilters} title='Производители' options={options}/>
             </div>
         </section>;
     }

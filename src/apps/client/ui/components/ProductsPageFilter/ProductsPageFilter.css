@@ -36,6 +36,7 @@
     margin: 0 0;
     -webkit-appearance: button;
     outline: -webkit-focus-ring-color auto 0;
+    cursor: pointer;
 }
 .filterCheckbox:not(checked){
     border: solid 1px #000000;

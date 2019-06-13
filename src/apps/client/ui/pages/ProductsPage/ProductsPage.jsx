@@ -52,6 +52,7 @@ class ProductsPage extends Component {
         this.state = {
             loading: !this.notFoundPage && !products,
             products: products || [],
+            productsForProductsList: [],
             category
         };
     }
@@ -71,6 +72,10 @@ class ProductsPage extends Component {
         }
     }
 
+    handleChangeFilters = (activeFilters, options) => {
+        // Todo: Доделать фильтрацию
+    };
+
     render () {
         const { loading, products } = this.state;
 
@@ -87,7 +92,7 @@ class ProductsPage extends Component {
 
         return <section className={styles.productsWrapp}>
             <div className={styles.productsElemWrapp}>
-                <ProductsPageFilters products={products}/>
+                <ProductsPageFilters activeFilters={this.handleChangeFilters} products={products}/>
                 <ProductsList products={products}/>
             </div>
         </section>;
