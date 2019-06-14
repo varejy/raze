@@ -68,14 +68,22 @@ class ProductsPage extends Component {
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.productsMap !== this.props.productsMap) {
-            this.setState({ products: nextProps.productsMap[this.state.category.id] });
+            this.setState({ filteredProducts: nextProps.productsMap[this.state.category.id], products: nextProps.productsMap[this.state.category.id] });
         }
     }
 
     handleChangeFilters = (activeFilters) => {
-        this.setState({
-            filteredProducts: activeFilters
-        });
+        const { products } = this.state;
+
+        if (activeFilters.length === 0) {
+            this.setState({
+                filteredProducts: products
+            });
+        } else if (activeFilters.length !== 0) {
+            this.setState({
+                filteredProducts: activeFilters
+            });
+        }
     };
 
     render () {
@@ -94,7 +102,7 @@ class ProductsPage extends Component {
 
         return <section className={styles.productsWrapp}>
             <div className={styles.productsElemWrapp}>
-                <CheckboxFilters setInputFilters={this.handleChangeFilters} products={products}/>
+                <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products}/>
                 <ProductsList products={filteredProducts}/>
             </div>
         </section>;

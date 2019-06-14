@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import uniq from '@tinkoff/utils/array/uniq';
 import map from '@tinkoff/utils/array/map';
 import compose from '@tinkoff/utils/function/compose';
+import includes from '@tinkoff/utils/array/includes';
+import filter from '@tinkoff/utils/array/filter';
 
 import CheckboxFilter from '../CheckboxFilter/CheckboxFilter';
 
@@ -18,7 +20,7 @@ class CheckboxFilters extends Component {
     }
     static propTypes = {
         products: PropTypes.array,
-        setInputFilters: PropTypes.func
+        onFiltersChanged: PropTypes.func
     };
 
     static defaultProps = {
@@ -37,12 +39,23 @@ class CheckboxFilters extends Component {
         });
     }
 
+    handleFilteredProducts = (activeCompanies) => {
+        const filteredProducts = filter(product => includes(product.company, activeCompanies), this.state.products);
+
+        this.props.onFiltersChanged(filteredProducts);
+    }
+
     render () {
         const { products, options } = this.state;
 
         return <section>
             <div>
-                <CheckboxFilter key={products.id} setInputFilters={this.props.setInputFilters} products={products} title='Производители' options={options}/>
+                <CheckboxFilter
+                    key={products.id}
+                    onFilteredProducts={this.handleFilteredProducts}
+                    title='Производители'
+                    options={options}
+                />
             </div>
         </section>;
     }

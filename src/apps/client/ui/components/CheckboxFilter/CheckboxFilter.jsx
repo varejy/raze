@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import filter from '@tinkoff/utils/array/filter';
+import compose from '@tinkoff/utils/function/compose';
+import keys from '@tinkoff/utils/object/keys';
+import pickBy from '@tinkoff/utils/object/pickBy';
 
 import styles from './CheckboxFilter.css';
 
@@ -10,14 +12,12 @@ class CheckboxFilter extends Component {
     static propTypes = {
         title: PropTypes.string,
         options: PropTypes.array,
-        products: PropTypes.array,
-        setInputFilters: PropTypes.func
+        onFilteredProducts: PropTypes.func.isRequired
     };
 
     static defaultProps = {
         title: '',
-        options: [],
-        products: []
+        options: []
     };
 
     state = {
@@ -26,32 +26,22 @@ class CheckboxFilter extends Component {
 
     handleLabelChecked = (company) => () => {
         const { optionsMap } = this.state;
-        const { products } = this.props;
-        var filteredProducts = [];
-        var activeCompany = [];
+
+        const nextOptionsMap = {
+            ...optionsMap,
+            [company]: !optionsMap[company]
+        };
 
         this.setState({
-            optionsMap: {
-                ...optionsMap,
-                [company]: !optionsMap[company]
-            }
+            optionsMap: nextOptionsMap
         });
 
-        for (var key in optionsMap) {
-            if (optionsMap[key] === true) {
-                activeCompany.push(key);
-            }
-        }
+        const activeCompanies = compose(
+            keys,
+            pickBy(Boolean)
+        )(nextOptionsMap);
 
-        activeCompany.forEach((ActCompany) => {
-            filteredProducts = filter(elem => elem.company === ActCompany, products);
-        });
-
-        if (filteredProducts === []) {
-            this.props.setInputFilters(products);
-        } else {
-            this.props.setInputFilters(filteredProducts);
-        }
+        this.props.onFilteredProducts(activeCompanies);
     }
 
     render () {
@@ -67,7 +57,7 @@ class CheckboxFilter extends Component {
 
                         return (
                             <li className={styles.filterOption} key={i}>
-                                <label className={classNames('filterCheckbox', styles.label)} onClick={this.handleLabelChecked(company, i)}>
+                                <label className={classNames('filterCheckbox', styles.label)} onChange={this.handleLabelChecked(company)}>
                                     <input className={styles.input} type='checkbox' checked={value}/>
                                     <div className={classNames(styles.filterCheckbox, { [styles.filterCheckboxActive]: value })}></div>
                                     <span
