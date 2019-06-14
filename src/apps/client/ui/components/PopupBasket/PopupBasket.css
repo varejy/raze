@@ -1,17 +1,74 @@
 .root{
-    width: 548px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    height: 100vh;
+    background-color: rgba(255, 255 , 255, 0.5);
+    position: fixed;
+    top: 0;
+    right: 0;
+    overflow: hidden;
+}
+.popupContent{
+    height: 100%;
+    padding: 35px;
+    background-color: #131313;
+    position: absolute;
+    top: 0;
+    right: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    height: 579px;
-    padding: 31px 28px;
-    background-color: #fff;
+    justify-content: space-between;
+}
+.headerContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 46px;
+    height: 22px;
+}
+.header{
+    font-family: HelveticaNeueCyrBold;
+    font-size: 27px;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+.closeButton{
+    font-family: HelveticaNeueCyrLight;
+    font-size: 50px;
+    color: #ffffff;
+    transform: rotate(45deg);
+    position: relative;
+    bottom: 3px;
+    cursor: pointer;
+}
+.items{
+    width: 100%;
+    height: 50vh ;
+    overflow-y: scroll;
+    border-bottom: 1px solid #ffffff;
+}
+
+.items::-webkit-scrollbar {
+    width: 0;
+}
+
+.items {
+    -ms-overflow-style:
+            none;
+}
+
+.items {
+    overflow: -moz-scrollbars-none;
 }
 
 .item{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 22px;
+    padding: 10px 0 0 10px;
 }
 
 .itemImageWrapp{
@@ -19,96 +76,100 @@
 }
 
 .deleteItem{
-    width: 34px;
-    height: 34px;
-    background-color: #ff0000;
-    position: absolute;
-    top: -17px;
-    left: -16px;
-    border-radius: 27px;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
-}
-
-.deleteItemIcon{
+    top: -10px;
+    left: -10px;
     position: absolute;
-    top: 16px;
-    left: 12px;
-    width: 10px;
-    height: 3px;
-    background-color: #fff;
 }
 
 .itemImage{
-    width: 150px;
-    height: 135px;
+    width: 87px;
+    height: 79px;
+    overflow: hidden;
+}
+
+.itemAvatar{
+    width: auto;
+    height: 100%;
 }
 
 .itemInfo{
-    height: 70px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+    width: 150px;
+    margin-left: 24px;
 }
 
 .itemName{
-    font-family: HelveticaNeueCyr;
-    font-size: 18px;
+    font-family: HelveticaNeueCyrBold;
+    font-size: 10.5px;
+    line-height: 16px;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin-bottom: -3px;
 }
 
 .itemCategory{
     font-family: HelveticaNeueCyrRoman;
-    font-size: 11.5px;
-    margin-bottom: 10px;
+    font-size: 8px;
+    line-height: 19px;
+    color: #5e5e5e;
+    text-transform: uppercase;
+    margin-bottom: 3px;
 }
 
 .itemPrice{
-    font-family: HelveticaNeueCyr;
-    font-size: 21px;
+    font-family: HelveticaNeueCyrBold;
+    font-size: 12.5px;
+    line-height: 14px;
+    color: #ffffff;
+    text-transform: uppercase;
 }
 
-.previouslyAddedTitle{
-    font-family: HelveticaNeueCyr;
-    font-size: 27px;
-    margin-bottom: 28px;
+
+.amountTxt{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+
+}
+.amountTxt :only-child{
+    font-family: HelveticaNeueCyrBold;
+    font-size: 8px;
+    color: #ffffff;
+    text-align: center;
+    width: 60px;
+    text-transform: uppercase;
 }
 
 .itemAmount{
-    width: 78px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    flex-direction: column;
-}
-
-.amountTxt{
-    font-family: HelveticaNeueCyr;
-    font-size: 8px;
-    color: #bcbcbc;
-}
-
-.amount{
-    width: 64px;
+    width: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-family: HelveticaNeueCyr;
-    font-size: 22px;
+    font-family: HelveticaNeueCyrBold;
+    font-size: 13px;
+    line-height: 13px;
+    text-align: center;
+    color: #ffffff;
 }
 
 .amountButton{
     cursor: pointer;
 }
 
-.countWrapp{
-    width: 28px;
-    height: 28px;
+.priceTotal{
+    font-family: HelveticaNeueCyrRoman;
+    font-size: 16px;
+    line-height: 33.5px;
+    color: #ffffff;
+    width: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
-    background-color: #e8e8e8;
-    font-family: HelveticaNeueCyr;
-    font-size: 22px;
+    justify-content: flex-start;
+    margin-bottom: 35px;
 }
 
 .buttonsWrapp{
@@ -122,18 +183,18 @@
 }
 
 .buttons{
-    font-family: HelveticaNeueCyr;
+    font-family: HelveticaNeueCyrBold;
     text-transform: uppercase;
     cursor: pointer;
     font-size: 14px;
-    width: 270px;
+    line-height: 35px;
+    width: 100%;
     height: 44px;
 }
 
 .continueShopping{
-    margin-bottom: 14px;
+    margin-bottom: 22px;
     background-color: #fff;
-    border: 1px solid #9a9a9a;
 }
 
 .ordering{
