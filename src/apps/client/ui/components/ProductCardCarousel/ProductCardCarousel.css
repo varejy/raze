@@ -1,0 +1,159 @@
+﻿.sliderContainer{
+    width: 600px;
+    height: 400px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border: 3px solid #ffffff;
+}
+
+.slides{
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: 800ms ease;
+}
+
+.productPreviewSlide{
+    width: 600px;
+    flex-shrink: 0;
+    height: auto;
+    display: inline-block;
+}
+
+.slidePhoto{
+    width: 100%;
+    height: auto;
+}
+
+.buttonTop, .buttonBottom{
+    position: absolute;
+    margin: 0 auto;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.buttonTop{
+    top: -46px;
+}
+
+.buttonBottom{
+    bottom: -46px;
+}
+
+.buttonBottom .buttonEnabled{
+    background: url('/src/apps/client/ui/components/ProductCardCarousel/images/bottomArrow.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.buttonBottom .buttonDisabled{
+    background: url('/src/apps/client/ui/components/ProductCardCarousel/images/bottomArrowGrey.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.buttonTop .buttonEnabled{
+    background: url('/src/apps/client/ui/components/ProductCardCarousel/images/topArrow.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.buttonTop .buttonDisabled{
+    background: url('/src/apps/client/ui/components/ProductCardCarousel/images/topArrowGrey.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.dotsContainer{
+    width: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.buttonDots{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.buttonDots :last-child{
+    margin-right: 0;
+}
+
+.dot{
+    width: 13px;
+    height: 13px;
+    margin-right: 14px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.dotActive{
+    background-color: #00a046;
+}
+
+.buttonDots .lastChildDot{
+    margin-right: 0;
+}
+
+.sliderLeftContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.slidesContainer{
+    overflow: hidden;
+    height: 240px;
+}
+
+.sliderLeftSlides{
+    position: relative;
+}
+
+.sliderLeftSlides :last-child{
+    margin-bottom: 0;
+}
+
+.sliderLeftSlide{
+    width: 80px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    opacity: 0.5;
+    transition: .5s ease;
+}
+
+.sliderLeftActive{
+    opacity: 1;
+}
+
+.sliderLeftPhoto{
+    width: 100%;
+    height: 100%;
+}
+
+.sliders{
+    width: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

@@ -1,17 +1,8 @@
 import React, { Component } from 'react';
 import styles from './ProductCard.css';
 import classNames from 'classnames';
+import ProductCardCarousel from '../ProductCardCarousel/ProductCardCarousel';
 
-const SLIDER_IMAGES = [
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario1.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario2.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario3.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario4.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario5.jpg' }
-];
-const BIG_SLIDE_WIDTH = 600;
-const LEFT_SLIDER_HEIGHT = 80;
-const SLIDES_QUANTITY = SLIDER_IMAGES.length;
 const LABELS = [
     { labelText: 'топ продаж', labelColor: '#ff0000' },
     { labelText: 'низкая цена', labelColor: '#ffb116' },
@@ -59,41 +50,6 @@ class ProductCard extends Component {
             starFull: '/src/apps/client/ui/components/ProductCard/images/starFull.png',
             starHalfFull: '/src/apps/client/ui/components/ProductCard/images/starHalfFull.png',
             starEmpty: '/src/apps/client/ui/components/ProductCard/images/starEmpty.png'
-        },
-        leftPosition: 0,
-        topPosition: 0,
-        i: 0
-    };
-
-    handleDotClick = (leftMoveIndex) => () => {
-        this.setState({
-            leftPosition: leftMoveIndex * BIG_SLIDE_WIDTH,
-            topPosition: leftMoveIndex * LEFT_SLIDER_HEIGHT,
-            i: leftMoveIndex
-        });
-    };
-
-    handleArrowClick = (arrowType) => () => {
-        if (arrowType === 'top') {
-            this.setState({
-                leftPosition: this.state.leftPosition - BIG_SLIDE_WIDTH,
-                topPosition: this.state.topPosition - LEFT_SLIDER_HEIGHT,
-                i: this.state.i > 0 ? this.state.i - 1 : 0
-            });
-        } else {
-            this.setState({
-                leftPosition: this.state.leftPosition + BIG_SLIDE_WIDTH,
-                topPosition: this.state.topPosition + LEFT_SLIDER_HEIGHT,
-                i: this.state.i + 1
-            });
-        }
-    };
-
-    handleLeftSliderClick = () => {
-        if (this.state.i <= 2) {
-            return 0;
-        } else {
-            return (-(this.state.topPosition - LEFT_SLIDER_HEIGHT * 2)).toString();
         }
     };
 
@@ -120,62 +76,7 @@ class ProductCard extends Component {
     render () {
         return <div className={styles.productCardContainer}>
             <div className={styles.topProductInfo}>
-                <div className={styles.sliders}>
-                    <div className={styles.sliderLeftContainer}>
-                        {SLIDES_QUANTITY > 3 && <button
-                            className={classNames(styles.buttonTop)}
-                            onClick={this.state.leftPosition !== 0 && this.handleArrowClick('top')}
-                        >
-                            <div
-                                className={this.state.leftPosition === 0 && styles.buttonDisabled
-                                    ? styles.buttonDisabled
-                                    : styles.buttonEnabled}/>
-                        </button>}
-                        <div className={styles.slidesContainer}>
-                            <div className={styles.sliderLeftSlides}
-                                style={{ top: `${this.handleLeftSliderClick()}px` }}
-                            >
-                                {SLIDER_IMAGES.map((sliderLeftImage, i) =>
-                                    <div
-                                        className={classNames(styles.sliderLeftSlide,
-                                            this.state.topPosition === i * LEFT_SLIDER_HEIGHT && styles.sliderLeftActive)}
-                                        onClick={this.handleDotClick(i)}
-                                        key={i}>
-                                        <img className={styles.sliderLeftPhoto} src={sliderLeftImage.path}
-                                            alt={`slide${i}`}/>
-                                    </div>)}
-                            </div>
-                        </div>
-                        {SLIDES_QUANTITY > 3 && <button
-                            className={classNames(styles.buttonBottom)}
-                            onClick={this.state.leftPosition !== (BIG_SLIDE_WIDTH * (SLIDES_QUANTITY - 1)) &&
-                            this.handleArrowClick('bottom')}
-                        >
-                            <div
-                                className={this.state.leftPosition === (BIG_SLIDE_WIDTH * (SLIDES_QUANTITY - 1))
-                                    ? styles.buttonDisabled
-                                    : styles.buttonEnabled}/>
-                        </button>}
-                    </div>
-                    <div className={styles.sliderContainer}>
-                        <div className={styles.slides} style={{ left: `-${this.state.leftPosition.toString()}px` }}>
-                            {SLIDER_IMAGES.map((sliderImage, i) =>
-                                <div className={styles.productPreviewSlide} key={i}>
-                                    <img className={styles.slidePhoto} src={sliderImage.path} alt={`slide${i}`}/>
-                                </div>)}
-                        </div>
-                        <div className={styles.dotsContainer}>
-                            <div className={styles.buttonDots}>
-                                {SLIDER_IMAGES.map((sliderImage, i) =>
-                                    <div key={i}
-                                        className={classNames(styles.dot,
-                                            this.state.leftPosition === i * BIG_SLIDE_WIDTH && styles.dotActive)}
-                                        onClick={this.handleDotClick(i)}/>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <ProductCardCarousel/>
                 <div className={styles.productInfo}>
                     <div className={styles.labels}>
                         {LABELS.map((label, i) =>
