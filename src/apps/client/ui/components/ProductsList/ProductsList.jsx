@@ -6,72 +6,88 @@ import Product from '../Product/Product';
 
 import styles from './ProductsList.css';
 
-const SORTING_OPTIONS = ['Дате', 'Цене', 'Популярности'];
+const SORTING_OPTIONS = [
+    {
+        text: 'Дате',
+        id: 0
+    },
+    {
+        text: 'Цене',
+        id: 1
+    },
+    {
+        text: 'Популярности',
+        id: 2
+    }
+];
 
 class ProductsList extends Component {
+    constructor (props) {
+        super(props);
+
+        this.state = {
+            products: props.products,
+            activeOption: ''
+        };
+    }
+
     static propTypes = {
-        products: PropTypes.array,
-        onSortProducts: PropTypes.func
+        products: PropTypes.array
     };
 
     static defaultProps = {
         products: []
     }
 
-    state = {
-        activeOption: ''
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.products !== this.props.products) {
+            this.setState({ products: nextProps.products });
+            this.handleActiveSortClick(this.state.activeOption);
+        }
     }
 
-    handleActiveSort = activeOption => {
-        const { products } = this.props;
-        const nativeProducts = products;
-        const activeOptionTxt = activeOption.target.innerText;
-        const MinSortPrice = (product, nextProduct) => product.price - nextProduct.price;
-        const MaxSortPrice = (product, nextProduct) => product.price + nextProduct.price;
-        const MinSortDate = (product, nextProduct) => product.date - nextProduct.date;
-        const MaxSortDate = (product, nextProduct) => product.date + nextProduct.date;
-        const MinSortPopularity = (product, nextProduct) => {
+    handleActiveSortClick = activeOption => () => {
+        const { products } = this.state;
+        const minSortPrice = (product, nextProduct) => product.price - nextProduct.price;
+        const maxSortPrice = (product, nextProduct) => product.price + nextProduct.price;
+        const minSortDate = (product, nextProduct) => product.date - nextProduct.date;
+        const maxSortDate = (product, nextProduct) => product.date + nextProduct.date;
+        const minSortPopularity = (product, nextProduct) => {
             return product.popularity - nextProduct.popularity;
         };
-        const MaxSortPopularity = (product, nextProduct) => {
+        const maxSortPopularity = (product, nextProduct) => {
             return product.popularity + nextProduct.popularity;
         };
-        const MinSortViews = (product, nextProduct) => product.views - nextProduct.views;
-        const MaxSortViews = (product, nextProduct) => product.views + nextProduct.views;
+        const minSortViews = (product, nextProduct) => product.views - nextProduct.views;
+        const maxSortViews = (product, nextProduct) => product.views + nextProduct.views;
 
-        this.setState({ activeOption: activeOptionTxt });
+        this.setState({ activeOption: activeOption });
 
-        if (activeOptionTxt === 'Цене') {
+        if (activeOption === 0) {
             /*
-                MinSortPrice
-                MaxSortPrice
+                minSortDate
+                maxSortDate
             */
-            const sortPrice = nativeProducts.sort(/* MinSortPrice || MaxSortPrice */);
 
-            this.props.onSortProducts(sortPrice);
-        } else if (activeOptionTxt === 'Дате') {
+            this.setState({ products: products.sort(/* minSortDate || maxSortDate */) });
+        } else if (activeOption === 1) {
             /*
-                MinSortDate
-                MaxSortDate
+                minSortPrice
+                maxSortPrice
             */
-            const sortDate = nativeProducts.sort(/* MinSortDate || MaxSortDate */);
 
-            this.props.onSortProducts(sortDate);
-        } else if (activeOptionTxt === 'Популярности') {
+            this.setState({ products: products.sort(/* minSortPrice || maxSortPrice */) });
+        } else if (activeOption === 2) {
             /*
-                MinSortPopularity
-                MaxSortPopularity
+                minSortPopularity
+                maxSortPopularity
             */
-            const sortPopularity = nativeProducts.sort(/* MinSortPopularity || MaxSortPopularity */);
-
-            this.props.onSortProducts(sortPopularity);
+            this.setState({ products: products.sort(/* minSortPopularity || maxSortPopularity */) });
         }
     }
 
     render () {
-        const { products } = this.props;
-        const { activeOption } = this.state;
-        const sortingOptions = SORTING_OPTIONS;
+        const { products, activeOption } = this.state;
 
         return <section className={styles.root}>
             <div className={styles.productsFilter}>
@@ -79,15 +95,15 @@ class ProductsList extends Component {
                     <div>Сортировать по:</div>
                     <div className={styles.filterWrapp}>
                         {
-                            sortingOptions.map((option, i) => {
-                                const isActive = activeOption === option;
+                            SORTING_OPTIONS.map((option, i) => {
+                                const isActive = activeOption === option.id;
 
                                 return (
                                     <div
                                         key={i}
                                         className={classNames(styles.filterItem, { [styles.filterItemActive]: isActive })}
-                                        onClick={this.handleActiveSort}>
-                                        {option}
+                                        onClick={this.handleActiveSortClick(option.id)}>
+                                        {option.text}
                                     </div>
                                 );
                             })
