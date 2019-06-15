@@ -16,81 +16,90 @@ const SLIDER_IMAGES = [
 ];
 const BIG_SLIDE_WIDTH = 600;
 const LEFT_SLIDER_HEIGHT = 80;
-const SLIDES_QUANTITY = SLIDER_IMAGES.length;
+const SLIDES_WITHOUT_ARROWS = 3;
 
 class ProductCardCarousel extends Component {
+    constructor (...args) {
+        super(...args);
+
+        this.minSlideIndex = 0;
+        this.maxSlideIndex = SLIDER_IMAGES.length - 1;
+        this.arrowsShowed = SLIDER_IMAGES.length > SLIDES_WITHOUT_ARROWS;
+    }
+
     state = {
-        leftPosition: 0,
-        topPosition: 0,
-        i: 0
+        activeSlide: 0,
+        leftSliderTopIndex: 0
     };
 
-    handleDotClick = (leftMoveIndex) => () => {
+    handleDotClick = (newIndex) => () => {
+        const { activeSlide, leftSliderTopIndex } = this.state;
+
+        if (activeSlide === newIndex) {
+            return;
+        }
+
+        let newLeftSliderTopIndex;
+
+        if (newIndex >= leftSliderTopIndex && newIndex <= leftSliderTopIndex + SLIDES_WITHOUT_ARROWS - 1) {
+            newLeftSliderTopIndex = leftSliderTopIndex;
+        } else if (newIndex < leftSliderTopIndex) {
+            newLeftSliderTopIndex = newIndex;
+        } else {
+            newLeftSliderTopIndex = newIndex - SLIDES_WITHOUT_ARROWS + 1;
+        }
+
         this.setState({
-            leftPosition: leftMoveIndex * BIG_SLIDE_WIDTH,
-            topPosition: leftMoveIndex * LEFT_SLIDER_HEIGHT,
-            i: leftMoveIndex
+            activeSlide: newIndex,
+            leftSliderTopIndex: newLeftSliderTopIndex
         });
     };
 
     handleArrowClick = (arrowType) => () => {
-        if (arrowType === 'top') {
-            this.setState({
-                leftPosition: this.state.leftPosition - BIG_SLIDE_WIDTH,
-                topPosition: this.state.topPosition - LEFT_SLIDER_HEIGHT,
-                i: this.state.i > 0 ? this.state.i - 1 : 0
-            });
-        } else {
-            this.setState({
-                leftPosition: this.state.leftPosition + BIG_SLIDE_WIDTH,
-                topPosition: this.state.topPosition + LEFT_SLIDER_HEIGHT,
-                i: this.state.i + 1
-            });
-        }
-    };
+        const { activeSlide, leftSliderTopIndex } = this.state;
 
-    handleLeftSliderClick = () => {
-        let slideNumber = this.state.i;
-        if (slideNumber === 0 || slideNumber === 1 || slideNumber === 2) {
-            return 0;
-        } else if (slideNumber === (SLIDES_QUANTITY - 1)) {
-            if (SLIDES_QUANTITY % 3 === 1) {
-                return (-(LEFT_SLIDER_HEIGHT * ((3 * Math.floor(SLIDES_QUANTITY / 3) - (SLIDES_QUANTITY % 3 + 1))))).toString();
+        if (arrowType === 'top') {
+            if (activeSlide === this.minSlideIndex) {
+                return;
             }
-            if (SLIDES_QUANTITY % 3 === 2) {
-                return (-(LEFT_SLIDER_HEIGHT * ((3 * Math.floor(SLIDES_QUANTITY / 3) - (SLIDES_QUANTITY % 3 - 1))))).toString();
-            } else if (SLIDES_QUANTITY % 3 === 0) {
-                return (-(LEFT_SLIDER_HEIGHT * ((3 * Math.floor(SLIDES_QUANTITY / 3) - (SLIDES_QUANTITY % 3 + 3))))).toString();
-            }
+
+            this.setState({
+                activeSlide: activeSlide - 1,
+                leftSliderTopIndex: leftSliderTopIndex === activeSlide ? leftSliderTopIndex - 1 : leftSliderTopIndex
+            });
         } else {
-            for (let k = 3; k <= SLIDES_QUANTITY; k++) {
-                if (slideNumber === k) {
-                    return (-(LEFT_SLIDER_HEIGHT * (k - 2))).toString();
-                }
+            if (activeSlide === this.maxSlideIndex) {
+                return;
             }
+            this.setState({
+                activeSlide: activeSlide + 1,
+                leftSliderTopIndex: activeSlide === leftSliderTopIndex + SLIDES_WITHOUT_ARROWS - 1
+                    ? leftSliderTopIndex + 1 : leftSliderTopIndex
+            });
         }
     };
 
     render () {
+        const { activeSlide, leftSliderTopIndex } = this.state;
+        const isTop = activeSlide === this.minSlideIndex;
+        const isBottom = activeSlide === this.maxSlideIndex;
+
         return <div className={styles.sliders}>
             <div className={styles.sliderLeftContainer}>
-                {SLIDES_QUANTITY > 3 && <button
-                    className={classNames(styles.buttonTop)}
-                    onClick={this.state.leftPosition !== 0 && this.handleArrowClick('top')}
+                {this.arrowsShowed && <button
+                    className={classNames(styles.button, styles.buttonTop)}
+                    onClick={this.handleArrowClick('top')}
                 >
-                    <div
-                        className={this.state.leftPosition === 0 && styles.buttonDisabled
-                            ? styles.buttonDisabled
-                            : styles.buttonEnabled}/>
+                    <div className={classNames(styles.buttonImage, isTop ? styles.buttonDisabled : styles.buttonEnabled)}/>
                 </button>}
                 <div className={styles.slidesContainer}>
                     <div className={styles.sliderLeftSlides}
-                        style={{ top: `${this.handleLeftSliderClick()}px` }}
+                        style={{ top: -leftSliderTopIndex * LEFT_SLIDER_HEIGHT }}
                     >
                         {SLIDER_IMAGES.map((sliderLeftImage, i) =>
                             <div
                                 className={classNames(styles.sliderLeftSlide,
-                                    this.state.topPosition === i * LEFT_SLIDER_HEIGHT && styles.sliderLeftActive)}
+                                    activeSlide === i && styles.sliderLeftActive)}
                                 onClick={this.handleDotClick(i)}
                                 key={i}>
                                 <img className={styles.sliderLeftPhoto} src={sliderLeftImage.path}
@@ -98,19 +107,15 @@ class ProductCardCarousel extends Component {
                             </div>)}
                     </div>
                 </div>
-                {SLIDES_QUANTITY > 3 && <button
-                    className={classNames(styles.buttonBottom)}
-                    onClick={this.state.leftPosition !== (BIG_SLIDE_WIDTH * (SLIDES_QUANTITY - 1)) &&
-                    this.handleArrowClick('bottom')}
+                {this.arrowsShowed && <button
+                    className={classNames(styles.button, styles.buttonBottom)}
+                    onClick={this.handleArrowClick('bottom')}
                 >
-                    <div
-                        className={this.state.leftPosition === (BIG_SLIDE_WIDTH * (SLIDES_QUANTITY - 1))
-                            ? styles.buttonDisabled
-                            : styles.buttonEnabled}/>
+                    <div className={classNames(styles.buttonImage, isBottom ? styles.buttonDisabled : styles.buttonEnabled)}/>
                 </button>}
             </div>
             <div className={styles.sliderContainer}>
-                <div className={styles.slides} style={{ left: `-${this.state.leftPosition.toString()}px` }}>
+                <div className={styles.slides} style={{ left: -activeSlide * BIG_SLIDE_WIDTH }}>
                     {SLIDER_IMAGES.map((sliderImage, i) =>
                         <div className={styles.productPreviewSlide} key={i}>
                             <img className={styles.slidePhoto} src={sliderImage.path} alt={`slide${i}`}/>
@@ -120,8 +125,7 @@ class ProductCardCarousel extends Component {
                     <div className={styles.buttonDots}>
                         {SLIDER_IMAGES.map((sliderImage, i) =>
                             <div key={i}
-                                className={classNames(styles.dot,
-                                    this.state.leftPosition === i * BIG_SLIDE_WIDTH && styles.dotActive)}
+                                className={classNames(styles.dot, activeSlide === i && styles.dotActive)}
                                 onClick={this.handleDotClick(i)}/>
                         )}
                     </div>

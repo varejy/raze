@@ -27,15 +27,11 @@
     height: auto;
 }
 
-.buttonTop, .buttonBottom{
+.button {
+    @mixin removeDefaultButton;
+
     position: absolute;
-    margin: 0 auto;
     cursor: pointer;
-    width: auto;
-    height: auto;
-    background: none;
-    border: none;
-    outline: none;
 }
 
 .buttonTop{
@@ -46,32 +42,26 @@
     bottom: -46px;
 }
 
-.buttonBottom .buttonEnabled{
-    background: url('/src/apps/client/ui/components/ProductCardCarousel/images/bottomArrow.png') center;
+.buttonImage {
     background-size: 100% auto;
     width: 32px;
     height: 32px;
+}
+
+.buttonBottom .buttonEnabled{
+    background: url('/src/apps/client/ui/components/ProductCardCarousel/images/bottomArrow.png') center;
 }
 
 .buttonBottom .buttonDisabled{
     background: url('/src/apps/client/ui/components/ProductCardCarousel/images/bottomArrowGrey.png') center;
-    background-size: 100% auto;
-    width: 32px;
-    height: 32px;
 }
 
 .buttonTop .buttonEnabled{
     background: url('/src/apps/client/ui/components/ProductCardCarousel/images/topArrow.png') center;
-    background-size: 100% auto;
-    width: 32px;
-    height: 32px;
 }
 
 .buttonTop .buttonDisabled{
     background: url('/src/apps/client/ui/components/ProductCardCarousel/images/topArrowGrey.png') center;
-    background-size: 100% auto;
-    width: 32px;
-    height: 32px;
 }
 
 .dotsContainer{
