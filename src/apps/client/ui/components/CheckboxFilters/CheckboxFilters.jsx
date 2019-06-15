@@ -13,6 +13,10 @@ class CheckboxFilters extends Component {
     constructor (props) {
         super(props);
 
+        this.filterParams = {
+            activeCompanies: []
+        };
+
         this.state = {
             products: this.props.products,
             options: []
@@ -39,7 +43,15 @@ class CheckboxFilters extends Component {
         });
     }
 
-    handleFilteredProducts = (activeCompanies) => {
+    handleSaveActiveCompanies = (activeCompanies) => {
+        this.filterParams.activeCompanies = activeCompanies;
+
+        this.filterProducts();
+    }
+
+    filterProducts = () => {
+        const { activeCompanies } = this.filterParams;
+
         const filteredProducts = filter(product => includes(product.company, activeCompanies), this.state.products);
 
         this.props.onFiltersChanged(filteredProducts);
@@ -52,7 +64,7 @@ class CheckboxFilters extends Component {
             <div>
                 <CheckboxFilter
                     key={products.id}
-                    onFilteredProducts={this.handleFilteredProducts}
+                    onSaveActiveCompanies={this.handleSaveActiveCompanies}
                     title='Производители'
                     options={options}
                 />

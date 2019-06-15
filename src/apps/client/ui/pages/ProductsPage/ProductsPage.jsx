@@ -52,7 +52,7 @@ class ProductsPage extends Component {
         this.state = {
             loading: !this.notFoundPage && !products,
             products: products || [],
-            filteredProducts: products,
+            filteredProducts: products || [],
             category
         };
     }
