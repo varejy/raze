@@ -26,7 +26,7 @@ class PopupBasket extends Component {
                 productCount: productCount + 1
             })
             : this.setState({
-                productCount: productCount !== 0 ? productCount - 1 : 0
+                productCount: productCount > 1 ? productCount - 1 : 1
             });
     }
 
