@@ -86,6 +86,20 @@ class ProductsPage extends Component {
         }
     };
 
+    handleSortProfucts = activeSort => {
+        const { filteredProducts } = this.state;
+
+        if (activeSort.length !== 0) {
+            this.setState({
+                filteredProducts: activeSort
+            });
+        } else {
+            this.setState({
+                filteredProducts: filteredProducts
+            });
+        }
+    }
+
     render () {
         const { loading, products, filteredProducts } = this.state;
 
@@ -103,7 +117,7 @@ class ProductsPage extends Component {
         return <section className={styles.productsWrapp}>
             <div className={styles.productsElemWrapp}>
                 <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products}/>
-                <ProductsList products={filteredProducts}/>
+                <ProductsList onSortProducts={this.handleSortProfucts} products={filteredProducts}/>
             </div>
         </section>;
     }

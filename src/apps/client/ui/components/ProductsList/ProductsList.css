@@ -10,7 +10,7 @@
 .filter{
     display: flex;
     justify-content: space-between;
-    width: 340px;
+    width: 360px;
     font-family: Montserrat-Medium, arial;
     font-size: 14px;
     color: #232323;
@@ -20,14 +20,13 @@
     justify-content: space-between;
     font-family: Montserrat-Bold, arial;
     width: 218px;
-    padding-left: 22px;
     font-weight: bold;
 }
 
 .filterItem{
     cursor: pointer;
 }
-.filterItem:hover {
+.filterItemActive {
     border-bottom: #00a651 solid 5px;
 }
 .productsWrapper{
