@@ -12,7 +12,7 @@ class CheckboxFilter extends Component {
     static propTypes = {
         title: PropTypes.string,
         options: PropTypes.array,
-        onFilteredProducts: PropTypes.func.isRequired
+        onSaveActiveCompanies: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -41,7 +41,7 @@ class CheckboxFilter extends Component {
             pickBy(Boolean)
         )(nextOptionsMap);
 
-        this.props.onFilteredProducts(activeCompanies);
+        this.props.onSaveActiveCompanies(activeCompanies);
     }
 
     render () {
@@ -50,14 +50,14 @@ class CheckboxFilter extends Component {
 
         return <div className={styles.filter}>
             <h3 className={classNames(styles.filterName, styles.filterTxt)}>{title}</h3>
-            <ul className={styles.ul}>
+            <ul className={styles.list}>
                 {
                     options.map((company, i) => {
                         const value = optionsMap[company];
 
                         return (
                             <li className={styles.filterOption} key={i}>
-                                <label className={classNames('filterCheckbox', styles.label)} onChange={this.handleLabelChecked(company)}>
+                                <label className={styles.label} onChange={this.handleLabelChecked(company)}>
                                     <input className={styles.input} type='checkbox' checked={value}/>
                                     <div className={classNames(styles.filterCheckbox, { [styles.filterCheckboxActive]: value })}></div>
                                     <span
