@@ -18,22 +18,16 @@ class PopupBasket extends Component {
         product: {}
     }
 
-    handleMinClick = () => {
+    handleCountClick = button => () => {
         const { productCount } = this.state;
 
-        if (productCount !== 1) {
-            this.setState({
-                productCount: productCount - 1
+        button === 1
+            ? this.setState({
+                productCount: productCount + 1
+            })
+            : this.setState({
+                productCount: productCount !== 0 ? productCount - 1 : 0
             });
-        }
-    }
-
-    handlePlusClick = () => {
-        const { productCount } = this.state;
-
-        this.setState({
-            productCount: productCount + 1
-        });
     }
 
     render () {
@@ -58,9 +52,9 @@ class PopupBasket extends Component {
                         <div className={styles.itemAmount}>
                             <div className={styles.amountTxt}>Количество</div>
                             <div className={styles.amount}>
-                                <span className={styles.amountButton} onClick={this.handleMinClick}>-</span>
+                                <span className={styles.amountButton} onClick={this.handleCountClick(-1)}>-</span>
                                 <div className={styles.countWrapp}>{productCount}</div>
-                                <span className={styles.amountButton} onClick={this.handlePlusClick}>+</span>
+                                <span className={styles.amountButton} onClick={this.handleCountClick(1)}>+</span>
                             </div>
                         </div>
                     </div>
