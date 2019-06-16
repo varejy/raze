@@ -72,7 +72,7 @@ class ProductsPage extends Component {
     }
 
     render () {
-        const { loading, products } = this.state;
+        const { loading } = this.state;
 
         // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
@@ -86,7 +86,6 @@ class ProductsPage extends Component {
         }
 
         return <section className={styles.productsWrapp}>
-            { products.map((product, i) => <div key={i}>{product.name}</div>) }
             <div className={styles.productsElemWrapp}>
                 <ProductsPageFilters />
                 <ProductsList />
