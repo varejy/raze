@@ -40,39 +40,50 @@ class ProductsPage extends Component {
     constructor (...args) {
         super(...args);
 
-        const { location: { pathname }, categories, productsMap } = this.props;
-        const category = find(route => matchPath(pathname, { path: `/${route.path}`, exact: true }), categories);
+        this.state = this.getNewState();
+    }
 
-        if (!category) {
-            this.notFoundPage = true;
+    componentDidMount () {
+        this.getProducts();
+    }
+
+    componentWillReceiveProps (nextProps) {
+        const { location: { pathname }, productsMap } = this.props;
+        const { category } = this.state;
+
+        if (nextProps.productsMap !== productsMap) {
+            this.setState({ filteredProducts: nextProps.productsMap[category.path], products: nextProps.productsMap[category.path] });
         }
 
-        const products = productsMap[category.path];
+        if (nextProps.location.pathname !== pathname) {
+            this.setState(this.getNewState(nextProps), this.getProducts);
+        }
+    }
 
-        this.state = {
+    getNewState = (props = this.props) => {
+        const { location: { pathname }, categories, productsMap } = props;
+        const category = find(route => matchPath(pathname, { path: `/${route.path}`, exact: true }), categories);
+
+        this.notFoundPage = !category;
+
+        const products = productsMap[category && category.path];
+
+        return {
             loading: !this.notFoundPage && !products,
             products: products || [],
             filteredProducts: products || [],
             category
         };
-    }
+    };
 
-    componentDidMount () {
+    getProducts = () => {
         const { loading, category } = this.state;
 
         if (loading) {
             this.props.getProductsByCategory(category.path)
                 .then(() => this.setState({ loading: false }));
         }
-    }
-
-    componentWillReceiveProps (nextProps) {
-        const { category } = this.state;
-
-        if (nextProps.productsMap !== this.props.productsMap) {
-            this.setState({ filteredProducts: nextProps.productsMap[category.path], products: nextProps.productsMap[category.id] });
-        }
-    }
+    };
 
     handleChangeFilters = (activeFilters) => {
         const { products } = this.state;

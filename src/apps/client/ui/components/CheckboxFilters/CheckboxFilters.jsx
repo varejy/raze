@@ -29,25 +29,36 @@ class CheckboxFilters extends Component {
 
     static defaultProps = {
         products: []
-    }
+    };
 
     componentDidMount () {
-        const { products } = this.state;
-        const options = compose(
+        this.setState({
+            options: this.getOptions()
+        });
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.products !== this.props.products) {
+            this.setState({
+                options: this.getOptions(nextProps)
+            });
+        }
+    }
+
+    getOptions = (props = this.props) => {
+        const { products } = props;
+
+        return compose(
             uniq,
             map(product => product.company)
         )(products);
-
-        this.setState({
-            options
-        });
-    }
+    };
 
     handleSaveActiveCompanies = (activeCompanies) => {
         this.filterParams.activeCompanies = activeCompanies;
 
         this.filterProducts();
-    }
+    };
 
     filterProducts = () => {
         const { activeCompanies } = this.filterParams;
@@ -55,7 +66,7 @@ class CheckboxFilters extends Component {
         const filteredProducts = filter(product => includes(product.company, activeCompanies), this.state.products);
 
         this.props.onFiltersChanged(filteredProducts);
-    }
+    };
 
     render () {
         const { products, options } = this.state;

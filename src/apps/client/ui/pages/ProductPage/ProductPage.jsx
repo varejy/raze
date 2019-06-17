@@ -39,9 +39,7 @@ class ProductPage extends Component {
         const match = matchPath(pathname, { path: PRODUCT_PATH, exact: true });
         const product = productMap[match.params.id];
 
-        if (product === null) {
-            this.notFoundPage = true;
-        }
+        this.notFoundPage = product === null;
 
         this.state = {
             loading: !this.notFoundPage && !product,
