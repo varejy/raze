@@ -1,16 +1,27 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-
 import styles from './Product.css';
+import openPopup from '../../../actions/openPopup';
+import { connect } from 'react-redux';
+import ProductPreview from '../ProductPreview/ProductPreview';
+
+const mapDispatchToProps = (dispatch) => ({
+    openPopup: payload => dispatch(openPopup(payload))
+});
 
 class Product extends Component {
     static propTypes = {
-        product: PropTypes.object
+        product: PropTypes.object,
+        openPopup: PropTypes.func.isRequired
     };
 
     static defaultProps = {
         product: {}
+    };
+
+    handlePreviewClick = () => {
+        this.props.openPopup(<ProductPreview product={this.props.product}/>);
     };
 
     render () {
@@ -19,11 +30,11 @@ class Product extends Component {
         return <div className={styles.product}>
             <div className={styles.imageWrapper}>
                 { product.discount && <div className={styles.discount}>SPECIAL PRICE</div>}
-                <img className={styles.img} src={product.image} alt={product.type}/>
+                <img className={styles.img} src={product.avatar} alt={product.avatar}/>
             </div>
             <div className={styles.infoWrapper}>
                 <div className={styles.toolBar}>
-                    <div className={classNames(styles.quickInspection, styles.toolBarItem)}>
+                    <div className={classNames(styles.quickInspection, styles.toolBarItem)} onClick={this.handlePreviewClick}>
                         <div className={classNames(styles.toolBarIcon, styles.eyeIcon)}/>
                         <div>Быстрый просмотр</div>
                     </div>
@@ -37,7 +48,7 @@ class Product extends Component {
                     </div>
                 </div>
                 <div className={styles.info}>
-                    <div className={styles.manufacturer}>{product.manufacturer}</div>
+                    <div className={styles.manufacturer}>{product.company}</div>
                     <div className={styles.name}>{product.name}</div>
                     <div className={styles.prices}>
                         <div className={styles.price}>{product.price}$</div>
@@ -49,4 +60,4 @@ class Product extends Component {
     }
 }
 
-export default Product;
+export default connect(null, mapDispatchToProps)(Product);

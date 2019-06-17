@@ -55,6 +55,11 @@
 
     src: url('./font/montserrat-black.ttf') format('truetype');
 }
+@font-face {
+  font-family: 'HelveticaNeueCyrLight';
+
+  src: url('./font/HelveticaNeueCyr-Light.ttf') format('truetype');
+}
 
 @font-face {
   font-family: 'Myriad Pro Regular';

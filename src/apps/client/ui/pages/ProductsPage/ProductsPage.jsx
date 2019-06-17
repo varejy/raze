@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import ProductsPageFilters from '../../components/ProductsPageFilters/ProductsPageFilters';
+import CheckboxFilters from '../../components/CheckboxFilters/CheckboxFilters';
 import ProductsList from '../../components/ProductsList/ProductsList';
 
 import { connect } from 'react-redux';
@@ -52,6 +52,7 @@ class ProductsPage extends Component {
         this.state = {
             loading: !this.notFoundPage && !products,
             products: products || [],
+            filteredProducts: products || [],
             category
         };
     }
@@ -67,12 +68,26 @@ class ProductsPage extends Component {
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.productsMap !== this.props.productsMap) {
-            this.setState({ products: nextProps.productsMap[this.state.category.id] });
+            this.setState({ filteredProducts: nextProps.productsMap[this.state.category.id], products: nextProps.productsMap[this.state.category.id] });
         }
     }
 
+    handleChangeFilters = (activeFilters) => {
+        const { products } = this.state;
+
+        if (activeFilters.length === 0) {
+            this.setState({
+                filteredProducts: products
+            });
+        } else if (activeFilters.length !== 0) {
+            this.setState({
+                filteredProducts: activeFilters
+            });
+        }
+    };
+
     render () {
-        const { loading } = this.state;
+        const { loading, products, filteredProducts } = this.state;
 
         // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
@@ -87,8 +102,8 @@ class ProductsPage extends Component {
 
         return <section className={styles.productsWrapp}>
             <div className={styles.productsElemWrapp}>
-                <ProductsPageFilters />
-                <ProductsList />
+                <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products}/>
+                <ProductsList products={filteredProducts}/>
             </div>
         </section>;
     }
