@@ -5,7 +5,7 @@ import CheckboxFilters from '../../components/CheckboxFilters/CheckboxFilters';
 import ProductsList from '../../components/ProductsList/ProductsList';
 
 import { connect } from 'react-redux';
-import getProductsByCategoryId from '../../../services/client/getProductsByCategoryId';
+import getProductsByCategory from '../../../services/client/getProductsByCategory';
 
 import { withRouter, matchPath } from 'react-router-dom';
 import find from '@tinkoff/utils/array/find';
@@ -20,12 +20,12 @@ const mapStateToProps = ({ application }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    getProductsByCategoryId: payload => dispatch(getProductsByCategoryId(payload))
+    getProductsByCategory: payload => dispatch(getProductsByCategory(payload))
 });
 
 class ProductsPage extends Component {
     static propTypes = {
-        getProductsByCategoryId: PropTypes.func.isRequired,
+        getProductsByCategory: PropTypes.func.isRequired,
         location: PropTypes.object,
         productsMap: PropTypes.object,
         categories: PropTypes.array
@@ -47,7 +47,7 @@ class ProductsPage extends Component {
             this.notFoundPage = true;
         }
 
-        const products = productsMap[category.id];
+        const products = productsMap[category.path];
 
         this.state = {
             loading: !this.notFoundPage && !products,
@@ -61,14 +61,16 @@ class ProductsPage extends Component {
         const { loading, category } = this.state;
 
         if (loading) {
-            this.props.getProductsByCategoryId(category.id)
+            this.props.getProductsByCategory(category.path)
                 .then(() => this.setState({ loading: false }));
         }
     }
 
     componentWillReceiveProps (nextProps) {
+        const { category } = this.state;
+
         if (nextProps.productsMap !== this.props.productsMap) {
-            this.setState({ filteredProducts: nextProps.productsMap[this.state.category.id], products: nextProps.productsMap[this.state.category.id] });
+            this.setState({ filteredProducts: nextProps.productsMap[category.path], products: nextProps.productsMap[category.id] });
         }
     }
 
@@ -87,7 +89,7 @@ class ProductsPage extends Component {
     };
 
     render () {
-        const { loading, products, filteredProducts } = this.state;
+        const { loading, products, category, filteredProducts } = this.state;
 
         // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
@@ -103,7 +105,7 @@ class ProductsPage extends Component {
         return <section className={styles.productsWrapp}>
             <div className={styles.productsElemWrapp}>
                 <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products}/>
-                <ProductsList products={filteredProducts}/>
+                <ProductsList category={category} products={filteredProducts}/>
             </div>
         </section>;
     }
