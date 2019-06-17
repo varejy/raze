@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 import media from './ui/hocs/media/media.jsx';
 
@@ -13,31 +12,13 @@ import Header from './ui/components/Header/Header';
 import Footer from './ui/components/Footer/Footer';
 import Popup from './ui/components/Popup/Popup';
 
-import { connect } from 'react-redux';
-
 import { Switch, Route, withRouter } from 'react-router-dom';
 
 import styles from './App.css';
 
-const mapStateToProps = ({ application }) => {
-    return {
-        categories: application.categories
-    };
-};
-
 @media
 class App extends Component {
-    static propTypes = {
-        categories: PropTypes.array
-    };
-
-    static defaultProps = {
-        categories: []
-    };
-
     render () {
-        const { categories } = this.props;
-
         return <main>
             <div className={styles.page}>
                 <Header/>
@@ -45,7 +26,7 @@ class App extends Component {
                 <div className={styles.pageContent}>
                     <Switch>
                         <Route exact path='/' component={MainPage} />
-                        { categories.map((category, i) => <Route exact key={i} path={`/${category.path}`} component={ProductsPage} />) }
+                        <Route exact path='/:category' component={ProductsPage} />
                         <Route exact path='/:category/:id' component={ProductPage} />
                     </Switch>
                 </div>
@@ -55,4 +36,4 @@ class App extends Component {
     }
 }
 
-export default withRouter(connect(mapStateToProps)(App));
+export default withRouter(App);
