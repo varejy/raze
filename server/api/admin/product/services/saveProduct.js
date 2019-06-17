@@ -9,8 +9,9 @@ import saveProductQuery from '../../../client/product/queries/saveProduct';
 export default function saveProduct (req, res) {
     const product = getProduct(req.body);
     const id = uniqid();
+    const date = Date.now();
 
-    saveProductQuery({ ...product, id })
+    saveProductQuery({ ...product, date, id })
         .then(product => {
             res.status(OKEY_STATUS_CODE).send(product);
         })

@@ -7,17 +7,18 @@ const Product = new Schema({
     name: { type: String, required: true },
     company: { type: String, required: true },
     price: { type: Number, required: true },
-    discountPrice: { type: Number, required: true },
+    discountPrice: { type: Number },
     description: { type: String, required: true },
     features: [{
         prop: { type: String, required: true },
         value: { type: String, required: true }
     }],
-    avatar: { type: String, required: true },
+    avatar: { type: String },
     files: [{ type: String, required: true }],
     hidden: { type: Boolean, required: true },
     tags: [{ type: String, required: true }],
-    categoryId: { type: String, required: true }
+    categoryId: { type: String, required: true },
+    date: { type: Number, required: true }
 });
 
 export default mongoose.model('Product', Product);
