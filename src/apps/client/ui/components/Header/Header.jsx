@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import { connect } from 'react-redux';
+
+import SearchTips from '../SearchTips/SearchTips';
 
 import { Link, NavLink, withRouter } from 'react-router-dom';
 
@@ -22,8 +25,42 @@ class Header extends Component {
         categories: []
     };
 
+    state = {
+        inputTxt: '',
+        visibleTips: false
+    }
+
+    handleNoneVisibleTips = () => {
+        this.setState({
+            ...this.state,
+            visibleTips: false
+        });
+    }
+
+    handleVisibleTipsClick = () => {
+        this.setState({
+            ...this.state,
+            visibleTips: true
+        });
+    }
+
+    handleInputChange = input => {
+        const value = input.target.value;
+
+        value
+            ? this.setState({
+                inputTxt: value,
+                visibleTips: true
+            })
+            : this.setState({
+                inputTxt: value,
+                visibleTips: false
+            });
+    }
+
     render () {
         const { categories } = this.props;
+        const { visibleTips, inputTxt } = this.state;
 
         return <div className={styles.headerContainer}>
             <div className={styles.headerTop}>
@@ -32,7 +69,13 @@ class Header extends Component {
                     <div className={styles.logoRight}>Your<br/>knife<br/><div className={styles.logoGreen}>world</div></div>
                 </Link>
                 <div className={styles.searchForm}>
-                    <input defaultValue='' className={styles.searchFormInput} placeholder='Поиск продуктов...'/>
+                    <input
+                        value={inputTxt}
+                        onChange={this.handleInputChange}
+                        className={classNames(styles.searchFormInput, { [styles.searchFormInputActive]: visibleTips })}
+                        placeholder='Поиск продуктов...'
+                    />
+                    { visibleTips && <SearchTips onNoneVisibleTips={this.handleNoneVisibleTips}/> }
                     <button className={styles.searchFormIcon}><img src='/src/apps/client/ui/components/Header/images/search.png' alt=''/></button>
                 </div>
                 <div className={styles.contactsWrapper}>
