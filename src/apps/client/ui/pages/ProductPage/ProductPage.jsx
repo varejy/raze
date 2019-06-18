@@ -7,8 +7,39 @@ import getProductById from '../../../services/client/getProductById';
 import { withRouter, matchPath } from 'react-router-dom';
 
 import styles from './ProductPage.css';
+import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
+import classNames from 'classnames';
 
 const PRODUCT_PATH = '/:category/:id';
+const LABELS = ['#ff0000', '#ffb116', '#797979'];
+const PREVIOUSLY_VIEWED = [
+    {
+        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
+        productName: 'Тесак Emerson',
+        categoryName: 'Ножи',
+        price: '1000'
+    },
+    {
+        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
+        productName: 'Мачете Emerson',
+        categoryName: 'Ножи',
+        price: '1500'
+    },
+    {
+        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
+        productName: 'Колун Cold Steel',
+        categoryName: 'Топоры',
+        price: '500'
+    }
+];
+const STARS = {
+    stars: {
+        starFull: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
+        starHalfFull: '/src/apps/client/ui/pages/ProductPage/images/starHalfFull.png',
+        starEmpty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
+    }
+};
+const RATING_STARS = 3.5;
 
 const mapStateToProps = ({ application }) => {
     return {
@@ -65,6 +96,26 @@ class ProductPage extends Component {
         }
     }
 
+    renderStars = () => {
+        const fullStars = Math.floor(RATING_STARS);
+        let halfStars = 0;
+        if (RATING_STARS % fullStars > 0) {
+            halfStars = 1;
+        }
+        const emptyStars = 5 - fullStars - halfStars;
+        let starsArray = [];
+        for (let i = 0; i < fullStars; i++) {
+            starsArray.push(STARS.stars.starFull);
+        }
+        if (halfStars !== 0) {
+            starsArray.push(STARS.stars.starHalfFull);
+        }
+        for (let i = 0; i < emptyStars; i++) {
+            starsArray.push(STARS.stars.starEmpty);
+        }
+        return starsArray;
+    };
+
     render () {
         const { loading, product } = this.state;
 
@@ -80,7 +131,80 @@ class ProductPage extends Component {
         }
 
         return <section>
-            { product.name }
+            <div className={styles.productCardContainer}>
+                <div className={styles.topProductInfo}>
+                    <ProductCardCarousel sliderImages={product.files}/>
+                    <div className={styles.productInfo}>
+                        <div className={styles.tags}>
+                            {product.tags.map((tag, i) =>
+                                <div key={i} className={styles.tag}
+                                    style={{ color: LABELS[i] }}>{tag}</div>
+                            )}
+                        </div>
+                        <div className={styles.productCardHeader}>
+                            <div className={styles.productName}>{product.name}</div>
+                            <div><img className={styles.heartIcon}
+                                src='/src/apps/client/ui/pages/ProductPage/images/likeHeart.png' alt=''/></div>
+                        </div>
+                        <div className={styles.stars}>
+                            {this.renderStars().map((star, i) =>
+                                <div key={i} className={styles.star}><img src={star} alt=''/></div>
+                            )}
+                        </div>
+                        <div className={styles.order}>
+                            <div className={styles.prices}>
+                                <div className={styles.pricePrevious}>{product.discountPrice}</div>
+                                <div className={styles.price}>{product.price}</div>
+                            </div>
+                            <button className={classNames(styles.orderButton, styles.buttonDefault)}>Оформление заказа
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.bottomProductInfo}>
+                    <div className={classNames(styles.productDescription, styles.infoContainer)}>
+                        <div className={styles.bottomHeader}>описание товара</div>
+                        <div className={styles.description}>{product.description}
+                        </div>
+                    </div>
+                    <div className={classNames(styles.productParameters, styles.infoContainer)}>
+                        <div className={styles.bottomHeader}>характеристика товара</div>
+                        <div className={styles.parameters}>
+                            {product.features.map((parameter, i) =>
+                                <div key={i} className={classNames(styles.parameterLine, {
+                                    [styles.parameterLineGrey]: i % 2 !== 0
+                                })}>
+                                    <div className={styles.parameterName}>{parameter.prop}</div>
+                                    <div className={styles.parameterValue}>{parameter.value}</div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className={classNames(styles.productFeedbacks, styles.infoContainer)}>
+                        <div className={styles.bottomHeader}>всего отзывов</div>
+                        <div className={styles.feedbacks}>
+                            <div className={styles.feedbackNone}>
+                            К данному товару не было оставлено комментариев
+                            </div>
+                        </div>
+                    </div>
+                    <div className={classNames(styles.productPreviouslyViewed, styles.infoContainer)}>
+                        <div className={styles.bottomHeader}>недавно просматривали</div>
+                        <div className={styles.previouslyViewed}>
+                            {PREVIOUSLY_VIEWED.map((item, i) =>
+                                <div key={i} className={styles.previouslyViewedItem}>
+                                    <div><img className={styles.avatar} src={item.avatarPath} alt=''/></div>
+                                    <div className={styles.itemInfoContainer}>
+                                        <div className={styles.viewedProductName}>{item.productName}</div>
+                                        <div className={styles.viewedCategoryName}>{item.categoryName}</div>
+                                        <div className={styles.itemPrice}>{item.price} UAH</div>
+                                    </div>
+                                </div>)}
+                        </div>
+                    </div>
+                </div>
+            </div>;
+            }
         </section>;
     }
 }

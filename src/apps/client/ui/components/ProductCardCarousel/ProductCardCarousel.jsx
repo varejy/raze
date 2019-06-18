@@ -100,7 +100,7 @@ class ProductCardCarousel extends Component {
                                     activeSlide === i && styles.sliderLeftActive)}
                                 onClick={this.handleDotClick(i)}
                                 key={i}>
-                                <img className={styles.sliderLeftPhoto} src={sliderLeftImage.path}
+                                <img className={styles.sliderLeftPhoto} src={sliderLeftImage}
                                     alt={`slide${i}`}/>
                             </div>)}
                     </div>
@@ -116,7 +116,7 @@ class ProductCardCarousel extends Component {
                 <div className={styles.slides} style={{ left: -activeSlide * BIG_SLIDE_WIDTH }}>
                     {sliderImages.map((sliderImage, i) =>
                         <div className={styles.productPreviewSlide} key={i}>
-                            <img className={styles.slidePhoto} src={sliderImage.path} alt={`slide${i}`}/>
+                            <img className={styles.slidePhoto} src={sliderImage} alt={`slide${i}`}/>
                         </div>)}
                 </div>
                 <div className={styles.dotsContainer}>
