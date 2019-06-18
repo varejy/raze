@@ -3,6 +3,18 @@ import styles from './ProductCard.css';
 import classNames from 'classnames';
 import ProductCardCarousel from '../ProductCardCarousel/ProductCardCarousel';
 
+const SLIDER_IMAGES = [
+    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario1.jpg' },
+    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario2.jpg' },
+    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario3.jpg' },
+    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario4.jpg' },
+    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario5.jpg' },
+    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario1.jpg' },
+    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario2.jpg' },
+    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario3.jpg' },
+    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario4.jpg' },
+    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario5.jpg' }
+];
 const LABELS = [
     { labelText: 'топ продаж', labelColor: '#ff0000' },
     { labelText: 'низкая цена', labelColor: '#ffb116' },
@@ -27,32 +39,31 @@ const PREVIOUSLY_VIEWED = [
         avatarPath: '/src/apps/client/ui/components/ProductCard/images/avatar.jpg',
         productName: 'Тесак Emerson',
         categoryName: 'Ножи',
-        price: '1000 UAH'
+        price: '1000'
     },
     {
         avatarPath: '/src/apps/client/ui/components/ProductCard/images/avatar.jpg',
         productName: 'Мачете Emerson',
         categoryName: 'Ножи',
-        price: '1500 UAH'
+        price: '1500'
     },
     {
         avatarPath: '/src/apps/client/ui/components/ProductCard/images/avatar.jpg',
         productName: 'Колун Cold Steel',
         categoryName: 'Топоры',
-        price: '500 UAH'
+        price: '500'
     }
 ];
+const STARS = {
+    stars: {
+        starFull: '/src/apps/client/ui/components/ProductCard/images/starFull.png',
+        starHalfFull: '/src/apps/client/ui/components/ProductCard/images/starHalfFull.png',
+        starEmpty: '/src/apps/client/ui/components/ProductCard/images/starEmpty.png'
+    }
+};
 const RATING_STARS = 3.5;
 
 class ProductCard extends Component {
-    state = {
-        stars: {
-            starFull: '/src/apps/client/ui/components/ProductCard/images/starFull.png',
-            starHalfFull: '/src/apps/client/ui/components/ProductCard/images/starHalfFull.png',
-            starEmpty: '/src/apps/client/ui/components/ProductCard/images/starEmpty.png'
-        }
-    };
-
     renderStars = () => {
         let fullStars = Math.floor(RATING_STARS);
         let halfStars = 0;
@@ -62,13 +73,13 @@ class ProductCard extends Component {
         let emptyStars = 5 - fullStars - halfStars;
         let starsArray = [];
         for (let i = 0; i < fullStars; i++) {
-            starsArray.push(this.state.stars.starFull);
+            starsArray.push(STARS.stars.starFull);
         }
-        for (let i = 0; i < halfStars; i++) {
-            starsArray.push(this.state.stars.starHalfFull);
+        if (halfStars !== 0) {
+            starsArray.push(STARS.stars.starHalfFull);
         }
         for (let i = 0; i < emptyStars; i++) {
-            starsArray.push(this.state.stars.starEmpty);
+            starsArray.push(STARS.stars.starEmpty);
         }
         return starsArray;
     };
@@ -76,7 +87,7 @@ class ProductCard extends Component {
     render () {
         return <div className={styles.productCardContainer}>
             <div className={styles.topProductInfo}>
-                <ProductCardCarousel/>
+                <ProductCardCarousel sliderImages={SLIDER_IMAGES}/>
                 <div className={styles.productInfo}>
                     <div className={styles.labels}>
                         {LABELS.map((label, i) =>
@@ -142,7 +153,7 @@ class ProductCard extends Component {
                                 <div className={styles.itemInfoContainer}>
                                     <div className={styles.viewedProductName}>{item.productName}</div>
                                     <div className={styles.viewedCategoryName}>{item.categoryName}</div>
-                                    <div className={styles.itemPrice}>{item.price}</div>
+                                    <div className={styles.itemPrice}>{item.price} UAH</div>
                                 </div>
                             </div>)}
                     </div>

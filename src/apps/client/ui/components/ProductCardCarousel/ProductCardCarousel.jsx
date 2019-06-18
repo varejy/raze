@@ -1,30 +1,27 @@
 import React, { Component } from 'react';
 import styles from './ProductCardCarousel.css';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
-const SLIDER_IMAGES = [
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario1.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario2.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario3.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario4.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario5.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario1.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario2.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario3.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario4.jpg' },
-    { path: '/src/apps/client/ui/components/ProductPreview/images/ontario5.jpg' }
-];
 const BIG_SLIDE_WIDTH = 600;
 const LEFT_SLIDER_HEIGHT = 80;
 const SLIDES_WITHOUT_ARROWS = 3;
 
 class ProductCardCarousel extends Component {
+    static propTypes = {
+        sliderImages: PropTypes.array
+    };
+
+    static defaultProps = {
+        sliderImages: []
+    };
+
     constructor (...args) {
         super(...args);
 
         this.minSlideIndex = 0;
-        this.maxSlideIndex = SLIDER_IMAGES.length - 1;
-        this.arrowsShowed = SLIDER_IMAGES.length > SLIDES_WITHOUT_ARROWS;
+        this.maxSlideIndex = this.props.sliderImages.length - 1;
+        this.arrowsShowed = this.props.sliderImages.length > SLIDES_WITHOUT_ARROWS;
     }
 
     state = {
@@ -81,6 +78,7 @@ class ProductCardCarousel extends Component {
 
     render () {
         const { activeSlide, leftSliderTopIndex } = this.state;
+        const {sliderImages} = this.props;
         const isTop = activeSlide === this.minSlideIndex;
         const isBottom = activeSlide === this.maxSlideIndex;
 
@@ -96,7 +94,7 @@ class ProductCardCarousel extends Component {
                     <div className={styles.sliderLeftSlides}
                         style={{ top: -leftSliderTopIndex * LEFT_SLIDER_HEIGHT }}
                     >
-                        {SLIDER_IMAGES.map((sliderLeftImage, i) =>
+                        {sliderImages.map((sliderLeftImage, i) =>
                             <div
                                 className={classNames(styles.sliderLeftSlide,
                                     activeSlide === i && styles.sliderLeftActive)}
@@ -116,14 +114,14 @@ class ProductCardCarousel extends Component {
             </div>
             <div className={styles.sliderContainer}>
                 <div className={styles.slides} style={{ left: -activeSlide * BIG_SLIDE_WIDTH }}>
-                    {SLIDER_IMAGES.map((sliderImage, i) =>
+                    {sliderImages.map((sliderImage, i) =>
                         <div className={styles.productPreviewSlide} key={i}>
                             <img className={styles.slidePhoto} src={sliderImage.path} alt={`slide${i}`}/>
                         </div>)}
                 </div>
                 <div className={styles.dotsContainer}>
                     <div className={styles.buttonDots}>
-                        {SLIDER_IMAGES.map((sliderImage, i) =>
+                        {sliderImages.map((sliderImage, i) =>
                             <div key={i}
                                 className={classNames(styles.dot, activeSlide === i && styles.dotActive)}
                                 onClick={this.handleDotClick(i)}/>
