@@ -4,6 +4,27 @@ import classNames from 'classnames';
 
 import styles from './PopupBasket.css';
 
+const PRODUCTS = [
+    {
+        name: 'Knife Alfa',
+        category: 'Ножи',
+        price: 1000,
+        path: '/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg'
+    },
+    {
+        name: 'Emerson Steel',
+        category: 'Ножи',
+        price: 1500,
+        path: '/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg'
+    },
+    {
+        name: 'Iron Axe',
+        category: 'Топоры',
+        price: 2000,
+        path: '/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg'
+    }
+];
+
 class PopupBasket extends Component {
     render () {
         return <div className={styles.root}>
@@ -17,28 +38,30 @@ class PopupBasket extends Component {
                         <div>Количество</div>
                     </div>
                     <div className={styles.items}>
-                        <div className={styles.item}>
-                            <div className={styles.itemImageWrapp}>
-                                <div className={styles.deleteItem}>
-                                    <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png'/>
+                        {PRODUCTS.map((product, i) =>
+                            <div className={styles.item} key={i}>
+                                <div className={styles.itemImageWrapp}>
+                                    <div className={styles.deleteItem}>
+                                        <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png'/>
+                                    </div>
+                                    <div className={styles.itemImage}>
+                                        <img className={styles.itemAvatar}
+                                            src={product.path}
+                                            alt="product"/>
+                                    </div>
                                 </div>
-                                <div className={styles.itemImage}>
-                                    <img className={styles.itemAvatar}
-                                        src="/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg"
-                                        alt="product"/>
+                                <div className={styles.itemInfo}>
+                                    <h2 className={styles.itemName}>{product.name}</h2>
+                                    <div className={styles.itemCategory}>{product.category}</div>
+                                    <h2 className={styles.itemPrice}>{product.price} UAH</h2>
+                                </div>
+                                <div className={styles.itemAmount}>
+                                    <span className={styles.amountButton}>-</span>
+                                    <div className={styles.countWrapp}>2</div>
+                                    <span className={styles.amountButton}>+</span>
                                 </div>
                             </div>
-                            <div className={styles.itemInfo}>
-                                <h2 className={styles.itemName}>Название товара</h2>
-                                <div className={styles.itemCategory}>категория</div>
-                                <h2 className={styles.itemPrice}>1000 UAH</h2>
-                            </div>
-                            <div className={styles.itemAmount}>
-                                <span className={styles.amountButton}>-</span>
-                                <div className={styles.countWrapp}>2</div>
-                                <span className={styles.amountButton}>+</span>
-                            </div>
-                        </div>
+                        )}
                     </div>
                     <div className={styles.priceTotal}>Итог: 4800 грн</div>
                 </div>
