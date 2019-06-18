@@ -39,7 +39,7 @@ import pickBy from '@tinkoff/utils/object/pickBy';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
-const PRODUCTS_VALUES = ['name', 'company', 'price', 'categoryId', 'hidden', 'description', 'features', 'discount'];
+const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'description', 'features'];
 
 const materialStyles = theme => ({
     loader: {
@@ -394,7 +394,7 @@ class ProductForm extends Component {
             <TextField
                 label='Скидочная цена'
                 value={product.discountPrice}
-                onChange={this.handleChange('price')}
+                onChange={this.handleChange('discountPrice')}
                 InputProps={{ inputProps: { min: 0 } }}
                 margin='normal'
                 variant='outlined'
