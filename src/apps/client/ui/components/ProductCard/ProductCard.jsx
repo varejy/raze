@@ -65,12 +65,12 @@ const RATING_STARS = 3.5;
 
 class ProductCard extends Component {
     renderStars = () => {
-        let fullStars = Math.floor(RATING_STARS);
+        const fullStars = Math.floor(RATING_STARS);
         let halfStars = 0;
         if (RATING_STARS % fullStars > 0) {
             halfStars = 1;
         }
-        let emptyStars = 5 - fullStars - halfStars;
+        const emptyStars = 5 - fullStars - halfStars;
         let starsArray = [];
         for (let i = 0; i < fullStars; i++) {
             starsArray.push(STARS.stars.starFull);

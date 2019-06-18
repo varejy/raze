@@ -78,7 +78,7 @@ class ProductCardCarousel extends Component {
 
     render () {
         const { activeSlide, leftSliderTopIndex } = this.state;
-        const {sliderImages} = this.props;
+        const { sliderImages } = this.props;
         const isTop = activeSlide === this.minSlideIndex;
         const isBottom = activeSlide === this.maxSlideIndex;
 
