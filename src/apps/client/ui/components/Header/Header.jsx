@@ -6,20 +6,34 @@ import { connect } from 'react-redux';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 
 import styles from './Header.css';
+import openBasketPopup from '../../../actions/openBasketPopup';
+import PopupBasket from '../PopupBasket/PopupBasket';
 
-const mapStateToProps = ({ application }) => {
+const mapStateToProps = ({ application, popup }) => {
     return {
-        categories: application.categories
+        categories: application.categories,
+        basketVisible: popup.basketVisible
     };
 };
+const mapDispatchToProps = (dispatch) => ({
+    openBasketPopup: (payload) => dispatch(openBasketPopup(payload))
+});
 
 class Header extends Component {
     static propTypes = {
-        categories: PropTypes.array
+        categories: PropTypes.array,
+        basketVisible: PropTypes.bool.isRequired,
+        openBasketPopup: PropTypes.func.isRequired
     };
 
     static defaultProps = {
-        categories: []
+        categories: [],
+        basketVisible: false
+    };
+
+    handleOpenBasket = () => {
+        document.body.style.overflowY = 'hidden';
+        this.props.openBasketPopup(true);
     };
 
     render () {
@@ -77,14 +91,15 @@ class Header extends Component {
                     <div className={styles.bottomIconWrapper}>
                         <img className={styles.iconHeart} src='/src/apps/client/ui/components/Header/images/likeHeart.png' alt=''/>
                     </div>
-                    <div className={styles.bottomIconWrapper}>
+                    <div className={styles.bottomIconWrapper} onClick={this.handleOpenBasket}>
                         <img className={styles.iconBasket} src='/src/apps/client/ui/components/Header/images/basket.png' alt=''/>
                         <div className={styles.ordersCounter}><div className={styles.ordersNumber}>3</div></div>
                     </div>
                 </div>
             </div>
+            {this.props.basketVisible && <PopupBasket/>}
         </div>;
     }
 }
 
-export default withRouter(connect(mapStateToProps)(Header));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header));

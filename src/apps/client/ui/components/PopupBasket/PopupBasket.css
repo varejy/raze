@@ -9,6 +9,7 @@
     top: 0;
     right: 0;
     overflow: hidden;
+    z-index: 1000;
 }
 .popupContent{
     height: 100%;
@@ -42,6 +43,7 @@
     position: relative;
     bottom: 3px;
     cursor: pointer;
+    user-select: none;
 }
 .items{
     width: 100%;
@@ -190,6 +192,7 @@
     line-height: 35px;
     width: 100%;
     height: 44px;
+    cursor: pointer;
 }
 
 .continueShopping{
