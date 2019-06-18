@@ -26,9 +26,11 @@
 .filterItem{
     cursor: pointer;
 }
+
 .filterItemActive {
     border-bottom: #00a651 solid 5px;
 }
+
 .productsWrapper{
    display: flex;
    flex-wrap: wrap;

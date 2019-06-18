@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import find from '@tinkoff/utils/array/find';
+
 import Product from '../Product/Product';
 
 import styles from './ProductsList.css';
@@ -9,15 +11,21 @@ import styles from './ProductsList.css';
 const SORTING_OPTIONS = [
     {
         text: 'Дате',
-        id: 0
+        id: 'date',
+        min: (product, nextProduct) => product.date - nextProduct.date,
+        max: (product, nextProduct) => product.date + nextProduct.date
     },
     {
         text: 'Цене',
-        id: 1
+        id: 'price',
+        min: (product, nextProduct) => product.price - nextProduct.price,
+        max: (product, nextProduct) => product.price + nextProduct.price
     },
     {
         text: 'Популярности',
-        id: 2
+        id: 'view',
+        min: (product, nextProduct) => product.views - nextProduct.views,
+        max: (product, nextProduct) => product.views + nextProduct.views
     }
 ];
 
@@ -48,42 +56,11 @@ class ProductsList extends Component {
 
     handleActiveSortClick = activeOption => () => {
         const { products } = this.state;
-        const minSortPrice = (product, nextProduct) => product.price - nextProduct.price;
-        const maxSortPrice = (product, nextProduct) => product.price + nextProduct.price;
-        const minSortDate = (product, nextProduct) => product.date - nextProduct.date;
-        const maxSortDate = (product, nextProduct) => product.date + nextProduct.date;
-        const minSortPopularity = (product, nextProduct) => {
-            return product.popularity - nextProduct.popularity;
-        };
-        const maxSortPopularity = (product, nextProduct) => {
-            return product.popularity + nextProduct.popularity;
-        };
-        const minSortViews = (product, nextProduct) => product.views - nextProduct.views;
-        const maxSortViews = (product, nextProduct) => product.views + nextProduct.views;
-
         this.setState({ activeOption: activeOption });
 
-        if (activeOption === 0) {
-            /*
-                minSortDate
-                maxSortDate
-            */
+        const sortOption = find(sort => sort.id === activeOption, SORTING_OPTIONS);
 
-            this.setState({ products: products.sort(/* minSortDate || maxSortDate */) });
-        } else if (activeOption === 1) {
-            /*
-                minSortPrice
-                maxSortPrice
-            */
-
-            this.setState({ products: products.sort(/* minSortPrice || maxSortPrice */) });
-        } else if (activeOption === 2) {
-            /*
-                minSortPopularity
-                maxSortPopularity
-            */
-            this.setState({ products: products.sort(/* minSortPopularity || maxSortPopularity */) });
-        }
+        this.setState({ products: products.sort(sortOption.min) });
     }
 
     render () {
