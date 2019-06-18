@@ -18,10 +18,10 @@ class PopupBasket extends Component {
         product: {}
     }
 
-    handleCountClick = button => () => {
+    handleCountClick = operation => () => {
         const { productCount } = this.state;
 
-        button === 1
+        operation === 'plus'
             ? this.setState({
                 productCount: productCount + 1
             })
@@ -52,9 +52,9 @@ class PopupBasket extends Component {
                         <div className={styles.itemAmount}>
                             <div className={styles.amountTxt}>Количество</div>
                             <div className={styles.amount}>
-                                <span className={styles.amountButton} onClick={this.handleCountClick(-1)}>-</span>
+                                <span className={styles.amountButton} onClick={this.handleCountClick('minus')}>-</span>
                                 <div className={styles.countWrapp}>{productCount}</div>
-                                <span className={styles.amountButton} onClick={this.handleCountClick(1)}>+</span>
+                                <span className={styles.amountButton} onClick={this.handleCountClick('plus')}>+</span>
                             </div>
                         </div>
                     </div>
