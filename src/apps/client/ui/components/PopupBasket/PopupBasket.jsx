@@ -1,11 +1,39 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import classNames from 'classnames';
 
 import styles from './PopupBasket.css';
 
 class PopupBasket extends Component {
+    state = {
+        productCount: 1
+    };
+
+    static propTypes = {
+        product: PropTypes.object
+    };
+
+    static defaultProps = {
+        product: {}
+    }
+
+    handleCountClick = operation => () => {
+        const { productCount } = this.state;
+
+        operation === 'plus'
+            ? this.setState({
+                productCount: productCount + 1
+            })
+            : this.setState({
+                productCount: productCount > 1 ? productCount - 1 : 1
+            });
+    }
+
     render () {
+        const { product } = this.props;
+        const { productCount } = this.state;
+
         return <section>
             <div className={styles.root}>
                 <div>
@@ -14,19 +42,19 @@ class PopupBasket extends Component {
                             <div className={styles.deleteItem}>
                                 <span className={styles.deleteItemIcon}></span>
                             </div>
-                            <img className={styles.itemImage} src="/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg" alt="product"/>
+                            <img className={styles.itemImage} src={product.avatar} alt={product.avatar}/>
                         </div>
                         <div className={styles.itemInfo}>
-                            <h2 className={styles.itemName}>Название товара</h2>
+                            <h2 className={styles.itemName}>{product.name}</h2>
                             <div className={styles.itemCategory}>категория</div>
-                            <h2 className={styles.itemPrice}>1000 UAH</h2>
+                            <h2 className={styles.itemPrice}>{product.price} UAH</h2>
                         </div>
                         <div className={styles.itemAmount}>
                             <div className={styles.amountTxt}>Количество</div>
                             <div className={styles.amount}>
-                                <span className={styles.amountButton}>-</span>
-                                <div className={styles.countWrapp}>2</div>
-                                <span className={styles.amountButton}>+</span>
+                                <span className={styles.amountButton} onClick={this.handleCountClick('minus')}>-</span>
+                                <div className={styles.countWrapp}>{productCount}</div>
+                                <span className={styles.amountButton} onClick={this.handleCountClick('plus')}>+</span>
                             </div>
                         </div>
                     </div>

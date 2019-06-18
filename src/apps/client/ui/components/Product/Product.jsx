@@ -5,6 +5,7 @@ import styles from './Product.css';
 import openPopup from '../../../actions/openPopup';
 import { connect } from 'react-redux';
 import ProductPreview from '../ProductPreview/ProductPreview';
+import PopupBasket from '../PopupBasket/PopupBasket';
 
 const mapDispatchToProps = (dispatch) => ({
     openPopup: payload => dispatch(openPopup(payload))
@@ -22,6 +23,10 @@ class Product extends Component {
 
     handlePreviewClick = () => {
         this.props.openPopup(<ProductPreview product={this.props.product}/>);
+    };
+
+    handleOpenBasket = () => {
+        this.props.openPopup(<PopupBasket product={this.props.product}/>);
     };
 
     render () {
@@ -42,7 +47,7 @@ class Product extends Component {
                         <div className={classNames(styles.toolBarIcon, styles.heartIcon)}/>
                         <div>Избранное</div>
                     </div>
-                    <div className={classNames(styles.basket, styles.toolBarItem)}>
+                    <div className={classNames(styles.basket, styles.toolBarItem)} onClick={this.handleOpenBasket}>
                         <div className={classNames(styles.toolBarIcon, styles.basketIcon)}/>
                         <div>В корзину</div>
                     </div>

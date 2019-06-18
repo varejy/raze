@@ -2,7 +2,8 @@ import {
     SET_CATEGORIES,
     SET_PRODUCTS_TO_MAP,
     SET_MAIN_SLIDES,
-    SET_MEDIA_INFO
+    SET_MEDIA_INFO,
+    SET_PRODUCT_TO_MAP
 } from '../types/types';
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
     },
     categories: [],
     productsMap: {},
+    productMap: {},
     mainSlides: []
 };
 
@@ -26,6 +28,14 @@ export default function (state = initialState, action) {
             ...state,
             productsMap: {
                 ...state.productsMap,
+                ...action.payload
+            }
+        };
+    case SET_PRODUCT_TO_MAP:
+        return {
+            ...state,
+            productMap: {
+                ...state.productMap,
                 ...action.payload
             }
         };

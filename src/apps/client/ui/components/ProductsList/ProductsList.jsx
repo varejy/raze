@@ -6,6 +6,8 @@ import find from '@tinkoff/utils/array/find';
 
 import Product from '../Product/Product';
 
+import { Link, withRouter } from 'react-router-dom';
+
 import styles from './ProductsList.css';
 
 const SORTING_OPTIONS = [
@@ -40,12 +42,13 @@ class ProductsList extends Component {
     }
 
     static propTypes = {
+        category: PropTypes.object.isRequired,
         products: PropTypes.array
     };
 
     static defaultProps = {
         products: []
-    }
+    };
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.products !== this.props.products) {
@@ -92,10 +95,11 @@ class ProductsList extends Component {
                 {
                     products.map(product => {
                         return (
-                            <Product
-                                key={product.id}
-                                product={product}
-                            />
+                            <Link className={styles.link} key={product.id} to={`/${category.path}/${product.id}`}>
+                                <Product
+                                    product={product}
+                                />
+                            </Link>
                         );
                     })
                 }
@@ -104,4 +108,4 @@ class ProductsList extends Component {
     }
 }
 
-export default ProductsList;
+export default withRouter(ProductsList);
