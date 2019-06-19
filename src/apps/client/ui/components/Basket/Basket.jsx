@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import classNames from 'classnames';
 
-import styles from './PopupBasket.css';
+import styles from './Basket.css';
 import closeBasketPopup from '../../../actions/closeBasketPopup';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -12,19 +12,19 @@ const PRODUCTS = [
         name: 'Knife Alfa',
         category: 'Ножи',
         price: 1000,
-        path: '/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg'
+        path: '/src/apps/client/ui/components/Basket/img/BestKnife.jpg'
     },
     {
         name: 'Emerson Steel',
         category: 'Ножи',
         price: 1500,
-        path: '/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg'
+        path: '/src/apps/client/ui/components/Basket/img/BestKnife.jpg'
     },
     {
         name: 'Iron Axe',
         category: 'Топоры',
         price: 2000,
-        path: '/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg'
+        path: '/src/apps/client/ui/components/Basket/img/BestKnife.jpg'
     }
 ];
 
@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch) => ({
     closeBasketPopup: (payload) => dispatch(closeBasketPopup(payload))
 });
 
-class PopupBasket extends Component {
+class Basket extends Component {
     state = {
         productsMap: [1, 1, 1]
     };
@@ -98,7 +98,7 @@ class PopupBasket extends Component {
                             <div className={styles.item} key={i}>
                                 <div className={styles.itemImageWrapp}>
                                     <div className={styles.deleteItem}>
-                                        <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt=''/>
+                                        <img src='/src/apps/client/ui/components/Basket/img/deleteIcon.png' alt=''/>
                                     </div>
                                     <div className={styles.itemImage}>
                                         <img className={styles.itemAvatar}
@@ -135,4 +135,4 @@ class PopupBasket extends Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(PopupBasket);
+export default connect(null, mapDispatchToProps)(Basket);

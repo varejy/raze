@@ -7,7 +7,7 @@ import { Link, NavLink, withRouter } from 'react-router-dom';
 
 import styles from './Header.css';
 import openBasketPopup from '../../../actions/openBasketPopup';
-import PopupBasket from '../PopupBasket/PopupBasket';
+import Basket from '../Basket/Basket';
 
 const mapStateToProps = ({ application, popup }) => {
     return {
@@ -102,7 +102,7 @@ class Header extends Component {
                     </div>
                 </div>
             </div>
-            {this.props.basketVisible && <PopupBasket/>}
+            {this.props.basketVisible && <Basket/>}
         </div>;
     }
 }
