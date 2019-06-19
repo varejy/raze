@@ -54,39 +54,6 @@
     position: relative;
 }
 
-.searchFormInput{
-    font-family: MontserratRegular;
-    color: #666666;
-    line-height: 24px;
-    font-size: 11px;
-    text-align: left;
-    width: 274px;
-    height: 46px;
-    border: solid 1px #323232;
-    border-radius: 50px;
-    background-color: #232323;
-    outline: none;
-    padding: 0 26px;
-}
-
-.searchFormInputActive {
-    border-radius: 25px;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
-    border-bottom: solid 0px black;
-}
-
-.searchFormIcon{
-    width: 18px;
-    height: 18px;
-    background-color: #232323;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    position: relative;
-    right: 44px
-}
-
 .contactsWrapper{
     position: relative;
     width: 200px;
