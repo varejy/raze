@@ -117,12 +117,15 @@
     font-family: HelveticaNeueCyrBold;
     font-size: 31px;
     line-height: 39px;
-    color: #ff0000;
     text-align: center;
+    color: #000000;
+}
+.priceDiscount{
+    color: #ff0000;
 }
 
 .buttonDefault{
-@mixin removeDefaultButton
+    @mixin removeDefaultButton
 }
 
 .orderButton{

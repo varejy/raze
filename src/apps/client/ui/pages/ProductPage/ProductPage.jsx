@@ -11,7 +11,11 @@ import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCar
 import classNames from 'classnames';
 
 const PRODUCT_PATH = '/:category/:id';
-const LABELS = ['#ff0000', '#ffb116', '#797979'];
+const LABELS = {
+    notAvailable: '#ff0000',
+    topSales: '#ffb116',
+    almostGone: '#797979'
+};
 const PREVIOUSLY_VIEWED = [
     {
         avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
@@ -32,12 +36,10 @@ const PREVIOUSLY_VIEWED = [
         price: '500'
     }
 ];
-const STARS = {
-    stars: {
-        starFull: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
-        starHalfFull: '/src/apps/client/ui/pages/ProductPage/images/starHalfFull.png',
-        starEmpty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
-    }
+const STAR = {
+    full: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
+    half: '/src/apps/client/ui/pages/ProductPage/images/starHalfFull.png',
+    empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
 };
 const RATING_STARS = 3.5;
 
@@ -105,15 +107,31 @@ class ProductPage extends Component {
         const emptyStars = 5 - fullStars - halfStars;
         let starsArray = [];
         for (let i = 0; i < fullStars; i++) {
-            starsArray.push(STARS.stars.starFull);
+            starsArray.push(STAR.full);
         }
         if (halfStars !== 0) {
-            starsArray.push(STARS.stars.starHalfFull);
+            starsArray.push(STAR.half);
         }
         for (let i = 0; i < emptyStars; i++) {
-            starsArray.push(STARS.stars.starEmpty);
+            starsArray.push(STAR.empty);
         }
         return starsArray;
+    };
+
+    findColor = (tag) => {
+        let color = '';
+        switch (tag) {
+        case 'almostGone':
+            color = LABELS.almostGone;
+            break;
+        case 'notAvailable':
+            color = LABELS.notAvailable;
+            break;
+        case 'topSales':
+            color = LABELS.topSales;
+            break;
+        }
+        return color;
     };
 
     render () {
@@ -138,25 +156,29 @@ class ProductPage extends Component {
                         <div className={styles.tags}>
                             {product.tags.map((tag, i) =>
                                 <div key={i} className={styles.tag}
-                                    style={{ color: LABELS[i] }}>{tag}</div>
+                                    style={{ color: this.findColor(tag) }}>{tag}</div>
                             )}
                         </div>
                         <div className={styles.productCardHeader}>
                             <div className={styles.productName}>{product.name}</div>
                             <div><img className={styles.heartIcon}
-                                src='/src/apps/client/ui/pages/ProductPage/images/likeHeart.png' alt=''/></div>
+                                src='/src/apps/client/ui/pages/ProductPage/images/likeHeart.png' alt='like'/></div>
                         </div>
                         <div className={styles.stars}>
                             {this.renderStars().map((star, i) =>
-                                <div key={i} className={styles.star}><img src={star} alt=''/></div>
+                                <div key={i} className={styles.star}><img src={star} alt='star'/></div>
                             )}
                         </div>
                         <div className={styles.order}>
-                            <div className={styles.prices}>
-                                <div className={styles.pricePrevious}>{product.discountPrice}</div>
-                                <div className={styles.price}>{product.price}</div>
-                            </div>
-                            <button className={classNames(styles.orderButton, styles.buttonDefault)}>Оформление заказа
+                            {product.discountPrice
+                                ? <div className={styles.prices}>
+                                    <div className={styles.pricePrevious}>{product.price}</div>
+                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice}</div>
+                                </div>
+                                : <div className={styles.prices}>
+                                    <div className={styles.price}>{product.price}</div>
+                                </div>}
+                            <button className={classNames(styles.buttonDefault, styles.orderButton)}>Оформление заказа
                             </button>
                         </div>
                     </div>
@@ -184,7 +206,7 @@ class ProductPage extends Component {
                         <div className={styles.bottomHeader}>всего отзывов</div>
                         <div className={styles.feedbacks}>
                             <div className={styles.feedbackNone}>
-                            К данному товару не было оставлено комментариев
+                                К данному товару не было оставлено комментариев
                             </div>
                         </div>
                     </div>
