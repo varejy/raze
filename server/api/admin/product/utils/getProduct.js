@@ -1,13 +1,15 @@
 export default function getProduct (body) {
-    const { name, company, price, description, features, categoryId, hidden, id } = body;
+    const { name, company, price, discountPrice, description, features, categoryId, tags, hidden, id } = body;
 
     return {
         name,
         company,
-        price: +price,
+        price,
+        discountPrice,
         description,
         features,
         categoryId,
+        tags,
         hidden,
         id
     };

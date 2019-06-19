@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import ProductsPageFilters from '../../components/ProductsPageFilters/ProductsPageFilters';
+import CheckboxFilters from '../../components/CheckboxFilters/CheckboxFilters';
 import ProductsList from '../../components/ProductsList/ProductsList';
 
 import { connect } from 'react-redux';
-import getProductsByCategoryId from '../../../services/client/getProductsByCategoryId';
+import getProductsByCategory from '../../../services/client/getProductsByCategory';
 
 import { withRouter, matchPath } from 'react-router-dom';
 import find from '@tinkoff/utils/array/find';
@@ -20,12 +20,12 @@ const mapStateToProps = ({ application }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    getProductsByCategoryId: payload => dispatch(getProductsByCategoryId(payload))
+    getProductsByCategory: payload => dispatch(getProductsByCategory(payload))
 });
 
 class ProductsPage extends Component {
     static propTypes = {
-        getProductsByCategoryId: PropTypes.func.isRequired,
+        getProductsByCategory: PropTypes.func.isRequired,
         location: PropTypes.object,
         productsMap: PropTypes.object,
         categories: PropTypes.array
@@ -40,39 +40,67 @@ class ProductsPage extends Component {
     constructor (...args) {
         super(...args);
 
-        const { location: { pathname }, categories, productsMap } = this.props;
-        const category = find(route => matchPath(pathname, { path: `/${route.path}`, exact: true }), categories);
-
-        if (!category) {
-            this.notFoundPage = true;
-        }
-
-        const products = productsMap[category.id];
-
-        this.state = {
-            loading: !this.notFoundPage && !products,
-            products: products || [],
-            category
-        };
+        this.state = this.getNewState();
     }
 
     componentDidMount () {
-        const { loading, category } = this.state;
-
-        if (loading) {
-            this.props.getProductsByCategoryId(category.id)
-                .then(() => this.setState({ loading: false }));
-        }
+        this.getProducts();
     }
 
     componentWillReceiveProps (nextProps) {
-        if (nextProps.productsMap !== this.props.productsMap) {
-            this.setState({ products: nextProps.productsMap[this.state.category.id] });
+        const { location: { pathname }, productsMap } = this.props;
+        const { category } = this.state;
+
+        if (nextProps.productsMap !== productsMap) {
+            this.setState({ filteredProducts: nextProps.productsMap[category.path], products: nextProps.productsMap[category.path] });
+        }
+
+        if (nextProps.location.pathname !== pathname) {
+            this.setState(this.getNewState(nextProps), this.getProducts);
         }
     }
 
+    getNewState = (props = this.props) => {
+        const { location: { pathname }, categories, productsMap } = props;
+        const category = find(route => matchPath(pathname, { path: `/${route.path}`, exact: true }), categories);
+
+        this.notFoundPage = !category;
+
+        const products = productsMap[category && category.path];
+
+        return {
+            loading: !this.notFoundPage && !products,
+            products: products || [],
+            filteredProducts: products || [],
+            category
+        };
+    };
+
+    getProducts = () => {
+        const { loading, category } = this.state;
+
+        if (loading) {
+            this.props.getProductsByCategory(category.path)
+                .then(() => this.setState({ loading: false }));
+        }
+    };
+
+    handleChangeFilters = (activeFilters) => {
+        const { products } = this.state;
+
+        if (activeFilters.length === 0) {
+            this.setState({
+                filteredProducts: products
+            });
+        } else if (activeFilters.length !== 0) {
+            this.setState({
+                filteredProducts: activeFilters
+            });
+        }
+    };
+
     render () {
-        const { loading, products } = this.state;
+        const { loading, products, category, filteredProducts } = this.state;
 
         // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
@@ -87,8 +115,8 @@ class ProductsPage extends Component {
 
         return <section className={styles.productsWrapp}>
             <div className={styles.productsElemWrapp}>
-                <ProductsPageFilters products={products}/>
-                <ProductsList products={products}/>
+                <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products}/>
+                <ProductsList category={category} products={filteredProducts}/>
             </div>
         </section>;
     }

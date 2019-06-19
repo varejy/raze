@@ -3,19 +3,22 @@ import PropTypes from 'prop-types';
 
 import Product from '../Product/Product';
 
+import { Link, withRouter } from 'react-router-dom';
+
 import styles from './ProductsList.css';
 
 class ProductsList extends Component {
     static propTypes = {
+        category: PropTypes.object.isRequired,
         products: PropTypes.array
     };
 
     static defaultProps = {
         products: []
-    }
+    };
 
     render () {
-        const { products } = this.props;
+        const { products, category } = this.props;
 
         return <section className={styles.root}>
             <div className={styles.productsFilter}>
@@ -30,12 +33,13 @@ class ProductsList extends Component {
             </div>
             <div className={styles.productsWrapper}>
                 {
-                    products.map((product, i) => {
+                    products.map((product) => {
                         return (
-                            <Product
-                                key={product.id}
-                                product={product}
-                            />
+                            <Link className={styles.link} key={product.id} to={`/${category.path}/${product.id}`}>
+                                <Product
+                                    product={product}
+                                />
+                            </Link>
                         );
                     })
                 }
@@ -44,4 +48,4 @@ class ProductsList extends Component {
     }
 }
 
-export default ProductsList;
+export default withRouter(ProductsList);

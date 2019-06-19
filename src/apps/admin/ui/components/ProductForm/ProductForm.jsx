@@ -32,10 +32,14 @@ import prop from '@tinkoff/utils/object/prop';
 import pick from '@tinkoff/utils/object/pick';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
+import reduce from '@tinkoff/utils/array/reduce';
+import compose from '@tinkoff/utils/function/compose';
+import keys from '@tinkoff/utils/object/keys';
+import pickBy from '@tinkoff/utils/object/pickBy';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
-const PRODUCTS_VALUES = ['name', 'company', 'price', 'categoryId', 'hidden', 'description', 'features'];
+const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'description', 'features'];
 
 const materialStyles = theme => ({
     loader: {
@@ -63,7 +67,7 @@ const materialStyles = theme => ({
         width: '100%'
     },
     featureField: {
-        width: 'calc(50% - 10px)'
+        width: 'calc(50% - 20px)'
     },
     divider: {
         marginTop: 2 * theme.spacing.unit,
@@ -112,6 +116,11 @@ class ProductForm extends Component {
         const newProduct = {
             hidden: false,
             features: [],
+            tagsMap: reduce((acc, tag) => {
+                acc[tag] = true;
+
+                return acc;
+            }, {}, product.tags),
             ...pick(PRODUCTS_VALUES, product)
         };
 
@@ -152,12 +161,33 @@ class ProductForm extends Component {
         }
     }
 
+    getProductPayload = ({ name, company, price, discountPrice, description, tagsMap, features, categoryId, hidden, id }) => {
+        const tags = compose(
+            keys,
+            pickBy(Boolean)
+        )(tagsMap);
+
+        return {
+            name,
+            company,
+            price: +price,
+            discountPrice: +discountPrice,
+            description,
+            features,
+            categoryId,
+            tags,
+            hidden,
+            id
+        };
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
         const { id, product } = this.state;
+        const productPayload = this.getProductPayload(product);
 
-        (id ? this.props.editProduct({ ...product, id }) : this.props.saveProduct(product))
+        (id ? this.props.editProduct({ ...productPayload, id }) : this.props.saveProduct(productPayload))
             .then(product => {
                 const { files, removedFiles } = this.state;
                 const formData = new FormData();
@@ -242,6 +272,20 @@ class ProductForm extends Component {
             product: {
                 ...this.state.product,
                 [prop]: event.target.value
+            }
+        });
+    };
+
+    handleTagChange = prop => (event, value) => {
+        const { product } = this.state;
+
+        this.setState({
+            product: {
+                ...product,
+                tagsMap: {
+                    ...product.tagsMap,
+                    [prop]: value
+                }
             }
         });
     };
@@ -348,6 +392,16 @@ class ProductForm extends Component {
                 required
             />
             <TextField
+                label='Скидочная цена'
+                value={product.discountPrice}
+                onChange={this.handleChange('discountPrice')}
+                InputProps={{ inputProps: { min: 0 } }}
+                margin='normal'
+                variant='outlined'
+                type='number'
+                fullWidth
+            />
+            <TextField
                 label='Описание'
                 value={product.description}
                 onChange={this.handleChange('description')}
@@ -396,6 +450,43 @@ class ProductForm extends Component {
             <ProductAvatarFile onAvatarFileUpload={this.handleAvatarFileUpload} initialAvatarFile={initialAvatarFile}/>
             <Divider className={classes.divider}/>
             <ProductFormFiles onFilesUpload={this.handleFilesUpload} initialFiles={initialFiles}/>
+            <Divider className={classes.divider}/>
+            <div>
+                <Typography variant='h6'>Метки</Typography>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={product.tagsMap.notAvailable}
+                            onChange={this.handleTagChange('notAvailable')}
+                            color='primary'
+                        />
+                    }
+                    label='Нет в наличии'
+                    disabled={hiddenCheckboxIsDisables}
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={product.tagsMap.topSales}
+                            onChange={this.handleTagChange('topSales')}
+                            color='primary'
+                        />
+                    }
+                    label='Топ продаж'
+                    disabled={hiddenCheckboxIsDisables}
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={product.tagsMap.almostGone}
+                            onChange={this.handleTagChange('almostGone')}
+                            color='primary'
+                        />
+                    }
+                    label='Товар заканчивается'
+                    disabled={hiddenCheckboxIsDisables}
+                />
+            </div>
             <Divider className={classes.divider}/>
             <div>
                 <Tooltip

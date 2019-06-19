@@ -1,55 +1,60 @@
 .filter{
     margin-bottom: 45px
 }
-.ul {
+
+.list {
     margin-top: 23px;
 }
+
 .filterTxt{
     font-family: Montserrat, arial;
     font-weight: bold;
     text-align: left;
     color: #232323;
 }
+
 .filterName{
     font-size: 14px;
 }
+
 .label {
     display: flex;
     align-items: center;
     cursor: pointer;
 }
+
 .filterOption{
     display: flex;
     align-items: center;
     margin-top: 19px;
 }
+
 .filterOptionTxt{
     font-size: 10px;
     margin-left: 14px;
     text-transform: uppercase;
 }
+
+.input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+
 .filterCheckbox {
     width: 8px;
     height: 8px;
     border: solid 1px #000000;
     background-color: transparent;
     margin: 0 0;
-    -webkit-appearance: button;
-    outline: -webkit-focus-ring-color auto 0;
+    cursor: pointer;
 }
-.filterCheckbox:not(checked){
-    border: solid 1px #000000;
-    background-color: transparent;
-}
-.filterCheckbox:checked{
-    border: solid 1px #bababa;
-    background-color: #00a046;
-}
-.filterCheckbox:not(checked) + .filterOptionTxt::before {
-    border: solid 1px #000000;
-    background-color: transparent;
-}
-.filterCheckbox:checked + .filterOptionTxt::after {
+
+.filterCheckboxActive {
     border: solid 1px #bababa;
     background-color: #00a046;
 }
