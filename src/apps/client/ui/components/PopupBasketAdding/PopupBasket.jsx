@@ -67,7 +67,7 @@ class PopupBasket extends Component {
                                 <div className={styles.deleteItem}>
                                     <span className={styles.deleteItemIcon}></span>
                                 </div>
-                                <img className={styles.itemImage} src="/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg" alt="product"/>
+                                <img className={styles.itemImage} src="/src/apps/client/ui/components/PopupBasketAdding/img/BestKnife.jpg" alt="product"/>
                             </div>
                             <div className={styles.itemInfo}>
                                 <h2 className={styles.itemName}>Название товара</h2>

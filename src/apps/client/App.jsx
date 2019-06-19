@@ -15,6 +15,7 @@ import Popup from './ui/components/Popup/Popup';
 import { Switch, Route, withRouter } from 'react-router-dom';
 
 import styles from './App.css';
+import Basket from './ui/components/PopupBasket/Basket';
 
 @media
 class App extends Component {
@@ -23,6 +24,7 @@ class App extends Component {
             <div className={styles.page}>
                 <Header/>
                 <Popup />
+                <Basket/>
                 <div className={styles.pageContent}>
                     <Switch>
                         <Route exact path='/' component={MainPage} />

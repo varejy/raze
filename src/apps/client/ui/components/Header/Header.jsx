@@ -7,12 +7,10 @@ import { Link, NavLink, withRouter } from 'react-router-dom';
 
 import styles from './Header.css';
 import openBasketPopup from '../../../actions/openBasketPopup';
-import Basket from '../Basket/Basket';
 
-const mapStateToProps = ({ application, popup }) => {
+const mapStateToProps = ({ application }) => {
     return {
-        categories: application.categories,
-        basketVisible: popup.basketVisible
+        categories: application.categories
     };
 };
 const mapDispatchToProps = (dispatch) => ({
@@ -22,23 +20,15 @@ const mapDispatchToProps = (dispatch) => ({
 class Header extends Component {
     static propTypes = {
         categories: PropTypes.array,
-        basketVisible: PropTypes.bool.isRequired,
         openBasketPopup: PropTypes.func.isRequired
     };
 
     static defaultProps = {
-        categories: [],
-        basketVisible: false
+        categories: []
     };
 
     handleOpenBasket = () => {
-        this.props.openBasketPopup(true);
-    };
-
-    componentWillReceiveProps (nextProps) {
-        if (nextProps.basketVisible === true) {
-            document.body.style.overflowY = 'hidden';
-        }
+        this.props.openBasketPopup();
     };
 
     render () {
@@ -102,7 +92,6 @@ class Header extends Component {
                     </div>
                 </div>
             </div>
-            {this.props.basketVisible && <Basket/>}
         </div>;
     }
 }

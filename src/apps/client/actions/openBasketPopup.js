@@ -1,6 +1,6 @@
 import { OPEN_BASKET_POPUP } from '../types/types';
 
-const openBasketPopup = payload => ({
+const openBasketPopup = () => ({
     type: OPEN_BASKET_POPUP
 });
 
