@@ -49,13 +49,14 @@ class ProductsList extends Component {
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.products !== this.props.products) {
-            this.setState({ products: nextProps.products });
-            this.handleActiveSortClick(this.state.activeOption);
+            const { activeOption } = this.state;
+            this.setState({ products: nextProps.products }, () => activeOption && this.handleActiveSortClick(activeOption)());
         }
     }
 
     handleActiveSortClick = activeOption => () => {
         const { products } = this.state;
+
         this.setState({ activeOption: activeOption });
 
         const sortOption = find(sort => sort.id === activeOption, SORTING_OPTIONS);
