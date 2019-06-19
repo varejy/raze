@@ -12,9 +12,9 @@ export default function (state = initialState, action) {
     case CLOSE_POPUP:
         return { ...state, content: null };
     case OPEN_BASKET_POPUP:
-        return { ...state, basketVisible: action.payload };
+        return { ...state, basketVisible: true };
     case CLOSE_BASKET_POPUP:
-        return { ...state, basketVisible: action.payload };
+        return { ...state, basketVisible: false };
     default:
         return state;
     }

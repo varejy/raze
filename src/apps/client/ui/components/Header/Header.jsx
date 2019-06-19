@@ -32,8 +32,13 @@ class Header extends Component {
     };
 
     handleOpenBasket = () => {
-        document.body.style.overflowY = 'hidden';
         this.props.openBasketPopup(true);
+    };
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.basketVisible === true) {
+            document.body.style.overflowY = 'hidden';
+        }
     };
 
     render () {

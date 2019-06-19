@@ -11,6 +11,7 @@
     overflow: hidden;
     z-index: 1000;
 }
+
 .popupContent{
     height: 100%;
     padding: 35px;
@@ -22,6 +23,7 @@
     flex-direction: column;
     justify-content: space-between;
 }
+
 .headerContainer{
     display: flex;
     align-items: center;
@@ -29,12 +31,14 @@
     margin-bottom: 46px;
     height: 22px;
 }
+
 .header{
     font-family: HelveticaNeueCyrBold;
     font-size: 27px;
     color: #ffffff;
     text-transform: uppercase;
 }
+
 .closeButton{
     font-family: HelveticaNeueCyrLight;
     font-size: 50px;
@@ -45,24 +49,12 @@
     cursor: pointer;
     user-select: none;
 }
+
 .items{
     width: 100%;
     height: 50vh ;
     overflow-y: scroll;
     border-bottom: 1px solid #ffffff;
-}
-
-.items::-webkit-scrollbar {
-    width: 0;
-}
-
-.items {
-    -ms-overflow-style:
-            none;
-}
-
-.items {
-    overflow: -moz-scrollbars-none;
 }
 
 .item{
@@ -128,15 +120,14 @@
     text-transform: uppercase;
 }
 
-
 .amountTxt{
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     margin-bottom: 10px;
-
 }
+
 .amountTxt :only-child{
     font-family: HelveticaNeueCyrBold;
     font-size: 8px;
