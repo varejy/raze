@@ -60,11 +60,12 @@ class ProductsList extends Component {
     handleActiveSortClick = activeOption => () => {
         const { products } = this.state;
 
-        this.setState({ activeOption: activeOption });
-
         const sortOption = find(sort => sort.id === activeOption, SORTING_OPTIONS);
 
-        this.setState({ products: products.sort(sortOption.min) });
+        this.setState({
+            products: products.sort(sortOption.min),
+            activeOption: activeOption
+        });
     }
 
     render () {
