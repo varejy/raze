@@ -1,11 +1,11 @@
 import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
 
-import getProductsByCategoryId from '../queries/getProductsByCategoryId';
+import getProductsByIds from '../queries/getProductsByIds';
 
-export default function getAvailableProductsByCategory (req, res) {
-    const { id } = req.query;
+export default function getAvailableProductsByIds (req, res) {
+    const ids = req.body;
 
-    getProductsByCategoryId(id)
+    getProductsByIds(ids)
         .then(products => {
             const availableProducts = products.filter(product => !product.hidden);
 

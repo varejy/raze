@@ -2,11 +2,13 @@
     width: 936px;
     margin-left: 89px;
 }
+
 .productsFilter{
     display: flex;
     height: 17px;
     justify-content: flex-end;
 }
+
 .filter{
     display: flex;
     justify-content: space-between;
@@ -15,6 +17,7 @@
     font-size: 14px;
     color: #232323;
 }
+
 .filterWrapp{
     display: flex;
     justify-content: space-between;
@@ -25,6 +28,10 @@
 
 .filterItem{
     cursor: pointer;
+
+    &:hover {
+         border-bottom: #00a651 solid 5px;
+    }
 }
 
 .filterItemActive {
@@ -35,4 +42,8 @@
    display: flex;
    flex-wrap: wrap;
    margin-top: 90px
+}
+
+.link {
+    text-decoration: none;
 }
