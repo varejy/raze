@@ -23,7 +23,8 @@ class Search extends Component {
     static propTypes = {
         turnOnClickOutside: PropTypes.func,
         searchByText: PropTypes.func,
-        categories: PropTypes.array
+        categories: PropTypes.array,
+        history: PropTypes.object
     };
 
     static defaultProps = {
@@ -44,6 +45,13 @@ class Search extends Component {
             visibleTips: false,
             tips: []
         });
+    }
+
+    handleInputSubmit = event => {
+        const { inputTxt } = this.state;
+        event.preventDefault();
+        this.props.history.push(`/search?text=${inputTxt}`);
+        this.handleVisibleTipsNone();
     }
 
     handleInputChange = event => {
@@ -81,7 +89,7 @@ class Search extends Component {
     render () {
         const { visibleTips, inputTxt, tips } = this.state;
 
-        return <section>
+        return <form onSubmit={this.handleInputSubmit}>
             <input
                 value={inputTxt}
                 onChange={this.handleInputChange}
@@ -106,8 +114,8 @@ class Search extends Component {
                     </div>
                 </div>
             }
-            <button className={styles.searchFormIcon}><img src='/src/apps/client/ui/components/Header/images/search.png' alt='search.png'/></button>
-        </section>;
+            <button className={styles.searchFormIcon} onClick={this.handleInputSubmit}><img src='/src/apps/client/ui/components/Header/images/search.png' alt='search.png'/></button>
+        </form>;
     }
 }
 
