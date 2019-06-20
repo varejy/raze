@@ -72,7 +72,7 @@ app.get('*', function (req, res) {
 
     Promise.all(map(
         actionFunc => {
-            return actionFunc(req)(store.dispatch);
+            return actionFunc(req, res)(store.dispatch);
         },
         actions
     ))
