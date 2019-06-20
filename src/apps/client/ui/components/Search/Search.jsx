@@ -9,7 +9,7 @@ import noop from '@tinkoff/utils/function/noop';
 import styles from './Search.css';
 
 @outsideClick
-class SearchTips extends Component {
+class Search extends Component {
     static propTypes = {
         turnOnClickOutside: PropTypes.func
     };
@@ -23,36 +23,26 @@ class SearchTips extends Component {
         visibleTips: false
     }
 
-    componentDidMount () {
-        document.addEventListener('click', () => {
-            this.props.turnOnClickOutside(this, this.handleVisibleTipsNone);
-        }, false);
-    }
-
     handleVisibleTipsNone = () => {
         this.setState({
-            ...this.state,
             visibleTips: false
         });
     }
 
-    handleInputChange = input => {
-        const value = input.target.value;
+    handleInputChange = event => {
+        const value = event.target.value;
 
-        value
-            ? this.setState({
-                inputTxt: value,
-                visibleTips: true
-            })
-            : this.setState({
-                inputTxt: value,
-                visibleTips: false
-            });
+        this.setState({
+            inputTxt: value,
+            visibleTips: !!value
+        });
+
+        !this.state.visibleTips && this.props.turnOnClickOutside(this, this.handleVisibleTipsNone);
     }
 
     render () {
         const { visibleTips, inputTxt } = this.state;
-        
+
         return <section>
             <input
                 value={inputTxt}
@@ -74,9 +64,9 @@ class SearchTips extends Component {
                     </div>
                 </div>
             }
-            <button className={styles.searchFormIcon}><img src='/src/apps/client/ui/components/Header/images/search.png' alt=''/></button>
+            <button className={styles.searchFormIcon}><img src='/src/apps/client/ui/components/Header/images/search.png' alt='search.png'/></button>
         </section>;
     }
 }
 
-export default SearchTips;
+export default Search;
