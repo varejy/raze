@@ -5,7 +5,7 @@ import styles from './Product.css';
 import openPopup from '../../../actions/openPopup';
 import { connect } from 'react-redux';
 import ProductPreview from '../ProductPreview/ProductPreview';
-import PopupBasket from '../PopupBasket/PopupBasket';
+import PopupBasket from '../PopupBasketAdding/PopupBasket';
 
 const mapDispatchToProps = (dispatch) => ({
     openPopup: payload => dispatch(openPopup(payload))
