@@ -2,57 +2,85 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import { Link, withRouter } from 'react-router-dom';
+
 import outsideClick from '../../hocs/outsideClick';
 
+import { connect } from 'react-redux';
+import searchByText from '../../../services/client/searchByText';
+
 import noop from '@tinkoff/utils/function/noop';
+import dropLast from '@tinkoff/utils/array/dropLast';
 
 import styles from './Search.css';
 
+const mapDispatchToProps = (dispatch) => ({
+    searchByText: payload => dispatch(searchByText(payload))
+});
+
 @outsideClick
-class SearchTips extends Component {
+class Search extends Component {
     static propTypes = {
-        turnOnClickOutside: PropTypes.func
+        turnOnClickOutside: PropTypes.func,
+        searchByText: PropTypes.func,
+        categories: PropTypes.array
     };
 
     static defaultProps = {
-        turnOnClickOutside: noop
+        turnOnClickOutside: noop,
+        searchByText: noop,
+        categories: []
     };
 
     state = {
         inputTxt: '',
-        visibleTips: false
-    }
-
-    componentDidMount () {
-        document.addEventListener('click', () => {
-            this.props.turnOnClickOutside(this, this.handleVisibleTipsNone);
-        }, false);
+        visibleTips: false,
+        tips: []
     }
 
     handleVisibleTipsNone = () => {
         this.setState({
-            ...this.state,
-            visibleTips: false
+            inputTxt: '',
+            visibleTips: false,
+            tips: []
         });
     }
 
-    handleInputChange = input => {
-        const value = input.target.value;
+    handleInputChange = event => {
+        const value = event.target.value;
+        const { visibleTips } = this.state;
 
-        value
-            ? this.setState({
-                inputTxt: value,
-                visibleTips: true
-            })
-            : this.setState({
-                inputTxt: value,
-                visibleTips: false
+        this.props.searchByText(value).then((products) => {
+            const mapTips = [];
+
+            products.map(product => {
+                mapTips.push({
+                    title: product.name,
+                    categoryId: product.categoryId,
+                    id: product.id
+                });
             });
+
+            products.length > 5
+                ? this.setState({
+                    tips: dropLast(products.length - 5, mapTips)
+                })
+                : this.setState({
+                    tips: mapTips
+                });
+        });
+
+        this.setState({
+            inputTxt: value,
+            visibleTips: !!value
+        });
+
+        !visibleTips && this.props.turnOnClickOutside(this, this.handleVisibleTipsNone);
     }
 
     render () {
-        const { visibleTips, inputTxt } = this.state;
-        
+        const { visibleTips, inputTxt, tips } = this.state;
+
         return <section>
             <input
                 value={inputTxt}
@@ -65,18 +93,22 @@ class SearchTips extends Component {
                     <div className={styles.tipsWrapp}>
                         <div className={styles.break}></div>
                         <ul className={styles.adviceСontainer} onClick={this.handleVisibleTipsNone}>
-                            <li className={styles.tip}>knive</li>
-                            <li className={styles.tip}>knive</li>
-                            <li className={styles.tip}>knive</li>
-                            <li className={styles.tip}>knive</li>
-                            <li className={styles.tip}>knive</li>
+                            {
+                                tips.map((tip, i) => {
+                                    return (
+                                        <Link key={i} className={styles.tipLink} to={`/${tip.categoryId}/${tip.id}`}>
+                                            <li className={styles.tip}>{tip.title}</li>
+                                        </Link>
+                                    );
+                                })
+                            }
                         </ul>
                     </div>
                 </div>
             }
-            <button className={styles.searchFormIcon}><img src='/src/apps/client/ui/components/Header/images/search.png' alt=''/></button>
+            <button className={styles.searchFormIcon}><img src='/src/apps/client/ui/components/Header/images/search.png' alt='search.png'/></button>
         </section>;
     }
 }
 
-export default SearchTips;
+export default withRouter(connect(null, mapDispatchToProps)(Search));
