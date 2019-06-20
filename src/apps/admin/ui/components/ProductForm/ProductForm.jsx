@@ -39,7 +39,7 @@ import pickBy from '@tinkoff/utils/object/pickBy';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
-const PRODUCTS_VALUES = ['name', 'company', 'price', 'categoryId', 'hidden', 'description', 'features', 'discount'];
+const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features'];
 
 const materialStyles = theme => ({
     loader: {
@@ -115,6 +115,7 @@ class ProductForm extends Component {
         const category = find(category => category.id === product.categoryId, categories);
         const newProduct = {
             hidden: false,
+            notAvailable: false,
             features: [],
             tagsMap: reduce((acc, tag) => {
                 acc[tag] = true;
@@ -161,7 +162,7 @@ class ProductForm extends Component {
         }
     }
 
-    getProductPayload = ({ name, company, price, discountPrice, description, tagsMap, features, categoryId, hidden, id }) => {
+    getProductPayload = ({ name, company, price, discountPrice, description, tagsMap, features, categoryId, hidden, notAvailable, id }) => {
         const tags = compose(
             keys,
             pickBy(Boolean)
@@ -171,11 +172,12 @@ class ProductForm extends Component {
             name,
             company,
             price: +price,
-            discountPrice: +discountPrice,
+            discountPrice: discountPrice && +discountPrice,
             description,
             features,
             categoryId,
             tags,
+            notAvailable,
             hidden,
             id
         };
@@ -394,7 +396,7 @@ class ProductForm extends Component {
             <TextField
                 label='Скидочная цена'
                 value={product.discountPrice}
-                onChange={this.handleChange('price')}
+                onChange={this.handleChange('discountPrice')}
                 InputProps={{ inputProps: { min: 0 } }}
                 margin='normal'
                 variant='outlined'
@@ -456,17 +458,6 @@ class ProductForm extends Component {
                 <FormControlLabel
                     control={
                         <Checkbox
-                            checked={product.tagsMap.notAvailable}
-                            onChange={this.handleTagChange('notAvailable')}
-                            color='primary'
-                        />
-                    }
-                    label='Нет в наличии'
-                    disabled={hiddenCheckboxIsDisables}
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
                             checked={product.tagsMap.topSales}
                             onChange={this.handleTagChange('topSales')}
                             color='primary'
@@ -488,6 +479,18 @@ class ProductForm extends Component {
                 />
             </div>
             <Divider className={classes.divider}/>
+            <div>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={product.notAvailable}
+                            onChange={this.handleCheckboxChange('notAvailable')}
+                            color='primary'
+                        />
+                    }
+                    label='Товара нет в наличии'
+                />
+            </div>
             <div>
                 <Tooltip
                     title={hiddenCheckboxIsDisables ? 'Товар будет скрыт, т.к. выбранная категория скрыта' : ''}
