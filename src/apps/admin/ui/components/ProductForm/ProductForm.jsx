@@ -172,7 +172,7 @@ class ProductForm extends Component {
             name,
             company,
             price: +price,
-            discountPrice: +discountPrice,
+            discountPrice: discountPrice && +discountPrice,
             description,
             features,
             categoryId,

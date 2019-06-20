@@ -97,7 +97,7 @@ class ProductsList extends Component {
                 {
                     products.map(product => {
                         return (
-                            <Link className={styles.link} key={product.id} to={`/${category.path}/${product.id}`}>
+                            <Link className={styles.link} key={product.id} to={`/${this.props.category.path}/${product.id}`}>
                                 <Product
                                     product={product}
                                 />
