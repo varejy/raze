@@ -42,8 +42,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Basket extends Component {
     state = {
-        productsMap: {},
-        visible: false
+        productsMap: {}
     };
 
     static propTypes = {
@@ -54,16 +53,17 @@ class Basket extends Component {
     static defaultProps = {
         basketVisible: false
     };
-    stateRewrite = () => {
-        const result = PRODUCTS.reduce((acc, id, i) => {
+
+    setProductsMap = () => {
+        const productsMap = PRODUCTS.reduce((acc, id, i) => {
             acc[i] = 1;
             return acc;
         }, {});
-        this.setState({ productsMap: result });
+        this.setState({ productsMap: productsMap });
     };
 
     componentDidMount () {
-        this.stateRewrite();
+        this.setProductsMap();
     }
 
     handleCloseBasket = () => {
@@ -72,35 +72,31 @@ class Basket extends Component {
 
     componentWillReceiveProps (nextProps) {
         if (this.props.basketVisible !== nextProps.basketVisible) {
-            if (nextProps.basketVisible === true) {
-                this.setState({ visible: true });
-                document.body.style.overflowY = 'hidden';
-            } else {
-                this.setState({ visible: false });
-                document.body.style.overflowY = 'auto';
-            }
+            document.body.style.overflowY = nextProps.basketVisible ? 'hidden' : 'auto';
         }
     }
 
     handleCountClick = (id, operation) => () => {
         const { productsMap } = this.state;
-        this.setState({ productsMap: {
-            ...productsMap,
-            [id]: productsMap[id] + (operation === 'plus' ? 1 : (productsMap[id] > 1 ? -1 : 0))
-        } });
+        let minus = productsMap[id] > 1 ? -1 : 0;
+        this.setState({
+            productsMap: {
+                ...productsMap,
+                [id]: productsMap[id] + (operation === 'plus' ? 1 : minus)
+            }
+        });
     };
 
     totalPrice = () => {
         const { productsMap } = this.state;
         return PRODUCTS.reduce((counter, item, i) => {
-            counter = counter + item.price * productsMap[i];
-            return counter;
+            return counter + item.price * productsMap[i];
         }, 0);
     };
 
     render () {
         return <div>
-            {this.state.visible && <div className={styles.root}>
+            {this.props.basketVisible && <div className={styles.root}>
                 <div className={styles.popupContent}>
                     <div>
                         <div className={styles.headerContainer}>
@@ -115,12 +111,12 @@ class Basket extends Component {
                                 <div className={styles.item} key={i}>
                                     <div className={styles.itemImageWrapp}>
                                         <div className={styles.deleteItem}>
-                                            <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt=''/>
+                                            <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
                                         </div>
                                         <div className={styles.itemImage}>
                                             <img className={styles.itemAvatar}
                                                 src={product.path}
-                                                alt="product"/>
+                                                alt='product'/>
                                         </div>
                                     </div>
                                     <div className={styles.itemInfo}>
