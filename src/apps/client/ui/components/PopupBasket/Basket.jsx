@@ -59,7 +59,7 @@ class Basket extends Component {
             acc[i] = 1;
             return acc;
         }, {});
-        this.setState({ productsMap: productsMap });
+        this.setState({ productsMap });
     };
 
     componentDidMount () {
@@ -78,11 +78,12 @@ class Basket extends Component {
 
     handleCountClick = (id, operation) => () => {
         const { productsMap } = this.state;
-        let minus = productsMap[id] > 1 ? -1 : 0;
+        const minusValue = productsMap[id] > 1 ? -1 : 0;
+
         this.setState({
             productsMap: {
                 ...productsMap,
-                [id]: productsMap[id] + (operation === 'plus' ? 1 : minus)
+                [id]: productsMap[id] + (operation === 'plus' ? 1 : minusValue)
             }
         });
     };
