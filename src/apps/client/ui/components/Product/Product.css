@@ -10,15 +10,16 @@
     position: relative;
 }
 
-.product:hover .info{
-    display: none;
+.infoWrapper:hover .info{
+    visibility: hidden;
 }
 
-.product:hover .toolBar{
+.infoWrapper:hover .toolBar{
     transition: 0.3s;
     display: flex;
 }
-.product:hover > .infoWrapper{
+
+.infoWrapper:hover {
     transition: 0.3s;
     background-color: #131313;
 }
@@ -28,27 +29,39 @@
     justify-content: center;
     position: relative;
     height: 186px;
+    overflow: hidden;
 }
 
 .discount{
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 36px;
-    height: 16px;
+    left: -35px;
+    top: -10px;
+    width: 100px;
+    height: 50px;
     font-family: Myriad Pro Regular;
     font-size: 9.5px;
     letter-spacing: 1.9px;
     color: #ff0000;
-    text-align: left;
+    text-align: center;
+    text-transform: uppercase;
+    background-color: #ffffff;
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 5px;
 }
+
 .img{
     height: 186px;
     width: 200px;
 }
+
 .infoWrapper{
     background-color: #fff;
+    position: relative;
 }
+
 .info{
     width: 210px;
     height: 59px;
@@ -83,6 +96,10 @@
     font-size: 16px;
     line-height: 24px;
     text-align: center;
+    color: #000000;
+}
+
+.priceDiscount{
     color: #ff0000;
 }
 
@@ -93,7 +110,7 @@
     font-size: 12.5px;
     line-height: 18px;
     text-align: center;
-    left: -35px;
+    left: -50px;
     top: 0;
 }
 
@@ -103,7 +120,11 @@
     width: 210px;
     justify-content: space-around;
     align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
+
 .toolBarItem{
     display: flex;
     flex-direction: column;
@@ -128,6 +149,7 @@
     width: 21px;
     height: 16px;
 }
+
 .heart .toolBarIcon{
     width: 17px;
     height: 16px;
@@ -141,10 +163,12 @@
 .toolBarItem:hover {
     color: #00a046;
 }
+
 .eyeIcon{
     background: url('/src/apps/client/ui/components/Product/icons/eye.png') center;
     background-size: 100% auto;
 }
+
 .toolBarItem:hover .eyeIcon{
     background: url('/src/apps/client/ui/components/Product/icons/eyeGreen.png') center;
     background-size: 100% auto;
@@ -154,14 +178,17 @@
     background: url('/src/apps/client/ui/components/Product/icons/heart.png') center;
     background-size: 100% auto;
 }
+
 .toolBarItem:hover .heartIcon{
     background: url('/src/apps/client/ui/components/Product/icons/heartGreen.png') center;
     background-size: 100% auto;
 }
+
 .basketIcon{
     background: url('/src/apps/client/ui/components/Product/icons/basket.png') center;
     background-size: 100% auto;
 }
+
 .toolBarItem:hover .basketIcon{
     background: url('/src/apps/client/ui/components/Product/icons/basketGreen.png') center;
     background-size: 100% auto;
@@ -173,4 +200,30 @@
     line-height: 18px;
     text-align: center;
     text-transform: uppercase;
+}
+
+.notAvailableHover{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+}
+
+.notAvailable{
+    width: 184px;
+    height: 32px;
+    background-color: #000000;
+    text-transform: uppercase;
+    font-family: Montserrat-Bold;
+    font-size: 11px;
+    line-height: 11.5px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

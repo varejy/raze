@@ -11,10 +11,19 @@ import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCar
 import classNames from 'classnames';
 
 const PRODUCT_PATH = '/:category/:id';
-const LABELS = {
-    notAvailable: '#ff0000',
-    topSales: '#ffb116',
-    almostGone: '#797979'
+const LABELS_MAP = {
+    lowPrice: {
+        color: '#ff0000',
+        text: 'низкая цена'
+    },
+    topSales: {
+        color: '#ffb116',
+        text: 'топ продаж'
+    },
+    almostGone: {
+        color: '#797979',
+        text: 'товар заканчивается'
+    }
 };
 const PREVIOUSLY_VIEWED = [
     {
@@ -118,20 +127,24 @@ class ProductPage extends Component {
         return starsArray;
     };
 
-    findColor = (tag) => {
+    findTagContent = (tag, option) => {
         let color = '';
+        let text = '';
         switch (tag) {
         case 'almostGone':
-            color = LABELS.almostGone;
+            color = LABELS_MAP.almostGone.color;
+            text = LABELS_MAP.almostGone.text;
             break;
-        case 'notAvailable':
-            color = LABELS.notAvailable;
+        case 'lowPrice':
+            color = LABELS_MAP.lowPrice.color;
+            text = LABELS_MAP.lowPrice.text;
             break;
         case 'topSales':
-            color = LABELS.topSales;
+            color = LABELS_MAP.topSales.color;
+            text = LABELS_MAP.topSales.text;
             break;
         }
-        return color;
+        return option === 'color' ? color : text;
     };
 
     render () {
@@ -154,9 +167,11 @@ class ProductPage extends Component {
                     <ProductCardCarousel sliderImages={product.files}/>
                     <div className={styles.productInfo}>
                         <div className={styles.tags}>
-                            {product.tags.map((tag, i) =>
-                                <div key={i} className={styles.tag}
-                                    style={{ color: this.findColor(tag) }}>{tag}</div>
+                            { product.discountPrice > 0 && <div className={styles.tag} style={{ color: this.findTagContent('lowPrice', 'color') }}>
+                                {this.findTagContent('lowPrice', 'text')}</div>}
+                            { product.tags.map((tag, i) =>
+                                tag !== 'notAvailable' && <div key={i} className={styles.tag}
+                                    style={{ color: this.findTagContent(tag, 'color') }}>{this.findTagContent(tag, 'text')}</div>
                             )}
                         </div>
                         <div className={styles.productCardHeader}>
@@ -170,17 +185,32 @@ class ProductPage extends Component {
                             )}
                         </div>
                         <div className={styles.order}>
-                            {product.discountPrice
+                            {product.discountPrice > 0
                                 ? <div className={styles.prices}>
-                                    <div className={styles.pricePrevious}>{product.price}</div>
-                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice}</div>
+                                    <div className={styles.pricePrevious}>{product.price}$</div>
+                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice}$</div>
                                 </div>
                                 : <div className={styles.prices}>
-                                    <div className={styles.price}>{product.price}</div>
+                                    <div className={styles.price}>{product.price}$</div>
                                 </div>}
-                            <button className={classNames(styles.buttonDefault, styles.orderButton)}>Оформление заказа
+                            <button className={classNames(
+                                styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
+                            )}>
+                                    Оформление заказа
                             </button>
                         </div>
+                        {product.notAvailable &&
+                        <div className={styles.notAvailableContent}>
+                            <div className={styles.notAvailableMessage}>
+                                Товара нет в наличии, но Вы
+                                можете оставить е-мейл и мы свяжемся с Вами,
+                                как только он появится
+                            </div>
+                            <div>
+                                <input className={styles.notAvailableInput} placeholder='Введите е-мейл'/>
+                            </div>
+                        </div>
+                        }
                     </div>
                 </div>
                 <div className={styles.bottomProductInfo}>
