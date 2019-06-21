@@ -34,23 +34,23 @@ class Product extends Component {
 
         return <div className={styles.product}>
             <div className={styles.imageWrapper}>
-                { (product.discountPrice > 0 && !product.notAvailable) && <div className={styles.discount}>special<br/>price</div>}
+                { (product.discountPrice && !product.notAvailable) && <div className={styles.discount}>special<br/>price</div>}
                 <img className={styles.img} src={product.avatar} alt={product.avatar}/>
             </div>
             <div className={styles.infoWrapper}>
                 <div className={styles.info}>
                     <div className={styles.manufacturer}>{product.company}</div>
                     <div className={styles.name}>{product.name}</div>
-                    {!product.notAvailable && <div className={styles.prices}>
-                        {product.discountPrice > 0
+                    <div className={styles.prices}>
+                        {product.discountPrice
                             ? <div className={styles.prices}>
-                                <div className={styles.previousPrice}>{product.price}$</div>
-                                <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice}$</div>
+                                <div className={styles.previousPrice}>{product.price} грн.</div>
+                                <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.</div>
                             </div>
                             : <div className={styles.prices}>
-                                <div className={styles.price}>{product.price}$</div>
+                                <div className={styles.price}>{product.price} грн.</div>
                             </div>}
-                    </div>}
+                    </div>
                 </div>
                 {!product.notAvailable && <div className={styles.toolBar}>
                     <div className={classNames(styles.quickInspection, styles.toolBarItem)} onClick={this.handlePreviewClick}>

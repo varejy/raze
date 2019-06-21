@@ -101,6 +101,8 @@
 
 .priceDiscount{
     color: #ff0000;
+    position: relative;
+    left: 20px;
 }
 
 .previousPrice{

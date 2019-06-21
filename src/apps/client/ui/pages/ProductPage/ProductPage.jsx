@@ -127,26 +127,6 @@ class ProductPage extends Component {
         return starsArray;
     };
 
-    findTagContent = (tag, option) => {
-        let color = '';
-        let text = '';
-        switch (tag) {
-        case 'almostGone':
-            color = LABELS_MAP.almostGone.color;
-            text = LABELS_MAP.almostGone.text;
-            break;
-        case 'lowPrice':
-            color = LABELS_MAP.lowPrice.color;
-            text = LABELS_MAP.lowPrice.text;
-            break;
-        case 'topSales':
-            color = LABELS_MAP.topSales.color;
-            text = LABELS_MAP.topSales.text;
-            break;
-        }
-        return option === 'color' ? color : text;
-    };
-
     render () {
         const { loading, product } = this.state;
 
@@ -167,11 +147,11 @@ class ProductPage extends Component {
                     <ProductCardCarousel sliderImages={product.files}/>
                     <div className={styles.productInfo}>
                         <div className={styles.tags}>
-                            { product.discountPrice > 0 && <div className={styles.tag} style={{ color: this.findTagContent('lowPrice', 'color') }}>
-                                {this.findTagContent('lowPrice', 'text')}</div>}
+                            { product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP['lowPrice'].color }}>
+                                {LABELS_MAP['lowPrice'].text}</div>}
                             { product.tags.map((tag, i) =>
                                 tag !== 'notAvailable' && <div key={i} className={styles.tag}
-                                    style={{ color: this.findTagContent(tag, 'color') }}>{this.findTagContent(tag, 'text')}</div>
+                                    style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text}</div>
                             )}
                         </div>
                         <div className={styles.productCardHeader}>
@@ -185,13 +165,13 @@ class ProductPage extends Component {
                             )}
                         </div>
                         <div className={styles.order}>
-                            {product.discountPrice > 0
+                            {product.discountPrice
                                 ? <div className={styles.prices}>
-                                    <div className={styles.pricePrevious}>{product.price}$</div>
-                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice}$</div>
+                                    <div className={styles.pricePrevious}>{product.price} грн.</div>
+                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.</div>
                                 </div>
                                 : <div className={styles.prices}>
-                                    <div className={styles.price}>{product.price}$</div>
+                                    <div className={styles.price}>{product.price} грн.</div>
                                 </div>}
                             <button className={classNames(
                                 styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
