@@ -9,6 +9,7 @@ import { withRouter, matchPath } from 'react-router-dom';
 import styles from './ProductPage.css';
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
 import classNames from 'classnames';
+import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
 
 const PRODUCT_PATH = '/:category/:id';
 const LABELS = {
@@ -16,26 +17,6 @@ const LABELS = {
     topSales: '#ffb116',
     almostGone: '#797979'
 };
-const PREVIOUSLY_VIEWED = [
-    {
-        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
-        productName: 'Тесак Emerson',
-        categoryName: 'Ножи',
-        price: '1000'
-    },
-    {
-        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
-        productName: 'Мачете Emerson',
-        categoryName: 'Ножи',
-        price: '1500'
-    },
-    {
-        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
-        productName: 'Колун Cold Steel',
-        categoryName: 'Топоры',
-        price: '500'
-    }
-];
 const STAR = {
     full: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
     half: '/src/apps/client/ui/pages/ProductPage/images/starHalfFull.png',
@@ -43,9 +24,11 @@ const STAR = {
 };
 const RATING_STARS = 3.5;
 
-const mapStateToProps = ({ application }) => {
+const mapStateToProps = ({ application, savedProducts }) => {
     return {
-        productMap: application.productMap
+        productMap: application.productMap,
+        categories: application.categories,
+        viewed: savedProducts.viewed
     };
 };
 
@@ -57,12 +40,17 @@ class ProductPage extends Component {
     static propTypes = {
         getProductById: PropTypes.func.isRequired,
         location: PropTypes.object,
-        productMap: PropTypes.object
+        productMap: PropTypes.object,
+        viewed: PropTypes.array,
+        setPreviewed: PropTypes.func.isRequired,
+        categories: PropTypes.array.isRequired
     };
 
     static defaultProps = {
         location: {},
-        productMap: {}
+        productMap: {},
+        categories: [],
+        viewed: []
     };
 
     constructor (...args) {
@@ -82,12 +70,13 @@ class ProductPage extends Component {
     }
 
     componentDidMount () {
-        const { loading, productId } = this.state;
+        const { loading, productId, product } = this.state;
 
         if (loading) {
             this.props.getProductById(productId)
                 .then(() => this.setState({ loading: false }));
         }
+        this.props.setPreviewed(product);
     }
 
     componentWillReceiveProps (nextProps) {
@@ -210,20 +199,7 @@ class ProductPage extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className={classNames(styles.productPreviouslyViewed, styles.infoContainer)}>
-                        <div className={styles.bottomHeader}>недавно просматривали</div>
-                        <div className={styles.previouslyViewed}>
-                            {PREVIOUSLY_VIEWED.map((item, i) =>
-                                <div key={i} className={styles.previouslyViewedItem}>
-                                    <div><img className={styles.avatar} src={item.avatarPath} alt=''/></div>
-                                    <div className={styles.itemInfoContainer}>
-                                        <div className={styles.viewedProductName}>{item.productName}</div>
-                                        <div className={styles.viewedCategoryName}>{item.categoryName}</div>
-                                        <div className={styles.itemPrice}>{item.price} UAH</div>
-                                    </div>
-                                </div>)}
-                        </div>
-                    </div>
+                    <PreviouslyViewed/>
                 </div>
             </div>;
             }
