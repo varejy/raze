@@ -20,16 +20,18 @@ class PreviouslyViewed extends Component {
     };
 
     render () {
+        const { viewed } = this.props;
+
         return <div className={classNames(styles.productPreviouslyViewed, styles.infoContainer)}>
             <div className={styles.bottomHeader}>недавно просматривали</div>
             <div className={styles.previouslyViewed}>
-                {this.props.viewed.map((item, i) =>
+                {viewed.map((item, i) =>
                     <div key={i} className={styles.previouslyViewedItem}>
-                        <div><img className={styles.avatar} src={item.viewedAvatar} alt=''/></div>
+                        <div><img className={styles.avatar} src={item.avatar} alt=''/></div>
                         <div className={styles.itemInfoContainer}>
-                            <div className={styles.viewedProductName}>{item.viewedName}</div>
-                            <div className={styles.viewedCategoryName}>{item.viewedCompany}</div>
-                            <div className={styles.itemPrice}>{item.viewedPrice} UAH</div>
+                            <div className={styles.viewedProductName}>{item.name}</div>
+                            <div className={styles.viewedCategoryName}>{item.company}</div>
+                            <div className={styles.itemPrice}>{item.price} UAH</div>
                         </div>
                     </div>)}
             </div>

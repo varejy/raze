@@ -10,6 +10,7 @@ import styles from './ProductPage.css';
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
 import classNames from 'classnames';
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
+import setViewed from '../../../actions/setViewed';
 
 const PRODUCT_PATH = '/:category/:id';
 const LABELS = {
@@ -23,17 +24,18 @@ const STAR = {
     empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
 };
 const RATING_STARS = 3.5;
+const MAX_VIEWED = 3;
 
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
         productMap: application.productMap,
-        categories: application.categories,
         viewed: savedProducts.viewed
     };
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    getProductById: payload => dispatch(getProductById(payload))
+    getProductById: payload => dispatch(getProductById(payload)),
+    setViewed: payload => dispatch(setViewed(payload))
 });
 
 class ProductPage extends Component {
@@ -42,14 +44,12 @@ class ProductPage extends Component {
         location: PropTypes.object,
         productMap: PropTypes.object,
         viewed: PropTypes.array,
-        setPreviewed: PropTypes.func.isRequired,
-        categories: PropTypes.array.isRequired
+        setViewed: PropTypes.func.isRequired
     };
 
     static defaultProps = {
         location: {},
         productMap: {},
-        categories: [],
         viewed: []
     };
 
@@ -70,13 +70,30 @@ class ProductPage extends Component {
     }
 
     componentDidMount () {
-        const { loading, productId, product } = this.state;
+        const { loading, productId } = this.state;
 
         if (loading) {
             this.props.getProductById(productId)
                 .then(() => this.setState({ loading: false }));
         }
-        this.props.setPreviewed(product);
+    }
+
+    componentWillUnmount () {
+        const { product } = this.state;
+        const { viewed, setViewed } = this.props;
+
+        if (viewed.length < MAX_VIEWED) {
+            setViewed([
+                ...viewed,
+                product
+            ]);
+        } else {
+            viewed.splice(0, 1);
+            setViewed([
+                ...viewed,
+                product
+            ]);
+        }
     }
 
     componentWillReceiveProps (nextProps) {
