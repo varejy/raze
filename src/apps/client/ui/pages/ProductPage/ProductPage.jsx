@@ -11,6 +11,7 @@ import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCar
 import classNames from 'classnames';
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
 import setViewed from '../../../actions/setViewed';
+import saveProductsViewed from '../../../services/client/saveProductsViewed';
 
 const PRODUCT_PATH = '/:category/:id';
 const LABELS = {
@@ -35,7 +36,8 @@ const mapStateToProps = ({ application, savedProducts }) => {
 
 const mapDispatchToProps = (dispatch) => ({
     getProductById: payload => dispatch(getProductById(payload)),
-    setViewed: payload => dispatch(setViewed(payload))
+    setViewed: payload => dispatch(setViewed(payload)),
+    saveProductsViewed: payload => dispatch(saveProductsViewed(payload))
 });
 
 class ProductPage extends Component {
@@ -44,7 +46,8 @@ class ProductPage extends Component {
         location: PropTypes.object,
         productMap: PropTypes.object,
         viewed: PropTypes.array,
-        setViewed: PropTypes.func.isRequired
+        setViewed: PropTypes.func.isRequired,
+        saveProductsViewed: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -80,21 +83,16 @@ class ProductPage extends Component {
 
     componentWillUnmount () {
         const { product } = this.state;
-        const { viewed, setViewed } = this.props;
+        const { viewed, setViewed, saveProductsViewed } = this.props;
 
-        if (viewed.length < MAX_VIEWED) {
-            setViewed([
-                ...viewed,
-                product
-            ]);
-        } else {
-            viewed.splice(0, 1);
-            setViewed([
-                ...viewed,
-                product
-            ]);
-        }
-    }
+        const newViewed = [
+            ...(viewed.length < MAX_VIEWED ? viewed : viewed.slice(1)),
+            product
+        ];
+
+        setViewed(newViewed);
+        saveProductsViewed(newViewed.map((product) => product.id));
+    };
 
     componentWillReceiveProps (nextProps) {
         const { productId } = this.state;
@@ -216,7 +214,7 @@ class ProductPage extends Component {
                             </div>
                         </div>
                     </div>
-                    <PreviouslyViewed/>
+                    {this.props.viewed.length > 0 && <PreviouslyViewed/>}
                 </div>
             </div>;
             }
