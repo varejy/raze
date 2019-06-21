@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ProductsList from '../../components/ProductsList/ProductsList';
-import CheckboxFilters from '../../components/CheckboxFilters/CheckboxFilters';
+import Products from '../../components/Products/Products';
 
 import queryString from 'query-string';
 
@@ -40,38 +39,50 @@ class SearchPage extends Component {
     constructor (...args) {
         super(...args);
 
-        const { location: { search } } = this.props;
-        const query = queryString.parse(search);
-
-        this.props.searchByText(query.text).then((products) => {
-            this.setState({
-                products: products,
-                filteredProducts: products
-            });
-        });
-
         this.state = {
-            text: query.text,
+            text: '',
             products: [],
-            filteredProducts: []
+            loading: true
         };
     }
 
-    handleChangeFilters = (activeFilters) => {
-        const { products } = this.state;
+    componentDidMount () {
+        this.searchByText();
+    }
 
-        activeFilters.length === 0
-            ? this.setState({
-                filteredProducts: products
-            })
-            : this.setState({
-                filteredProducts: activeFilters
+    searchByText (props = this.props) {
+        const { location: { search } } = props;
+        const query = queryString.parse(search);
+
+        this.setState({
+            loading: true
+        });
+
+        this.props.searchByText(query.text)
+            .then((products) => {
+                this.setState({
+                    text: query.text,
+                    products,
+                    loading: false
+                });
             });
-    };
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.location !== this.props.location) {
+            this.searchByText(nextProps);
+        }
+    }
 
     render () {
-        const { products, filteredProducts, text } = this.state;
+        const { products, text, loading } = this.state;
         const { category } = this.props;
+
+        if (loading) {
+            return <div className={styles.loader}>
+                <img src='/src/apps/client/ui/icons/loader.svg' alt='loader'/>
+            </div>;
+        }
 
         return <section className={styles.productsWrapp}>
             <div className={styles.productsElemWrapp}>
@@ -79,14 +90,19 @@ class SearchPage extends Component {
                     <div className={styles.searchInfo}>
                         <div className={styles.searchTxt}>Вы искали “{text}”</div>
                         <div className={styles.searchProductsCount}>
-                            Найдено {products.length} {getWordCaseByNumber(products.length, ['товаров', 'товар', 'товара'])}
+                            {
+                                !products.length
+                                    ? 'По этому запросу мы не нашли товаров'
+                                    : `Найдено ${products.length} ${getWordCaseByNumber(products.length, ['товаров', 'товар', 'товара'])}`
+                            }
                         </div>
                     </div>
                 </div>
-                <span className={styles.contentWrapp}>
-                    <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products}/>
-                    <ProductsList products={filteredProducts} category={category}/>
-                </span>
+                {
+                    !!products.length && <span className={styles.contentWrapp}>
+                        <Products products={products} category={category}/>
+                    </span>
+                }
             </div>
         </section>;
     }

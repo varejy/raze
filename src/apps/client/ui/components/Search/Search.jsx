@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import searchByText from '../../../services/client/searchByText';
 
 import noop from '@tinkoff/utils/function/noop';
-import dropLast from '@tinkoff/utils/array/dropLast';
+import find from '@tinkoff/utils/array/find';
 
 import styles from './Search.css';
 
@@ -23,6 +23,7 @@ class Search extends Component {
     static propTypes = {
         turnOnClickOutside: PropTypes.func,
         searchByText: PropTypes.func,
+        outsideClickEnabled: PropTypes.bool,
         categories: PropTypes.array,
         history: PropTypes.object
     };
@@ -35,14 +36,11 @@ class Search extends Component {
 
     state = {
         inputTxt: '',
-        visibleTips: false,
         tips: []
     }
 
     handleVisibleTipsNone = () => {
         this.setState({
-            inputTxt: '',
-            visibleTips: false,
             tips: []
         });
     }
@@ -56,55 +54,55 @@ class Search extends Component {
 
     handleInputChange = event => {
         const value = event.target.value;
-        const { visibleTips } = this.state;
-
-        this.props.searchByText(value).then((products) => {
-            const mapTips = [];
-
-            products.map(product => {
-                mapTips.push({
-                    title: product.name,
-                    categoryId: product.categoryId,
-                    id: product.id
-                });
-            });
-
-            products.length > 5
-                ? this.setState({
-                    tips: dropLast(products.length - 5, mapTips)
-                })
-                : this.setState({
-                    tips: mapTips
-                });
-        });
+        const { categories } = this.props;
+        const { outsideClickEnabled, turnOnClickOutside } = this.props;
 
         this.setState({
-            inputTxt: value,
-            visibleTips: !!value
+            inputTxt: value
         });
 
-        !visibleTips && this.props.turnOnClickOutside(this, this.handleVisibleTipsNone);
+        value.length
+            ? this.props.searchByText(value).then((products) => {
+                const newTips = products.slice(0, 5).map(product => {
+                    const category = find(category => category.id === product.categoryId)(categories);
+
+                    return {
+                        title: product.name,
+                        categoryPath: category.path,
+                        id: product.id
+                    };
+                });
+
+                this.setState({
+                    tips: newTips
+                });
+
+                !outsideClickEnabled && turnOnClickOutside(this, this.handleVisibleTipsNone);
+            })
+            : this.setState({
+                tips: []
+            });
     }
 
     render () {
-        const { visibleTips, inputTxt, tips } = this.state;
+        const { inputTxt, tips } = this.state;
 
         return <form onSubmit={this.handleInputSubmit}>
             <input
                 value={inputTxt}
                 onChange={this.handleInputChange}
-                className={classNames(styles.searchFormInput, { [styles.searchFormInputActive]: visibleTips })}
+                className={classNames(styles.searchFormInput, { [styles.searchFormInputActive]: !!tips.length })}
                 placeholder='Поиск продуктов...'
             />
             {
-                visibleTips && <div className={styles.tipsRoot}>
+                !!tips.length && <div className={styles.tipsRoot}>
                     <div className={styles.tipsWrapp}>
                         <div className={styles.break}></div>
                         <ul className={styles.adviceСontainer} onClick={this.handleVisibleTipsNone}>
                             {
                                 tips.map((tip, i) => {
                                     return (
-                                        <Link key={i} className={styles.tipLink} to={`/${tip.categoryId}/${tip.id}`}>
+                                        <Link key={i} className={styles.tipLink} to={`/${tip.categoryPath}/${tip.id}`}>
                                             <li className={styles.tip}>{tip.title}</li>
                                         </Link>
                                     );
@@ -114,7 +112,9 @@ class Search extends Component {
                     </div>
                 </div>
             }
-            <button className={styles.searchFormIcon} onClick={this.handleInputSubmit}><img src='/src/apps/client/ui/components/Header/images/search.png' alt='search.png'/></button>
+            <button className={styles.searchFormIcon} onClick={this.handleInputSubmit}>
+                <img src='/src/apps/client/ui/components/Header/images/search.png'/>
+            </button>
         </form>;
     }
 }
