@@ -11,10 +11,19 @@ import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCar
 import classNames from 'classnames';
 
 const PRODUCT_PATH = '/:category/:id';
-const LABELS = {
-    notAvailable: '#ff0000',
-    topSales: '#ffb116',
-    almostGone: '#797979'
+const LABELS_MAP = {
+    lowPrice: {
+        color: '#ff0000',
+        text: 'низкая цена'
+    },
+    topSales: {
+        color: '#ffb116',
+        text: 'топ продаж'
+    },
+    almostGone: {
+        color: '#797979',
+        text: 'товар заканчивается'
+    }
 };
 const PREVIOUSLY_VIEWED = [
     {
@@ -118,22 +127,6 @@ class ProductPage extends Component {
         return starsArray;
     };
 
-    findColor = (tag) => {
-        let color = '';
-        switch (tag) {
-        case 'almostGone':
-            color = LABELS.almostGone;
-            break;
-        case 'notAvailable':
-            color = LABELS.notAvailable;
-            break;
-        case 'topSales':
-            color = LABELS.topSales;
-            break;
-        }
-        return color;
-    };
-
     render () {
         const { loading, product } = this.state;
 
@@ -154,9 +147,11 @@ class ProductPage extends Component {
                     <ProductCardCarousel sliderImages={product.files}/>
                     <div className={styles.productInfo}>
                         <div className={styles.tags}>
-                            {product.tags.map((tag, i) =>
-                                <div key={i} className={styles.tag}
-                                    style={{ color: this.findColor(tag) }}>{tag}</div>
+                            { product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP['lowPrice'].color }}>
+                                {LABELS_MAP['lowPrice'].text}</div>}
+                            { product.tags.map((tag, i) =>
+                                tag !== 'notAvailable' && <div key={i} className={styles.tag}
+                                    style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text}</div>
                             )}
                         </div>
                         <div className={styles.productCardHeader}>
@@ -172,15 +167,30 @@ class ProductPage extends Component {
                         <div className={styles.order}>
                             {product.discountPrice
                                 ? <div className={styles.prices}>
-                                    <div className={styles.pricePrevious}>{product.price}</div>
-                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice}</div>
+                                    <div className={styles.pricePrevious}>{product.price} грн.</div>
+                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.</div>
                                 </div>
                                 : <div className={styles.prices}>
-                                    <div className={styles.price}>{product.price}</div>
+                                    <div className={styles.price}>{product.price} грн.</div>
                                 </div>}
-                            <button className={classNames(styles.buttonDefault, styles.orderButton)}>Оформление заказа
+                            <button className={classNames(
+                                styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
+                            )}>
+                                    Оформление заказа
                             </button>
                         </div>
+                        {product.notAvailable &&
+                        <div className={styles.notAvailableContent}>
+                            <div className={styles.notAvailableMessage}>
+                                Товара нет в наличии, но Вы
+                                можете оставить е-мейл и мы свяжемся с Вами,
+                                как только он появится
+                            </div>
+                            <div>
+                                <input className={styles.notAvailableInput} placeholder='Введите е-мейл'/>
+                            </div>
+                        </div>
+                        }
                     </div>
                 </div>
                 <div className={styles.bottomProductInfo}>
