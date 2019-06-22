@@ -34,7 +34,7 @@ class Product extends Component {
 
         return <div className={styles.product}>
             <div className={styles.imageWrapper}>
-                { (product.discountPrice && !product.notAvailable) && <div className={styles.discount}>special<br/>price</div>}
+                { (!!product.discountPrice && !product.notAvailable) && <div className={styles.discount}>special<br/>price</div>}
                 <img className={styles.img} src={product.avatar} alt={product.avatar}/>
             </div>
             <div className={styles.infoWrapper}>
