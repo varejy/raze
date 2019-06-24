@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
-import styles from './PreviouslyViewed.css';
-import classNames from 'classnames';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import classNames from 'classnames';
+
+import styles from './PreviouslyViewed.css';
+
 const PREVIEW_WIDTH = 1110;
 const MAX_SLIDES = 3;
-
-const mapStateToProps = ({ savedProducts }) => {
-    return {
-        viewed: savedProducts.viewed
-    };
-};
 
 class PreviouslyViewed extends Component {
     state = {
@@ -81,4 +77,4 @@ class PreviouslyViewed extends Component {
     }
 }
 
-export default connect(mapStateToProps)(PreviouslyViewed);
+export default PreviouslyViewed;

@@ -73,20 +73,31 @@ class ProductPage extends Component {
     constructor (...args) {
         super(...args);
 
-        const { location: { pathname }, productMap } = this.props;
-        const match = matchPath(pathname, { path: PRODUCT_PATH, exact: true });
-        const product = productMap[match.params.id];
-
-        this.notFoundPage = product === null;
-
-        this.state = {
-            loading: !this.notFoundPage && !product,
-            product: product,
-            productId: match.params.id
-        };
+        this.state = this.getNewState();
     }
 
     componentDidMount () {
+        this.getProduct();
+    }
+
+    componentWillReceiveProps (nextProps) {
+        const { location: { pathname } } = this.props;
+        const { productId } = this.state;
+
+        if (nextProps.productMap !== this.props.productMap) {
+            this.setState({ product: nextProps.productMap[productId] }, () => {
+                const newViewed = this.getViewed(nextProps);
+                this.props.setViewed(newViewed);
+                this.props.saveProductsViewed(newViewed.map((product) => product.id));
+            });
+        }
+
+        if (nextProps.location.pathname !== pathname) {
+            this.setState(this.getNewState(nextProps), this.getProduct);
+        }
+    }
+
+    getProduct = () => {
         const { loading, productId } = this.state;
 
         if (loading) {
@@ -95,28 +106,23 @@ class ProductPage extends Component {
         } else {
             const newViewed = this.getViewed();
 
-            this.props.setViewed(tail(newViewed));
+            this.props.setViewed(newViewed);
             this.props.saveProductsViewed(newViewed.map((product) => product.id));
         }
-    }
+    };
 
-    componentWillReceiveProps (nextProps) {
-        const { productId } = this.state;
+    getNewState = (props = this.props) => {
+        const { location: { pathname }, productMap } = props;
+        const match = matchPath(pathname, { path: PRODUCT_PATH, exact: true });
+        const product = productMap[match.params.id];
 
-        if (nextProps.productMap !== this.props.productMap) {
-            this.setState({ product: nextProps.productMap[productId] }, () => {
-                const newViewed = this.getViewed(nextProps);
+        this.notFoundPage = product === null;
 
-                this.props.setViewed(tail(newViewed));
-                this.props.saveProductsViewed(newViewed.map((product) => product.id));
-            });
-        }
-    }
-
-    componentWillUnmount () {
-        const newViewed = this.getViewed();
-
-        this.props.setViewed(newViewed);
+        return {
+            loading: !this.notFoundPage && !product,
+            product: product,
+            productId: match.params.id
+        };
     };
 
     getViewed = (props = this.props) => {
@@ -152,6 +158,7 @@ class ProductPage extends Component {
     };
 
     render () {
+        const { viewed } = this.props;
         const { loading, product } = this.state;
 
         // TODO: Сделать страницу Not Found
@@ -244,7 +251,7 @@ class ProductPage extends Component {
                             </div>
                         </div>
                     </div>
-                    {this.props.viewed.length > 0 && <PreviouslyViewed/>}
+                    {!!viewed.length && <PreviouslyViewed viewed={tail(viewed)} />}
                 </div>
             </div>;
             }
