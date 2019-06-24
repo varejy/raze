@@ -200,20 +200,6 @@
     width: 100%;
 }
 
-.feedbackNone{
-    font-family: HelveticaNeueCyrRoman;
-    font-size: 12px;
-    line-height: 3.25;
-    text-align: center;
-    color: #000000;
-    background-color: #f1f1f1;
-    height: 79px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
 .creatingFeedback {
     width: 394px;
 }

@@ -13,6 +13,7 @@ import styles from './ProductPage.css';
 
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
 import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
+import Comments from '../../components/Comments/Comments';
 
 const PRODUCT_PATH = '/:category/:id';
 const LABELS = {
@@ -191,9 +192,7 @@ class ProductPage extends Component {
                     <div className={classNames(styles.productFeedbacks, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>всего отзывов</div>
                         <div className={styles.feedbacks}>
-                            <div className={styles.feedbackNone}>
-                                К данному товару не было оставлено комментариев
-                            </div>
+                            <Comments />
                         </div>
                     </div>
                     <div className={classNames(styles.feedbackForm, styles.infoContainer)}>
