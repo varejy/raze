@@ -12,8 +12,11 @@ import classNames from 'classnames';
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
 import setViewed from '../../../actions/setViewed';
 import saveProductsViewed from '../../../services/client/saveProductsViewed';
-import find from '@tinkoff/utils/array/find';
-import dropLast from '@tinkoff/utils/array/dropLast';
+
+import filter from '@tinkoff/utils/array/filter';
+import tail from '@tinkoff/utils/array/tail';
+import concat from '@tinkoff/utils/array/concat';
+import compose from '@tinkoff/utils/function/compose';
 
 const PRODUCT_PATH = '/:category/:id';
 const LABELS_MAP = {
@@ -92,6 +95,7 @@ class ProductPage extends Component {
         } else {
             const newViewed = this.getViewed();
 
+            this.props.setViewed(tail(newViewed));
             this.props.saveProductsViewed(newViewed.map((product) => product.id));
         }
     }
@@ -103,6 +107,7 @@ class ProductPage extends Component {
             this.setState({ product: nextProps.productMap[productId] }, () => {
                 const newViewed = this.getViewed(nextProps);
 
+                this.props.setViewed(tail(newViewed));
                 this.props.saveProductsViewed(newViewed.map((product) => product.id));
             });
         }
@@ -117,11 +122,13 @@ class ProductPage extends Component {
     getViewed = (props = this.props) => {
         const { product } = this.state;
         const { viewed } = props;
-        const item = find(item => product.id === item.id, viewed);
 
-        return item ? [...viewed] : [
-            product, ...(viewed.length < MAX_VIEWED ? viewed : viewed.slice(1))
-        ];
+        const newViewed = compose(
+            concat([product]),
+            filter(item => product.id !== item.id)
+        )(viewed);
+
+        return newViewed.length > MAX_VIEWED ? tail(newViewed) : newViewed;
     };
 
     renderStars = () => {
