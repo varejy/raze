@@ -13,7 +13,6 @@ import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed
 import setViewed from '../../../actions/setViewed';
 import saveProductsViewed from '../../../services/client/saveProductsViewed';
 import find from '@tinkoff/utils/array/find';
-import dropLast from '@tinkoff/utils/array/dropLast';
 
 const PRODUCT_PATH = '/:category/:id';
 const LABELS_MAP = {
@@ -118,7 +117,7 @@ class ProductPage extends Component {
         const { product } = this.state;
         const { viewed } = props;
         const item = find(item => product.id === item.id, viewed);
-        debugger;
+
         return item ? [...viewed] : [
             product, ...(viewed.length < MAX_VIEWED ? viewed : viewed.slice(1))
         ];

@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import classNames from 'classnames';
 
 import styles from './PopupBasket.css';
+import openPopup from '../../../actions/openPopup';
+import setBasket from '../../../actions/setBasket';
 
 const PREVIOUSLY_ADDED = [
     {
@@ -27,18 +30,32 @@ const PREVIOUSLY_ADDED = [
 
 ];
 
+const mapStateToProps = ({ savedProducts }) => {
+    return {
+        basket: savedProducts.basket
+    };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+    openPopup: payload => dispatch(openPopup(payload)),
+    setBasket: payload => dispatch(setBasket(payload))
+});
+
 class PopupBasket extends Component {
     state = {
         productCount: 1
     };
 
     static propTypes = {
-        product: PropTypes.object
+        product: PropTypes.object,
+        basket: PropTypes.array.isRequired,
+        setBasket: PropTypes.func.isRequired
     };
 
     static defaultProps = {
-        product: {}
-    }
+        product: {},
+        basket: []
+    };
 
     handleCountClick = operation => () => {
         const { productCount } = this.state;
@@ -50,6 +67,15 @@ class PopupBasket extends Component {
             : this.setState({
                 productCount: productCount > 1 ? productCount - 1 : 1
             });
+    };
+
+    componentWillUnmount () {
+        const { basket } = this.props;
+        const newBasket = [
+            { product: this.props.product, amount: this.state.productCount }, ...basket
+        ];
+
+        this.props.setBasket(newBasket);
     }
 
     render () {
@@ -64,7 +90,7 @@ class PopupBasket extends Component {
                             <div className={styles.wrapper}>
                                 <div className={styles.itemImageWrapp}>
                                     <div className={styles.deleteItem}>
-                                        <span className={styles.deleteItemIcon}></span>
+                                        <span className={styles.deleteItemIcon}/>
                                     </div>
                                     <img className={styles.itemImage} src={product.avatar} alt={product.avatar}/>
                                 </div>
@@ -94,7 +120,7 @@ class PopupBasket extends Component {
                                     <div className={styles.wrapper}>
                                         <div className={styles.itemImageWrapp}>
                                             <div className={styles.deleteItem}>
-                                                <span className={styles.deleteItemIcon}></span>
+                                                <span className={styles.deleteItemIcon}/>
                                             </div>
                                             <img className={styles.itemImage}
                                                 src="/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg"
@@ -132,4 +158,4 @@ class PopupBasket extends Component {
     }
 }
 
-export default PopupBasket;
+export default connect(mapStateToProps, mapDispatchToProps)(PopupBasket);
