@@ -17,6 +17,7 @@ const outsideClick = WrappedComponent => {
             this.setState({
                 outsideClickEnabled: true
             });
+          
             this.clickFn = ((localNode, eventHandler) => event => {
                 let source = event.target;
                 let found = false;
@@ -54,6 +55,7 @@ const outsideClick = WrappedComponent => {
             document.removeEventListener('mousedown', this.clickFn);
             document.removeEventListener('touchstart', this.clickFn);
             document.removeEventListener('focus', this.focusFn, true);
+
             this.setState({
                 outsideClickEnabled: false
             });
@@ -62,7 +64,9 @@ const outsideClick = WrappedComponent => {
         render () {
             return <WrappedComponent
                 {...this.props}
+
                 outsideClickEnabled={this.state.outsideClickEnabled}
+
                 turnOnClickOutside={this.turnOnClickOutside}
             />;
         }
