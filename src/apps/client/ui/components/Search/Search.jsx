@@ -14,6 +14,12 @@ import find from '@tinkoff/utils/array/find';
 
 import styles from './Search.css';
 
+const mapStateToProps = ({ application }) => {
+    return {
+        categories: application.categories
+    };
+};
+
 const mapDispatchToProps = (dispatch) => ({
     searchByText: payload => dispatch(searchByText(payload))
 });
@@ -39,7 +45,7 @@ class Search extends Component {
         tips: []
     }
 
-    handleVisibleTipsNone = () => {
+    handleTipsClose = () => {
         this.setState({
             tips: []
         });
@@ -49,7 +55,7 @@ class Search extends Component {
         const { inputTxt } = this.state;
         event.preventDefault();
         this.props.history.push(`/search?text=${inputTxt}`);
-        this.handleVisibleTipsNone();
+        this.handleTipsClose();
     }
 
     handleInputChange = event => {
@@ -63,21 +69,23 @@ class Search extends Component {
 
         value.length
             ? this.props.searchByText(value).then((products) => {
-                const newTips = products.slice(0, 5).map(product => {
-                    const category = find(category => category.id === product.categoryId)(categories);
+                const newTips = products
+                    .slice(0, 5)
+                    .map(product => {
+                        const category = find(category => category.id === product.categoryId)(categories);
 
-                    return {
-                        title: product.name,
-                        categoryPath: category.path,
-                        id: product.id
-                    };
-                });
+                        return {
+                            title: product.name,
+                            categoryPath: category.path,
+                            id: product.id
+                        };
+                    });
 
                 this.setState({
                     tips: newTips
                 });
 
-                !outsideClickEnabled && turnOnClickOutside(this, this.handleVisibleTipsNone);
+                !outsideClickEnabled && turnOnClickOutside(this, this.handleTipsClose);
             })
             : this.setState({
                 tips: []
@@ -98,7 +106,7 @@ class Search extends Component {
                 !!tips.length && <div className={styles.tipsRoot}>
                     <div className={styles.tipsWrapp}>
                         <div className={styles.break}></div>
-                        <ul className={styles.adviceСontainer} onClick={this.handleVisibleTipsNone}>
+                        <ul className={styles.adviceСontainer} onClick={this.handleTipsClose}>
                             {
                                 tips.map((tip, i) => {
                                     return (
@@ -113,10 +121,10 @@ class Search extends Component {
                 </div>
             }
             <button className={styles.searchFormIcon} onClick={this.handleInputSubmit}>
-                <img src='/src/apps/client/ui/components/Header/images/search.png'/>
+                <img src='/src/apps/client/ui/components/Header/images/search.png' alt='search'/>
             </button>
         </form>;
     }
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(Search));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Search));

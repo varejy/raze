@@ -43,7 +43,7 @@ class Header extends Component {
                     <div className={styles.logoRight}>Your<br/>knife<br/><div className={styles.logoGreen}>world</div></div>
                 </Link>
                 <div className={styles.searchForm}>
-                    <Search categories={categories}/>
+                    <Search />
                 </div>
                 <div className={styles.contactsWrapper}>
                     <div className={styles.contacts}>
