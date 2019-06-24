@@ -23,16 +23,10 @@ class FormFieldRating extends Component {
         onChange: noop
     };
 
-    state = {
-        ratingValue: this.props.value
-    }
-
-    renderStars = () => getStarsArray(STAR, this.state.ratingValue);
+    renderStars = () => getStarsArray(STAR, this.props.value);
 
     handleRatingChange = value => () => {
-        this.setState({
-            ratingValue: value + 1
-        }, () => this.props.onChange(this.state.ratingValue));
+        this.props.onChange(value + 1);
     }
 
     render () {
