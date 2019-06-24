@@ -118,7 +118,7 @@ class ProductPage extends Component {
         const { product } = this.state;
         const { viewed } = props;
         const item = find(item => product.id === item.id, viewed);
-        debugger;
+
         return item ? [...viewed] : [
             product, ...(viewed.length < MAX_VIEWED ? viewed : viewed.slice(1))
         ];
