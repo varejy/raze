@@ -10,8 +10,9 @@ export default function saveProduct (req, res) {
     const product = getProduct(req.body);
     const id = uniqid();
     const date = Date.now();
+    const views = 0;
 
-    saveProductQuery({ ...product, date, id })
+    saveProductQuery({ ...product, views, date, id })
         .then(product => {
             res.status(OKEY_STATUS_CODE).send(product);
         })

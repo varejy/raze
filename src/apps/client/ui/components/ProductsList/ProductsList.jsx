@@ -20,8 +20,8 @@ const SORTING_OPTIONS = [
     {
         text: 'Цене',
         id: 'price',
-        min: (product, nextProduct) => product.price - nextProduct.price,
-        max: (product, nextProduct) => product.price + nextProduct.price
+        min: (product, nextProduct) => (product.discountPrice || product.price) - (nextProduct.discountPrice || nextProduct.price),
+        max: (product, nextProduct) => (product.discountPrice || product.price) + (nextProduct.discountPrice || nextProduct.price)
     },
     {
         text: 'Популярности',
