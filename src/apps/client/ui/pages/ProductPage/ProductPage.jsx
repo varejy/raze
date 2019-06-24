@@ -12,6 +12,8 @@ import classNames from 'classnames';
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
 import setViewed from '../../../actions/setViewed';
 import saveProductsViewed from '../../../services/client/saveProductsViewed';
+import find from '@tinkoff/utils/array/find';
+import dropLast from '@tinkoff/utils/array/dropLast';
 
 const PRODUCT_PATH = '/:category/:id';
 const LABELS_MAP = {
@@ -34,7 +36,7 @@ const STAR = {
     empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
 };
 const RATING_STARS = 3.5;
-const MAX_VIEWED = 3;
+const MAX_VIEWED = 6;
 
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
@@ -115,10 +117,10 @@ class ProductPage extends Component {
     getViewed = (props = this.props) => {
         const { product } = this.state;
         const { viewed } = props;
-
-        return [
-            ...(viewed.length < MAX_VIEWED ? viewed : viewed.slice(1)),
-            product
+        const item = find(item => product.id === item.id, viewed);
+        debugger;
+        return item ? [...viewed] : [
+            product, ...(viewed.length < MAX_VIEWED ? viewed : viewed.slice(1))
         ];
     };
 
@@ -162,8 +164,8 @@ class ProductPage extends Component {
                     <ProductCardCarousel sliderImages={product.files}/>
                     <div className={styles.productInfo}>
                         <div className={styles.tags}>
-                            { product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP['lowPrice'].color }}>
-                                {LABELS_MAP['lowPrice'].text}</div>}
+                            { product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP.lowPrice.color }}>
+                                {LABELS_MAP.lowPrice.text}</div>}
                             { product.tags.map((tag, i) =>
                                 tag !== 'notAvailable' && <div key={i} className={styles.tag}
                                     style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text}</div>

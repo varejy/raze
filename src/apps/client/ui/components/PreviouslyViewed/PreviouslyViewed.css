@@ -17,16 +17,40 @@
 }
 
 .previouslyViewed{
-    width: 100%;
+    width: 1110px;
+    overflow: hidden;
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-start;
 }
 
 .previouslyViewedItem{
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
+}
+
+.sliderContainer{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sliderItem{
+    width: 370px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.slides{
+    position: relative;
+    transition: 800ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: unset;
 }
 
 .avatar{
@@ -45,8 +69,8 @@
 .viewedProductName{
     font-family: HelveticaNeueCyrBold;
     font-size: 16px;
-    line-height: 24px;
-    text-align: center;
+    line-height: 20px;
+    text-align: left;
     color: #000000;
     text-transform: uppercase;
     margin-bottom: -5px;
@@ -68,4 +92,56 @@
     line-height: 21.5px;
     text-align: center;
     color: #000000;
+}
+
+.buttons{
+    display: flex;
+    align-items: center;
+}
+
+.buttonLeft, .buttonRight{
+    position: absolute;
+    margin: 0;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.buttonLeft{
+    left: 0;
+}
+
+.buttonRight{
+    right: 0;
+}
+
+.buttonRight .buttonEnabled{
+    background: url('/src/apps/client/ui/components/PreviouslyViewed/images/arrowRightBlack.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.buttonRight .buttonDisabled{
+    background: url('/src/apps/client/ui/components/PreviouslyViewed/images/arrowRightGrey.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.buttonLeft .buttonEnabled{
+    background: url('/src/apps/client/ui/components/PreviouslyViewed/images/arrowLeftBlack.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
+}
+
+.buttonLeft .buttonDisabled{
+    background: url('/src/apps/client/ui/components/PreviouslyViewed/images/arrowLeftGrey.png') center;
+    background-size: 100% auto;
+    width: 32px;
+    height: 32px;
 }
