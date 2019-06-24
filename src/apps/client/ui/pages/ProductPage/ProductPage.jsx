@@ -9,6 +9,11 @@ import { withRouter, matchPath } from 'react-router-dom';
 import styles from './ProductPage.css';
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
 import classNames from 'classnames';
+import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
+import setViewed from '../../../actions/setViewed';
+import saveProductsViewed from '../../../services/client/saveProductsViewed';
+import find from '@tinkoff/utils/array/find';
+import dropLast from '@tinkoff/utils/array/dropLast';
 
 const PRODUCT_PATH = '/:category/:id';
 const LABELS_MAP = {
@@ -25,53 +30,41 @@ const LABELS_MAP = {
         text: 'товар заканчивается'
     }
 };
-const PREVIOUSLY_VIEWED = [
-    {
-        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
-        productName: 'Тесак Emerson',
-        categoryName: 'Ножи',
-        price: '1000'
-    },
-    {
-        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
-        productName: 'Мачете Emerson',
-        categoryName: 'Ножи',
-        price: '1500'
-    },
-    {
-        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
-        productName: 'Колун Cold Steel',
-        categoryName: 'Топоры',
-        price: '500'
-    }
-];
 const STAR = {
     full: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
     half: '/src/apps/client/ui/pages/ProductPage/images/starHalfFull.png',
     empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
 };
 const RATING_STARS = 3.5;
+const MAX_VIEWED = 6;
 
-const mapStateToProps = ({ application }) => {
+const mapStateToProps = ({ application, savedProducts }) => {
     return {
-        productMap: application.productMap
+        productMap: application.productMap,
+        viewed: savedProducts.viewed
     };
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    getProductById: payload => dispatch(getProductById(payload))
+    getProductById: payload => dispatch(getProductById(payload)),
+    setViewed: payload => dispatch(setViewed(payload)),
+    saveProductsViewed: payload => dispatch(saveProductsViewed(payload))
 });
 
 class ProductPage extends Component {
     static propTypes = {
         getProductById: PropTypes.func.isRequired,
         location: PropTypes.object,
-        productMap: PropTypes.object
+        productMap: PropTypes.object,
+        viewed: PropTypes.array,
+        setViewed: PropTypes.func.isRequired,
+        saveProductsViewed: PropTypes.func.isRequired
     };
 
     static defaultProps = {
         location: {},
-        productMap: {}
+        productMap: {},
+        viewed: []
     };
 
     constructor (...args) {
@@ -96,6 +89,10 @@ class ProductPage extends Component {
         if (loading) {
             this.props.getProductById(productId)
                 .then(() => this.setState({ loading: false }));
+        } else {
+            const newViewed = this.getViewed();
+
+            this.props.saveProductsViewed(newViewed.map((product) => product.id));
         }
     }
 
@@ -103,9 +100,29 @@ class ProductPage extends Component {
         const { productId } = this.state;
 
         if (nextProps.productMap !== this.props.productMap) {
-            this.setState({ product: nextProps.productMap[productId] });
+            this.setState({ product: nextProps.productMap[productId] }, () => {
+                const newViewed = this.getViewed(nextProps);
+
+                this.props.saveProductsViewed(newViewed.map((product) => product.id));
+            });
         }
     }
+
+    componentWillUnmount () {
+        const newViewed = this.getViewed();
+
+        this.props.setViewed(newViewed);
+    };
+
+    getViewed = (props = this.props) => {
+        const { product } = this.state;
+        const { viewed } = props;
+        const item = find(item => product.id === item.id, viewed);
+        debugger;
+        return item ? [...viewed] : [
+            product, ...(viewed.length < MAX_VIEWED ? viewed : viewed.slice(1))
+        ];
+    };
 
     renderStars = () => {
         const fullStars = Math.floor(RATING_STARS);
@@ -147,8 +164,8 @@ class ProductPage extends Component {
                     <ProductCardCarousel sliderImages={product.files}/>
                     <div className={styles.productInfo}>
                         <div className={styles.tags}>
-                            { product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP['lowPrice'].color }}>
-                                {LABELS_MAP['lowPrice'].text}</div>}
+                            { product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP.lowPrice.color }}>
+                                {LABELS_MAP.lowPrice.text}</div>}
                             { product.tags.map((tag, i) =>
                                 tag !== 'notAvailable' && <div key={i} className={styles.tag}
                                     style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text}</div>
@@ -220,20 +237,7 @@ class ProductPage extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className={classNames(styles.productPreviouslyViewed, styles.infoContainer)}>
-                        <div className={styles.bottomHeader}>недавно просматривали</div>
-                        <div className={styles.previouslyViewed}>
-                            {PREVIOUSLY_VIEWED.map((item, i) =>
-                                <div key={i} className={styles.previouslyViewedItem}>
-                                    <div><img className={styles.avatar} src={item.avatarPath} alt=''/></div>
-                                    <div className={styles.itemInfoContainer}>
-                                        <div className={styles.viewedProductName}>{item.productName}</div>
-                                        <div className={styles.viewedCategoryName}>{item.categoryName}</div>
-                                        <div className={styles.itemPrice}>{item.price} UAH</div>
-                                    </div>
-                                </div>)}
-                        </div>
-                    </div>
+                    {this.props.viewed.length > 0 && <PreviouslyViewed/>}
                 </div>
             </div>;
             }
