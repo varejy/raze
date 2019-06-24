@@ -87,29 +87,40 @@ class ProductPage extends Component {
         if (loading) {
             this.props.getProductById(productId)
                 .then(() => this.setState({ loading: false }));
+        } else {
+            const newViewed = this.getViewed();
+
+            this.props.saveProductsViewed(newViewed.map((product) => product.id));
         }
     }
-
-    componentWillUnmount () {
-        const { product } = this.state;
-        const { viewed, setViewed, saveProductsViewed } = this.props;
-
-        const newViewed = [
-            ...(viewed.length < MAX_VIEWED ? viewed : viewed.slice(1)),
-            product
-        ];
-
-        setViewed(newViewed);
-        saveProductsViewed(newViewed.map((product) => product.id));
-    };
 
     componentWillReceiveProps (nextProps) {
         const { productId } = this.state;
 
         if (nextProps.productMap !== this.props.productMap) {
-            this.setState({ product: nextProps.productMap[productId] });
+            this.setState({ product: nextProps.productMap[productId] }, () => {
+                const newViewed = this.getViewed(nextProps);
+
+                this.props.saveProductsViewed(newViewed.map((product) => product.id));
+            });
         }
     }
+
+    componentWillUnmount () {
+        const newViewed = this.getViewed();
+
+        this.props.setViewed(newViewed);
+    };
+
+    getViewed = (props = this.props) => {
+        const { product } = this.state;
+        const { viewed } = props;
+
+        return [
+            ...(viewed.length < MAX_VIEWED ? viewed : viewed.slice(1)),
+            product
+        ];
+    };
 
     renderStars = () => {
         const fullStars = Math.floor(RATING_STARS);
