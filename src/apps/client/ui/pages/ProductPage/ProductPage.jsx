@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import { connect } from 'react-redux';
 import getProductById from '../../../services/client/getProductById';
 
+import getStarsArray from '../../../utils/getStarsArray';
+
 import { withRouter, matchPath } from 'react-router-dom';
 
 import styles from './ProductPage.css';
+
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
-import classNames from 'classnames';
+import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
 
 const PRODUCT_PATH = '/:category/:id';
 const LABELS = {
@@ -98,25 +102,7 @@ class ProductPage extends Component {
         }
     }
 
-    renderStars = () => {
-        const fullStars = Math.floor(RATING_STARS);
-        let halfStars = 0;
-        if (RATING_STARS % fullStars > 0) {
-            halfStars = 1;
-        }
-        const emptyStars = 5 - fullStars - halfStars;
-        let starsArray = [];
-        for (let i = 0; i < fullStars; i++) {
-            starsArray.push(STAR.full);
-        }
-        if (halfStars !== 0) {
-            starsArray.push(STAR.half);
-        }
-        for (let i = 0; i < emptyStars; i++) {
-            starsArray.push(STAR.empty);
-        }
-        return starsArray;
-    };
+    renderStars = () => getStarsArray(STAR, RATING_STARS);
 
     findColor = (tag) => {
         let color = '';
@@ -165,9 +151,9 @@ class ProductPage extends Component {
                                 src='/src/apps/client/ui/pages/ProductPage/images/likeHeart.png' alt='like'/></div>
                         </div>
                         <div className={styles.stars}>
-                            {this.renderStars().map((star, i) =>
-                                <div key={i} className={styles.star}><img src={star} alt='star'/></div>
-                            )}
+                            {this.renderStars().map((star, i) => <div key={i} className={styles.star}>
+                                <img src={star} alt='star'/>
+                            </div>)}
                         </div>
                         <div className={styles.order}>
                             {product.discountPrice
@@ -210,6 +196,12 @@ class ProductPage extends Component {
                             </div>
                         </div>
                     </div>
+                    <div className={classNames(styles.feedbackForm, styles.infoContainer)}>
+                        <div className={styles.bottomHeader}>добавьте комментарий</div>
+                        <div className={styles.creatingFeedback}>
+                            <FeedBackForm/>
+                        </div>
+                    </div>
                     <div className={classNames(styles.productPreviouslyViewed, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>недавно просматривали</div>
                         <div className={styles.previouslyViewed}>
@@ -225,8 +217,7 @@ class ProductPage extends Component {
                         </div>
                     </div>
                 </div>
-            </div>;
-            }
+            </div>
         </section>;
     }
 }
