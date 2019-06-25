@@ -41,12 +41,20 @@ class Carousel extends Component {
         this.startSlider();
     }
 
+    componentWillUnmount () {
+        this.isUnmount = true;
+    }
+
     startSlider = () => {
         this.setTimeoutToNextSlide();
     };
 
     setTimeoutToNextSlide = () => {
         this.sliderTimoutId = setTimeout(() => {
+            if (this.isUnmount) {
+                return;
+            }
+
             const { activeSlideIndex } = this.state;
 
             const nextActiveSlideIndex = activeSlideIndex + 1;

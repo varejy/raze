@@ -1,0 +1,52 @@
+.productsWrapp {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.productsElemWrapp {
+    max-width: 1438px;
+    min-width: 1170px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.searchInfoWrapper{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 40px;
+}
+
+.searchInfo{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.searchTxt{
+    font-family: HelveticaNeueCyr;
+    font-size: 24px;
+    color: #131313;
+    margin-bottom: 8px;
+}
+
+.searchProductsCount{
+    color: #131313;
+    font-family: HelveticaNeueCyr;
+    font-size: 11.5px;
+    font-weight: 300;
+}
+
+.contentWrapp {
+    display: flex;
+}

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 
+import Search from '../Search/Search';
+
 import { Link, NavLink, withRouter } from 'react-router-dom';
 
 import styles from './Header.css';
@@ -41,8 +43,7 @@ class Header extends Component {
                     <div className={styles.logoRight}>Your<br/>knife<br/><div className={styles.logoGreen}>world</div></div>
                 </Link>
                 <div className={styles.searchForm}>
-                    <input defaultValue='' className={styles.searchFormInput} placeholder='Поиск продуктов...'/>
-                    <button className={styles.searchFormIcon}><img src='/src/apps/client/ui/components/Header/images/search.png' alt=''/></button>
+                    <Search />
                 </div>
                 <div className={styles.contactsWrapper}>
                     <div className={styles.contacts}>

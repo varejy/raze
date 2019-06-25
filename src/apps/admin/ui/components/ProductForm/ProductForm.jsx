@@ -162,7 +162,20 @@ class ProductForm extends Component {
         }
     }
 
-    getProductPayload = ({ name, company, price, discountPrice, description, tagsMap, features, categoryId, hidden, notAvailable, id }) => {
+    getProductPayload = (
+        {
+            name,
+            company,
+            price,
+            discountPrice,
+            description,
+            tagsMap,
+            features,
+            categoryId,
+            hidden,
+            notAvailable,
+            id
+        }) => {
         const tags = compose(
             keys,
             pickBy(Boolean)
