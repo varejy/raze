@@ -39,7 +39,7 @@ class Products extends Component {
     handleChangeFilters = (activeFilters) => {
         const { products } = this.state;
 
-        activeFilters.length
+        !activeFilters.length
             ? this.setState({
                 filteredProducts: products
             })
