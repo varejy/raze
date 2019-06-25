@@ -11,6 +11,7 @@ import { withRouter, matchPath } from 'react-router-dom';
 import find from '@tinkoff/utils/array/find';
 
 import styles from './ProductsPage.css';
+import RangeFilter from '../../components/RangeFilter/RangeFilter';
 
 const mapStateToProps = ({ application }) => {
     return {
@@ -115,8 +116,7 @@ class ProductsPage extends Component {
 
         return <section className={styles.productsWrapp}>
             <div className={styles.productsElemWrapp}>
-                <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products}/>
-                <ProductsList category={category} products={filteredProducts}/>
+                <RangeFilter/>
             </div>
         </section>;
     }
