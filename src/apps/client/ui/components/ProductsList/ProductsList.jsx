@@ -6,7 +6,7 @@ import find from '@tinkoff/utils/array/find';
 
 import Product from '../Product/Product';
 
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import styles from './ProductsList.css';
 
@@ -37,7 +37,8 @@ class ProductsList extends Component {
 
         this.state = {
             products: props.products,
-            activeOption: ''
+            activeOption: '',
+            category: props.category
         };
     }
 
@@ -69,7 +70,7 @@ class ProductsList extends Component {
     }
 
     render () {
-        const { products, activeOption } = this.state;
+        const { category, products, activeOption } = this.state;
 
         return <section className={styles.root}>
             <div className={styles.productsFilter}>
@@ -97,11 +98,10 @@ class ProductsList extends Component {
                 {
                     products.map(product => {
                         return (
-                            <Link className={styles.link} key={product.id} to={`/${this.props.category.path}/${product.id}`}>
-                                <Product
-                                    product={product}
-                                />
-                            </Link>
+                            <Product
+                                product={product}
+                                category={category}
+                            />
                         );
                     })
                 }
