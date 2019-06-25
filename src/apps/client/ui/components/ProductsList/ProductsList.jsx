@@ -96,9 +96,10 @@ class ProductsList extends Component {
             </div>
             <div className={styles.productsWrapper}>
                 {
-                    products.map(product => {
+                    products.map((product, i) => {
                         return (
                             <Product
+                                key={i}
                                 product={product}
                                 category={category}
                             />
