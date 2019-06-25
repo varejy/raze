@@ -7,10 +7,12 @@ import classNames from 'classnames';
 import styles from './PopupBasket.css';
 import setBasket from '../../../actions/setBasket';
 import closePopup from '../../../actions/closePopup';
+import find from '@tinkoff/utils/array/find';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
-        basket: savedProducts.basket
+        basket: savedProducts.basket,
+        isInBasket: savedProducts.isInBasket
     };
 };
 
@@ -34,18 +36,39 @@ class PopupBasket extends Component {
 
     static defaultProps = {
         product: {},
-        basket: []
+        basket: [],
+        isInBasket: false
+    };
+
+    handleDuplicates = () => {
+        const { basket, product } = this.props;
+        const isInBasket = find(item => product.id === item.product.id, basket);
+
+        return !!isInBasket;
     };
 
     handleClosePopup = () => {
+        const { basket, setBasket, product } = this.props;
+        const { productsMap, productCount } = this.state;
+        const previouslyAdded = basket.map((item, i) => {
+            return { product: basket[i].product, amount: productsMap[i] };
+        }, {});
+
+        const newBasket = !this.handleDuplicates() ? [
+            { product: product, amount: productCount }, ...previouslyAdded
+        ] : [...previouslyAdded];
+
+        setBasket(newBasket);
         this.props.closePopup();
     };
 
     setProductsMap = () => {
-        const productsMap = this.props.basket.reduce((counter, item, i) => {
-            counter[i] = this.props.basket[i].amount;
+        const { basket } = this.props;
+        const productsMap = basket.reduce((counter, item, i) => {
+            counter[i] = basket[i].amount;
             return counter;
         }, {});
+
         this.setState({ productsMap });
     };
 
@@ -73,33 +96,15 @@ class PopupBasket extends Component {
         });
     };
 
-    deleteItem = () => {
-        this.setState({
-            productCount: 0
-        });
-    };
-
     deletePrevious = (index) => () => {
-        const { basket } = this.props;
+        const { basket, setBasket } = this.props;
         let basketModified = basket;
         basketModified.splice(index, 1);
         const newBasket = [
             ...basketModified
         ];
 
-        this.props.setBasket(newBasket);
-    };
-
-    componentWillUnmount () {
-        const { basket } = this.props;
-        const previouslyAdded = basket.map((item, i) => {
-            return { product: this.props.basket[i].product, amount: this.state.productsMap[i] };
-        }, {});
-        const newBasket = [
-            { product: this.props.product, amount: this.state.productCount }, ...previouslyAdded
-        ];
-
-        this.props.setBasket(newBasket);
+        setBasket(newBasket);
     };
 
     componentDidMount () {
@@ -107,8 +112,8 @@ class PopupBasket extends Component {
     };
 
     render () {
-        const { product } = this.props;
-        const { productCount } = this.state;
+        const { product, basket } = this.props;
+        const { productCount, productsMap } = this.state;
 
         return <section>
             <div className={styles.root}>
@@ -117,18 +122,16 @@ class PopupBasket extends Component {
                         {productCount > 0 && <div className={styles.item}>
                             <div className={styles.wrapper}>
                                 <div className={styles.itemImageWrapp}>
-                                    <div className={styles.deleteItem} onClick={this.deleteItem}>
-                                        <span className={styles.deleteItemIcon}/>
-                                    </div>
                                     <img className={styles.itemImage} src={product.avatar} alt={product.avatar}/>
                                 </div>
                                 <div className={styles.itemInfo}>
                                     <h2 className={styles.itemName}>{product.name}</h2>
                                     <div className={styles.itemCategory}>{product.company}</div>
                                     <h2 className={styles.itemPrice}>{product.price} UAH</h2>
+                                    {this.handleDuplicates() && <div style={{ color: 'red' }}>Товар уже в корзине</div>}
                                 </div>
                             </div>
-                            <div className={styles.itemAmount}>
+                            {!this.handleDuplicates() && <div className={styles.itemAmount}>
                                 <div className={styles.amountTxt}>Количество</div>
                                 <div className={styles.amount}>
                                     <span className={styles.amountButton}
@@ -137,12 +140,12 @@ class PopupBasket extends Component {
                                     <span className={styles.amountButton}
                                         onClick={this.handleCountClick('plus')}>+</span>
                                 </div>
-                            </div>
+                            </div>}
                         </div>}
                     </div>
-                    {this.props.basket.length > 0 && <div className={styles.previouslyAdded}>
+                    {basket.length > 0 && <div className={styles.previouslyAdded}>
                         <h1 className={styles.previouslyAddedTitle}>ранее добавленные</h1>
-                        {this.props.basket.map((item, i) =>
+                        {basket.map((item, i) =>
                             <div className={styles.previouslyAddedItemWrapp} key={i}>
                                 {item.amount > 0 && <div className={styles.item}>
                                     <div className={styles.wrapper}>
@@ -164,7 +167,7 @@ class PopupBasket extends Component {
                                         <div className={styles.amountTxt}>Количество</div>
                                         <div className={styles.amount}>
                                             <span className={styles.amountButton} onClick={this.handlePreviousCountClick(i, 'minus')}>-</span>
-                                            <div className={styles.countWrapp}>{this.state.productsMap[i]}</div>
+                                            <div className={styles.countWrapp}>{productsMap[i]}</div>
                                             <span className={styles.amountButton} onClick={this.handlePreviousCountClick(i, 'plus')}>+</span>
                                         </div>
                                     </div>

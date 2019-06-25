@@ -38,20 +38,23 @@ class Basket extends Component {
     };
 
     setProductsMap = () => {
-        const productsMap = this.props.basket.reduce((counter, item, i) => {
-            counter[i] = this.props.basket[i].amount;
+        const { basket } = this.props;
+        const productsMap = basket.reduce((counter, item, i) => {
+            counter[i] = basket[i].amount;
             return counter;
         }, {});
+
         this.setState({ productsMap });
     };
 
     setNewBasket = () => {
         const { productsMap } = this.state;
-        const newBasket = this.props.basket.map((item, i) => {
-            return { product: this.props.basket[i].product, amount: productsMap[i] };
+        const { basket, setBasket } = this.props;
+        const newBasket = basket.map((item, i) => {
+            return { product: basket[i].product, amount: productsMap[i] };
         }, {});
 
-        this.props.setBasket(newBasket);
+        setBasket(newBasket);
     };
 
     handleCloseBasket = () => {
@@ -67,14 +70,14 @@ class Basket extends Component {
     }
 
     deleteItem = (index) => () => {
-        const { basket } = this.props;
+        const { basket, setBasket } = this.props;
         let basketModified = basket;
         basketModified.splice(index, 1);
         const newBasket = [
             ...basketModified
         ];
 
-        this.props.setBasket(newBasket);
+        setBasket(newBasket);
     };
 
     handleCountClick = (id, operation) => () => {
@@ -90,14 +93,20 @@ class Basket extends Component {
     };
 
     totalPrice = () => {
-        return this.props.basket.reduce((counter, item, i) => {
-            return counter + item.product.price * this.state.productsMap[i];
+        const { basket } = this.props;
+        const { productsMap } = this.state;
+
+        return basket.reduce((counter, item, i) => {
+            return counter + item.product.price * productsMap[i];
         }, 0);
     };
 
     render () {
+        const { basket, basketVisible } = this.props;
+        const { productsMap } = this.state;
+
         return <div>
-            {this.props.basketVisible && <div className={styles.root}>
+            {basketVisible && <div className={styles.root}>
                 <div className={styles.popupContent}>
                     <div>
                         <div className={styles.headerContainer}>
@@ -108,7 +117,7 @@ class Basket extends Component {
                             <div>Количество</div>
                         </div>
                         <div className={styles.items}>
-                            {this.props.basket.map((item, i) => this.state.productsMap[i] !== 0 &&
+                            {basket.map((item, i) => productsMap[i] !== 0 &&
                                 <div className={styles.item} key={i}>
                                     <div className={styles.itemImageWrapp}>
                                         <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
@@ -127,7 +136,7 @@ class Basket extends Component {
                                     </div>
                                     <div className={styles.itemAmount}>
                                         <div className={styles.amountButton} onClick={this.handleCountClick(i, 'minus')}>-</div>
-                                        <div className={styles.countWrapp}>{this.state.productsMap[i]}</div>
+                                        <div className={styles.countWrapp}>{productsMap[i]}</div>
                                         <div className={styles.amountButton} onClick={this.handleCountClick(i, 'plus')}>+</div>
                                     </div>
                                 </div>
