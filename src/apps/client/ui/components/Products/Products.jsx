@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import ProductsList from '../../components/ProductsList/ProductsList';
 import CheckboxFilters from '../../components/CheckboxFilters/CheckboxFilters';
+import RangeFilter from '../../components/RangeFilter/RangeFilter';
 
 import styles from './Products.css';
 
@@ -52,7 +53,10 @@ class Products extends Component {
         const { category, products, filteredProducts } = this.state;
 
         return <section className={styles.contentWrapp}>
-            <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products} />
+            <div className={styles.filtersWrapp}>
+                <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products} />
+                <RangeFilter/>
+            </div>
             <ProductsList products={filteredProducts} category={category} />
         </section>;
     }
