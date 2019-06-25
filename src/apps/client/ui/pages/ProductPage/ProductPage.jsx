@@ -13,114 +13,140 @@ import styles from './ProductPage.css';
 
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
 import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
+        
+import classNames from 'classnames';
+import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
+import setViewed from '../../../actions/setViewed';
+import saveProductsViewed from '../../../services/client/saveProductsViewed';
+
+import filter from '@tinkoff/utils/array/filter';
+import tail from '@tinkoff/utils/array/tail';
+import concat from '@tinkoff/utils/array/concat';
+import compose from '@tinkoff/utils/function/compose';
 
 const PRODUCT_PATH = '/:category/:id';
-const LABELS = {
-    notAvailable: '#ff0000',
-    topSales: '#ffb116',
-    almostGone: '#797979'
-};
-const PREVIOUSLY_VIEWED = [
-    {
-        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
-        productName: 'Тесак Emerson',
-        categoryName: 'Ножи',
-        price: '1000'
+const LABELS_MAP = {
+    lowPrice: {
+        color: '#ff0000',
+        text: 'низкая цена'
     },
-    {
-        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
-        productName: 'Мачете Emerson',
-        categoryName: 'Ножи',
-        price: '1500'
+    topSales: {
+        color: '#ffb116',
+        text: 'топ продаж'
     },
-    {
-        avatarPath: '/src/apps/client/ui/pages/ProductPage/images/avatar.jpg',
-        productName: 'Колун Cold Steel',
-        categoryName: 'Топоры',
-        price: '500'
+    almostGone: {
+        color: '#797979',
+        text: 'товар заканчивается'
     }
-];
+};
 const STAR = {
     full: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
     half: '/src/apps/client/ui/pages/ProductPage/images/starHalfFull.png',
     empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
 };
 const RATING_STARS = 3.5;
+const MAX_VIEWED = 6;
 
-const mapStateToProps = ({ application }) => {
+const mapStateToProps = ({ application, savedProducts }) => {
     return {
-        productMap: application.productMap
+        productMap: application.productMap,
+        viewed: savedProducts.viewed
     };
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    getProductById: payload => dispatch(getProductById(payload))
+    getProductById: payload => dispatch(getProductById(payload)),
+    setViewed: payload => dispatch(setViewed(payload)),
+    saveProductsViewed: payload => dispatch(saveProductsViewed(payload))
 });
 
 class ProductPage extends Component {
     static propTypes = {
         getProductById: PropTypes.func.isRequired,
         location: PropTypes.object,
-        productMap: PropTypes.object
+        productMap: PropTypes.object,
+        viewed: PropTypes.array,
+        setViewed: PropTypes.func.isRequired,
+        saveProductsViewed: PropTypes.func.isRequired
     };
 
     static defaultProps = {
         location: {},
-        productMap: {}
+        productMap: {},
+        viewed: []
     };
 
     constructor (...args) {
         super(...args);
 
-        const { location: { pathname }, productMap } = this.props;
-        const match = matchPath(pathname, { path: PRODUCT_PATH, exact: true });
-        const product = productMap[match.params.id];
-
-        this.notFoundPage = product === null;
-
-        this.state = {
-            loading: !this.notFoundPage && !product,
-            product: product,
-            productId: match.params.id
-        };
+        this.state = this.getNewState();
     }
 
     componentDidMount () {
+        this.getProduct();
+    }
+
+    componentWillReceiveProps (nextProps) {
+        const { location: { pathname } } = this.props;
+        const { productId } = this.state;
+
+        if (nextProps.productMap !== this.props.productMap) {
+            this.setState({ product: nextProps.productMap[productId] }, () => {
+                const newViewed = this.getViewed(nextProps);
+                this.props.setViewed(newViewed);
+                this.props.saveProductsViewed(newViewed.map((product) => product.id));
+            });
+        }
+
+        if (nextProps.location.pathname !== pathname) {
+            this.setState(this.getNewState(nextProps), this.getProduct);
+        }
+    }
+
+    getProduct = () => {
         const { loading, productId } = this.state;
 
         if (loading) {
             this.props.getProductById(productId)
                 .then(() => this.setState({ loading: false }));
-        }
-    }
+        } else {
+            const newViewed = this.getViewed();
 
-    componentWillReceiveProps (nextProps) {
-        const { productId } = this.state;
-
-        if (nextProps.productMap !== this.props.productMap) {
-            this.setState({ product: nextProps.productMap[productId] });
+            this.props.setViewed(newViewed);
+            this.props.saveProductsViewed(newViewed.map((product) => product.id));
         }
-    }
+    };
+
+    getNewState = (props = this.props) => {
+        const { location: { pathname }, productMap } = props;
+        const match = matchPath(pathname, { path: PRODUCT_PATH, exact: true });
+        const product = productMap[match.params.id];
+
+        this.notFoundPage = product === null;
+
+        return {
+            loading: !this.notFoundPage && !product,
+            product: product,
+            productId: match.params.id
+        };
+    };
+
+    getViewed = (props = this.props) => {
+        const { product } = this.state;
+        const { viewed } = props;
+
+        const newViewed = compose(
+            concat([product]),
+            filter(item => product.id !== item.id)
+        )(viewed);
+
+        return newViewed.length > MAX_VIEWED ? tail(newViewed) : newViewed;
+    };
 
     renderStars = () => getStarsArray(STAR, RATING_STARS);
 
-    findColor = (tag) => {
-        let color = '';
-        switch (tag) {
-        case 'almostGone':
-            color = LABELS.almostGone;
-            break;
-        case 'notAvailable':
-            color = LABELS.notAvailable;
-            break;
-        case 'topSales':
-            color = LABELS.topSales;
-            break;
-        }
-        return color;
-    };
-
     render () {
+        const { viewed } = this.props;
         const { loading, product } = this.state;
 
         // TODO: Сделать страницу Not Found
@@ -140,9 +166,11 @@ class ProductPage extends Component {
                     <ProductCardCarousel sliderImages={product.files}/>
                     <div className={styles.productInfo}>
                         <div className={styles.tags}>
-                            {product.tags.map((tag, i) =>
-                                <div key={i} className={styles.tag}
-                                    style={{ color: this.findColor(tag) }}>{tag}</div>
+                            { product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP.lowPrice.color }}>
+                                {LABELS_MAP.lowPrice.text}</div>}
+                            { product.tags.map((tag, i) =>
+                                tag !== 'notAvailable' && <div key={i} className={styles.tag}
+                                    style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text}</div>
                             )}
                         </div>
                         <div className={styles.productCardHeader}>
@@ -158,15 +186,30 @@ class ProductPage extends Component {
                         <div className={styles.order}>
                             {product.discountPrice
                                 ? <div className={styles.prices}>
-                                    <div className={styles.pricePrevious}>{product.price}</div>
-                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice}</div>
+                                    <div className={styles.pricePrevious}>{product.price} грн.</div>
+                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.</div>
                                 </div>
                                 : <div className={styles.prices}>
-                                    <div className={styles.price}>{product.price}</div>
+                                    <div className={styles.price}>{product.price} грн.</div>
                                 </div>}
-                            <button className={classNames(styles.buttonDefault, styles.orderButton)}>Оформление заказа
+                            <button className={classNames(
+                                styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
+                            )}>
+                                    Оформление заказа
                             </button>
                         </div>
+                        {product.notAvailable &&
+                        <div className={styles.notAvailableContent}>
+                            <div className={styles.notAvailableMessage}>
+                                Товара нет в наличии, но Вы
+                                можете оставить е-мейл и мы свяжемся с Вами,
+                                как только он появится
+                            </div>
+                            <div>
+                                <input className={styles.notAvailableInput} placeholder='Введите е-мейл'/>
+                            </div>
+                        </div>
+                        }
                     </div>
                 </div>
                 <div className={styles.bottomProductInfo}>
@@ -202,20 +245,9 @@ class ProductPage extends Component {
                             <FeedBackForm/>
                         </div>
                     </div>
-                    <div className={classNames(styles.productPreviouslyViewed, styles.infoContainer)}>
-                        <div className={styles.bottomHeader}>недавно просматривали</div>
-                        <div className={styles.previouslyViewed}>
-                            {PREVIOUSLY_VIEWED.map((item, i) =>
-                                <div key={i} className={styles.previouslyViewedItem}>
-                                    <div><img className={styles.avatar} src={item.avatarPath} alt=''/></div>
-                                    <div className={styles.itemInfoContainer}>
-                                        <div className={styles.viewedProductName}>{item.productName}</div>
-                                        <div className={styles.viewedCategoryName}>{item.categoryName}</div>
-                                        <div className={styles.itemPrice}>{item.price} UAH</div>
-                                    </div>
-                                </div>)}
-                        </div>
-                    </div>
+
+                    {!!viewed.length && <PreviouslyViewed viewed={tail(viewed)} />}
+
                 </div>
             </div>
         </section>;

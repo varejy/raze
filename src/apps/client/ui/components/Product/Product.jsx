@@ -34,11 +34,25 @@ class Product extends Component {
 
         return <div className={styles.product}>
             <div className={styles.imageWrapper}>
-                { product.discount && <div className={styles.discount}>SPECIAL PRICE</div>}
+                { (!!product.discountPrice && !product.notAvailable) && <div className={styles.discount}>special<br/>price</div>}
                 <img className={styles.img} src={product.avatar} alt={product.avatar}/>
             </div>
             <div className={styles.infoWrapper}>
-                <div className={styles.toolBar}>
+                <div className={styles.info}>
+                    <div className={styles.manufacturer}>{product.company}</div>
+                    <div className={styles.name}>{product.name}</div>
+                    <div className={styles.prices}>
+                        {product.discountPrice
+                            ? <div className={styles.prices}>
+                                <div className={styles.previousPrice}>{product.price} грн.</div>
+                                <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.</div>
+                            </div>
+                            : <div className={styles.prices}>
+                                <div className={styles.price}>{product.price} грн.</div>
+                            </div>}
+                    </div>
+                </div>
+                {!product.notAvailable && <div className={styles.toolBar}>
                     <div className={classNames(styles.quickInspection, styles.toolBarItem)} onClick={this.handlePreviewClick}>
                         <div className={classNames(styles.toolBarIcon, styles.eyeIcon)}/>
                         <div>Быстрый просмотр</div>
@@ -51,16 +65,13 @@ class Product extends Component {
                         <div className={classNames(styles.toolBarIcon, styles.basketIcon)}/>
                         <div>В корзину</div>
                     </div>
-                </div>
-                <div className={styles.info}>
-                    <div className={styles.manufacturer}>{product.company}</div>
-                    <div className={styles.name}>{product.name}</div>
-                    <div className={styles.prices}>
-                        <div className={styles.price}>{product.price}$</div>
-                        <div className={styles.previousPrice}>24$</div>
-                    </div>
-                </div>
+                </div>}
             </div>
+            {product.notAvailable && <div className={styles.notAvailableHover}>
+                <div className={styles.notAvailable}>
+                    Нет в наличии
+                </div>
+            </div>}
         </div>;
     }
 }

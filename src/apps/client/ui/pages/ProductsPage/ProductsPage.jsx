@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import CheckboxFilters from '../../components/CheckboxFilters/CheckboxFilters';
-import ProductsList from '../../components/ProductsList/ProductsList';
+import Products from '../../components/Products/Products';
 
 import { connect } from 'react-redux';
 import getProductsByCategory from '../../../services/client/getProductsByCategory';
@@ -52,7 +51,7 @@ class ProductsPage extends Component {
         const { category } = this.state;
 
         if (nextProps.productsMap !== productsMap) {
-            this.setState({ filteredProducts: nextProps.productsMap[category.path], products: nextProps.productsMap[category.path] });
+            this.setState({ products: nextProps.productsMap[category.path] });
         }
 
         if (nextProps.location.pathname !== pathname) {
@@ -71,7 +70,6 @@ class ProductsPage extends Component {
         return {
             loading: !this.notFoundPage && !products,
             products: products || [],
-            filteredProducts: products || [],
             category
         };
     };
@@ -85,22 +83,8 @@ class ProductsPage extends Component {
         }
     };
 
-    handleChangeFilters = (activeFilters) => {
-        const { products } = this.state;
-
-        if (activeFilters.length === 0) {
-            this.setState({
-                filteredProducts: products
-            });
-        } else if (activeFilters.length !== 0) {
-            this.setState({
-                filteredProducts: activeFilters
-            });
-        }
-    };
-
     render () {
-        const { loading, products, category, filteredProducts } = this.state;
+        const { loading, products, category } = this.state;
 
         // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
@@ -115,8 +99,7 @@ class ProductsPage extends Component {
 
         return <section className={styles.productsWrapp}>
             <div className={styles.productsElemWrapp}>
-                <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products}/>
-                <ProductsList category={category} products={filteredProducts}/>
+                <Products products={products} category={category}/>
             </div>
         </section>;
     }
