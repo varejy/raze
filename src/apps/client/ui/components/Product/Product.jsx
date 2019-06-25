@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+
 import styles from './Product.css';
+
 import openPopup from '../../../actions/openPopup';
+
 import { connect } from 'react-redux';
+
+import { Link } from 'react-router-dom';
+
 import ProductPreview from '../ProductPreview/ProductPreview';
 import PopupBasket from '../PopupBasketAdding/PopupBasket';
 
@@ -14,11 +20,13 @@ const mapDispatchToProps = (dispatch) => ({
 class Product extends Component {
     static propTypes = {
         product: PropTypes.object,
-        openPopup: PropTypes.func.isRequired
+        openPopup: PropTypes.func.isRequired,
+        category: PropTypes.object
     };
 
     static defaultProps = {
-        product: {}
+        product: {},
+        category: {}
     };
 
     handlePreviewClick = () => {
@@ -30,13 +38,15 @@ class Product extends Component {
     };
 
     render () {
-        const { product } = this.props;
+        const { product, category } = this.props;
 
         return <div className={styles.product}>
-            <div className={styles.imageWrapper}>
-                { (!!product.discountPrice && !product.notAvailable) && <div className={styles.discount}>special<br/>price</div>}
-                <img className={styles.img} src={product.avatar} alt={product.avatar}/>
-            </div>
+            <Link className={styles.link} key={product.id} to={`/${category.path}/${product.id}`}>
+                <div className={styles.imageWrapper}>
+                    {(!!product.discountPrice && !product.notAvailable) && <div className={styles.discount}>special<br />price</div>}
+                    <img className={styles.img} src={product.avatar} alt={product.avatar} />
+                </div>
+            </Link>
             <div className={styles.infoWrapper}>
                 <div className={styles.info}>
                     <div className={styles.manufacturer}>{product.company}</div>
