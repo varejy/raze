@@ -5,30 +5,8 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import styles from './PopupBasket.css';
-import openPopup from '../../../actions/openPopup';
 import setBasket from '../../../actions/setBasket';
-
-const PREVIOUSLY_ADDED = [
-    {
-        name: 'Keen Blade',
-        category: 'Knives',
-        price: 1200,
-        amount: 2
-    },
-    {
-        name: 'Super Axe',
-        category: 'Axes',
-        price: 2200,
-        amount: 1
-    },
-    {
-        name: 'Super Slayer',
-        category: 'Knives',
-        price: 3200,
-        amount: 3
-    }
-
-];
+import closePopup from '../../../actions/closePopup';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
@@ -37,24 +15,38 @@ const mapStateToProps = ({ savedProducts }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    openPopup: payload => dispatch(openPopup(payload)),
-    setBasket: payload => dispatch(setBasket(payload))
+    setBasket: payload => dispatch(setBasket(payload)),
+    closePopup: payload => dispatch(closePopup(payload))
 });
 
 class PopupBasket extends Component {
     state = {
-        productCount: 1
+        productCount: 1,
+        productsMap: {}
     };
 
     static propTypes = {
         product: PropTypes.object,
         basket: PropTypes.array.isRequired,
-        setBasket: PropTypes.func.isRequired
+        setBasket: PropTypes.func.isRequired,
+        closePopup: PropTypes.func.isRequired
     };
 
     static defaultProps = {
         product: {},
         basket: []
+    };
+
+    handleClosePopup = () => {
+        this.props.closePopup();
+    };
+
+    setProductsMap = () => {
+        const productsMap = this.props.basket.reduce((counter, item, i) => {
+            counter[i] = this.props.basket[i].amount;
+            return counter;
+        }, {});
+        this.setState({ productsMap });
     };
 
     handleCountClick = operation => () => {
@@ -69,14 +61,50 @@ class PopupBasket extends Component {
             });
     };
 
-    componentWillUnmount () {
+    handlePreviousCountClick = (id, operation) => () => {
+        const { productsMap } = this.state;
+        const minusValue = productsMap[id] > 1 ? -1 : 0;
+
+        this.setState({
+            productsMap: {
+                ...productsMap,
+                [id]: productsMap[id] + (operation === 'plus' ? 1 : minusValue)
+            }
+        });
+    };
+
+    deleteItem = () => {
+        this.setState({
+            productCount: 0
+        });
+    };
+
+    deletePrevious = (index) => () => {
         const { basket } = this.props;
+        let basketModified = basket;
+        basketModified.splice(index, 1);
         const newBasket = [
-            { product: this.props.product, amount: this.state.productCount }, ...basket
+            ...basketModified
         ];
 
         this.props.setBasket(newBasket);
-    }
+    };
+
+    componentWillUnmount () {
+        const { basket } = this.props;
+        const previouslyAdded = basket.map((item, i) => {
+            return { product: this.props.basket[i].product, amount: this.state.productsMap[i] };
+        }, {});
+        const newBasket = [
+            { product: this.props.product, amount: this.state.productCount }, ...previouslyAdded
+        ];
+
+        this.props.setBasket(newBasket);
+    };
+
+    componentDidMount () {
+        this.setProductsMap();
+    };
 
     render () {
         const { product } = this.props;
@@ -86,17 +114,17 @@ class PopupBasket extends Component {
             <div className={styles.root}>
                 <div className={styles.itemsWrapper}>
                     <div>
-                        <div className={styles.item}>
+                        {productCount > 0 && <div className={styles.item}>
                             <div className={styles.wrapper}>
                                 <div className={styles.itemImageWrapp}>
-                                    <div className={styles.deleteItem}>
+                                    <div className={styles.deleteItem} onClick={this.deleteItem}>
                                         <span className={styles.deleteItemIcon}/>
                                     </div>
                                     <img className={styles.itemImage} src={product.avatar} alt={product.avatar}/>
                                 </div>
                                 <div className={styles.itemInfo}>
                                     <h2 className={styles.itemName}>{product.name}</h2>
-                                    <div className={styles.itemCategory}>категория</div>
+                                    <div className={styles.itemCategory}>{product.company}</div>
                                     <h2 className={styles.itemPrice}>{product.price} UAH</h2>
                                 </div>
                             </div>
@@ -110,43 +138,43 @@ class PopupBasket extends Component {
                                         onClick={this.handleCountClick('plus')}>+</span>
                                 </div>
                             </div>
-                        </div>
+                        </div>}
                     </div>
-                    {PREVIOUSLY_ADDED.length > 0 && <div className={styles.previouslyAdded}>
+                    {this.props.basket.length > 0 && <div className={styles.previouslyAdded}>
                         <h1 className={styles.previouslyAddedTitle}>ранее добавленные</h1>
-                        {PREVIOUSLY_ADDED.map((item, i) =>
+                        {this.props.basket.map((item, i) =>
                             <div className={styles.previouslyAddedItemWrapp} key={i}>
-                                <div className={styles.item}>
+                                {item.amount > 0 && <div className={styles.item}>
                                     <div className={styles.wrapper}>
                                         <div className={styles.itemImageWrapp}>
-                                            <div className={styles.deleteItem}>
+                                            <div className={styles.deleteItem} onClick={this.deletePrevious(i)}>
                                                 <span className={styles.deleteItemIcon}/>
                                             </div>
                                             <img className={styles.itemImage}
-                                                src="/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg"
-                                                alt="product"/>
+                                                src={item.product.avatar}
+                                                alt={item.product.name}/>
                                         </div>
                                         <div className={styles.itemInfo}>
-                                            <h2 className={styles.itemName}>{item.name}</h2>
-                                            <div className={styles.itemCategory}>{item.category}</div>
-                                            <h2 className={styles.itemPrice}>{item.price} UAH</h2>
+                                            <h2 className={styles.itemName}>{item.product.name}</h2>
+                                            <div className={styles.itemCategory}>{item.product.company}</div>
+                                            <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
                                         </div>
                                     </div>
                                     <div className={styles.itemAmount}>
                                         <div className={styles.amountTxt}>Количество</div>
                                         <div className={styles.amount}>
-                                            <span className={styles.amountButton}>-</span>
-                                            <div className={styles.countWrapp}>{item.amount}</div>
-                                            <span className={styles.amountButton}>+</span>
+                                            <span className={styles.amountButton} onClick={this.handlePreviousCountClick(i, 'minus')}>-</span>
+                                            <div className={styles.countWrapp}>{this.state.productsMap[i]}</div>
+                                            <span className={styles.amountButton} onClick={this.handlePreviousCountClick(i, 'plus')}>+</span>
                                         </div>
                                     </div>
-                                </div>
+                                </div>}
                             </div>)}
                     </div>}
                 </div>
                 <div className={styles.buttonsWrapp}>
                     <button
-                        className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}>продолжить
+                        className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)} onClick={this.handleClosePopup}>продолжить
                         покупки
                     </button>
                     <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление

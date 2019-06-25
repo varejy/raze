@@ -28,7 +28,8 @@ class Basket extends Component {
     static propTypes = {
         closeBasketPopup: PropTypes.func.isRequired,
         basketVisible: PropTypes.bool.isRequired,
-        basket: PropTypes.array.isRequired
+        basket: PropTypes.array.isRequired,
+        setBasket: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -37,16 +38,21 @@ class Basket extends Component {
     };
 
     setProductsMap = () => {
-        const productsMap = this.props.basket.reduce((acc, id, i) => {
-            acc[i] = this.props.basket.amount;
-            return acc;
+        const productsMap = this.props.basket.reduce((counter, item, i) => {
+            counter[i] = this.props.basket[i].amount;
+            return counter;
         }, {});
         this.setState({ productsMap });
     };
 
-    componentDidMount () {
-        this.setProductsMap();
-    }
+    setNewBasket = () => {
+        const { productsMap } = this.state;
+        const newBasket = this.props.basket.map((item, i) => {
+            return { product: this.props.basket[i].product, amount: productsMap[i] };
+        }, {});
+
+        this.props.setBasket(newBasket);
+    };
 
     handleCloseBasket = () => {
         this.props.closeBasketPopup();
@@ -55,21 +61,20 @@ class Basket extends Component {
     componentWillReceiveProps (nextProps) {
         if (this.props.basketVisible !== nextProps.basketVisible) {
             document.body.style.overflowY = nextProps.basketVisible ? 'hidden' : 'auto';
+            this.setProductsMap();
+            this.setNewBasket();
         }
     }
 
-    componentWillUnmount () {
-    }
+    deleteItem = (index) => () => {
+        const { basket } = this.props;
+        let basketModified = basket;
+        basketModified.splice(index, 1);
+        const newBasket = [
+            ...basketModified
+        ];
 
-    deleteItem = (id) => () => {
-        const { productsMap } = this.state;
-
-        this.setState({
-            productsMap: {
-                ...productsMap,
-                [id]: 0
-            }
-        });
+        this.props.setBasket(newBasket);
     };
 
     handleCountClick = (id, operation) => () => {
@@ -85,8 +90,8 @@ class Basket extends Component {
     };
 
     totalPrice = () => {
-        return this.props.basket.reduce((counter, item) => {
-            return counter + item.product.price * item.amount;
+        return this.props.basket.reduce((counter, item, i) => {
+            return counter + item.product.price * this.state.productsMap[i];
         }, 0);
     };
 
@@ -121,9 +126,9 @@ class Basket extends Component {
                                         <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
                                     </div>
                                     <div className={styles.itemAmount}>
-                                        <div className={styles.amountButton} onClick={this.handleCountClick(item.product.id, 'minus')}>-</div>
-                                        <div className={styles.countWrapp}>{item.amount}</div>
-                                        <div className={styles.amountButton} onClick={this.handleCountClick(item.product.id, 'plus')}>+</div>
+                                        <div className={styles.amountButton} onClick={this.handleCountClick(i, 'minus')}>-</div>
+                                        <div className={styles.countWrapp}>{this.state.productsMap[i]}</div>
+                                        <div className={styles.amountButton} onClick={this.handleCountClick(i, 'plus')}>+</div>
                                     </div>
                                 </div>
                             )}
@@ -132,7 +137,7 @@ class Basket extends Component {
                     </div>
                     <div className={styles.buttonsWrapp}>
                         <button
-                            className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}>продолжить
+                            className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)} onClick={this.handleCloseBasket}>продолжить
                             покупки
                         </button>
                         <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
