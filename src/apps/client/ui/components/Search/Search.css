@@ -67,6 +67,10 @@
     flex-direction: column;
 }
 
+.tipLink{
+    text-decoration: none;
+}
+
 .tip {
     display: flex;
     align-items: center;
