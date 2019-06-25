@@ -5,6 +5,8 @@ import classNames from 'classnames';
 
 import styles from './PreviouslyViewed.css';
 
+import { Link, withRouter } from 'react-router-dom';
+
 const PREVIEW_WIDTH = 1110;
 const MAX_SLIDES = 3;
 
@@ -14,11 +16,13 @@ class PreviouslyViewed extends Component {
     };
 
     static propTypes = {
-        viewed: PropTypes.array
+        viewed: PropTypes.array,
+        match: PropTypes.object
     };
 
     static defaultProps = {
-        viewed: []
+        viewed: [],
+        match: {}
     };
 
     handleArrowClick = (arrowType) => () => {
@@ -34,7 +38,7 @@ class PreviouslyViewed extends Component {
     };
 
     render () {
-        const { viewed } = this.props;
+        const { viewed, match: { params } } = this.props;
 
         return <div className={classNames(styles.productPreviouslyViewed, styles.infoContainer)}>
             <div className={styles.bottomHeader}>недавно просматривали</div>
@@ -42,17 +46,20 @@ class PreviouslyViewed extends Component {
                 <div className={styles.previouslyViewed}>
                     <div className={styles.slides} style={{ left: `-${this.state.leftPosition.toString()}px` }}>
                         {viewed.map((item, i) =>
-                            <div className={styles.sliderItem} key={i}>
-                                <div className={styles.previouslyViewedItem}>
-                                    <div><img className={styles.avatar} src={item.avatar} alt={`${item.name} photo`}/>
-                                    </div>
-                                    <div className={styles.itemInfoContainer}>
-                                        <div className={styles.viewedProductName}>{item.name}</div>
-                                        <div className={styles.viewedCategoryName}>{item.company}</div>
-                                        <div className={styles.itemPrice}>{item.price} UAH</div>
+                            <Link className={styles.link} key={item.id} to={`/${params.category}/${item.id}`}>
+                                <div className={styles.sliderItem} key={i}>
+                                    <div className={styles.previouslyViewedItem}>
+                                        <div><img className={styles.avatar} src={item.avatar} alt={`${item.name} photo`} />
+                                        </div>
+                                        <div className={styles.itemInfoContainer}>
+                                            <div className={styles.viewedProductName}>{item.name}</div>
+                                            <div className={styles.viewedCategoryName}>{item.company}</div>
+                                            <div className={styles.itemPrice}>{item.price} UAH</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>)}
+                            </Link>
+                        )}
                     </div>
                 </div>
                 {viewed.length > MAX_SLIDES &&
@@ -77,4 +84,4 @@ class PreviouslyViewed extends Component {
     }
 }
 
-export default PreviouslyViewed;
+export default withRouter(PreviouslyViewed);
