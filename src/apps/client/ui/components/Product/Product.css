@@ -165,7 +165,7 @@
 .toolBarItem:hover {
     color: #00a046;
 }
-.isInBasket{
+.isInBasket, .isLiked{
     color: #00a046;
 }
 
@@ -181,6 +181,11 @@
 
 .heartIcon{
     background: url('/src/apps/client/ui/components/Product/icons/heart.png') center;
+    background-size: 100% auto;
+}
+
+.isLikedHeart{
+    background: url('/src/apps/client/ui/components/Product/icons/heartGreen.png') center;
     background-size: 100% auto;
 }
 

@@ -17,6 +17,7 @@ import { Switch, Route, withRouter } from 'react-router-dom';
 
 import styles from './App.css';
 import Basket from './ui/components/PopupBasket/Basket';
+import Liked from './ui/components/PopupLiked/Liked';
 
 @media
 class App extends Component {
@@ -26,6 +27,7 @@ class App extends Component {
                 <Header/>
                 <Popup />
                 <Basket/>
+                <Liked/>
                 <div className={styles.pageContent}>
                     <Switch>
                         <Route exact path='/' component={MainPage} />

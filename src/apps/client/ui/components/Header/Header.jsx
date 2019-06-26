@@ -9,6 +9,7 @@ import { Link, NavLink, withRouter } from 'react-router-dom';
 
 import styles from './Header.css';
 import openBasketPopup from '../../../actions/openBasketPopup';
+import openLikedPopup from '../../../actions/openLikedPopup';
 
 const mapStateToProps = ({ application }) => {
     return {
@@ -16,13 +17,15 @@ const mapStateToProps = ({ application }) => {
     };
 };
 const mapDispatchToProps = (dispatch) => ({
-    openBasketPopup: (payload) => dispatch(openBasketPopup(payload))
+    openBasketPopup: (payload) => dispatch(openBasketPopup(payload)),
+    openLikedPopup: (payload) => dispatch(openLikedPopup(payload))
 });
 
 class Header extends Component {
     static propTypes = {
         categories: PropTypes.array,
-        openBasketPopup: PropTypes.func.isRequired
+        openBasketPopup: PropTypes.func.isRequired,
+        openLikedPopup: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -31,6 +34,10 @@ class Header extends Component {
 
     handleOpenBasket = () => {
         this.props.openBasketPopup();
+    };
+
+    handleOpenLiked = () => {
+        this.props.openLikedPopup();
     };
 
     render () {
@@ -84,7 +91,7 @@ class Header extends Component {
                     </ul>
                 </div>
                 <div className={styles.likesBasket}>
-                    <div className={styles.bottomIconWrapper}>
+                    <div className={styles.bottomIconWrapper} onClick={this.handleOpenLiked}>
                         <img className={styles.iconHeart} src='/src/apps/client/ui/components/Header/images/likeHeart.png' alt=''/>
                     </div>
                     <div className={styles.bottomIconWrapper} onClick={this.handleOpenBasket}>
