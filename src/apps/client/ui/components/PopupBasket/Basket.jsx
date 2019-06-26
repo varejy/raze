@@ -61,12 +61,8 @@ class Basket extends Component {
         this.props.saveProductsToBasket(newBasket.map((item) => ({ id: item.product.id, count: item.amount })));
     };
 
-    handleContinueShopping = () => {
-        this.setNewBasket();
-        this.props.closeBasketPopup();
-    };
-
     handleCloseBasket = () => {
+        this.setNewBasket();
         this.props.closeBasketPopup();
     };
 
@@ -156,7 +152,7 @@ class Basket extends Component {
                     <div className={styles.buttonsWrapp}>
                         <button
                             className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
-                            onClick={this.handleContinueShopping}>
+                            onClick={this.handleCloseBasket}>
                                 продолжить покупки
                         </button>
                         <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
