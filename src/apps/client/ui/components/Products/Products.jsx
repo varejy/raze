@@ -24,6 +24,7 @@ class Products extends Component {
         this.state = {
             products: this.props.products,
             filteredProducts: this.props.products,
+            priceFilteredProducts: this.props.products,
             category: this.props.category
         };
     }
@@ -37,27 +38,33 @@ class Products extends Component {
         }
     }
 
-    handleChangeFilters = (activeFilters) => {
+    handleChangeFilters = (activeFilters, marking) => {
         const { products } = this.state;
 
-        activeFilters.length
+        !activeFilters.length
             ? this.setState({
+                priceFilteredProducts: products,
                 filteredProducts: products
             })
-            : this.setState({
-                filteredProducts: activeFilters
-            });
+            : marking === 'RangeFilter'
+                ? this.setState({
+                    priceFilteredProducts: activeFilters
+                })
+                : this.setState({
+                    filteredProducts: activeFilters,
+                    priceFilteredProducts: activeFilters
+                });
     };
 
     render () {
-        const { category, products, filteredProducts } = this.state;
+        const { category, products, filteredProducts, priceFilteredProducts } = this.state;
 
         return <section className={styles.contentWrapp}>
             <div className={styles.filtersWrapp}>
                 <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products} />
-                <RangeFilter/>
+                <RangeFilter onFiltersChanged={this.handleChangeFilters} products={filteredProducts}/>
             </div>
-            <ProductsList products={filteredProducts} category={category} />
+            <ProductsList products={priceFilteredProducts} category={category} />
         </section>;
     }
 }

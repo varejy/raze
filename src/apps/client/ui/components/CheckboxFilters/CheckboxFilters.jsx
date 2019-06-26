@@ -64,7 +64,7 @@ class CheckboxFilters extends Component {
 
         const filteredProducts = filter(product => includes(product.company, activeCompanies), this.props.products);
 
-        this.props.onFiltersChanged(filteredProducts);
+        this.props.onFiltersChanged(filteredProducts, 'CheckboxFilter');
     };
 
     render () {
