@@ -5,10 +5,20 @@ import classNames from 'classnames';
 
 import styles from './PreviouslyViewed.css';
 
+import { connect } from 'react-redux';
+
 import { Link, withRouter } from 'react-router-dom';
+
+import find from '@tinkoff/utils/array/find';
 
 const PREVIEW_WIDTH = 1110;
 const MAX_SLIDES = 3;
+
+const mapStateToProps = ({ application }) => {
+    return {
+        categories: application.categories
+    };
+};
 
 class PreviouslyViewed extends Component {
     state = {
@@ -17,12 +27,12 @@ class PreviouslyViewed extends Component {
 
     static propTypes = {
         viewed: PropTypes.array,
-        match: PropTypes.object
+        categories: PropTypes.array
     };
 
     static defaultProps = {
         viewed: [],
-        match: {}
+        categories: []
     };
 
     handleArrowClick = (arrowType) => () => {
@@ -37,24 +47,31 @@ class PreviouslyViewed extends Component {
         }
     };
 
+    getCategoryPath = categoryId => {
+        const { categories } = this.props;
+
+        return find(category => category.id === categoryId)(categories).path;
+    }
+
     render () {
-        const { viewed, match: { params } } = this.props;
+        const { viewed } = this.props;
+        const { leftPosition } = this.state;
 
         return <div className={classNames(styles.productPreviouslyViewed, styles.infoContainer)}>
             <div className={styles.bottomHeader}>недавно просматривали</div>
             <div className={styles.sliderContainer}>
                 <div className={styles.previouslyViewed}>
-                    <div className={styles.slides} style={{ left: `-${this.state.leftPosition.toString()}px` }}>
-                        {viewed.map((item, i) =>
-                            <Link className={styles.link} key={item.id} to={`/${params.category}/${item.id}`}>
+                    <div className={styles.slides} style={{ left: `-${leftPosition.toString()}px` }}>
+                        {viewed.map((product, i) =>
+                            <Link className={styles.link} key={product.id} to={`/${this.getCategoryPath(product.categoryId)}/${product.id}`}>
                                 <div className={styles.sliderItem} key={i}>
                                     <div className={styles.previouslyViewedItem}>
-                                        <div><img className={styles.avatar} src={item.avatar} alt={`${item.name} photo`} />
+                                        <div><img className={styles.avatar} src={product.avatar} alt={`${product.name} photo`} />
                                         </div>
                                         <div className={styles.itemInfoContainer}>
-                                            <div className={styles.viewedProductName}>{item.name}</div>
-                                            <div className={styles.viewedCategoryName}>{item.company}</div>
-                                            <div className={styles.itemPrice}>{item.price} UAH</div>
+                                            <div className={styles.viewedProductName}>{product.name}</div>
+                                            <div className={styles.viewedCategoryName}>{product.company}</div>
+                                            <div className={styles.itemPrice}>{product.price} UAH</div>
                                         </div>
                                     </div>
                                 </div>
@@ -84,4 +101,4 @@ class PreviouslyViewed extends Component {
     }
 }
 
-export default withRouter(PreviouslyViewed);
+export default withRouter(connect(mapStateToProps, null)(PreviouslyViewed));
