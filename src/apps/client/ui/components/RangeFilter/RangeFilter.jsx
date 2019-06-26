@@ -87,7 +87,6 @@ class RangeFilter extends Component {
                     slider: styles.slider
                 }}
                 value={value}
-                formatLabel={null}
                 onChange={value => this.handleInputChange(value)}
                 onChangeComplete={this.filterProducts}/>
         </section>;
