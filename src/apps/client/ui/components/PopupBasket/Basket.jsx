@@ -7,6 +7,7 @@ import closeBasketPopup from '../../../actions/closeBasketPopup';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import setBasket from '../../../actions/setBasket';
+import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
 
 const mapStateToProps = ({ popup, savedProducts }) => {
     return {
@@ -17,7 +18,8 @@ const mapStateToProps = ({ popup, savedProducts }) => {
 
 const mapDispatchToProps = (dispatch) => ({
     closeBasketPopup: (payload) => dispatch(closeBasketPopup(payload)),
-    setBasket: payload => dispatch(setBasket(payload))
+    setBasket: payload => dispatch(setBasket(payload)),
+    saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload))
 });
 
 class Basket extends Component {
@@ -29,7 +31,8 @@ class Basket extends Component {
         closeBasketPopup: PropTypes.func.isRequired,
         basketVisible: PropTypes.bool.isRequired,
         basket: PropTypes.array.isRequired,
-        setBasket: PropTypes.func.isRequired
+        setBasket: PropTypes.func.isRequired,
+        saveProductsToBasket: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -55,6 +58,7 @@ class Basket extends Component {
         }, {});
 
         setBasket(newBasket);
+        this.props.saveProductsToBasket(newBasket.map((item) => ({ id: item.product.id, count: item.amount })));
     };
 
     handleContinueShopping = () => {
@@ -75,6 +79,7 @@ class Basket extends Component {
         ];
 
         setBasket(newBasket);
+        this.props.saveProductsToBasket(newBasket.map((item) => ({ id: item.product.id, count: item.amount })));
     };
 
     handleCountClick = (id, operation) => () => {

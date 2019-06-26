@@ -8,6 +8,7 @@ import styles from './PopupBasket.css';
 import setBasket from '../../../actions/setBasket';
 import closePopup from '../../../actions/closePopup';
 import find from '@tinkoff/utils/array/find';
+import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
@@ -17,7 +18,8 @@ const mapStateToProps = ({ savedProducts }) => {
 
 const mapDispatchToProps = (dispatch) => ({
     setBasket: payload => dispatch(setBasket(payload)),
-    closePopup: payload => dispatch(closePopup(payload))
+    closePopup: payload => dispatch(closePopup(payload)),
+    saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload))
 });
 
 class PopupBasket extends Component {
@@ -30,7 +32,8 @@ class PopupBasket extends Component {
         product: PropTypes.object,
         basket: PropTypes.array.isRequired,
         setBasket: PropTypes.func.isRequired,
-        closePopup: PropTypes.func.isRequired
+        closePopup: PropTypes.func.isRequired,
+        saveProductsToBasket: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -81,6 +84,7 @@ class PopupBasket extends Component {
         ];
 
         setBasket(newBasket);
+        this.props.saveProductsToBasket(newBasket.map((item) => ({ id: item.product.id, count: item.amount })));
     };
 
     handleDuplicates = () => {
@@ -102,6 +106,7 @@ class PopupBasket extends Component {
         ] : [...previouslyAdded];
 
         setBasket(newBasket);
+        this.props.saveProductsToBasket(newBasket.map((item) => ({ id: item.product.id, count: item.amount })));
         this.props.closePopup();
     };
 
