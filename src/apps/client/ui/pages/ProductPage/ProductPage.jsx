@@ -40,11 +40,7 @@ const PREVIOUSLY_VIEWED = [
         price: '500'
     }
 ];
-const STAR = {
-    full: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
-    half: '/src/apps/client/ui/pages/ProductPage/images/starHalfFull.png',
-    empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
-};
+
 const RATING_STARS = 3.5;
 
 const mapStateToProps = ({ application }) => {
@@ -102,7 +98,7 @@ class ProductPage extends Component {
         }
     }
 
-    renderStars = () => getStarsArray(STAR, RATING_STARS);
+    getStars = () => getStarsArray(RATING_STARS);
 
     findColor = (tag) => {
         let color = '';
@@ -151,7 +147,7 @@ class ProductPage extends Component {
                                 src='/src/apps/client/ui/pages/ProductPage/images/likeHeart.png' alt='like'/></div>
                         </div>
                         <div className={styles.stars}>
-                            {this.renderStars().map((star, i) => <div key={i} className={styles.star}>
+                            {this.getStars().map((star, i) => <div key={i} className={styles.star}>
                                 <img src={star} alt='star'/>
                             </div>)}
                         </div>

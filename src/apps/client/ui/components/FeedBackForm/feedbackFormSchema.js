@@ -35,7 +35,7 @@ export default function () {
             },
             {
                 component: FormFieldButton,
-                name: 'button',
+                name: 'submit',
                 title: 'отправить'
             },
             {
