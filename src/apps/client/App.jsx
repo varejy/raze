@@ -7,6 +7,7 @@ import '../../css/main.css';
 
 import MainPage from './ui/pages/MainPage/MainPage.jsx';
 import ProductsPage from './ui/pages/ProductsPage/ProductsPage.jsx';
+import SearchPage from './ui/pages/SearchPage/SearchPage.jsx';
 import ProductPage from './ui/pages/ProductPage/ProductPage.jsx';
 import Header from './ui/components/Header/Header';
 import Footer from './ui/components/Footer/Footer';
@@ -28,6 +29,7 @@ class App extends Component {
                 <div className={styles.pageContent}>
                     <Switch>
                         <Route exact path='/' component={MainPage} />
+                        <Route exact path='/search' component={SearchPage} />
                         <Route exact path='/:category' component={ProductsPage} />
                         <Route exact path='/:category/:id' component={ProductPage} />
                     </Switch>
