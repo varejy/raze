@@ -57,17 +57,14 @@ class Basket extends Component {
         setBasket(newBasket);
     };
 
-    handleCloseBasket = () => {
+    handleContinueShopping = () => {
+        this.setNewBasket();
         this.props.closeBasketPopup();
     };
 
-    componentWillReceiveProps (nextProps) {
-        if (this.props.basketVisible !== nextProps.basketVisible) {
-            document.body.style.overflowY = nextProps.basketVisible ? 'hidden' : 'auto';
-            this.setProductsMap();
-            this.setNewBasket();
-        }
-    }
+    handleCloseBasket = () => {
+        this.props.closeBasketPopup();
+    };
 
     deleteItem = (index) => () => {
         const { basket, setBasket } = this.props;
@@ -100,6 +97,13 @@ class Basket extends Component {
             return counter + item.product.price * productsMap[i];
         }, 0);
     };
+
+    componentWillReceiveProps (nextProps) {
+        if (this.props.basketVisible !== nextProps.basketVisible) {
+            document.body.style.overflowY = nextProps.basketVisible ? 'hidden' : 'auto';
+            this.setProductsMap();
+        }
+    }
 
     render () {
         const { basket, basketVisible } = this.props;
@@ -146,8 +150,9 @@ class Basket extends Component {
                     </div>
                     <div className={styles.buttonsWrapp}>
                         <button
-                            className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)} onClick={this.handleCloseBasket}>продолжить
-                            покупки
+                            className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
+                            onClick={this.handleContinueShopping}>
+                                продолжить покупки
                         </button>
                         <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
                             заказа

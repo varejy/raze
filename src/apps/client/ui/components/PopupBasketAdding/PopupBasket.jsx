@@ -11,8 +11,7 @@ import find from '@tinkoff/utils/array/find';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
-        basket: savedProducts.basket,
-        isInBasket: savedProducts.isInBasket
+        basket: savedProducts.basket
     };
 };
 
@@ -36,30 +35,7 @@ class PopupBasket extends Component {
 
     static defaultProps = {
         product: {},
-        basket: [],
-        isInBasket: false
-    };
-
-    handleDuplicates = () => {
-        const { basket, product } = this.props;
-        const isInBasket = find(item => product.id === item.product.id, basket);
-
-        return !!isInBasket;
-    };
-
-    handleClosePopup = () => {
-        const { basket, setBasket, product } = this.props;
-        const { productsMap, productCount } = this.state;
-        const previouslyAdded = basket.map((item, i) => {
-            return { product: basket[i].product, amount: productsMap[i] };
-        }, {});
-
-        const newBasket = !this.handleDuplicates() ? [
-            { product: product, amount: productCount }, ...previouslyAdded
-        ] : [...previouslyAdded];
-
-        setBasket(newBasket);
-        this.props.closePopup();
+        basket: []
     };
 
     setProductsMap = () => {
@@ -107,6 +83,28 @@ class PopupBasket extends Component {
         setBasket(newBasket);
     };
 
+    handleDuplicates = () => {
+        const { basket, product } = this.props;
+        const isInBasket = find(item => product.id === item.product.id, basket);
+
+        return !!isInBasket;
+    };
+
+    handleClosePopup = () => {
+        const { basket, setBasket, product } = this.props;
+        const { productsMap, productCount } = this.state;
+        const previouslyAdded = basket.map((item, i) => {
+            return { product: basket[i].product, amount: productsMap[i] };
+        }, {});
+
+        const newBasket = !this.handleDuplicates() ? [
+            { product: product, amount: productCount }, ...previouslyAdded
+        ] : [...previouslyAdded];
+
+        setBasket(newBasket);
+        this.props.closePopup();
+    };
+
     componentDidMount () {
         this.setProductsMap();
     };
@@ -128,7 +126,7 @@ class PopupBasket extends Component {
                                     <h2 className={styles.itemName}>{product.name}</h2>
                                     <div className={styles.itemCategory}>{product.company}</div>
                                     <h2 className={styles.itemPrice}>{product.price} UAH</h2>
-                                    {this.handleDuplicates() && <div style={{ color: 'red' }}>Товар уже в корзине</div>}
+                                    {this.handleDuplicates() && <div className={styles.isInBasket}>*Этот товар уже в корзине</div>}
                                 </div>
                             </div>
                             {!this.handleDuplicates() && <div className={styles.itemAmount}>
