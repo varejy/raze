@@ -13,8 +13,6 @@ import styles from './ProductPage.css';
 
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
 import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
-        
-import classNames from 'classnames';
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
 import setViewed from '../../../actions/setViewed';
 import saveProductsViewed from '../../../services/client/saveProductsViewed';
@@ -38,17 +36,8 @@ const LABELS_MAP = {
         color: '#797979',
         text: 'товар заканчивается'
     }
-<<<<<<< HEAD
-];
+};
 
-=======
-};
-const STAR = {
-    full: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
-    half: '/src/apps/client/ui/pages/ProductPage/images/starHalfFull.png',
-    empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
-};
->>>>>>> e1a3474a08e9da2b391ef48745bcd6022c6bc862
 const RATING_STARS = 3.5;
 const MAX_VIEWED = 6;
 
@@ -108,12 +97,10 @@ class ProductPage extends Component {
         }
     }
 
-<<<<<<< HEAD
     getStars = () => getStarsArray(RATING_STARS);
-=======
+
     getProduct = () => {
         const { loading, productId } = this.state;
->>>>>>> e1a3474a08e9da2b391ef48745bcd6022c6bc862
 
         if (loading) {
             this.props.getProductById(productId)
@@ -151,8 +138,6 @@ class ProductPage extends Component {
 
         return newViewed.length > MAX_VIEWED ? tail(newViewed) : newViewed;
     };
-
-    renderStars = () => getStarsArray(STAR, RATING_STARS);
 
     render () {
         const { viewed } = this.props;
