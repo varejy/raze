@@ -37,7 +37,7 @@ class PreviouslyViewed extends Component {
         const { viewed } = this.props;
 
         return <div className={classNames(styles.productPreviouslyViewed, styles.infoContainer)}>
-            <div className={styles.bottomHeader}>недавно просматривали</div>
+            {!!viewed.length && <div className={styles.bottomHeader}>недавно просматривали</div>}
             <div className={styles.sliderContainer}>
                 <div className={styles.previouslyViewed}>
                     <div className={styles.slides} style={{ left: `-${this.state.leftPosition.toString()}px` }}>

@@ -43,9 +43,13 @@
     margin-right: 0;
 }
 
+.tags :first-child{
+    margin-right: 30px;
+}
+
 .tag{
-    width: 45px;
-    margin-right: 20px;
+    width: 50px;
+    margin-right: 10px;
     font-family: HelveticaNeueCyrRoman;
     font-size: 7px;
     line-height: 16px;
@@ -114,6 +118,7 @@
     margin-right: 10px;
     position: relative;
     bottom: -5px;
+    text-decoration: line-through;
 }
 
 .price{
