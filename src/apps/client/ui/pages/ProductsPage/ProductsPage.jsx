@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Products from '../../components/Products/Products';
+import NotProducts from '../../components/NotProducts/NotProducts';
 
 import { connect } from 'react-redux';
 import getProductsByCategory from '../../../services/client/getProductsByCategory';
@@ -99,7 +100,7 @@ class ProductsPage extends Component {
 
         return <section className={styles.productsWrapp}>
             <div className={styles.productsElemWrapp}>
-                <Products products={products} category={category}/>
+                { products.length ? <Products products={products} category={category}/> : <NotProducts/>}
             </div>
         </section>;
     }
