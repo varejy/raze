@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import ProductPreview from '../ProductPreview/ProductPreview';
 import PopupBasket from '../PopupBasketAdding/PopupBasket';
 import find from '@tinkoff/utils/array/find';
+import remove from '@tinkoff/utils/array/remove';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
@@ -57,10 +58,9 @@ class Product extends Component {
             ] : [...liked];
             this.setState({ isLiked: true });
         } else {
-            let likedModified = liked;
-            likedModified.splice(liked.indexOf(this.isInBasket()), 1);
+            const index = liked.indexOf(this.isInBasket());
             newLiked = [
-                ...likedModified
+                ...remove(index, 1, liked)
             ];
             this.setState({ isLiked: false });
         }

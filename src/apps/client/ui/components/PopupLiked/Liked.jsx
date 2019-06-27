@@ -5,6 +5,7 @@ import closeLikedPopup from '../../../actions/closeLikedPopup';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import setLiked from '../../../actions/setLiked';
+import remove from '@tinkoff/utils/array/remove';
 
 const mapStateToProps = ({ popup, savedProducts }) => {
     return {
@@ -37,10 +38,8 @@ class Liked extends Component {
 
     deleteItem = (index) => () => {
         const { liked, setLiked } = this.props;
-        let likedModified = liked;
-        likedModified.splice(index, 1);
         const newLiked = [
-            ...likedModified
+            ...remove(index, 1, liked)
         ];
 
         setLiked(newLiked);
