@@ -15,6 +15,7 @@ import ProductPreview from '../ProductPreview/ProductPreview';
 import PopupBasket from '../PopupBasketAdding/PopupBasket';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
+import saveProductsLiked from '../../../services/client/saveProductsLiked';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
@@ -24,7 +25,8 @@ const mapStateToProps = ({ savedProducts }) => {
 };
 const mapDispatchToProps = (dispatch) => ({
     openPopup: payload => dispatch(openPopup(payload)),
-    setLiked: payload => dispatch(setLiked(payload))
+    setLiked: payload => dispatch(setLiked(payload)),
+    saveProductsLiked: payload => dispatch(saveProductsLiked(payload))
 });
 
 class Product extends Component {
@@ -37,7 +39,8 @@ class Product extends Component {
         openPopup: PropTypes.func.isRequired,
         basket: PropTypes.array.isRequired,
         liked: PropTypes.array.isRequired,
-        setLiked: PropTypes.func.isRequired
+        setLiked: PropTypes.func.isRequired,
+        saveProductsLiked: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -48,23 +51,22 @@ class Product extends Component {
     };
 
     addToLiked = () => {
-        const { liked, setLiked, product } = this.props;
-        const { isLiked } = this.state;
-
         let newLiked;
-        if (!isLiked) {
+
+        if (!this.state.isLiked) {
             newLiked = !this.isInBasket() ? [
-                product, ...liked
-            ] : [...liked];
+                this.props.product, ...this.props.liked
+            ] : [...this.props.liked];
             this.setState({ isLiked: true });
         } else {
-            const index = liked.indexOf(this.isInBasket());
+            const index = this.props.liked.indexOf(this.isInBasket());
             newLiked = [
-                ...remove(index, 1, liked)
+                ...remove(index, 1, this.props.liked)
             ];
             this.setState({ isLiked: false });
         }
-        setLiked(newLiked);
+        this.props.setLiked(newLiked);
+        this.props.saveProductsLiked(newLiked.map((product) => product.id));
     };
 
     handlePreviewClick = () => {

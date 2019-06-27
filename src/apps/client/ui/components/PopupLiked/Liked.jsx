@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import setLiked from '../../../actions/setLiked';
 import remove from '@tinkoff/utils/array/remove';
+import saveProductsLiked from '../../../services/client/saveProductsLiked';
 
 const mapStateToProps = ({ popup, savedProducts }) => {
     return {
@@ -16,7 +17,8 @@ const mapStateToProps = ({ popup, savedProducts }) => {
 
 const mapDispatchToProps = (dispatch) => ({
     closeLikedPopup: (payload) => dispatch(closeLikedPopup(payload)),
-    setLiked: payload => dispatch(setLiked(payload))
+    setLiked: payload => dispatch(setLiked(payload)),
+    saveProductsLiked: payload => dispatch(saveProductsLiked(payload))
 });
 
 class Liked extends Component {
@@ -24,7 +26,8 @@ class Liked extends Component {
         closeLikedPopup: PropTypes.func.isRequired,
         likedVisible: PropTypes.bool.isRequired,
         liked: PropTypes.array.isRequired,
-        setLiked: PropTypes.func.isRequired
+        setLiked: PropTypes.func.isRequired,
+        saveProductsLiked: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -37,12 +40,12 @@ class Liked extends Component {
     };
 
     deleteItem = (index) => () => {
-        const { liked, setLiked } = this.props;
         const newLiked = [
-            ...remove(index, 1, liked)
+            ...remove(index, 1, this.props.liked)
         ];
 
-        setLiked(newLiked);
+        this.props.setLiked(newLiked);
+        this.props.saveProductsLiked(newLiked.map((product) => product.id));
     };
 
     componentWillReceiveProps (nextProps) {
