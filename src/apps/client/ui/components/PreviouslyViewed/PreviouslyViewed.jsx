@@ -50,7 +50,7 @@ class PreviouslyViewed extends Component {
     getCategoryPath = categoryId => {
         const { categories } = this.props;
 
-        return find(category => category.id === categoryId)(categories).path;
+        return find(category => category.id === categoryId, categories).path;
     }
 
     render () {
