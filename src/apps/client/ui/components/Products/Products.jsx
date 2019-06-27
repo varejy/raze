@@ -52,7 +52,7 @@ class Products extends Component {
         const { category, products, filteredProducts } = this.state;
 
         return <section className={styles.contentWrapp}>
-            <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products} />
+            { products.length > 1 && <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products} /> }
             <ProductsList products={filteredProducts} category={category} />
         </section>;
     }

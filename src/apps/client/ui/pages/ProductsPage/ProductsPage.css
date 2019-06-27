@@ -18,4 +18,5 @@
     min-width: 1170px;
     padding: 24px;
     display: flex;
+    justify-content: flex-end;
 }
