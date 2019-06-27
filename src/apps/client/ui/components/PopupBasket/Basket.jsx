@@ -7,6 +7,8 @@ import closeBasketPopup from '../../../actions/closeBasketPopup';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import setBasket from '../../../actions/setBasket';
+import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
+import remove from '@tinkoff/utils/array/remove';
 
 const mapStateToProps = ({ popup, savedProducts }) => {
     return {
@@ -17,7 +19,8 @@ const mapStateToProps = ({ popup, savedProducts }) => {
 
 const mapDispatchToProps = (dispatch) => ({
     closeBasketPopup: (payload) => dispatch(closeBasketPopup(payload)),
-    setBasket: payload => dispatch(setBasket(payload))
+    setBasket: payload => dispatch(setBasket(payload)),
+    saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload))
 });
 
 class Basket extends Component {
@@ -29,7 +32,8 @@ class Basket extends Component {
         closeBasketPopup: PropTypes.func.isRequired,
         basketVisible: PropTypes.bool.isRequired,
         basket: PropTypes.array.isRequired,
-        setBasket: PropTypes.func.isRequired
+        setBasket: PropTypes.func.isRequired,
+        saveProductsToBasket: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -39,42 +43,35 @@ class Basket extends Component {
 
     setProductsMap = () => {
         const { basket } = this.props;
-        const productsMap = basket.reduce((counter, item, i) => {
-            counter[i] = basket[i].amount;
-            return counter;
+        const productsMap = basket.reduce((acc, product, i) => {
+            acc[i] = product.amount;
+            return acc;
         }, {});
 
         this.setState({ productsMap });
     };
 
     setNewBasket = () => {
-        const { productsMap } = this.state;
-        const { basket, setBasket } = this.props;
-        const newBasket = basket.map((item, i) => {
-            return { product: basket[i].product, amount: productsMap[i] };
+        const newBasket = this.props.basket.map((product, i) => {
+            return { product: product.product, amount: this.state.productsMap[i] };
         }, {});
 
-        setBasket(newBasket);
+        this.props.setBasket(newBasket);
+        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.amount })));
     };
 
-    handleContinueShopping = () => {
+    handleCloseBasket = () => {
         this.setNewBasket();
         this.props.closeBasketPopup();
     };
 
-    handleCloseBasket = () => {
-        this.props.closeBasketPopup();
-    };
-
     deleteItem = (index) => () => {
-        const { basket, setBasket } = this.props;
-        let basketModified = basket;
-        basketModified.splice(index, 1);
         const newBasket = [
-            ...basketModified
+            ...remove(index, 1, this.props.basket)
         ];
 
-        setBasket(newBasket);
+        this.props.setBasket(newBasket);
+        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.amount })));
     };
 
     handleCountClick = (id, operation) => () => {
@@ -93,8 +90,8 @@ class Basket extends Component {
         const { basket } = this.props;
         const { productsMap } = this.state;
 
-        return basket.reduce((counter, item, i) => {
-            return counter + item.product.price * productsMap[i];
+        return basket.reduce((acc, product, i) => {
+            return acc + product.product.price * productsMap[i];
         }, 0);
     };
 
@@ -111,7 +108,7 @@ class Basket extends Component {
 
         return <div>
             {basketVisible && <div className={styles.root}>
-                <div className={styles.popupContent}>
+                <div className={classNames(styles.popupContent, basketVisible && styles.popupContentAnimated)}>
                     <div>
                         <div className={styles.headerContainer}>
                             <div className={styles.header}>корзина</div>
@@ -151,7 +148,7 @@ class Basket extends Component {
                     <div className={styles.buttonsWrapp}>
                         <button
                             className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
-                            onClick={this.handleContinueShopping}>
+                            onClick={this.handleCloseBasket}>
                                 продолжить покупки
                         </button>
                         <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
