@@ -20,6 +20,8 @@ import { withStyles } from '@material-ui/core/styles';
 import ProductFormFiles from '../ProductFormFiles/ProductFormFiles.jsx';
 import ProductAvatarFile from '../ProductAvatarFile/ProductAvatarFile.jsx';
 
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+
 import { connect } from 'react-redux';
 import getCategories from '../../../services/getCategories';
 import saveProduct from '../../../services/saveProduct';
@@ -37,7 +39,52 @@ import compose from '@tinkoff/utils/function/compose';
 import keys from '@tinkoff/utils/object/keys';
 import pickBy from '@tinkoff/utils/object/pickBy';
 
+import arrayMove from '../../../utils/arrayMove';
+
 import Tooltip from '@material-ui/core/Tooltip';
+
+const SORTING_BUTTON_IMG = '/src/apps/admin/ui/components/ProductForm/icon/baseline-reorder.svg';
+
+const ButtonSortable = SortableHandle(({ imageClassName, onLoad }) => (
+    <img className={imageClassName} src={SORTING_BUTTON_IMG} onLoad={onLoad} />
+));
+
+const FeatureSortable = SortableElement(({ index, feature, isSorting, handleFeatureDelete, handleFeatureChange, classes }) => (
+    <FormGroup className={classes.feature} row>
+        <ButtonSortable imageClassName={classes.buttonSortable}/>
+        <div className={classes.featureGroup}>
+            <TextField
+                className={classes.featureField}
+                label='Свойство'
+                value={feature.prop}
+                onChange={handleFeatureChange('prop', index)}
+                margin='normal'
+                variant='outlined'
+                required
+            />
+            <TextField
+                className={classes.featureField}
+                label='Значение'
+                value={feature.value}
+                onChange={handleFeatureChange('value', index)}
+                margin='normal'
+                variant='outlined'
+                required
+            />
+        </div>
+        <IconButton aria-label='Delete' className={classes.featureDelButton} onClick={handleFeatureDelete(index)}>
+            <DeleteIcon />
+        </IconButton>
+    </FormGroup>
+));
+
+const SlidesFeature = SortableContainer(({ features, classes, ...reset }) =>
+    <div className={classes.filtersWrapp}>
+        {
+            features.map((feature, i) => <FeatureSortable key={i} index={i} feature={feature} {...reset} classes={classes}/>)
+        }
+    </div>
+);
 
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features'];
 
@@ -58,6 +105,7 @@ const materialStyles = theme => ({
     feature: {
         display: 'flex',
         flexWrap: 'nowrap',
+        zIndex: '2000',
         alignItems: 'center'
     },
     featureGroup: {
@@ -68,6 +116,17 @@ const materialStyles = theme => ({
     },
     featureField: {
         width: 'calc(50% - 20px)'
+    },
+    buttonSortable: {
+        padding: '12px',
+        position: 'relative',
+        top: '4px',
+        marginRight: '12px'
+    },
+    featureDelButton: {
+        position: 'relative',
+        top: '4px',
+        marginLeft: '12px'
     },
     divider: {
         marginTop: 2 * theme.spacing.unit,
@@ -138,7 +197,8 @@ class ProductForm extends Component {
             })),
             initialAvatarFile: product.avatar,
             initialFiles: product.files,
-            removedFiles: []
+            removedFiles: [],
+            isSorting: false
         };
     }
 
@@ -346,9 +406,26 @@ class ProductForm extends Component {
         });
     };
 
+    onDragStart = () => {
+        this.setState({
+            isSorting: true
+        });
+    };
+
+    onDragEnd = ({ oldIndex, newIndex }) => {
+        const { product } = this.state;
+        this.setState({
+            product: {
+                ...product,
+                features: arrayMove(product.features, oldIndex, newIndex)
+            },
+            isSorting: false
+        });
+    };
+
     render () {
         const { classes } = this.props;
-        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
+        const { product, isSorting, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
 
         if (loading) {
             return <div className={classes.loader}>
@@ -433,33 +510,17 @@ class ProductForm extends Component {
                 </Fab>
             </div>
             <div>
-                {
-                    product.features.map((feature, i) => <FormGroup key={i} className={classes.feature} row>
-                        <div className={classes.featureGroup}>
-                            <TextField
-                                className={classes.featureField}
-                                label='Свойство'
-                                value={feature.prop}
-                                onChange={this.handleFeatureChange('prop', i)}
-                                margin='normal'
-                                variant='outlined'
-                                required
-                            />
-                            <TextField
-                                className={classes.featureField}
-                                label='Значение'
-                                value={feature.value}
-                                onChange={this.handleFeatureChange('value', i)}
-                                margin='normal'
-                                variant='outlined'
-                                required
-                            />
-                        </div>
-                        <IconButton aria-label='Delete' onClick={this.handleFeatureDelete(i)}>
-                            <DeleteIcon />
-                        </IconButton>
-                    </FormGroup>)
-                }
+                <SlidesFeature
+                    axis='xy'
+                    features={product.features}
+                    handleFeatureDelete={this.handleFeatureDelete}
+                    handleFeatureChange={this.handleFeatureChange}
+                    onSortStart={this.onDragStart}
+                    onSortEnd={this.onDragEnd}
+                    isSorting={isSorting}
+                    useDragHandle
+                    classes={classes}
+                />
             </div>
             <Divider className={classes.divider}/>
             <ProductAvatarFile onAvatarFileUpload={this.handleAvatarFileUpload} initialAvatarFile={initialAvatarFile}/>
