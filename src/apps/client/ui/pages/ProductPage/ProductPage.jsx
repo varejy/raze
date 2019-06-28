@@ -39,7 +39,7 @@ const STAR = {
     empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
 };
 const RATING_STARS = 3.5;
-const MAX_VIEWED = 6;
+const MAX_VIEWED = 7;
 
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
