@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import ProductsList from '../../components/ProductsList/ProductsList';
-import CheckboxFilters from '../../components/CheckboxFilters/CheckboxFilters';
-import RangeFilter from '../../components/RangeFilter/RangeFilter';
+import ProductsFilters from '../../components/ProductsFilters/ProductsFilters';
 
 import styles from './Products.css';
 
@@ -24,7 +23,6 @@ class Products extends Component {
         this.state = {
             products: this.props.products,
             filteredProducts: this.props.products,
-            priceFilteredProducts: this.props.products,
             category: this.props.category
         };
     }
@@ -38,33 +36,18 @@ class Products extends Component {
         }
     }
 
-    handleChangeFilters = (activeFilters, marking) => {
-        const { products } = this.state;
-
-        !activeFilters.length
-            ? this.setState({
-                priceFilteredProducts: products,
-                filteredProducts: products
-            })
-            : marking === 'RangeFilter'
-                ? this.setState({
-                    priceFilteredProducts: activeFilters
-                })
-                : this.setState({
-                    filteredProducts: activeFilters,
-                    priceFilteredProducts: activeFilters
-                });
+    handleFilter = filteredProducts => {
+        this.setState({
+            filteredProducts
+        });
     };
 
     render () {
-        const { category, products, filteredProducts, priceFilteredProducts } = this.state;
+        const { category, products, filteredProducts } = this.state;
 
         return <section className={styles.contentWrapp}>
-            <div className={styles.filtersWrapp}>
-                <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products} />
-                <RangeFilter onFiltersChanged={this.handleChangeFilters} products={filteredProducts}/>
-            </div>
-            <ProductsList products={priceFilteredProducts} category={category} />
+            <ProductsFilters products={products} onFilter={this.handleFilter} />
+            <ProductsList products={filteredProducts} category={category} />
         </section>;
     }
 }
