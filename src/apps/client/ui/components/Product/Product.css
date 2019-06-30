@@ -138,7 +138,7 @@
     font-size: 8.5px;
     flex-wrap: wrap;
     width: 42px;
-    height: 41px;
+    height: 42px;
     cursor: pointer;
     text-transform: uppercase;
 }
@@ -158,11 +158,15 @@
 }
 
 .basket .toolBarIcon{
-    width: 21px;
-    height: 20px;
+    width: 20px;
+    height: 19px;
 }
 
 .toolBarItem:hover {
+    color: #00a046;
+}
+
+.isInBasket{
     color: #00a046;
 }
 
@@ -188,6 +192,11 @@
 
 .basketIcon{
     background: url('/src/apps/client/ui/components/Product/icons/basket.png') center;
+    background-size: 100% auto;
+}
+
+.isInBasketIcon{
+    background: url('/src/apps/client/ui/components/Product/icons/basketGreen.png') center;
     background-size: 100% auto;
 }
 

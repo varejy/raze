@@ -1,44 +1,56 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import classNames from 'classnames';
 
 import styles from './PopupBasket.css';
+import setBasket from '../../../actions/setBasket';
+import closePopup from '../../../actions/closePopup';
+import find from '@tinkoff/utils/array/find';
+import remove from '@tinkoff/utils/array/remove';
+import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
 
-const PREVIOUSLY_ADDED = [
-    {
-        name: 'Keen Blade',
-        category: 'Knives',
-        price: 1200,
-        amount: 2
-    },
-    {
-        name: 'Super Axe',
-        category: 'Axes',
-        price: 2200,
-        amount: 1
-    },
-    {
-        name: 'Super Slayer',
-        category: 'Knives',
-        price: 3200,
-        amount: 3
-    }
+const mapStateToProps = ({ savedProducts }) => {
+    return {
+        basket: savedProducts.basket
+    };
+};
 
-];
+const mapDispatchToProps = (dispatch) => ({
+    setBasket: payload => dispatch(setBasket(payload)),
+    closePopup: payload => dispatch(closePopup(payload)),
+    saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload))
+});
 
 class PopupBasket extends Component {
     state = {
-        productCount: 1
+        productCount: 1,
+        productsMap: {}
     };
 
     static propTypes = {
-        product: PropTypes.object
+        product: PropTypes.object,
+        basket: PropTypes.array.isRequired,
+        setBasket: PropTypes.func.isRequired,
+        closePopup: PropTypes.func.isRequired,
+        saveProductsToBasket: PropTypes.func.isRequired
     };
 
     static defaultProps = {
-        product: {}
-    }
+        product: {},
+        basket: []
+    };
+
+    setProductsMap = () => {
+        const { basket } = this.props;
+        const productsMap = basket.reduce((acc, product, i) => {
+            acc[i] = product.amount;
+            return acc;
+        }, {});
+
+        this.setState({ productsMap });
+    };
 
     handleCountClick = operation => () => {
         const { productCount } = this.state;
@@ -50,31 +62,75 @@ class PopupBasket extends Component {
             : this.setState({
                 productCount: productCount > 1 ? productCount - 1 : 1
             });
-    }
+    };
+
+    handlePreviouslyAddedCountClick = (id, operation) => () => {
+        const { productsMap } = this.state;
+        const minusValue = productsMap[id] > 1 ? -1 : 0;
+
+        this.setState({
+            productsMap: {
+                ...productsMap,
+                [id]: productsMap[id] + (operation === 'plus' ? 1 : minusValue)
+            }
+        });
+    };
+
+    deletePreviouslyAdded = (index) => () => {
+        const newBasket = [
+            ...remove(index, 1, this.props.basket)
+        ];
+
+        this.props.setBasket(newBasket);
+        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.amount })));
+    };
+
+    handleDuplicates = () => {
+        const { basket, product } = this.props;
+        const isInBasket = find(item => product.id === item.product.id, basket);
+
+        return !!isInBasket;
+    };
+
+    handleClosePopup = () => {
+        const previouslyAdded = this.props.basket.map((product, i) => {
+            return { product: product.product, amount: this.state.productsMap[i] };
+        }, {});
+
+        const newBasket = !this.handleDuplicates() ? [
+            { product: this.props.product, amount: this.state.productCount }, ...previouslyAdded
+        ] : [...previouslyAdded];
+
+        this.props.setBasket(newBasket);
+        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.amount })));
+        this.props.closePopup();
+    };
+
+    componentDidMount () {
+        this.setProductsMap();
+    };
 
     render () {
-        const { product } = this.props;
-        const { productCount } = this.state;
+        const { product, basket } = this.props;
+        const { productCount, productsMap } = this.state;
 
         return <section>
             <div className={styles.root}>
                 <div className={styles.itemsWrapper}>
                     <div>
-                        <div className={styles.item}>
+                        {productCount > 0 && <div className={styles.item}>
                             <div className={styles.wrapper}>
                                 <div className={styles.itemImageWrapp}>
-                                    <div className={styles.deleteItem}>
-                                        <span className={styles.deleteItemIcon}></span>
-                                    </div>
                                     <img className={styles.itemImage} src={product.avatar} alt={product.avatar}/>
                                 </div>
                                 <div className={styles.itemInfo}>
                                     <h2 className={styles.itemName}>{product.name}</h2>
-                                    <div className={styles.itemCategory}>категория</div>
+                                    <div className={styles.itemCategory}>{product.company}</div>
                                     <h2 className={styles.itemPrice}>{product.price} UAH</h2>
+                                    {this.handleDuplicates() && <div className={styles.isInBasket}>*Этот товар уже в корзине</div>}
                                 </div>
                             </div>
-                            <div className={styles.itemAmount}>
+                            {!this.handleDuplicates() && <div className={styles.itemAmount}>
                                 <div className={styles.amountTxt}>Количество</div>
                                 <div className={styles.amount}>
                                     <span className={styles.amountButton}
@@ -83,35 +139,35 @@ class PopupBasket extends Component {
                                     <span className={styles.amountButton}
                                         onClick={this.handleCountClick('plus')}>+</span>
                                 </div>
-                            </div>
-                        </div>
+                            </div>}
+                        </div>}
                     </div>
-                    {PREVIOUSLY_ADDED.length > 0 && <div className={styles.previouslyAdded}>
+                    {basket.length > 0 && <div className={styles.previouslyAdded}>
                         <h1 className={styles.previouslyAddedTitle}>ранее добавленные</h1>
-                        {PREVIOUSLY_ADDED.map((item, i) =>
+                        {basket.map((item, i) =>
                             <div className={styles.previouslyAddedItemWrapp} key={i}>
                                 <div className={styles.item}>
                                     <div className={styles.wrapper}>
                                         <div className={styles.itemImageWrapp}>
-                                            <div className={styles.deleteItem}>
-                                                <span className={styles.deleteItemIcon}></span>
+                                            <div className={styles.deleteItem} onClick={this.deletePreviouslyAdded(i)}>
+                                                <span className={styles.deleteItemIcon}/>
                                             </div>
                                             <img className={styles.itemImage}
-                                                src="/src/apps/client/ui/components/PopupBasket/img/BestKnife.jpg"
-                                                alt="product"/>
+                                                src={item.product.avatar}
+                                                alt={item.product.name}/>
                                         </div>
                                         <div className={styles.itemInfo}>
-                                            <h2 className={styles.itemName}>{item.name}</h2>
-                                            <div className={styles.itemCategory}>{item.category}</div>
-                                            <h2 className={styles.itemPrice}>{item.price} UAH</h2>
+                                            <h2 className={styles.itemName}>{item.product.name}</h2>
+                                            <div className={styles.itemCategory}>{item.product.company}</div>
+                                            <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
                                         </div>
                                     </div>
                                     <div className={styles.itemAmount}>
                                         <div className={styles.amountTxt}>Количество</div>
                                         <div className={styles.amount}>
-                                            <span className={styles.amountButton}>-</span>
-                                            <div className={styles.countWrapp}>{item.amount}</div>
-                                            <span className={styles.amountButton}>+</span>
+                                            <span className={styles.amountButton} onClick={this.handlePreviouslyAddedCountClick(i, 'minus')}>-</span>
+                                            <div className={styles.countWrapp}>{productsMap[i]}</div>
+                                            <span className={styles.amountButton} onClick={this.handlePreviouslyAddedCountClick(i, 'plus')}>+</span>
                                         </div>
                                     </div>
                                 </div>
@@ -120,7 +176,7 @@ class PopupBasket extends Component {
                 </div>
                 <div className={styles.buttonsWrapp}>
                     <button
-                        className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}>продолжить
+                        className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)} onClick={this.handleClosePopup}>продолжить
                         покупки
                     </button>
                     <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
@@ -132,4 +188,4 @@ class PopupBasket extends Component {
     }
 }
 
-export default PopupBasket;
+export default connect(mapStateToProps, mapDispatchToProps)(PopupBasket);
