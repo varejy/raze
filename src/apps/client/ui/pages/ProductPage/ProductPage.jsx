@@ -26,7 +26,7 @@ const PRODUCT_PATH = '/:category/:id';
 const LABELS_MAP = {
     lowPrice: {
         color: '#ff0000',
-        text: 'низкая цена'
+        text: 'скидочная цена'
     },
     topSales: {
         color: '#ffb116',
@@ -215,7 +215,7 @@ class ProductPage extends Component {
                         <div className={styles.description}>{product.description}
                         </div>
                     </div>
-                    <div className={classNames(styles.productParameters, styles.infoContainer)}>
+                    {product.features.length > 0 && <div className={classNames(styles.productParameters, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>характеристика товара</div>
                         <div className={styles.parameters}>
                             {product.features.map((parameter, i) =>
@@ -227,7 +227,7 @@ class ProductPage extends Component {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </div>}
                     <div className={classNames(styles.productFeedbacks, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>всего отзывов</div>
                         <div className={styles.feedbacks}>
