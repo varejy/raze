@@ -22,7 +22,7 @@ import arrayMove from '../../../utils/arrayMove';
 
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
-const SORTING_BUTTON_IMG = '/src/apps/admin/ui/components/CategoryForm/icon/baseline-reorder.svg';
+const SORTING_BUTTON_IMG = '/src/apps/admin/ui/components/Filters/icon/baseline-reorder.svg';
 
 const ButtonSortable = SortableHandle(({ imageClassName, onLoad }) => (
     <img className={imageClassName} src={SORTING_BUTTON_IMG} onLoad={onLoad} />
@@ -133,11 +133,17 @@ const materialStyles = theme => ({
 
 class Filters extends Component {
     static propTypes = {
-        classes: PropTypes.object
+        classes: PropTypes.object,
+        onFilterChange: PropTypes.func,
+        filters: PropTypes.array
+    };
+
+    static defaultProps = {
+        filters: []
     };
 
     state = {
-        filters: [],
+        filters: this.props.filters,
         isSorting: false
     };
 
@@ -187,6 +193,10 @@ class Filters extends Component {
         const { classes } = this.props;
         const { isSorting, filters } = this.state;
 
+        if (filters !== this.props.filters) {
+            this.props.onFilterChange(filters);
+        };
+
         return <div className={classes.createFiltersWrapp}>
             <div className={classes.createFiltersHeader}>
                 <Typography className={classes.filterTitle} variant='h5'>Фильтр</Typography>
@@ -202,6 +212,7 @@ class Filters extends Component {
                 onSortStart={this.onDragStart}
                 onSortEnd={this.onDragEnd}
                 isSorting={isSorting}
+                useDragHandle
                 classes={classes}
             />
         </div>;

@@ -21,7 +21,7 @@ import pick from '@tinkoff/utils/object/pick';
 
 import Filters from '../Filters/Filters';
 
-const CATEGORY_VALUES = ['name', 'path', 'hidden'];
+const CATEGORY_VALUES = ['name', 'path', 'hidden', 'filters'];
 
 const mapDispatchToProps = (dispatch) => ({
     saveCategory: payload => dispatch(saveCategory(payload)),
@@ -92,6 +92,10 @@ class CategoryForm extends Component {
         });
     };
 
+    handleFilterChange = filters => {
+        this.state.category.filters = filters;
+    }
+
     render () {
         const { classes } = this.props;
         const { category, id } = this.state;
@@ -128,7 +132,7 @@ class CategoryForm extends Component {
                     label='Скрыть категорию и товары в ней'
                 />
             </div>
-            <Filters/>
+            <Filters onFilterChange={this.handleFilterChange} filters={category.filters}/>
             <Divider className={classes.divider}/>
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>
