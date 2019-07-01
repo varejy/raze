@@ -18,8 +18,6 @@ class FormFieldRating extends Component {
         onChange: noop
     };
 
-    getStars = () => getStarsArray(this.props.value);
-
     handleRatingChange = value => () => {
         this.props.onChange(value + 1);
     }
@@ -27,7 +25,7 @@ class FormFieldRating extends Component {
     render () {
         return <section className={styles.starsWrapper}>
             <div className={styles.stars}>
-                {this.getStars().map((star, i) =>
+                {getStarsArray(this.props.value).map((star, i) =>
                     <div
                         key={i}
                         onClick={this.handleRatingChange(i)}

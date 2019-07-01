@@ -97,8 +97,6 @@ class ProductPage extends Component {
         }
     }
 
-    getStars = () => getStarsArray(RATING_STARS);
-
     getProduct = () => {
         const { loading, productId } = this.state;
 
@@ -173,7 +171,7 @@ class ProductPage extends Component {
                                 src='/src/apps/client/ui/pages/ProductPage/images/likeHeart.png' alt='like'/></div>
                         </div>
                         <div className={styles.stars}>
-                            {this.getStars().map((star, i) => <div key={i} className={styles.star}>
+                            {getStarsArray(RATING_STARS).map((star, i) => <div key={i} className={styles.star}>
                                 <img src={star} alt='star'/>
                             </div>)}
                         </div>
