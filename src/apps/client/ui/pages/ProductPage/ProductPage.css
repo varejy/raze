@@ -223,6 +223,10 @@
     width: 100%;
 }
 
+.creatingFeedback {
+    width: 394px;
+}
+
 .previouslyViewed{
     width: 100%;
     display: flex;

@@ -1,0 +1,44 @@
+.buttonField {
+    padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    &_position {
+        &_center {
+             justify-content: center;
+         }
+
+        &_right {
+             justify-content: right;
+         }
+     }
+}
+
+.buttonDefault {
+    @mixin removeDefaultButton
+}
+
+.button {
+    font-family: HelveticaNeueCyrBold;
+    text-transform: uppercase;
+    color: white;
+    background-color: black;
+    font-size: 11.5px;
+    border: 0px solid black;
+    width: 162px;
+    height: 40px;
+    transition-duration: .2s;
+    transition-property: background-color, color;
+    padding: 15px 14px;
+    cursor: pointer;
+
+    &:hover {
+           background-color: black;
+           color: white;
+       }
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
