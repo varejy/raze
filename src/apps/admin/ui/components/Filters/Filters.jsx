@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import ReorderIcon from '@material-ui/icons/Reorder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -22,10 +23,8 @@ import arrayMove from '../../../utils/arrayMove';
 
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
-const SORTING_BUTTON_IMG = '/src/apps/admin/ui/components/Filters/icon/baseline-reorder.svg';
-
-const ButtonSortable = SortableHandle(({ imageClassName, onLoad }) => (
-    <img className={imageClassName} src={SORTING_BUTTON_IMG} onLoad={onLoad} />
+const ButtonSortable = SortableHandle(({ imageClassName }) => (
+    <ReorderIcon className={imageClassName}>reorder</ReorderIcon>
 ));
 
 const FilterSortable = SortableElement(({ index, filter, isSorting, handleFilterDelete, handleFilterChange, classes }) => (
