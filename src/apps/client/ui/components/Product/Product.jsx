@@ -91,6 +91,8 @@ class Product extends Component {
 
     render () {
         const { product, category } = this.props;
+        const inBasket = this.isInBasket();
+        const isLiked = this.isLiked();
 
         return <div className={styles.product}>
             <Link className={styles.link} key={product.id} to={`/${category.path}/${product.id}`}>
@@ -120,12 +122,12 @@ class Product extends Component {
                         <div>Быстрый просмотр</div>
                     </div>
                     <div className={classNames(styles.heart, styles.toolBarItem)} onClick={this.addToLiked}>
-                        <div className={classNames(styles.toolBarIcon, !this.isLiked() ? styles.heartIcon : styles.isLikedHeart)}/>
-                        {!this.isLiked() ? <div>Избранное</div> : <div className={styles.isLiked}>Уже в избранном</div>}
+                        <div className={classNames(styles.toolBarIcon, !isLiked ? styles.heartIcon : styles.isLikedHeart)}/>
+                        {!isLiked ? <div>Избранное</div> : <div className={styles.isLiked}>Уже в избранном</div>}
                     </div>
                     <div className={classNames(styles.basket, styles.toolBarItem)} onClick={this.handleOpenBasket}>
-                        <div className={classNames(styles.toolBarIcon, !this.isInBasket() ? styles.basketIcon : styles.isInBasketIcon)}/>
-                        {!this.isInBasket() ? <div>В корзину</div> : <div className={styles.isInBasket}>Уже в корзине</div>}
+                        <div className={classNames(styles.toolBarIcon, !inBasket ? styles.basketIcon : styles.isInBasketIcon)}/>
+                        {!inBasket ? <div>В корзину</div> : <div className={styles.isInBasket}>Уже в корзине</div>}
                     </div>
                 </div>}
             </div>
