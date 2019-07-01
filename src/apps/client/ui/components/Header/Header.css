@@ -207,8 +207,12 @@
     position: absolute;
 }
 
-.ordersCounterHuge{
-    margin-left: 5px;
+.ordersCounterHuge, .ordersCounterHugePlus {
+    margin: 0 2px;
+}
+
+.ordersCounterHugePlus {
+    margin: 0 5px;
 }
 
 .ordersCounterBig .ordersCounter{
@@ -219,6 +223,11 @@
 .ordersCounterHuge .ordersCounter{
     width: 24px;
     height: 24px;
+}
+
+.ordersCounterHugePlus .ordersCounter{
+    width: 30px;
+    height: 30px;
 }
 
 .basketAmount{
@@ -236,6 +245,11 @@
     right: -15px;
 }
 
+.ordersCounterHugePlus .basketAmount{
+    top: -3px;
+    right: -20px;
+}
+
 .likedAmount{
     top: 10px;
     right: 5px;
@@ -249,6 +263,11 @@
 .ordersCounterHuge .likedAmount{
     top: 2px;
     right: 0;
+}
+
+.ordersCounterHugePlus .likedAmount{
+    top: -3px;
+    right: -5px;
 }
 
 .ordersNumber{

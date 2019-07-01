@@ -96,26 +96,28 @@ class Header extends Component {
                     <div className={classNames(
                         styles.bottomIconWrapper,
                         likedAmount > 9 && styles.ordersCounterBig,
-                        likedAmount > 99 && styles.ordersCounterHuge
+                        likedAmount > 99 && styles.ordersCounterHuge,
+                        likedAmount > 999 && styles.ordersCounterHugePlus
                     )}
                     >
                         <img className={styles.iconHeart} src='/src/apps/client/ui/components/Header/images/likeHeart.png' alt=''/>
                         {likedAmount > 0 &&
                         <div className={classNames(styles.ordersCounter, styles.likedAmount)}>
-                            <div className={styles.ordersNumber}>{likedAmount}</div>
+                            <div className={styles.ordersNumber}>{likedAmount < 1000 ? likedAmount : '999+' }</div>
                         </div>}
                     </div>
                     <div className={classNames(
                         styles.bottomIconWrapper,
                         basketAmount > 9 && styles.ordersCounterBig,
-                        basketAmount > 99 && styles.ordersCounterHuge
+                        basketAmount > 99 && styles.ordersCounterHuge,
+                        basketAmount > 999 && styles.ordersCounterHugePlus
                     )}
                     onClick={this.handleOpenBasket}
                     >
                         <img className={styles.iconBasket} src='/src/apps/client/ui/components/Header/images/basket.png' alt=''/>
                         {basketAmount > 0 &&
                         <div className={classNames(styles.ordersCounter, styles.basketAmount)}>
-                            <div className={styles.ordersNumber}>{basketAmount}</div>
+                            <div className={styles.ordersNumber}>{basketAmount < 1000 ? basketAmount : '999+' }</div>
                         </div>}
                     </div>
                 </div>
