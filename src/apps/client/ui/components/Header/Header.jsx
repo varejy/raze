@@ -10,6 +10,7 @@ import { Link, NavLink, withRouter } from 'react-router-dom';
 import styles from './Header.css';
 import openBasketPopup from '../../../actions/openBasketPopup';
 import openLikedPopup from '../../../actions/openLikedPopup';
+import openLicensePopup from '../../../actions/openLicensePopup';
 
 const mapStateToProps = ({ application }) => {
     return {
@@ -18,14 +19,16 @@ const mapStateToProps = ({ application }) => {
 };
 const mapDispatchToProps = (dispatch) => ({
     openBasketPopup: (payload) => dispatch(openBasketPopup(payload)),
-    openLikedPopup: (payload) => dispatch(openLikedPopup(payload))
+    openLikedPopup: (payload) => dispatch(openLikedPopup(payload)),
+    openLicensePopup: (payload) => dispatch(openLicensePopup(payload))
 });
 
 class Header extends Component {
     static propTypes = {
         categories: PropTypes.array,
         openBasketPopup: PropTypes.func.isRequired,
-        openLikedPopup: PropTypes.func.isRequired
+        openLikedPopup: PropTypes.func.isRequired,
+        openLicensePopup: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -38,6 +41,10 @@ class Header extends Component {
 
     handleOpenLiked = () => {
         this.props.openLikedPopup();
+    };
+
+    handleOpenLicense = () => {
+        this.props.openLicensePopup();
     };
 
     render () {
@@ -54,7 +61,7 @@ class Header extends Component {
                 </div>
                 <div className={styles.contactsWrapper}>
                     <div className={styles.contacts}>
-                        <div className={styles.contactsLicense}>
+                        <div className={styles.contactsLicense} onClick={this.handleOpenLicense}>
                             <div>Лицензионное соглашение</div>
                         </div>
                         <div className={styles.tollEmail}>
