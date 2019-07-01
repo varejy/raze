@@ -17,7 +17,7 @@ const FILTERS = [
     {
         type: 'checkbox',
         prop: 'company',
-        title: 'ЦеПроизводитель',
+        title: 'Производитель',
         id: '1'
     },
     {
