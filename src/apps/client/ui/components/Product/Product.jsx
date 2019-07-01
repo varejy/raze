@@ -12,6 +12,13 @@ import { Link } from 'react-router-dom';
 
 import ProductPreview from '../ProductPreview/ProductPreview';
 import PopupBasket from '../PopupBasketAdding/PopupBasket';
+import find from '@tinkoff/utils/array/find';
+
+const mapStateToProps = ({ savedProducts }) => {
+    return {
+        basket: savedProducts.basket
+    };
+};
 const LABELS_MAP = {
     lowPrice: {
         color: '#ff0000',
@@ -33,13 +40,15 @@ const mapDispatchToProps = (dispatch) => ({
 class Product extends Component {
     static propTypes = {
         product: PropTypes.object,
+        category: PropTypes.object,
         openPopup: PropTypes.func.isRequired,
-        category: PropTypes.object
+        basket: PropTypes.array.isRequired
     };
 
     static defaultProps = {
         product: {},
-        category: {}
+        category: {},
+        basket: []
     };
 
     handlePreviewClick = () => {
@@ -69,6 +78,13 @@ class Product extends Component {
         }
 
         return discountLeft;
+    };
+
+    isInBasket = () => {
+        const { basket, product } = this.props;
+        const isInBasket = find(item => product.id === item.product.id, basket);
+
+        return !!isInBasket;
     };
 
     render () {
@@ -120,8 +136,8 @@ class Product extends Component {
                         <div>Избранное</div>
                     </div>
                     <div className={classNames(styles.basket, styles.toolBarItem)} onClick={this.handleOpenBasket}>
-                        <div className={classNames(styles.toolBarIcon, styles.basketIcon)}/>
-                        <div>В корзину</div>
+                        <div className={classNames(styles.toolBarIcon, !this.isInBasket() ? styles.basketIcon : styles.isInBasketIcon)}/>
+                        {!this.isInBasket() ? <div>В корзину</div> : <div className={styles.isInBasket}>Уже в корзине</div>}
                     </div>
                 </div>}
             </div>
@@ -134,4 +150,4 @@ class Product extends Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(Product);
+export default connect(mapStateToProps, mapDispatchToProps)(Product);
