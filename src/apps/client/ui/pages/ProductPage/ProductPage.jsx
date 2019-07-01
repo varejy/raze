@@ -39,7 +39,7 @@ const STAR = {
     empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
 };
 const RATING_STARS = 3.5;
-const MAX_VIEWED = 6;
+const MAX_VIEWED = 7;
 
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
@@ -87,6 +87,7 @@ class ProductPage extends Component {
         if (nextProps.productMap !== this.props.productMap) {
             this.setState({ product: nextProps.productMap[productId] }, () => {
                 const newViewed = this.getViewed(nextProps);
+
                 this.props.setViewed(newViewed);
                 this.props.saveProductsViewed(newViewed.map((product) => product.id));
             });
@@ -98,6 +99,10 @@ class ProductPage extends Component {
     }
 
     getProduct = () => {
+        if (this.notFoundPage) {
+            return;
+        }
+
         const { loading, productId } = this.state;
 
         if (loading) {

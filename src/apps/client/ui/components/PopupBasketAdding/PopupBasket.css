@@ -161,3 +161,10 @@
     background-color: #4cb34f;
     color: white;
 }
+
+.isInBasket{
+    color: #ff0000;
+    text-transform: uppercase;
+    font-size: 10px;
+    line-height: 30px;
+}

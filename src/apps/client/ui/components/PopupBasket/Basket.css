@@ -17,11 +17,17 @@
     padding: 35px;
     background-color: #131313;
     position: absolute;
+    width: 420px;
     top: 0;
-    right: 0;
+    right: -420px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    transition: right 2s ease;
+}
+
+.popupContentAnimated{
+    right: 0;
 }
 
 .headerContainer{
