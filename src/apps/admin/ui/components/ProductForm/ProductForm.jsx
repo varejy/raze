@@ -13,6 +13,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import ReorderIcon from '@material-ui/icons/Reorder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core/styles';
@@ -43,13 +44,11 @@ import arrayMove from '../../../utils/arrayMove';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
-const SORTING_BUTTON_IMG = '/src/apps/admin/ui/components/ProductForm/icon/baseline-reorder.svg';
-
-const ButtonSortable = SortableHandle(({ imageClassName, onLoad }) => (
-    <img className={imageClassName} src={SORTING_BUTTON_IMG} onLoad={onLoad} />
+const ButtonSortable = SortableHandle(({ imageClassName }) => (
+    <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
 ));
 
-const FeatureSortable = SortableElement(({ index, feature, isSorting, handleFeatureDelete, handleFeatureChange, classes }) => (
+const FeatureSortable = SortableElement(({ index, feature, handleFeatureDelete, handleFeatureChange, classes }) => (
     <FormGroup className={classes.feature} row>
         <ButtonSortable imageClassName={classes.buttonSortable}/>
         <div className={classes.featureGroup}>
@@ -118,7 +117,6 @@ const materialStyles = theme => ({
         width: 'calc(50% - 20px)'
     },
     buttonSortable: {
-        padding: '12px',
         position: 'relative',
         top: '4px',
         marginRight: '12px'
@@ -197,8 +195,7 @@ class ProductForm extends Component {
             })),
             initialAvatarFile: product.avatar,
             initialFiles: product.files,
-            removedFiles: [],
-            isSorting: false
+            removedFiles: []
         };
     }
 
@@ -406,20 +403,13 @@ class ProductForm extends Component {
         });
     };
 
-    onDragStart = () => {
-        this.setState({
-            isSorting: true
-        });
-    };
-
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { product } = this.state;
         this.setState({
             product: {
                 ...product,
                 features: arrayMove(product.features, oldIndex, newIndex)
-            },
-            isSorting: false
+            }
         });
     };
 
