@@ -23,10 +23,6 @@ export default class FormFieldButton extends Component {
         this.props.onClick(event);
     };
 
-    setRef = name => element => {
-        this[name] = element;
-    };
-
     render () {
         const { name, schema } = this.props;
 
@@ -38,7 +34,6 @@ export default class FormFieldButton extends Component {
                 })}
                 onClick={this.handleClick}
                 type={schema.type}
-                ref={this.setRef('button')}
             >
                 { schema.title }
             </button>

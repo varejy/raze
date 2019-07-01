@@ -13,9 +13,11 @@ import styles from './ProductPage.css';
 
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
 import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
+
 import Comments from '../../components/Comments/Comments';
 
 import classNames from 'classnames';
+
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
 import setViewed from '../../../actions/setViewed';
 import saveProductsViewed from '../../../services/client/saveProductsViewed';
@@ -29,7 +31,7 @@ const PRODUCT_PATH = '/:category/:id';
 const LABELS_MAP = {
     lowPrice: {
         color: '#ff0000',
-        text: 'низкая цена'
+        text: 'скидочная цена'
     },
     topSales: {
         color: '#ffb116',
@@ -40,13 +42,9 @@ const LABELS_MAP = {
         text: 'товар заканчивается'
     }
 };
-const STAR = {
-    full: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
-    half: '/src/apps/client/ui/pages/ProductPage/images/starHalfFull.png',
-    empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
-};
+
 const RATING_STARS = 3.5;
-const MAX_VIEWED = 6;
+const MAX_VIEWED = 7;
 
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
@@ -94,6 +92,7 @@ class ProductPage extends Component {
         if (nextProps.productMap !== this.props.productMap) {
             this.setState({ product: nextProps.productMap[productId] }, () => {
                 const newViewed = this.getViewed(nextProps);
+
                 this.props.setViewed(newViewed);
                 this.props.saveProductsViewed(newViewed.map((product) => product.id));
             });
@@ -105,6 +104,10 @@ class ProductPage extends Component {
     }
 
     getProduct = () => {
+        if (this.notFoundPage) {
+            return;
+        }
+
         const { loading, productId } = this.state;
 
         if (loading) {
@@ -143,9 +146,7 @@ class ProductPage extends Component {
 
         return newViewed.length > MAX_VIEWED ? tail(newViewed) : newViewed;
     };
-
-    renderStars = () => getStarsArray(STAR, RATING_STARS);
-
+    
     render () {
         const { viewed } = this.props;
         const { loading, product } = this.state;
@@ -180,7 +181,7 @@ class ProductPage extends Component {
                                 src='/src/apps/client/ui/pages/ProductPage/images/likeHeart.png' alt='like'/></div>
                         </div>
                         <div className={styles.stars}>
-                            {this.renderStars().map((star, i) => <div key={i} className={styles.star}>
+                            {getStarsArray(RATING_STARS).map((star, i) => <div key={i} className={styles.star}>
                                 <img src={star} alt='star'/>
                             </div>)}
                         </div>
@@ -219,7 +220,7 @@ class ProductPage extends Component {
                         <div className={styles.description}>{product.description}
                         </div>
                     </div>
-                    <div className={classNames(styles.productParameters, styles.infoContainer)}>
+                    {product.features.length > 0 && <div className={classNames(styles.productParameters, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>характеристика товара</div>
                         <div className={styles.parameters}>
                             {product.features.map((parameter, i) =>
@@ -231,7 +232,7 @@ class ProductPage extends Component {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </div>}
                     <div className={classNames(styles.productFeedbacks, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>всего отзывов</div>
                         <div className={styles.feedbacks}>
@@ -244,7 +245,15 @@ class ProductPage extends Component {
                             <FeedBackForm/>
                         </div>
                     </div>
+                    <div className={classNames(styles.feedbackForm, styles.infoContainer)}>
+                        <div className={styles.bottomHeader}>добавьте комментарий</div>
+                        <div className={styles.creatingFeedback}>
+                            <FeedBackForm/>
+                        </div>
+                    </div>
+
                     {!!viewed.length && <PreviouslyViewed viewed={tail(viewed)} />}
+
                 </div>
             </div>
         </section>;

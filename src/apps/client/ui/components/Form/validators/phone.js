@@ -1,9 +1,9 @@
 const pattern = /^([0-9 +()-]+|\d+)$/i;
 
-export default (value, options = {}, text = '') => {
+export default (value, options = {}) => {
     const isValid = pattern.test(value);
 
     if (!isValid) {
-        return options.text || text;
+        return options.text || 'Вы не указали свой номер телефона';
     }
 };

@@ -7,11 +7,6 @@ import getStarsArray from '../../../../../utils/getStarsArray';
 
 import noop from '@tinkoff/utils/function/noop';
 
-const STAR = {
-    full: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
-    empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
-};
-
 class FormFieldRating extends Component {
     static propTypes = {
         value: PropTypes.number,
@@ -23,22 +18,14 @@ class FormFieldRating extends Component {
         onChange: noop
     };
 
-    state = {
-        ratingValue: this.props.value
-    }
-
-    renderStars = () => getStarsArray(STAR, this.state.ratingValue);
-
     handleRatingChange = value => () => {
-        this.setState({
-            ratingValue: value + 1
-        }, () => this.props.onChange(this.state.ratingValue));
+        this.props.onChange(value + 1);
     }
 
     render () {
         return <section className={styles.starsWrapper}>
             <div className={styles.stars}>
-                {this.renderStars().map((star, i) =>
+                {getStarsArray(this.props.value).map((star, i) =>
                     <div
                         key={i}
                         onClick={this.handleRatingChange(i)}
