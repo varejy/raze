@@ -9,10 +9,13 @@ import { Link, NavLink, withRouter } from 'react-router-dom';
 
 import styles from './Header.css';
 import openBasketPopup from '../../../actions/openBasketPopup';
+import classNames from 'classnames';
 
-const mapStateToProps = ({ application }) => {
+const mapStateToProps = ({ application, savedProducts }) => {
     return {
-        categories: application.categories
+        categories: application.categories,
+        basket: savedProducts.basket,
+        liked: savedProducts.liked
     };
 };
 const mapDispatchToProps = (dispatch) => ({
@@ -22,11 +25,15 @@ const mapDispatchToProps = (dispatch) => ({
 class Header extends Component {
     static propTypes = {
         categories: PropTypes.array,
-        openBasketPopup: PropTypes.func.isRequired
+        openBasketPopup: PropTypes.func.isRequired,
+        basket: PropTypes.array.isRequired,
+        liked: PropTypes.array.isRequired
     };
 
     static defaultProps = {
-        categories: []
+        categories: [],
+        basket: [],
+        liked: []
     };
 
     handleOpenBasket = () => {
@@ -35,6 +42,8 @@ class Header extends Component {
 
     render () {
         const { categories } = this.props;
+        const basketAmount = this.props.basket.length;
+        const likedAmount = this.props.liked.length;
 
         return <div className={styles.headerContainer}>
             <div className={styles.headerTop}>
@@ -84,12 +93,30 @@ class Header extends Component {
                     </ul>
                 </div>
                 <div className={styles.likesBasket}>
-                    <div className={styles.bottomIconWrapper}>
+                    <div className={classNames(
+                        styles.bottomIconWrapper,
+                        likedAmount > 9 && styles.ordersCounterBig,
+                        likedAmount > 99 && styles.ordersCounterHuge
+                    )}
+                    >
                         <img className={styles.iconHeart} src='/src/apps/client/ui/components/Header/images/likeHeart.png' alt=''/>
+                        {likedAmount > 0 &&
+                        <div className={classNames(styles.ordersCounter, styles.likedAmount)}>
+                            <div className={styles.ordersNumber}>{likedAmount}</div>
+                        </div>}
                     </div>
-                    <div className={styles.bottomIconWrapper} onClick={this.handleOpenBasket}>
+                    <div className={classNames(
+                        styles.bottomIconWrapper,
+                        basketAmount > 9 && styles.ordersCounterBig,
+                        basketAmount > 99 && styles.ordersCounterHuge
+                    )}
+                    onClick={this.handleOpenBasket}
+                    >
                         <img className={styles.iconBasket} src='/src/apps/client/ui/components/Header/images/basket.png' alt=''/>
-                        <div className={styles.ordersCounter}><div className={styles.ordersNumber}>3</div></div>
+                        {basketAmount > 0 &&
+                        <div className={classNames(styles.ordersCounter, styles.basketAmount)}>
+                            <div className={styles.ordersNumber}>{basketAmount}</div>
+                        </div>}
                     </div>
                 </div>
             </div>

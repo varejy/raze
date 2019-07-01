@@ -205,8 +205,50 @@
     align-items: center;
     justify-items: center;
     position: absolute;
+}
+
+.ordersCounterHuge{
+    margin-left: 5px;
+}
+
+.ordersCounterBig .ordersCounter{
+    width: 18px;
+    height: 18px;
+}
+
+.ordersCounterHuge .ordersCounter{
+    width: 24px;
+    height: 24px;
+}
+
+.basketAmount{
     top: 10px;
     right: -10px;
+}
+
+.ordersCounterBig .basketAmount{
+    top: 8px;
+    right: -11px;
+}
+
+.ordersCounterHuge .basketAmount{
+    top: 2px;
+    right: -15px;
+}
+
+.likedAmount{
+    top: 10px;
+    right: 5px;
+}
+
+.ordersCounterBig .likedAmount{
+    top: 8px;
+    right: 4px;
+}
+
+.ordersCounterHuge .likedAmount{
+    top: 2px;
+    right: 0;
 }
 
 .ordersNumber{
