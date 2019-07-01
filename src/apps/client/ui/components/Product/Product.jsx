@@ -59,27 +59,6 @@ class Product extends Component {
         this.props.openPopup(<PopupBasket product={this.props.product}/>);
     };
 
-    discountMoveLeft = () => {
-        const { product } = this.props;
-        let discountLeft;
-
-        switch (true) {
-        case product.price > 9999:
-            discountLeft = 76;
-            break;
-        case product.price > 999:
-            discountLeft = 69;
-            break;
-        case product.price > 99:
-            discountLeft = 62;
-            break;
-        default:
-            discountLeft = 55;
-        }
-
-        return discountLeft;
-    };
-
     isInBasket = () => {
         const { basket, product } = this.props;
         const isInBasket = find(item => product.id === item.product.id, basket);
@@ -113,9 +92,7 @@ class Product extends Component {
                     <div className={styles.prices}>
                         {product.discountPrice
                             ? <div className={styles.prices}>
-                                <div className={styles.previousPrice}
-                                    style={{ left: -this.discountMoveLeft() }}>
-                                    {product.price} грн.</div>
+                                <div className={styles.previousPrice}>{product.price} грн.</div>
                                 <div
                                     className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.
                                 </div>
