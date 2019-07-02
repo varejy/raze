@@ -1,0 +1,24 @@
+.textarea {
+    font-family: HelveticaNeueCyrRoman;
+    background-color: white;
+    color: black;
+    outline: none;
+    border: 1px solid #c7c7c7;
+    width: 100%;
+    font-size: 11.5px;
+    resize: none;
+    cursor: text;
+    line-height: 24px;
+    overflow: hidden;
+    appearance: none;
+    box-shadow: none;
+    padding: 15px 19px;
+
+    &:focus {
+         outline: none;
+     }
+}
+
+.textareaInvalid {
+    border: 2px solid red;
+}

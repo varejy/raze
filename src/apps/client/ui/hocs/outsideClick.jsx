@@ -17,7 +17,7 @@ const outsideClick = WrappedComponent => {
             this.setState({
                 outsideClickEnabled: true
             });
-          
+
             this.clickFn = ((localNode, eventHandler) => event => {
                 let source = event.target;
                 let found = false;

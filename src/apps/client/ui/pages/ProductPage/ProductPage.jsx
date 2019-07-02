@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import { connect } from 'react-redux';
 import getProductById from '../../../services/client/getProductById';
 
+import getStarsArray from '../../../utils/getStarsArray';
+
 import { withRouter, matchPath } from 'react-router-dom';
 
 import styles from './ProductPage.css';
+
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
-import classNames from 'classnames';
+import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
 import setViewed from '../../../actions/setViewed';
 import saveProductsViewed from '../../../services/client/saveProductsViewed';
@@ -22,7 +26,7 @@ const PRODUCT_PATH = '/:category/:id';
 const LABELS_MAP = {
     lowPrice: {
         color: '#ff0000',
-        text: 'низкая цена'
+        text: 'скидочная цена'
     },
     topSales: {
         color: '#ffb116',
@@ -33,11 +37,7 @@ const LABELS_MAP = {
         text: 'товар заканчивается'
     }
 };
-const STAR = {
-    full: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
-    half: '/src/apps/client/ui/pages/ProductPage/images/starHalfFull.png',
-    empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
-};
+
 const RATING_STARS = 3.5;
 const MAX_VIEWED = 7;
 
@@ -142,26 +142,6 @@ class ProductPage extends Component {
         return newViewed.length > MAX_VIEWED ? tail(newViewed) : newViewed;
     };
 
-    renderStars = () => {
-        const fullStars = Math.floor(RATING_STARS);
-        let halfStars = 0;
-        if (RATING_STARS % fullStars > 0) {
-            halfStars = 1;
-        }
-        const emptyStars = 5 - fullStars - halfStars;
-        let starsArray = [];
-        for (let i = 0; i < fullStars; i++) {
-            starsArray.push(STAR.full);
-        }
-        if (halfStars !== 0) {
-            starsArray.push(STAR.half);
-        }
-        for (let i = 0; i < emptyStars; i++) {
-            starsArray.push(STAR.empty);
-        }
-        return starsArray;
-    };
-
     render () {
         const { viewed } = this.props;
         const { loading, product } = this.state;
@@ -196,9 +176,9 @@ class ProductPage extends Component {
                                 src='/src/apps/client/ui/pages/ProductPage/images/likeHeart.png' alt='like'/></div>
                         </div>
                         <div className={styles.stars}>
-                            {this.renderStars().map((star, i) =>
-                                <div key={i} className={styles.star}><img src={star} alt='star'/></div>
-                            )}
+                            {getStarsArray(RATING_STARS).map((star, i) => <div key={i} className={styles.star}>
+                                <img src={star} alt='star'/>
+                            </div>)}
                         </div>
                         <div className={styles.order}>
                             {product.discountPrice
@@ -235,7 +215,7 @@ class ProductPage extends Component {
                         <div className={styles.description}>{product.description}
                         </div>
                     </div>
-                    <div className={classNames(styles.productParameters, styles.infoContainer)}>
+                    {product.features.length > 0 && <div className={classNames(styles.productParameters, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>характеристика товара</div>
                         <div className={styles.parameters}>
                             {product.features.map((parameter, i) =>
@@ -247,7 +227,7 @@ class ProductPage extends Component {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </div>}
                     <div className={classNames(styles.productFeedbacks, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>всего отзывов</div>
                         <div className={styles.feedbacks}>
@@ -256,10 +236,17 @@ class ProductPage extends Component {
                             </div>
                         </div>
                     </div>
+                    <div className={classNames(styles.feedbackForm, styles.infoContainer)}>
+                        <div className={styles.bottomHeader}>добавьте комментарий</div>
+                        <div className={styles.creatingFeedback}>
+                            <FeedBackForm/>
+                        </div>
+                    </div>
+
                     {!!viewed.length && <PreviouslyViewed viewed={tail(viewed)} />}
+
                 </div>
-            </div>;
-            }
+            </div>
         </section>;
     }
 }
