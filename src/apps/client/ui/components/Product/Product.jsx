@@ -16,6 +16,7 @@ import PopupBasket from '../PopupBasketAdding/PopupBasket';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
 import saveProductsLiked from '../../../services/client/saveProductsLiked';
+import findIndex from '@tinkoff/utils/array/findIndex';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
@@ -74,7 +75,7 @@ class Product extends Component {
             ] : [...this.props.liked];
             this.setState({ isLiked: true });
         } else {
-            const index = this.props.liked.indexOf(this.isLiked());
+            const index = findIndex(likedItem => likedItem.id === this.props.product.id, this.props.liked);
             newLiked = [
                 ...remove(index, 1, this.props.liked)
             ];
@@ -94,14 +95,12 @@ class Product extends Component {
 
     isInBasket = () => {
         const { basket, product } = this.props;
-        const isInBasket = find(basketProduct => product.id === basketProduct.product.id, basket);
-
-        return !!isInBasket;
+        return !!find(basketProduct => product.id === basketProduct.product.id, basket);
     };
 
     isLiked = () => {
         const { liked, product } = this.props;
-        return find(likedProduct => product.id === likedProduct.id, liked);
+        return !!find(likedProduct => product.id === likedProduct.id, liked);
     };
 
     render () {
