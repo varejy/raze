@@ -50,16 +50,17 @@ class Product extends Component {
         liked: []
     };
 
-    addToLiked = () => {
+    handleLikeClick = () => {
         let newLiked;
 
         if (!this.state.isLiked) {
-            newLiked = !this.isInBasket() ? [
-                this.props.product, ...this.props.liked
+            newLiked = !this.isLiked() ? [
+                this.props.product,
+                ...this.props.liked
             ] : [...this.props.liked];
             this.setState({ isLiked: true });
         } else {
-            const index = this.props.liked.indexOf(this.isInBasket());
+            const index = this.props.liked.indexOf(this.isLiked());
             newLiked = [
                 ...remove(index, 1, this.props.liked)
             ];
@@ -79,14 +80,14 @@ class Product extends Component {
 
     isInBasket = () => {
         const { basket, product } = this.props;
-        const isInBasket = find(item => product.id === item.product.id, basket);
+        const isInBasket = find(basketProduct => product.id === basketProduct.product.id, basket);
 
         return !!isInBasket;
     };
 
     isLiked = () => {
         const { liked, product } = this.props;
-        return find(item => product.id === item.id, liked);
+        return find(likedProduct => product.id === likedProduct.id, liked);
     };
 
     render () {
@@ -121,7 +122,7 @@ class Product extends Component {
                         <div className={classNames(styles.toolBarIcon, styles.eyeIcon)}/>
                         <div>Быстрый просмотр</div>
                     </div>
-                    <div className={classNames(styles.heart, styles.toolBarItem)} onClick={this.addToLiked}>
+                    <div className={classNames(styles.heart, styles.toolBarItem)} onClick={this.handleLikeClick}>
                         <div className={classNames(styles.toolBarIcon, !isLiked ? styles.heartIcon : styles.isLikedHeart)}/>
                         {!isLiked ? <div>Избранное</div> : <div className={styles.isLiked}>Уже в избранном</div>}
                     </div>
