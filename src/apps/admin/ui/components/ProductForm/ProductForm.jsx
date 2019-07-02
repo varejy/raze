@@ -119,7 +119,8 @@ const materialStyles = theme => ({
     buttonSortable: {
         position: 'relative',
         top: '4px',
-        marginRight: '12px'
+        marginRight: '12px',
+        cursor: 'pointer'
     },
     featureDelButton: {
         position: 'relative',
