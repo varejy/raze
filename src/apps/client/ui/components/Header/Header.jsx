@@ -94,11 +94,11 @@ class Header extends Component {
                 </div>
                 <div className={styles.likesBasket}>
                     <div className={classNames(
-                        styles.bottomIconWrapper,
-                        likedAmount > 9 && styles.ordersCounterBig,
-                        likedAmount > 99 && styles.ordersCounterHuge,
-                        likedAmount > 999 && styles.ordersCounterHugePlus
-                    )}
+                        styles.bottomIconWrapper, {
+                            [styles.ordersCounterBig]: likedAmount > 9,
+                            [styles.ordersCounterHuge]: likedAmount > 99,
+                            [styles.ordersCounterHugePlus]: likedAmount > 999
+                        })}
                     >
                         <img className={styles.iconHeart} src='/src/apps/client/ui/components/Header/images/likeHeart.png' alt=''/>
                         {likedAmount > 0 &&
@@ -107,11 +107,11 @@ class Header extends Component {
                         </div>}
                     </div>
                     <div className={classNames(
-                        styles.bottomIconWrapper,
-                        basketAmount > 9 && styles.ordersCounterBig,
-                        basketAmount > 99 && styles.ordersCounterHuge,
-                        basketAmount > 999 && styles.ordersCounterHugePlus
-                    )}
+                        styles.bottomIconWrapper, {
+                            [styles.ordersCounterBig]: basketAmount > 9,
+                            [styles.ordersCounterHuge]: basketAmount > 99,
+                            [styles.ordersCounterHugePlus]: basketAmount > 999
+                        })}
                     onClick={this.handleOpenBasket}
                     >
                         <img className={styles.iconBasket} src='/src/apps/client/ui/components/Header/images/basket.png' alt=''/>
