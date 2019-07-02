@@ -1,0 +1,20 @@
+.formContainer {
+    background-color: transparent;
+    width: 100%;
+}
+
+.field {
+    margin-top: 15px;
+    position: relative;
+
+    &:first-child {
+        margin-top: 0;
+     }
+}
+
+.validationMessage {
+    font-family: HelveticaNeueCyr;
+    font-size: 12px;
+    color: red;
+    margin-top: 10px;
+}
