@@ -14,6 +14,10 @@ const Product = new Schema({
         value: { type: String, required: true }
     }],
     avatar: { type: String },
+    filterTags: [{
+        name: { type: String, required: true },
+        value: { type: String, required: true }
+    }],
     files: [{ type: String, required: true }],
     notAvailable: { type: Boolean, required: true },
     hidden: { type: Boolean, required: true },

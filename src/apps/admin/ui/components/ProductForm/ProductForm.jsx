@@ -32,6 +32,7 @@ import prop from '@tinkoff/utils/object/prop';
 import pick from '@tinkoff/utils/object/pick';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
+import map from '@tinkoff/utils/array/map';
 import reduce from '@tinkoff/utils/array/reduce';
 import compose from '@tinkoff/utils/function/compose';
 import keys from '@tinkoff/utils/object/keys';
@@ -39,7 +40,7 @@ import pickBy from '@tinkoff/utils/object/pickBy';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
-const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features'];
+const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filterTags'];
 
 const materialStyles = theme => ({
     loader: {
@@ -55,7 +56,23 @@ const materialStyles = theme => ({
         justifyContent: 'space-between',
         width: '210px'
     },
+    filtersTitle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '210px'
+    },
+    filterName: {
+        width: '180px',
+        display: 'flex',
+        alignItems: 'center'
+    },
     feature: {
+        display: 'flex',
+        flexWrap: 'nowrap',
+        alignItems: 'center'
+    },
+    filter: {
         display: 'flex',
         flexWrap: 'nowrap',
         alignItems: 'center'
@@ -63,6 +80,12 @@ const materialStyles = theme => ({
     featureGroup: {
         display: 'flex',
         justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%'
+    },
+    filterGroup: {
+        display: 'flex',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
         width: '100%'
     },
@@ -112,11 +135,14 @@ class ProductForm extends Component {
         super(...args);
 
         const { product, categories } = this.props;
+
         const category = find(category => category.id === product.categoryId, categories);
+
         const newProduct = {
             hidden: false,
             notAvailable: false,
             features: [],
+            filterTags: [],
             tagsMap: reduce((acc, tag) => {
                 acc[tag] = true;
 
@@ -138,15 +164,24 @@ class ProductForm extends Component {
             })),
             initialAvatarFile: product.avatar,
             initialFiles: product.files,
-            removedFiles: []
+            removedFiles: [],
+            category: category
         };
     }
 
     componentDidMount () {
+        const { product, category } = this.state;
+
         this.props.getCategories()
             .then(() => {
                 this.setState({
-                    loading: false
+                    loading: false,
+                    product: {
+                        ...product,
+                        filterTags: !product.filterTags.length
+                            ? map(filter => { return { name: filter.name, value: '' }; }, category.filters)
+                            : product.filterTags
+                    }
                 });
             });
     }
@@ -172,6 +207,7 @@ class ProductForm extends Component {
             tagsMap,
             features,
             categoryId,
+            filterTags,
             hidden,
             notAvailable,
             id
@@ -189,6 +225,7 @@ class ProductForm extends Component {
             description,
             features,
             categoryId,
+            filterTags,
             tags,
             notAvailable,
             hidden,
@@ -346,9 +383,19 @@ class ProductForm extends Component {
         });
     };
 
+    handleFilterChange = i => event => {
+        const { product } = this.state;
+
+        product.filterTags[i].value = event.target.value;
+
+        this.setState({
+            product
+        });
+    }
+
     render () {
         const { classes } = this.props;
-        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
+        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile, product: { filterTags } } = this.state;
 
         if (loading) {
             return <div className={classes.loader}>
@@ -458,6 +505,30 @@ class ProductForm extends Component {
                         <IconButton aria-label='Delete' onClick={this.handleFeatureDelete(i)}>
                             <DeleteIcon />
                         </IconButton>
+                    </FormGroup>)
+                }
+            </div>
+            <Divider className={classes.divider}/>
+            <div className={classes.filtersTitle}>
+                <Typography variant='h6'>Фильтры</Typography>
+            </div>
+            <div>
+                {
+                    filterTags.map((filter, i) => <FormGroup key={i} className={classes.filter} row>
+                        <div className={classes.filterGroup}>
+                            <div className={classes.filterName}>
+                                <Typography variant='h6'>{filter.name}</Typography>
+                            </div>
+                            <TextField
+                                className={classes.featureField}
+                                label='Значение'
+                                value={filter.value}
+                                onChange={this.handleFilterChange(i)}
+                                margin='normal'
+                                variant='outlined'
+                                required
+                            />
+                        </div>
                     </FormGroup>)
                 }
             </div>
