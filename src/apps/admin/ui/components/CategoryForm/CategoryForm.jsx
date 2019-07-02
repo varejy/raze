@@ -93,7 +93,12 @@ class CategoryForm extends Component {
     };
 
     handleFilterChange = filters => {
-        this.state.category.filters = filters;
+        this.setState({
+            category: {
+                ...this.state.category,
+                filters
+            }
+        });
     }
 
     render () {
@@ -120,6 +125,7 @@ class CategoryForm extends Component {
                 fullWidth
                 required
             />
+            <Filters onFilterChange={this.handleFilterChange} filters={category.filters}/>
             <div>
                 <FormControlLabel
                     control ={

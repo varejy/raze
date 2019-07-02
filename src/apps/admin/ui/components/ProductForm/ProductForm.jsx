@@ -13,12 +13,15 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import ReorderIcon from '@material-ui/icons/Reorder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core/styles';
 
 import ProductFormFiles from '../ProductFormFiles/ProductFormFiles.jsx';
 import ProductAvatarFile from '../ProductAvatarFile/ProductAvatarFile.jsx';
+
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
 import { connect } from 'react-redux';
 import getCategories from '../../../services/getCategories';
@@ -38,9 +41,53 @@ import compose from '@tinkoff/utils/function/compose';
 import keys from '@tinkoff/utils/object/keys';
 import pickBy from '@tinkoff/utils/object/pickBy';
 
+import arrayMove from '../../../utils/arrayMove';
+
 import Tooltip from '@material-ui/core/Tooltip';
 
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filterTags'];
+
+const ButtonSortable = SortableHandle(({ imageClassName }) => (
+    <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
+));
+
+const FeatureSortable = SortableElement(({ index, feature, handleFeatureDelete, handleFeatureChange, classes }) => (
+    <FormGroup className={classes.feature} row>
+        <ButtonSortable imageClassName={classes.buttonSortable}/>
+        <div className={classes.featureGroup}>
+            <TextField
+                className={classes.featureField}
+                label='Свойство'
+                value={feature.prop}
+                onChange={handleFeatureChange('prop', index)}
+                margin='normal'
+                variant='outlined'
+                required
+            />
+            <TextField
+                className={classes.featureField}
+                label='Значение'
+                value={feature.value}
+                onChange={handleFeatureChange('value', index)}
+                margin='normal'
+                variant='outlined'
+                required
+            />
+        </div>
+        <IconButton aria-label='Delete' className={classes.featureDelButton} onClick={handleFeatureDelete(index)}>
+            <DeleteIcon />
+        </IconButton>
+    </FormGroup>
+));
+
+const SlidesFeature = SortableContainer(({ features, classes, ...reset }) =>
+    <div className={classes.filtersWrapp}>
+        {
+            features.map((feature, i) => <FeatureSortable key={i} index={i} feature={feature} {...reset} classes={classes}/>)
+        }
+    </div>
+);
+
 
 const materialStyles = theme => ({
     loader: {
@@ -70,6 +117,7 @@ const materialStyles = theme => ({
     feature: {
         display: 'flex',
         flexWrap: 'nowrap',
+        zIndex: '2000',
         alignItems: 'center'
     },
     filter: {
@@ -91,6 +139,17 @@ const materialStyles = theme => ({
     },
     featureField: {
         width: 'calc(50% - 20px)'
+    },
+    buttonSortable: {
+        position: 'relative',
+        top: '4px',
+        marginRight: '12px',
+        cursor: 'pointer'
+    },
+    featureDelButton: {
+        position: 'relative',
+        top: '4px',
+        marginLeft: '12px'
     },
     divider: {
         marginTop: 2 * theme.spacing.unit,
@@ -392,6 +451,16 @@ class ProductForm extends Component {
             product
         });
     }
+  
+    onDragEnd = ({ oldIndex, newIndex }) => {
+        const { product } = this.state;
+        this.setState({
+            product: {
+                ...product,
+                features: arrayMove(product.features, oldIndex, newIndex)
+            }
+        });
+    };
 
     render () {
         const { classes } = this.props;
@@ -480,33 +549,17 @@ class ProductForm extends Component {
                 </Fab>
             </div>
             <div>
-                {
-                    product.features.map((feature, i) => <FormGroup key={i} className={classes.feature} row>
-                        <div className={classes.featureGroup}>
-                            <TextField
-                                className={classes.featureField}
-                                label='Свойство'
-                                value={feature.prop}
-                                onChange={this.handleFeatureChange('prop', i)}
-                                margin='normal'
-                                variant='outlined'
-                                required
-                            />
-                            <TextField
-                                className={classes.featureField}
-                                label='Значение'
-                                value={feature.value}
-                                onChange={this.handleFeatureChange('value', i)}
-                                margin='normal'
-                                variant='outlined'
-                                required
-                            />
-                        </div>
-                        <IconButton aria-label='Delete' onClick={this.handleFeatureDelete(i)}>
-                            <DeleteIcon />
-                        </IconButton>
-                    </FormGroup>)
-                }
+                <SlidesFeature
+                    axis='xy'
+                    features={product.features}
+                    handleFeatureDelete={this.handleFeatureDelete}
+                    handleFeatureChange={this.handleFeatureChange}
+                    onSortStart={this.onDragStart}
+                    onSortEnd={this.onDragEnd}
+                    isSorting={isSorting}
+                    useDragHandle
+                    classes={classes}
+                />
             </div>
             <Divider className={classes.divider}/>
             <div className={classes.filtersTitle}>
