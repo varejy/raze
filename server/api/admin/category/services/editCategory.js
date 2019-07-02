@@ -6,11 +6,11 @@ import hideProductsByCategory from '../../../client/product/queries/hideProducts
 import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
 
 export default function editCategory (req, res) {
-    const { name, path, hidden, id } = req.body;
+    const { name, path, hidden, id, filters } = req.body;
 
     getCategory(id)
         .then(oldCategory => {
-            editCategoryQuery({ name, hidden, path, id })
+            editCategoryQuery({ name, hidden, path, id, filters })
                 .then(() => {
                     if (oldCategory.hidden === hidden) {
                         return;
