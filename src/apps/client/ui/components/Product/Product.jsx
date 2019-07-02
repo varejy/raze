@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import styles from './Product.css';
 
 import openPopup from '../../../actions/openPopup';
+import setLiked from '../../../actions/setLiked';
 
 import { connect } from 'react-redux';
 
@@ -13,10 +14,13 @@ import { Link } from 'react-router-dom';
 import ProductPreview from '../ProductPreview/ProductPreview';
 import PopupBasket from '../PopupBasketAdding/PopupBasket';
 import find from '@tinkoff/utils/array/find';
+import remove from '@tinkoff/utils/array/remove';
+import saveProductsLiked from '../../../services/client/saveProductsLiked';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
-        basket: savedProducts.basket
+        basket: savedProducts.basket,
+        liked: savedProducts.liked
     };
 };
 const LABELS_MAP = {
@@ -34,21 +38,49 @@ const LABELS_MAP = {
     }
 };
 const mapDispatchToProps = (dispatch) => ({
-    openPopup: payload => dispatch(openPopup(payload))
+    openPopup: payload => dispatch(openPopup(payload)),
+    setLiked: payload => dispatch(setLiked(payload)),
+    saveProductsLiked: payload => dispatch(saveProductsLiked(payload))
 });
 
 class Product extends Component {
+    state = {
+        isLiked: false
+    };
     static propTypes = {
         product: PropTypes.object,
         category: PropTypes.object,
         openPopup: PropTypes.func.isRequired,
-        basket: PropTypes.array.isRequired
+        basket: PropTypes.array.isRequired,
+        liked: PropTypes.array.isRequired,
+        setLiked: PropTypes.func.isRequired,
+        saveProductsLiked: PropTypes.func.isRequired
     };
 
     static defaultProps = {
         product: {},
         category: {},
-        basket: []
+        basket: [],
+        liked: []
+    };
+
+    addToLiked = () => {
+        let newLiked;
+
+        if (!this.state.isLiked) {
+            newLiked = !this.isInBasket() ? [
+                this.props.product, ...this.props.liked
+            ] : [...this.props.liked];
+            this.setState({ isLiked: true });
+        } else {
+            const index = this.props.liked.indexOf(this.isInBasket());
+            newLiked = [
+                ...remove(index, 1, this.props.liked)
+            ];
+            this.setState({ isLiked: false });
+        }
+        this.props.setLiked(newLiked);
+        this.props.saveProductsLiked(newLiked.map((product) => product.id));
     };
 
     handlePreviewClick = () => {
@@ -66,8 +98,15 @@ class Product extends Component {
         return !!isInBasket;
     };
 
+    isLiked = () => {
+        const { liked, product } = this.props;
+        return find(item => product.id === item.id, liked);
+    };
+
     render () {
         const { product, category } = this.props;
+        const inBasket = this.isInBasket();
+        const isLiked = this.isLiked();
 
         return <div className={styles.product}>
             {!product.notAvailable && <div className={styles.labels}>
@@ -108,13 +147,13 @@ class Product extends Component {
                         <div className={classNames(styles.toolBarIcon, styles.eyeIcon)}/>
                         <div>Быстрый просмотр</div>
                     </div>
-                    <div className={classNames(styles.heart, styles.toolBarItem)}>
-                        <div className={classNames(styles.toolBarIcon, styles.heartIcon)}/>
-                        <div>Избранное</div>
+                    <div className={classNames(styles.heart, styles.toolBarItem)} onClick={this.addToLiked}>
+                        <div className={classNames(styles.toolBarIcon, !isLiked ? styles.heartIcon : styles.isLikedHeart)}/>
+                        {!isLiked ? <div>Избранное</div> : <div className={styles.isLiked}>Уже в избранном</div>}
                     </div>
                     <div className={classNames(styles.basket, styles.toolBarItem)} onClick={this.handleOpenBasket}>
-                        <div className={classNames(styles.toolBarIcon, !this.isInBasket() ? styles.basketIcon : styles.isInBasketIcon)}/>
-                        {!this.isInBasket() ? <div>В корзину</div> : <div className={styles.isInBasket}>Уже в корзине</div>}
+                        <div className={classNames(styles.toolBarIcon, !inBasket ? styles.basketIcon : styles.isInBasketIcon)}/>
+                        {!inBasket ? <div>В корзину</div> : <div className={styles.isInBasket}>Уже в корзине</div>}
                     </div>
                 </div>}
             </div>

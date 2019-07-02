@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import classNames from 'classnames';
+
 import { connect } from 'react-redux';
 
 import Search from '../Search/Search';
@@ -9,7 +11,8 @@ import { Link, NavLink, withRouter } from 'react-router-dom';
 
 import styles from './Header.css';
 import openBasketPopup from '../../../actions/openBasketPopup';
-import classNames from 'classnames';
+import openLikedPopup from '../../../actions/openLikedPopup';
+import openLicensePopup from '../../../actions/openLicensePopup';
 
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
@@ -19,15 +22,19 @@ const mapStateToProps = ({ application, savedProducts }) => {
     };
 };
 const mapDispatchToProps = (dispatch) => ({
-    openBasketPopup: (payload) => dispatch(openBasketPopup(payload))
+    openBasketPopup: (payload) => dispatch(openBasketPopup(payload)),
+    openLikedPopup: (payload) => dispatch(openLikedPopup(payload)),
+    openLicensePopup: (payload) => dispatch(openLicensePopup(payload))
 });
 
 class Header extends Component {
     static propTypes = {
         categories: PropTypes.array,
         openBasketPopup: PropTypes.func.isRequired,
-        basket: PropTypes.array.isRequired,
-        liked: PropTypes.array.isRequired
+        openLikedPopup: PropTypes.func.isRequired,
+        openLicensePopup: PropTypes.func.isRequired,
+        basket: PropTypes.array,
+        liked: PropTypes.array
     };
 
     static defaultProps = {
@@ -38,6 +45,14 @@ class Header extends Component {
 
     handleOpenBasket = () => {
         this.props.openBasketPopup();
+    };
+
+    handleOpenLiked = () => {
+        this.props.openLikedPopup();
+    };
+
+    handleOpenLicense = () => {
+        this.props.openLicensePopup();
     };
 
     render () {
@@ -56,7 +71,7 @@ class Header extends Component {
                 </div>
                 <div className={styles.contactsWrapper}>
                     <div className={styles.contacts}>
-                        <div className={styles.contactsLicense}>
+                        <div className={styles.contactsLicense} onClick={this.handleOpenLicense}>
                             <div>Лицензионное соглашение</div>
                         </div>
                         <div className={styles.tollEmail}>
@@ -93,7 +108,7 @@ class Header extends Component {
                     </ul>
                 </div>
                 <div className={styles.likesBasket}>
-                    <div className={classNames(
+                    <div onClick={this.handleOpenLiked} className={classNames(
                         styles.bottomIconWrapper, {
                             [styles.ordersCounterBig]: likedAmount > 9,
                             [styles.ordersCounterHuge]: likedAmount > 99,
