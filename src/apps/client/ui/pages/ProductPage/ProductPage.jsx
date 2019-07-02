@@ -210,8 +210,9 @@ class ProductPage extends Component {
                                     <div className={styles.price}>{product.price} грн.</div>
                                 </div>}
                             <button className={classNames(
-                                styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
-                            )}>
+                                styles.buttonDefault, styles.orderButton, {
+                                    [styles.orderButtonDisabled]: product.notAvailable
+                                })}>
                                     Оформление заказа
                             </button>
                         </div>
