@@ -24,7 +24,7 @@ class App extends Component {
         return <main>
             <div className={styles.page}>
                 <Header/>
-                <Popup />
+                <Route exact path='/:category' component={Popup} />
                 <Basket/>
                 <div className={styles.pageContent}>
                     <Switch>
