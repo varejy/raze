@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import ProductsList from '../../components/ProductsList/ProductsList';
-import CheckboxFilters from '../../components/CheckboxFilters/CheckboxFilters';
+import ProductsFilters from '../../components/ProductsFilters/ProductsFilters';
 
 import styles from './Products.css';
 
@@ -36,23 +36,17 @@ class Products extends Component {
         }
     }
 
-    handleChangeFilters = (activeFilters) => {
-        const { products } = this.state;
-
-        !activeFilters.length
-            ? this.setState({
-                filteredProducts: products
-            })
-            : this.setState({
-                filteredProducts: activeFilters
-            });
+    handleFilter = filteredProducts => {
+        this.setState({
+            filteredProducts
+        });
     };
 
     render () {
         const { category, products, filteredProducts } = this.state;
 
         return <section className={styles.contentWrapp}>
-            <CheckboxFilters onFiltersChanged={this.handleChangeFilters} products={products} />
+            <ProductsFilters products={products} onFilter={this.handleFilter} />
             <ProductsList products={filteredProducts} category={category} />
         </section>;
     }

@@ -23,6 +23,20 @@ const mapStateToProps = ({ savedProducts }) => {
         liked: savedProducts.liked
     };
 };
+const LABELS_MAP = {
+    lowPrice: {
+        color: '#ff0000',
+        text: 'скидочная цена'
+    },
+    topSales: {
+        color: '#ffb116',
+        text: 'топ продаж'
+    },
+    almostGone: {
+        color: '#797979',
+        text: 'товар заканчивается'
+    }
+};
 const mapDispatchToProps = (dispatch) => ({
     openPopup: payload => dispatch(openPopup(payload)),
     setLiked: payload => dispatch(setLiked(payload)),
@@ -95,13 +109,22 @@ class Product extends Component {
         const isLiked = this.isLiked();
 
         return <div className={styles.product}>
+            {!product.notAvailable && <div className={styles.labels}>
+                <div className={styles.tags}>
+                    {product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP.lowPrice.color }}>
+                        {LABELS_MAP.lowPrice.text}</div>}
+                    {product.tags.map((tag, i) =>
+                        tag !== 'notAvailable' && <div key={i} className={styles.tag}
+                            style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text}</div>
+                    )}
+                </div>
+            </div>}
             <Link className={styles.link} key={product.id} to={`/${category.path}/${product.id}`}>
                 <div className={styles.imageWrapper}>
-                    {(!!product.discountPrice && !product.notAvailable) && <div className={styles.discount}>special<br />price</div>}
-                    <img className={styles.img} src={product.avatar} alt={product.avatar} />
+                    <img className={styles.img} src={product.avatar} alt={product.avatar}/>
                 </div>
             </Link>
-            <div className={styles.infoWrapper}>
+            <div className={!product.notAvailable ? styles.infoWrapper : styles.infoWrapperDisabled}>
                 <div className={styles.info}>
                     <div className={styles.manufacturer}>{product.company}</div>
                     <div className={styles.name}>{product.name}</div>
@@ -109,7 +132,9 @@ class Product extends Component {
                         {product.discountPrice
                             ? <div className={styles.prices}>
                                 <div className={styles.previousPrice}>{product.price} грн.</div>
-                                <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.</div>
+                                <div
+                                    className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.
+                                </div>
                             </div>
                             : <div className={styles.prices}>
                                 <div className={styles.price}>{product.price} грн.</div>
@@ -117,7 +142,8 @@ class Product extends Component {
                     </div>
                 </div>
                 {!product.notAvailable && <div className={styles.toolBar}>
-                    <div className={classNames(styles.quickInspection, styles.toolBarItem)} onClick={this.handlePreviewClick}>
+                    <div className={classNames(styles.quickInspection, styles.toolBarItem)}
+                        onClick={this.handlePreviewClick}>
                         <div className={classNames(styles.toolBarIcon, styles.eyeIcon)}/>
                         <div>Быстрый просмотр</div>
                     </div>

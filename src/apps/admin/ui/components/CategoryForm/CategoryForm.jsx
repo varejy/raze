@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -16,7 +17,9 @@ import noop from '@tinkoff/utils/function/noop';
 import prop from '@tinkoff/utils/object/prop';
 import pick from '@tinkoff/utils/object/pick';
 
-const CATEGORY_VALUES = ['name', 'path', 'hidden'];
+import Filters from '../Filters/Filters';
+
+const CATEGORY_VALUES = ['name', 'path', 'hidden', 'filters'];
 
 const mapDispatchToProps = (dispatch) => ({
     saveCategory: payload => dispatch(saveCategory(payload)),
@@ -79,6 +82,15 @@ class CategoryForm extends Component {
         });
     };
 
+    handleFilterChange = filters => {
+        this.setState({
+            category: {
+                ...this.state.category,
+                filters
+            }
+        });
+    }
+
     render () {
         const { category, id } = this.state;
 
@@ -102,6 +114,7 @@ class CategoryForm extends Component {
                 fullWidth
                 required
             />
+            <Filters onFilterChange={this.handleFilterChange} filters={category.filters}/>
             <div>
                 <FormControlLabel
                     control ={

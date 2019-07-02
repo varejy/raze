@@ -1,0 +1,25 @@
+.input {
+    font-family: HelveticaNeueCyrRoman;
+    font-size: 11.5px;
+    background-color: white;
+    color: black;
+    outline: none;
+    border: 1px solid #c7c7c7;
+    width: 100%;
+    height: 45px;
+    appearance: none;
+    box-shadow: none;
+    padding: 15px 19px;
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus {
+         transition-duration: 5000s;
+         transition-property: background-color, color;
+         transition-timing-function: ease;
+     }
+}
+
+.inputInvalid {
+    border: 2px solid red;
+}

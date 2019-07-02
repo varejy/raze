@@ -1,0 +1,17 @@
+.starsWrapper {
+    height: 12px;
+}
+
+.stars{
+    margin-bottom: 33px;
+}
+
+.stars :last-child{
+    margin-right: 0;
+    width: 16px;
+}
+
+.star{
+    display: inline-block;
+    margin-right: 5px;
+}
