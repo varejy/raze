@@ -130,6 +130,7 @@
     margin-bottom: 10px;
     opacity: 0.5;
     transition: .5s ease;
+    cursor: pointer;
 }
 
 .sliderLeftActive{
