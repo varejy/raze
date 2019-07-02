@@ -6,10 +6,10 @@ import getAllCategories from '../../../client/category/queries/getAllCategories'
 import saveCategoryQuery from '../../../client/category/queries/saveCategory';
 
 export default function saveCategory (req, res) {
-    const { name, path, hidden } = req.body;
+    const { name, path, hidden, filters } = req.body;
     const id = uniqid();
 
-    saveCategoryQuery({ name, path, hidden, id })
+    saveCategoryQuery({ name, path, hidden, id, filters })
         .then(() => {
             getAllCategories()
                 .then(categories => {
