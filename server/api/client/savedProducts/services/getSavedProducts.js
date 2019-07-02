@@ -48,10 +48,10 @@ export default function getSavedProducts (req, res) {
 
                             return !product || product.hidden ? products : append({ product, count }, products);
                         }, [], basket),
-                        reduce((products, { id, count }) => {
+                        reduce((products, id) => {
                             const product = find(product => product.id === id, likedProducts);
 
-                            return !product || product.hidden ? products : append({ product, count }, products);
+                            return !product || product.hidden ? products : append(product, products);
                         }, [], liked),
                         reduce((products, id) => {
                             const product = find(product => product.id === id, viewedProducts);
