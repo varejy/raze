@@ -28,14 +28,21 @@
 
 .filterItem{
     cursor: pointer;
+    margin-bottom: 20px;
 
     &:hover {
-         border-bottom: #00a651 solid 5px;
+         text-decoration: underline;
     }
 }
 
-.filterItemActive {
-    border-bottom: #00a651 solid 5px;
+.activeFilterItem{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sortingOptions:last-child{
+    margin-bottom: 0;
 }
 
 .productsWrapper{
@@ -46,4 +53,16 @@
 
 .link {
     text-decoration: none;
+}
+
+.sortingOptions{
+    background-color: #eaeaea;
+    border-radius: 50px;
+    padding: 20px 25px;
+    font-family: Montserrat-Bold;
+    font-size: 12px;
+    line-height: 8px;
+    color: #030503;
+    text-align: left;
+
 }
