@@ -8,8 +8,6 @@ import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Divider from '@material-ui/core/Divider';
-import { withStyles } from '@material-ui/core/styles';
 
 import { connect } from 'react-redux';
 import saveCategory from '../../../services/saveCategory';
@@ -28,20 +26,12 @@ const mapDispatchToProps = (dispatch) => ({
     editCategory: payload => dispatch(editCategory(payload))
 });
 
-const materialStyles = theme => ({
-    divider: {
-        marginTop: 2 * theme.spacing.unit,
-        marginBottom: 2 * theme.spacing.unit
-    }
-});
-
 class CategoryForm extends Component {
     static propTypes = {
         saveCategory: PropTypes.func.isRequired,
         editCategory: PropTypes.func.isRequired,
         onDone: PropTypes.func,
-        category: PropTypes.object,
-        classes: PropTypes.object
+        category: PropTypes.object
     };
 
     static defaultProps = {
@@ -102,7 +92,6 @@ class CategoryForm extends Component {
     }
 
     render () {
-        const { classes } = this.props;
         const { category, id } = this.state;
 
         return <form onSubmit={this.handleSubmit}>
@@ -138,8 +127,6 @@ class CategoryForm extends Component {
                     label='Скрыть категорию и товары в ней'
                 />
             </div>
-            <Filters onFilterChange={this.handleFilterChange} filters={category.filters}/>
-            <Divider className={classes.divider}/>
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>
                     Сохранить
@@ -149,4 +136,4 @@ class CategoryForm extends Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(materialStyles)(CategoryForm));
+export default connect(null, mapDispatchToProps)(CategoryForm);

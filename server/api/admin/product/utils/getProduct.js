@@ -1,5 +1,5 @@
 export default function getProduct (body) {
-    const { name, company, price, discountPrice, description, features, filterTags, categoryId, tags, hidden, notAvailable, id, date, views } = body;
+    const { name, company, price, discountPrice, description, features, filters, categoryId, tags, hidden, notAvailable, id, date, views } = body;
 
     return {
         name,
@@ -8,7 +8,7 @@ export default function getProduct (body) {
         discountPrice,
         description,
         features,
-        filterTags,
+        filters,
         categoryId,
         tags,
         notAvailable,

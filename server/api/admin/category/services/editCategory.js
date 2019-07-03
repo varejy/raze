@@ -3,14 +3,22 @@ import getCategory from '../../../client/category/queries/getCategory';
 import editCategoryQuery from '../../../client/category/queries/editCategory';
 import hideProductsByCategory from '../../../client/product/queries/hideProductsByCategory';
 
+import uniqid from 'uniqid';
+import map from '@tinkoff/utils/array/map';
+
 import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
 
 export default function editCategory (req, res) {
     const { name, path, hidden, id, filters } = req.body;
 
+    const addIdsFilters = map(filter => {
+        filter.id = 'id' in filter ? filter.id : uniqid();
+        return filter;
+    }, filters);
+
     getCategory(id)
         .then(oldCategory => {
-            editCategoryQuery({ name, hidden, path, id, filters })
+            editCategoryQuery({ name, hidden, path, id, filters: addIdsFilters })
                 .then(() => {
                     if (oldCategory.hidden === hidden) {
                         return;

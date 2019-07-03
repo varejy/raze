@@ -35,17 +35,17 @@ import prop from '@tinkoff/utils/object/prop';
 import pick from '@tinkoff/utils/object/pick';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
-import map from '@tinkoff/utils/array/map';
 import reduce from '@tinkoff/utils/array/reduce';
 import compose from '@tinkoff/utils/function/compose';
 import keys from '@tinkoff/utils/object/keys';
+import map from '@tinkoff/utils/array/map';
 import pickBy from '@tinkoff/utils/object/pickBy';
 
 import arrayMove from '../../../utils/arrayMove';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
-const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filterTags'];
+const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -88,7 +88,6 @@ const SlidesFeature = SortableContainer(({ features, classes, ...reset }) =>
     </div>
 );
 
-
 const materialStyles = theme => ({
     loader: {
         width: '100%',
@@ -106,8 +105,7 @@ const materialStyles = theme => ({
     filtersTitle: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '210px'
+        justifyContent: 'space-between'
     },
     filterName: {
         width: '180px',
@@ -201,7 +199,7 @@ class ProductForm extends Component {
             hidden: false,
             notAvailable: false,
             features: [],
-            filterTags: [],
+            filters: [],
             tagsMap: reduce((acc, tag) => {
                 acc[tag] = true;
 
@@ -209,6 +207,8 @@ class ProductForm extends Component {
             }, {}, product.tags),
             ...pick(PRODUCTS_VALUES, product)
         };
+
+        this.category = category;
 
         this.prevProductHidden = newProduct.hidden;
 
@@ -234,15 +234,10 @@ class ProductForm extends Component {
         this.props.getCategories()
             .then(() => {
                 this.setState({
-                    loading: false,
-                    product: {
-                        ...product,
-                        filterTags: !product.filterTags.length
-                            ? map(filter => { return { name: filter.name, value: '' }; }, category.filters)
-                            : product.filterTags
-                    }
+                    loading: false
                 });
             });
+        'categoryId' in product && this.getFilters(category);
     }
 
     componentWillReceiveProps (nextProps) {
@@ -266,7 +261,7 @@ class ProductForm extends Component {
             tagsMap,
             features,
             categoryId,
-            filterTags,
+            filters,
             hidden,
             notAvailable,
             id
@@ -284,7 +279,7 @@ class ProductForm extends Component {
             description,
             features,
             categoryId,
-            filterTags,
+            filters,
             tags,
             notAvailable,
             hidden,
@@ -414,6 +409,23 @@ class ProductForm extends Component {
         });
     };
 
+    getFilterValue = (categoryId, filters) => find(productFilter => categoryId === productFilter.id, filters).value;
+
+    getFilters = (category) => {
+        const { product } = this.state;
+        this.setState({
+            product: {
+                ...product,
+                filters: map((categoryFilter) => {
+                    return {
+                        id: categoryFilter.id,
+                        value: product.filters.length ? this.getFilterValue(categoryFilter.id, product.filters) : ''
+                    };
+                }, category.filters)
+            }
+        });
+    }
+
     handleCategoryIdChange = (event) => {
         const { categories } = this.props;
         const categoryId = event.target.value;
@@ -427,6 +439,10 @@ class ProductForm extends Component {
                 hidden: category.hidden ? category.hidden : this.prevProductHidden
             }
         }));
+
+        this.category = category;
+
+        this.getFilters(category);
     };
 
     handleAvatarFileUpload = avatar => {
@@ -445,13 +461,13 @@ class ProductForm extends Component {
     handleFilterChange = i => event => {
         const { product } = this.state;
 
-        product.filterTags[i].value = event.target.value;
+        product.filters[i].value = event.target.value;
 
         this.setState({
             product
         });
     }
-  
+
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { product } = this.state;
         this.setState({
@@ -464,7 +480,7 @@ class ProductForm extends Component {
 
     render () {
         const { classes } = this.props;
-        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile, product: { filterTags } } = this.state;
+        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
 
         if (loading) {
             return <div className={classes.loader}>
@@ -556,18 +572,21 @@ class ProductForm extends Component {
                     handleFeatureChange={this.handleFeatureChange}
                     onSortStart={this.onDragStart}
                     onSortEnd={this.onDragEnd}
-                    isSorting={isSorting}
                     useDragHandle
                     classes={classes}
                 />
             </div>
             <Divider className={classes.divider}/>
             <div className={classes.filtersTitle}>
-                <Typography variant='h6'>Фильтры</Typography>
+                <Typography variant='h6'>{
+                    'categoryId' in product
+                        ? this.category.filters.length ? 'Фильтры' : 'В этой категории еще нет фильтрров'
+                        : 'Вы не выбрали категорию'
+                }</Typography>
             </div>
             <div>
                 {
-                    filterTags.map((filter, i) => <FormGroup key={i} className={classes.filter} row>
+                    'categoryId' in product && this.category.filters.map((filter, i) => <FormGroup key={i} className={classes.filter} row>
                         <div className={classes.filterGroup}>
                             <div className={classes.filterName}>
                                 <Typography variant='h6'>{filter.name}</Typography>
@@ -575,7 +594,7 @@ class ProductForm extends Component {
                             <TextField
                                 className={classes.featureField}
                                 label='Значение'
-                                value={filter.value}
+                                value={!product.filters[i] ? '' : product.filters[i].value}
                                 onChange={this.handleFilterChange(i)}
                                 margin='normal'
                                 variant='outlined'
