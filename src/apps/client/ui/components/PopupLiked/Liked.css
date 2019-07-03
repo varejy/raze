@@ -1,0 +1,135 @@
+.root{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    height: 100vh;
+    background-color: rgba(255, 255 , 255, 0.5);
+    position: fixed;
+    top: 0;
+    right: 0;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.popupContent{
+    height: 100%;
+    padding: 35px;
+    background-color: #ffffff;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.headerContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 46px;
+    height: 22px;
+}
+
+.header{
+    font-family: HelveticaNeueCyrBold;
+    font-size: 27px;
+    color: #000000;
+    text-transform: uppercase;
+    margin-right: 20px;
+}
+
+.closeButton{
+    font-family: HelveticaNeueCyrLight;
+    font-size: 50px;
+    color: #000000;
+    transform: rotate(45deg);
+    position: relative;
+    bottom: 3px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.items{
+    width: 100%;
+    height: 80vh ;
+    overflow-y: scroll;
+}
+
+.item{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin-bottom: 22px;
+    padding: 10px 0 0 10px;
+}
+
+.itemImageWrapp{
+    position: relative;
+}
+
+.deleteItem{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    top: -10px;
+    left: -10px;
+    position: absolute;
+}
+
+.itemImage{
+    width: 87px;
+    height: 79px;
+    overflow: hidden;
+}
+
+.itemAvatar{
+    width: auto;
+    height: 100%;
+}
+
+.itemInfo{
+    width: 150px;
+    margin-left: 14px;
+}
+
+.itemName{
+    font-family: HelveticaNeueCyrBold;
+    font-size: 10.5px;
+    line-height: 16px;
+    color: #000000;
+    text-transform: uppercase;
+    margin-bottom: -3px;
+}
+
+.itemCompany{
+    font-family: HelveticaNeueCyrRoman;
+    font-size: 8px;
+    line-height: 19px;
+    color: #000000;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.itemPrice{
+    font-family: HelveticaNeueCyrBold;
+    font-size: 12.5px;
+    line-height: 14px;
+    color: #000000;
+    text-transform: uppercase;
+}
+
+.noLikedItems{
+    text-align: center;
+    color: #000000;
+    font-size: 10.8px;
+    font-family: HelveticaNeueCyr;
+    line-height: 13px;
+}
+
+.catalogLink{
+    color: #00a046;
+    text-decoration: none;
+    border-bottom: 1px solid #00a046;
+}
