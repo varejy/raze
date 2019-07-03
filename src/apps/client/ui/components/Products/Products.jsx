@@ -46,7 +46,7 @@ class Products extends Component {
         const { category, products, filteredProducts } = this.state;
 
         return <section className={styles.contentWrapp}>
-            <ProductsFilters products={products} onFilter={this.handleFilter} />
+            <ProductsFilters products={products} category={category} onFilter={this.handleFilter} />
             <ProductsList products={filteredProducts} category={category} />
         </section>;
     }
