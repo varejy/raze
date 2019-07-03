@@ -66,31 +66,35 @@ class Product extends Component {
     };
 
     handleLikeClick = () => {
+        const { setLiked, product, liked, saveProductsLiked } = this.props;
+        const { isLiked } = this.state;
         let newLiked;
 
-        if (!this.state.isLiked) {
+        if (!isLiked) {
             newLiked = !this.isLiked() ? [
-                this.props.product,
-                ...this.props.liked
-            ] : [...this.props.liked];
+                product,
+                ...liked
+            ] : [...liked];
             this.setState({ isLiked: true });
         } else {
-            const index = findIndex(likedItem => likedItem.id === this.props.product.id, this.props.liked);
+            const index = findIndex(likedItem => likedItem.id === product.id, liked);
             newLiked = [
-                ...remove(index, 1, this.props.liked)
+                ...remove(index, 1, liked)
             ];
             this.setState({ isLiked: false });
         }
-        this.props.setLiked(newLiked);
-        this.props.saveProductsLiked(newLiked.map((product) => product.id));
+        setLiked(newLiked);
+        saveProductsLiked(newLiked.map((product) => product.id));
     };
 
     handlePreviewClick = () => {
-        this.props.openPopup(<ProductPreview product={this.props.product}/>);
+        const { openPopup, product } = this.props;
+        openPopup(<ProductPreview product={product}/>);
     };
 
     handleOpenBasket = () => {
-        this.props.openPopup(<PopupBasket product={this.props.product}/>);
+        const { openPopup, product } = this.props;
+        openPopup(<PopupBasket product={product}/>);
     };
 
     isInBasket = () => {
