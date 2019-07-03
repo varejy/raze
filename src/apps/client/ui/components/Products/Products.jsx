@@ -31,7 +31,8 @@ class Products extends Component {
         if (nextProps.products !== this.state.products) {
             this.setState({
                 products: nextProps.products,
-                filteredProducts: nextProps.products
+                filteredProducts: nextProps.products,
+                category: nextProps.category
             });
         }
     }

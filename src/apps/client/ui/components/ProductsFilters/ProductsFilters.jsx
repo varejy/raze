@@ -23,13 +23,20 @@ class ProductsFilters extends Component {
     }
 
     static propTypes = {
-        products: PropTypes.array,
-        onFilter: PropTypes.func.isRequired
+        products: PropTypes.array
     };
 
     static defaultProps = {
         products: []
     };
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.products !== this.props.products) {
+            this.setState({
+                filters: this.getFilters(nextProps)
+            });
+        }
+    }
 
     getFilters = (props = this.props) => {
         return props.category.filters.map((filter) => {
