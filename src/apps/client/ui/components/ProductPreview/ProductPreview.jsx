@@ -26,46 +26,48 @@ class ProductPreview extends Component {
     };
 
     handleArrowClick = (arrowType) => () => {
+        const { leftPosition } = this.state;
+
         if (arrowType === 'left') {
             this.setState({
-                leftPosition: this.state.leftPosition - PREVIEW_WIDTH
+                leftPosition: leftPosition - PREVIEW_WIDTH
             });
         } else {
             this.setState({
-                leftPosition: this.state.leftPosition + PREVIEW_WIDTH
+                leftPosition: leftPosition + PREVIEW_WIDTH
             });
         }
     };
 
     render () {
         const { product } = this.props;
-        const { slidesQuantity } = this.state;
+        const { slidesQuantity, leftPosition } = this.state;
 
         return <div className={styles.productPreviewContainer}>
             <div className={styles.productPreview}>
                 <div className={styles.productPhotoContainer}>
-                    <div className={styles.slides} style={{ left: `-${this.state.leftPosition.toString()}px` }}>
+                    <div className={styles.slides} style={{ left: `-${leftPosition.toString()}px` }}>
                         {product.files.map((sliderImage, i) =>
                             <div className={styles.productPreviewSlide} key={i}>
                                 <img className={styles.slidePhoto} src={sliderImage} alt={`slide${i}`} />
                             </div>)}
                     </div>
-                    <button
+                    { leftPosition !== 0 && <button
                         className={classNames(styles.buttonLeft)}
-                        onClick={this.state.leftPosition !== 0 && this.handleArrowClick('left')}
+                        onClick={leftPosition !== 0 && this.handleArrowClick('left')}
                     >
-                        <div className={this.state.leftPosition === 0 && styles.buttonDisabled ? styles.buttonDisabled : styles.buttonEnabled}/>
-                    </button>
-                    <button
+                        <div className={styles.arrowButton}/>
+                    </button>}
+                    { leftPosition !== (PREVIEW_WIDTH * (slidesQuantity - 1)) && <button
                         className={classNames(styles.buttonRight)}
-                        onClick={this.state.leftPosition !== (PREVIEW_WIDTH * (slidesQuantity - 1)) && this.handleArrowClick('right')}
+                        onClick={leftPosition !== (PREVIEW_WIDTH * (slidesQuantity - 1)) && this.handleArrowClick('right')}
                     >
-                        <div className={this.state.leftPosition === (PREVIEW_WIDTH * (slidesQuantity - 1)) ? styles.buttonDisabled : styles.buttonEnabled}/>
-                    </button>
+                        <div className={styles.arrowButton}/>
+                    </button>}
                     <div className={styles.dotsContainer}>
                         <div className={styles.buttonDots}>
                             {product.files.map((sliderImage, i) =>
-                                <div key={i} className={classNames(styles.dot, this.state.leftPosition === i * PREVIEW_WIDTH && styles.dotActive)}
+                                <div key={i} className={classNames(styles.dot, leftPosition === i * PREVIEW_WIDTH && styles.dotActive)}
                                     onClick={this.handleDotClick(i)}/>
                             )}
                         </div>

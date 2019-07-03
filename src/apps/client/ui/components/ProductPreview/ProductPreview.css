@@ -52,29 +52,15 @@
     right: 0;
 }
 
-.buttonRight .buttonEnabled{
+.buttonRight .arrowButton{
      background: url('/src/apps/client/ui/components/ProductPreview/images/arrowRight.png') center;
      background-size: 100% auto;
      width: 32px;
      height: 32px;
  }
 
-.buttonRight .buttonDisabled{
-    background: url('/src/apps/client/ui/components/ProductPreview/images/arrowRightGreen.png') center;
-    background-size: 100% auto;
-    width: 32px;
-    height: 32px;
-}
-
-.buttonLeft .buttonEnabled{
+.buttonLeft .arrowButton{
     background: url('/src/apps/client/ui/components/ProductPreview/images/arrowLeft.png') center;
-    background-size: 100% auto;
-    width: 32px;
-    height: 32px;
-}
-
-.buttonLeft .buttonDisabled{
-    background: url('/src/apps/client/ui/components/ProductPreview/images/arrowLeftGreen.png') center;
     background-size: 100% auto;
     width: 32px;
     height: 32px;
