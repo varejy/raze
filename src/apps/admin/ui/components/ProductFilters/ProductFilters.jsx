@@ -88,6 +88,10 @@ class ProductFilters extends Component {
             selectedActivity: {
                 active: true,
                 hidden: true
+            },
+            selectedFiltration: {
+                active: true,
+                hidden: true
             }
         };
     };
@@ -167,6 +171,35 @@ class ProductFilters extends Component {
 
         this.setState({
             selectedActivity: newSelectedActivity,
+            filters: newFilters
+        }, this.handleFiltersChanged);
+    };
+
+    handleFiltrationChange = prop => (event, value) => {
+        const { selectedFiltration, filters } = this.state;
+
+        const newSelectedFiltration = {
+            ...selectedFiltration,
+            [prop]: value
+        };
+
+        const selectedFiltrations = compose(
+            keys,
+            pickBy(value => !!value)
+        )(newSelectedFiltration);
+
+        const newFilters = {
+            ...filters,
+            filter: product => {
+                return (
+                    !product.filters.length && includes('hidden', selectedFiltrations) ||
+                    product.filters.length && includes('active', selectedFiltrations)
+                );
+            }
+        };
+
+        this.setState({
+            selectedFiltration: newSelectedFiltration,
             filters: newFilters
         }, this.handleFiltersChanged);
     };
@@ -280,12 +313,52 @@ class ProductFilters extends Component {
         </div>;
     };
 
+    renderFiltration = () => {
+        const { classes } = this.props;
+        const { selectedFiltration } = this.state;
+
+        return <div>
+            <Typography variant='h6'>Фильтры</Typography>
+            <List dense>
+                <ListItem>
+                    <FormControlLabel
+                        control ={
+                            <Checkbox
+                                checked={selectedFiltration.active}
+                                onChange={this.handleFiltrationChange('active')}
+                                value='none'
+                                color='primary'
+                                className={classes.checkbox}
+                            />
+                        }
+                        label='Заполнены'
+                    />
+                </ListItem>
+                <ListItem>
+                    <FormControlLabel
+                        control ={
+                            <Checkbox
+                                checked={selectedFiltration.hidden}
+                                onChange={this.handleFiltrationChange('hidden')}
+                                value='none'
+                                color='primary'
+                                className={classes.checkbox}
+                            />
+                        }
+                        label='Не заполнены'
+                    />
+                </ListItem>
+            </List>
+        </div>;
+    };
+
     render () {
         return <div>
             <Typography variant='h5' gutterBottom>Фильтрация</Typography>
             {this.renderSearchForm()}
             {this.renderCategories()}
             {this.renderActivity()}
+            {this.renderFiltration()}
         </div>;
     }
 }
