@@ -80,7 +80,8 @@ class Liked extends Component {
                                         <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
                                     </div>
                                     <div className={styles.itemImage}>
-                                        <img className={styles.itemAvatar}
+                                        <img
+                                            className={styles.itemAvatar}
                                             src={item.avatar}
                                             alt='product'/>
                                     </div>

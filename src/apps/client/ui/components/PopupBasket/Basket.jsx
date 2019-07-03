@@ -128,10 +128,7 @@ class Basket extends Component {
                             <div className={styles.item} key={i}>
                                 <div className={styles.itemImageWrapp}>
                                     <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
-                                        <img
-                                            src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png'
-                                            alt='delete'
-                                        />
+                                        <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
                                     </div>
                                     <div className={styles.itemImage}>
                                         <img
