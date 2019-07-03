@@ -16,6 +16,7 @@ import PopupBasket from '../PopupBasketAdding/PopupBasket';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
 import saveProductsLiked from '../../../services/client/saveProductsLiked';
+import findIndex from '@tinkoff/utils/array/findIndex';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
@@ -64,43 +65,46 @@ class Product extends Component {
         liked: []
     };
 
-    addToLiked = () => {
+    handleLikeClick = () => {
+        const { setLiked, product, liked, saveProductsLiked } = this.props;
+        const { isLiked } = this.state;
         let newLiked;
 
-        if (!this.state.isLiked) {
-            newLiked = !this.isInBasket() ? [
-                this.props.product, ...this.props.liked
-            ] : [...this.props.liked];
+        if (!isLiked) {
+            newLiked = !this.isLiked() ? [
+                product,
+                ...liked
+            ] : [...liked];
             this.setState({ isLiked: true });
         } else {
-            const index = this.props.liked.indexOf(this.isInBasket());
+            const index = findIndex(likedItem => likedItem.id === product.id, liked);
             newLiked = [
-                ...remove(index, 1, this.props.liked)
+                ...remove(index, 1, liked)
             ];
             this.setState({ isLiked: false });
         }
-        this.props.setLiked(newLiked);
-        this.props.saveProductsLiked(newLiked.map((product) => product.id));
+        setLiked(newLiked);
+        saveProductsLiked(newLiked.map((product) => product.id));
     };
 
     handlePreviewClick = () => {
-        this.props.openPopup(<ProductPreview product={this.props.product}/>);
+        const { openPopup, product } = this.props;
+        openPopup(<ProductPreview product={product}/>);
     };
 
     handleOpenBasket = () => {
-        this.props.openPopup(<PopupBasket product={this.props.product}/>);
+        const { openPopup, product } = this.props;
+        openPopup(<PopupBasket product={product}/>);
     };
 
     isInBasket = () => {
         const { basket, product } = this.props;
-        const isInBasket = find(item => product.id === item.product.id, basket);
-
-        return !!isInBasket;
+        return !!find(basketProduct => product.id === basketProduct.product.id, basket);
     };
 
     isLiked = () => {
         const { liked, product } = this.props;
-        return find(item => product.id === item.id, liked);
+        return !!find(likedProduct => product.id === likedProduct.id, liked);
     };
 
     render () {
@@ -147,7 +151,7 @@ class Product extends Component {
                         <div className={classNames(styles.toolBarIcon, styles.eyeIcon)}/>
                         <div>Быстрый просмотр</div>
                     </div>
-                    <div className={classNames(styles.heart, styles.toolBarItem)} onClick={this.addToLiked}>
+                    <div className={classNames(styles.heart, styles.toolBarItem)} onClick={this.handleLikeClick}>
                         <div className={classNames(styles.toolBarIcon, !isLiked ? styles.heartIcon : styles.isLikedHeart)}/>
                         {!isLiked ? <div>Избранное</div> : <div className={styles.isLiked}>Уже в избранном</div>}
                     </div>
