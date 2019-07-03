@@ -19,11 +19,11 @@ class Comment extends Component {
     };
 
     render () {
-        const { name, comment } = this.props;
+        const { name, comment, rating } = this.props;
 
         return <section className={styles.commentWrapper}>
             <div className={styles.rating}>
-                {getStarsArray(this.props.rating).map((star, i) =>
+                {getStarsArray(rating).map((star, i) =>
                     <div
                         key={i}
                         className={styles.star}
