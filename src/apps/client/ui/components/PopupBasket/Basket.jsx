@@ -43,8 +43,8 @@ class Basket extends Component {
 
     setProductsMap = () => {
         const { basket } = this.props;
-        const productsMap = basket.reduce((acc, product, i) => {
-            acc[i] = product.amount;
+        const productsMap = basket.reduce((acc, productInfo, i) => {
+            acc[i] = productInfo.amount;
             return acc;
         }, {});
 
@@ -52,12 +52,12 @@ class Basket extends Component {
     };
 
     setNewBasket = () => {
-        const newBasket = this.props.basket.map((product, i) => {
-            return { product: product.product, amount: this.state.productsMap[i] };
+        const newBasket = this.props.basket.map((productInfo, i) => {
+            return { product: productInfo.product, amount: this.state.productsMap[i] };
         }, {});
 
         this.props.setBasket(newBasket);
-        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.amount })));
+        this.props.saveProductsToBasket(newBasket.map((productInfo) => ({ id: productInfo.product.id, count: productInfo.amount })));
     };
 
     handleCloseBasket = () => {
@@ -71,7 +71,7 @@ class Basket extends Component {
         ];
 
         this.props.setBasket(newBasket);
-        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.amount })));
+        this.props.saveProductsToBasket(newBasket.map((productInfo) => ({ id: productInfo.product.id, count: productInfo.amount })));
     };
 
     handleCountClick = (id, operation) => () => {
@@ -90,8 +90,8 @@ class Basket extends Component {
         const { basket } = this.props;
         const { productsMap } = this.state;
 
-        return basket.reduce((acc, product, i) => {
-            return acc + product.product.price * productsMap[i];
+        return basket.reduce((acc, productInfo, i) => {
+            return acc + productInfo.product.price * productsMap[i];
         }, 0);
     };
 
