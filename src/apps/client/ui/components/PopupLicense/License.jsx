@@ -4,6 +4,7 @@ import styles from './License.css';
 import closeLicensePopup from '../../../actions/closeLicensePopup';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 const mapStateToProps = ({ popup }) => {
     return {
@@ -38,15 +39,21 @@ class License extends Component {
     render () {
         const { licenseVisible } = this.props;
 
-        return <div>
-            {licenseVisible && <div className={styles.root}>
-                <div className={styles.popupContent}>
-                    <div>
-                        <div className={styles.headerContainer}>
-                            <div className={styles.header}>лицензионное соглашение</div>
-                            <div className={styles.closeButton} onClick={this.handleCloseLicense}>+</div>
-                        </div>
-                        <div className={styles.licenseText}>
+        return <div className={classNames(styles.root, {
+            [styles.rootVisible]: licenseVisible
+        })}>
+            <div className={classNames(styles.backing, {
+                [styles.backingVisible]: licenseVisible
+            })}/>
+            <div className={classNames(styles.popupContent, {
+                [styles.popupContentVisible]: licenseVisible
+            })}>
+                <div>
+                    <div className={styles.headerContainer}>
+                        <div className={styles.header}>лицензионное соглашение</div>
+                        <div className={styles.closeButton} onClick={this.handleCloseLicense}>+</div>
+                    </div>
+                    <div className={styles.licenseText}>
                             Давно выяснено, что при оценке дизайна и композиции читаемый текст мешает сосредоточиться.
                             Lorem Ipsum используют потому, что тот обеспечивает более или менее стандартное заполнение
                             шаблона, а также реальное распределение букв и пробелов в абзацах, которое не получается при
@@ -55,10 +62,9 @@ class License extends Component {
                             так что поиск по ключевым словам "lorem ipsum" сразу показывает, как много веб-страниц всё
                             ещё дожидаются своего настоящего рождения. За прошедшие годы текст Lorem Ipsum получил много
                             версий. Некоторые версии появились по ошибке, некоторые - намеренно (например, юмористические варианты).
-                        </div>
                     </div>
                 </div>
-            </div>}
+            </div>
         </div>;
     }
 }
