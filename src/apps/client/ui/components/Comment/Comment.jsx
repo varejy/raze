@@ -5,11 +5,6 @@ import getStarsArray from '../../../utils/getStarsArray';
 
 import styles from './Comment.css';
 
-const STAR = {
-    full: '/src/apps/client/ui/pages/ProductPage/images/starFull.png',
-    empty: '/src/apps/client/ui/pages/ProductPage/images/starEmpty.png'
-};
-
 class Comment extends Component {
     static propTypes = {
         name: PropTypes.string,
@@ -23,14 +18,12 @@ class Comment extends Component {
         rating: 0
     };
 
-    renderStars = () => getStarsArray(STAR, this.props.rating);
-
     render () {
         const { name, comment } = this.props;
 
         return <section className={styles.commentWrapper}>
             <div className={styles.rating}>
-                {this.renderStars().map((star, i) =>
+                {getStarsArray(this.props.rating).map((star, i) =>
                     <div
                         key={i}
                         className={styles.star}

@@ -5,7 +5,6 @@ const STAR = {
 };
 
 export default (ratingValue) => {
-
     const fullStars = Math.floor(ratingValue);
     let halfStars = 0;
     if (ratingValue % fullStars > 0) {

@@ -16,8 +16,6 @@ import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
 
 import Comments from '../../components/Comments/Comments';
 
-import classNames from 'classnames';
-
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
 import setViewed from '../../../actions/setViewed';
 import saveProductsViewed from '../../../services/client/saveProductsViewed';
@@ -146,7 +144,7 @@ class ProductPage extends Component {
 
         return newViewed.length > MAX_VIEWED ? tail(newViewed) : newViewed;
     };
-    
+
     render () {
         const { viewed } = this.props;
         const { loading, product } = this.state;
@@ -245,15 +243,7 @@ class ProductPage extends Component {
                             <FeedBackForm/>
                         </div>
                     </div>
-                    <div className={classNames(styles.feedbackForm, styles.infoContainer)}>
-                        <div className={styles.bottomHeader}>добавьте комментарий</div>
-                        <div className={styles.creatingFeedback}>
-                            <FeedBackForm/>
-                        </div>
-                    </div>
-
                     {!!viewed.length && <PreviouslyViewed viewed={tail(viewed)} />}
-
                 </div>
             </div>
         </section>;
