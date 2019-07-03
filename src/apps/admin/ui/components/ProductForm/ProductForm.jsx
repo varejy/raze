@@ -599,6 +599,7 @@ class ProductForm extends Component {
                                 margin='normal'
                                 variant='outlined'
                                 required
+                                type={ filter.type === 'Range' ? 'number' : 'text' }
                             />
                         </div>
                     </FormGroup>)
