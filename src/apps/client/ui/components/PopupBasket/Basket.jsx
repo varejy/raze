@@ -128,13 +128,17 @@ class Basket extends Component {
                             <div className={styles.item} key={i}>
                                 <div className={styles.itemImageWrapp}>
                                     <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
-                                        <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png'
-                                            alt='delete'/>
+                                        <img
+                                            src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png'
+                                            alt='delete'
+                                        />
                                     </div>
                                     <div className={styles.itemImage}>
-                                        <img className={styles.itemAvatar}
+                                        <img
+                                            className={styles.itemAvatar}
                                             src={item.product.avatar}
-                                            alt='product'/>
+                                            alt='product'
+                                        />
                                     </div>
                                 </div>
                                 <div className={styles.itemInfo}>
@@ -160,8 +164,8 @@ class Basket extends Component {
                         onClick={this.handleCloseBasket}>
                         продолжить покупки
                     </button>
-                    <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
-                        заказа
+                    <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>
+                        оформление заказа
                     </button>
                 </div>
             </div>

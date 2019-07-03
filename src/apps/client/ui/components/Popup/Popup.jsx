@@ -59,6 +59,7 @@ class Popup extends Component {
 
     closePopup = () => {
         this.setState({ content: null });
+        document.body.style.overflowY = 'auto';
     };
 
     handleKeyDown = e => {
