@@ -52,7 +52,8 @@ class ProductsList extends Component {
         this.state = {
             products: props.products,
             activeOption: '',
-            category: props.category
+            category: props.category,
+            arrowClicked: false
         };
     }
 
@@ -95,22 +96,36 @@ class ProductsList extends Component {
         ];
     };
 
+    handleArrowClick = () => {
+        const { arrowClicked } = this.state;
+        if (!arrowClicked) {
+            this.setState({ arrowClicked: true });
+        } else {
+            this.setState({ arrowClicked: false });
+        }
+    };
+
     render () {
-        const { category, products } = this.state;
+        const { category, products, arrowClicked } = this.state;
 
         return <section className={styles.root}>
             <div className={styles.productsFilter}>
                 <div className={styles.filter}>
-                    <div>Сортировать:</div>
+                    <div className={styles.sortingHeader}>Сортировать:</div>
                     <div className={styles.filterWrapp}>
-                        <ul className={styles.sortingOptions}>
+                        <ul className={classNames(styles.sortingOptions, {
+                            [styles.sortingOptionsOpen]: arrowClicked
+                        })}>
                             <li className={classNames(styles.filterItem, styles.activeFilterItem)}>
                                 <div className={styles.activeOption}>{this.getActiveOption().text}</div>
-                                <div className={styles.arrowButton}>
-                                    <img src='/src/apps/client/ui/components/ProductsList/tempImages/sortingArrow.png' alt='arrow'/>
+                                <div className={styles.arrowButton} onClick={this.handleArrowClick}>
+                                    <img className={classNames({
+                                        [styles.arrowReversed]: arrowClicked
+                                    })}
+                                    src='/src/apps/client/ui/components/ProductsList/tempImages/sortingArrow.png' alt='arrow'/>
                                 </div>
                             </li>
-                            { this.renderSorting().map((option, i) =>
+                            { arrowClicked && this.renderSorting().map((option, i) =>
                                 <li
                                     key={i}
                                     className={styles.filterItem}

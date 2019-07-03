@@ -18,20 +18,14 @@
     color: #232323;
 }
 
-.filterWrapp{
-    display: flex;
-    justify-content: space-between;
-    font-family: Montserrat-Bold, arial;
-    width: 218px;
-    font-weight: bold;
-}
-
 .filterItem{
     cursor: pointer;
     margin-bottom: 20px;
+    transition: color .1s ease;
+    font-family: Montserrat-Medium;
 
     &:hover {
-         text-decoration: underline;
+         color: #00a046;
     }
 }
 
@@ -39,9 +33,20 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    cursor: unset;
+    font-family: Montserrat-Bold;
+
+    &:hover {
+         color: inherit;
+    }
 }
 
-.sortingOptions:last-child{
+.arrowButton{
+    cursor: pointer;
+}
+
+.sortingOptions :last-child{
     margin-bottom: 0;
 }
 
@@ -55,14 +60,33 @@
     text-decoration: none;
 }
 
+.sortingHeader{
+    padding-top: 18px;
+}
+
 .sortingOptions{
     background-color: #eaeaea;
     border-radius: 50px;
     padding: 20px 25px;
-    font-family: Montserrat-Bold;
     font-size: 12px;
     line-height: 8px;
     color: #030503;
     text-align: left;
+    width: 225px;
+    position: relative;
+    z-index: 1000;
+    text-transform: lowercase;
+}
 
+.sortingOptionsOpen{
+    border-radius: 26px;
+}
+
+.sortingOptionsOpen .activeFilterItem{
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f2f2f2;
+}
+
+.arrowReversed{
+    transform: rotate(180deg);
 }

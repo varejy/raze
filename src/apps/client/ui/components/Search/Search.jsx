@@ -43,20 +43,20 @@ class Search extends Component {
     state = {
         inputTxt: '',
         tips: []
-    }
+    };
 
     handleTipsClose = () => {
         this.setState({
             tips: []
         });
-    }
+    };
 
     handleInputSubmit = event => {
         const { inputTxt } = this.state;
         event.preventDefault();
         this.props.history.push(`/search?text=${inputTxt}`);
         this.handleTipsClose();
-    }
+    };
 
     handleInputChange = event => {
         const value = event.target.value;
@@ -90,7 +90,7 @@ class Search extends Component {
             : this.setState({
                 tips: []
             });
-    }
+    };
 
     render () {
         const { inputTxt, tips } = this.state;
@@ -105,8 +105,8 @@ class Search extends Component {
             {
                 !!tips.length && <div className={styles.tipsRoot}>
                     <div className={styles.tipsWrapp}>
-                        <div className={styles.break}></div>
-                        <ul className={styles.adviceСontainer} onClick={this.handleTipsClose}>
+                        <div className={styles.break}/>
+                        <ul className={styles.adviceContainer} onClick={this.handleTipsClose}>
                             {
                                 tips.map((tip, i) => {
                                     return (
