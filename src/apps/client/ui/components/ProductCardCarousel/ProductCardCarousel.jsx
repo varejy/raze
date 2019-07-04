@@ -96,8 +96,9 @@ class ProductCardCarousel extends Component {
                     >
                         {sliderImages.map((sliderLeftImage, i) =>
                             <div
-                                className={classNames(styles.sliderLeftSlide,
-                                    activeSlide === i && styles.sliderLeftActive)}
+                                className={classNames(styles.sliderLeftSlide, {
+                                    [styles.sliderLeftActive]: activeSlide === i
+                                })}
                                 onClick={this.handleDotClick(i)}
                                 key={i}>
                                 <img className={styles.sliderLeftPhoto} src={sliderLeftImage}
@@ -123,7 +124,9 @@ class ProductCardCarousel extends Component {
                     <div className={styles.buttonDots}>
                         {sliderImages.map((sliderImage, i) =>
                             <div key={i}
-                                className={classNames(styles.dot, activeSlide === i && styles.dotActive)}
+                                className={classNames(styles.dot, {
+                                    [styles.dotActive]: activeSlide === i
+                                })}
                                 onClick={this.handleDotClick(i)}/>
                         )}
                     </div>

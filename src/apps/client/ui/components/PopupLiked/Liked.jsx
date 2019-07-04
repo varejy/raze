@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import setLiked from '../../../actions/setLiked';
 import remove from '@tinkoff/utils/array/remove';
 import saveProductsLiked from '../../../services/client/saveProductsLiked';
+import classNames from 'classnames';
 
 const mapStateToProps = ({ popup, savedProducts }) => {
     return {
@@ -57,43 +58,49 @@ class Liked extends Component {
     render () {
         const { liked, likedVisible } = this.props;
 
-        return <div>
-            {likedVisible && <div className={styles.root}>
-                <div className={styles.popupContent}>
-                    <div>
-                        <div className={styles.headerContainer}>
-                            <div className={styles.header}>избранные товары</div>
-                            <div className={styles.closeButton} onClick={this.handleCloseLiked}>+</div>
-                        </div>
-                        {liked.length > 0 ? <div className={styles.items}>
-                            {liked.map((item, i) =>
-                                <div className={styles.item} key={i}>
-                                    <div className={styles.itemImageWrapp}>
-                                        <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
-                                            <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
-                                        </div>
-                                        <div className={styles.itemImage}>
-                                            <img className={styles.itemAvatar}
-                                                src={item.avatar}
-                                                alt='product'/>
-                                        </div>
+        return <div className={classNames(styles.root, {
+            [styles.rootVisible]: likedVisible
+        })}>
+            <div className={classNames(styles.backing, {
+                [styles.backingVisible]: likedVisible
+            })}/>
+            <div className={classNames(styles.popupContent, {
+                [styles.popupContentVisible]: likedVisible
+            })}>
+                <div>
+                    <div className={styles.headerContainer}>
+                        <div className={styles.header}>избранные товары</div>
+                        <div className={styles.closeButton} onClick={this.handleCloseLiked}>+</div>
+                    </div>
+                    {liked.length > 0 ? <div className={styles.items}>
+                        {liked.map((item, i) =>
+                            <div className={styles.item} key={i}>
+                                <div className={styles.itemImageWrapp}>
+                                    <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
+                                        <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
                                     </div>
-                                    <div className={styles.itemInfo}>
-                                        <h2 className={styles.itemName}>{item.name}</h2>
-                                        <div className={styles.itemCompany}>{item.company}</div>
-                                        <h2 className={styles.itemPrice}>{item.price} UAH</h2>
+                                    <div className={styles.itemImage}>
+                                        <img
+                                            className={styles.itemAvatar}
+                                            src={item.avatar}
+                                            alt='product'/>
                                     </div>
                                 </div>
-                            )}
-                        </div>
-                            : <div className={styles.noLikedItems}>
+                                <div className={styles.itemInfo}>
+                                    <h2 className={styles.itemName}>{item.name}</h2>
+                                    <div className={styles.itemCompany}>{item.company}</div>
+                                    <h2 className={styles.itemPrice}>{item.price} UAH</h2>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                        : <div className={styles.noLikedItems}>
                             К сожалению, Вы не добавили в избранное товары.<br/>
                             Исправить ситуацию Вы можете <a href='' className={styles.catalogLink}>выбрав</a> товар в каталоге.
-                            </div>
-                        }
-                    </div>
+                        </div>
+                    }
                 </div>
-            </div>}
+            </div>
         </div>;
     }
 }

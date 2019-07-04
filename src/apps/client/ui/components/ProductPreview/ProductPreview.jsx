@@ -65,8 +65,10 @@ class ProductPreview extends Component {
                     <div className={styles.dotsContainer}>
                         <div className={styles.buttonDots}>
                             {product.files.map((sliderImage, i) =>
-                                <div key={i} className={classNames(styles.dot, this.state.leftPosition === i * PREVIEW_WIDTH && styles.dotActive)}
-                                    onClick={this.handleDotClick(i)}/>
+                                <div key={i} className={classNames(styles.dot, {
+                                    [styles.dotActive]: this.state.leftPosition === i * PREVIEW_WIDTH
+                                })}
+                                onClick={this.handleDotClick(i)}/>
                             )}
                         </div>
                     </div>
