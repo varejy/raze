@@ -50,7 +50,8 @@ class ProductsList extends Component {
         this.state = {
             products: props.products,
             activeOption: '',
-            category: props.category
+            category: props.category,
+            arrowClicked: false
         };
     }
 
@@ -78,7 +79,7 @@ class ProductsList extends Component {
         this.setState({
             products: products.sort(sortOption.min),
             activeOption: activeOption,
-            arrowClicked: false
+            arrowClicked: true
         });
     };
 
@@ -94,6 +95,8 @@ class ProductsList extends Component {
                         getActiveOption = { this.getActiveOption }
                         renderSorting = { this.renderSorting }
                         options = { SORTING_OPTIONS }
+                        activeOption = { this.state.activeOption }
+                        arrowIsClicked= { this.state.arrowClicked }
                     />
                 </div>
             </div>

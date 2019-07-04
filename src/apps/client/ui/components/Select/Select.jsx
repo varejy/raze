@@ -18,12 +18,16 @@ class Select extends Component {
         turnOnClickOutside: PropTypes.func,
         outsideClickEnabled: PropTypes.bool,
         options: PropTypes.array.isRequired,
-        onChange: PropTypes.func.isRequired
+        onChange: PropTypes.func.isRequired,
+        activeOption: PropTypes.string.isRequired,
+        arrowIsClicked: PropTypes.bool.isRequired
     };
 
     static defaultProps = {
         turnOnClickOutside: noop,
-        options: []
+        options: [],
+        activeOption: '',
+        arrowIsClicked: false
     };
 
     handleArrowClick = () => {
@@ -44,8 +48,8 @@ class Select extends Component {
     };
 
     getActiveOption = () => {
-        const { options } = this.props;
-        const activeSort = find(sort => sort.id === this.state.activeOption, options);
+        const { options, activeOption } = this.props;
+        const activeSort = find(sort => sort.id === activeOption, options);
 
         return !activeSort ? options[0] : activeSort;
     };
@@ -58,6 +62,12 @@ class Select extends Component {
             ...remove(index, 1, options)
         ];
     };
+
+    componentWillReceiveProps (nextProps) {
+        if (this.state.arrowClicked !== nextProps.arrowIsClicked) {
+            this.setState({ arrowClicked: this.props.arrowIsClicked });
+        }
+    }
 
     render () {
         const { arrowClicked } = this.state;
@@ -80,10 +90,7 @@ class Select extends Component {
                     <li
                         key={i}
                         className={styles.filterItem}
-                        onClick={() => {
-                            this.handleCloseClick();
-                            onChange(option.id);
-                        }}>
+                        onClick={onChange(option.id)}>
                         {option.text}
                     </li>)}
             </ul>
