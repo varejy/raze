@@ -14,32 +14,27 @@ const SORTING_OPTIONS = [
     {
         text: 'От новых к старым',
         id: 'dateNew',
-        min: (product, nextProduct) => product.date - nextProduct.date,
-        max: (product, nextProduct) => product.date + nextProduct.date
+        sort: (product, nextProduct) => nextProduct.date - product.date
     },
     {
         text: 'От старых к новым',
         id: 'dateOld',
-        min: (product, nextProduct) => nextProduct.date - product.date,
-        max: (product, nextProduct) => nextProduct.date + product.date
+        sort: (product, nextProduct) => product.date - nextProduct.date
     },
     {
         text: 'От дешевых к дорогим',
         id: 'priceMin',
-        min: (product, nextProduct) => (product.discountPrice || product.price) - (nextProduct.discountPrice || nextProduct.price),
-        max: (product, nextProduct) => (product.discountPrice || product.price) + (nextProduct.discountPrice || nextProduct.price)
+        sort: (product, nextProduct) => (product.discountPrice || product.price) - (nextProduct.discountPrice || nextProduct.price)
     },
     {
         text: 'От дорогих к дешевым',
         id: 'priceMax',
-        min: (product, nextProduct) => (nextProduct.discountPrice || nextProduct.price) - (product.discountPrice || product.price),
-        max: (product, nextProduct) => (nextProduct.discountPrice || nextProduct.price) + (product.discountPrice || product.price)
+        sort: (product, nextProduct) => (nextProduct.discountPrice || nextProduct.price) - (product.discountPrice || product.price)
     },
     {
         text: 'По популярности',
         id: 'view',
-        min: (product, nextProduct) => product.views - nextProduct.views,
-        max: (product, nextProduct) => product.views + nextProduct.views
+        min: (product, nextProduct) => nextProduct.views - product.views
     }
 ];
 
@@ -71,13 +66,17 @@ class ProductsList extends Component {
         }
     }
 
+    componentDidMount () {
+        this.handleActiveSortClick(SORTING_OPTIONS[0].id);
+    }
+
     handleActiveSortClick = activeOption => () => {
         const { products } = this.state;
 
         const sortOption = find(sort => sort.id === activeOption, SORTING_OPTIONS);
 
         this.setState({
-            products: products.sort(sortOption.min),
+            products: products.sort(sortOption.sort),
             activeOption: activeOption,
             arrowClicked: !this.state.arrowClicked
         });
