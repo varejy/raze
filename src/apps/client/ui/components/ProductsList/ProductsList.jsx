@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
 import find from '@tinkoff/utils/array/find';
-import findIndex from '@tinkoff/utils/array/findIndex';
-import remove from '@tinkoff/utils/array/remove';
 
 import Product from '../Product/Product';
+import Select from '../Select/Select';
 
 import { withRouter } from 'react-router-dom';
 
@@ -52,8 +50,7 @@ class ProductsList extends Component {
         this.state = {
             products: props.products,
             activeOption: '',
-            category: props.category,
-            arrowClicked: false
+            category: props.category
         };
     }
 
@@ -80,60 +77,24 @@ class ProductsList extends Component {
 
         this.setState({
             products: products.sort(sortOption.min),
-            activeOption: activeOption
+            activeOption: activeOption,
+            arrowClicked: false
         });
     };
 
-    getActiveOption = () => {
-        const activeSort = find(sort => sort.id === this.state.activeOption, SORTING_OPTIONS);
-        return !activeSort ? SORTING_OPTIONS[0] : activeSort;
-    };
-
-    renderSorting = () => {
-        const index = findIndex(sort => sort === this.getActiveOption(), SORTING_OPTIONS);
-        return [
-            ...remove(index, 1, SORTING_OPTIONS)
-        ];
-    };
-
-    handleArrowClick = () => {
-        const { arrowClicked } = this.state;
-        if (!arrowClicked) {
-            this.setState({ arrowClicked: true });
-        } else {
-            this.setState({ arrowClicked: false });
-        }
-    };
-
     render () {
-        const { category, products, arrowClicked } = this.state;
+        const { category, products } = this.state;
 
         return <section className={styles.root}>
             <div className={styles.productsFilter}>
                 <div className={styles.filter}>
                     <div className={styles.sortingHeader}>Сортировать:</div>
-                    <div className={styles.filterWrapp}>
-                        <ul className={classNames(styles.sortingOptions, {
-                            [styles.sortingOptionsOpen]: arrowClicked
-                        })}>
-                            <li className={classNames(styles.filterItem, styles.activeFilterItem)}>
-                                <div className={styles.activeOption}>{this.getActiveOption().text}</div>
-                                <div className={styles.arrowButton} onClick={this.handleArrowClick}>
-                                    <img className={classNames({
-                                        [styles.arrowReversed]: arrowClicked
-                                    })}
-                                    src='/src/apps/client/ui/components/ProductsList/tempImages/sortingArrow.png' alt='arrow'/>
-                                </div>
-                            </li>
-                            { arrowClicked && this.renderSorting().map((option, i) =>
-                                <li
-                                    key={i}
-                                    className={styles.filterItem}
-                                    onClick={this.handleActiveSortClick(option.id)}>
-                                    {option.text}
-                                </li>)}
-                        </ul>
-                    </div>
+                    <Select
+                        onChange = { this.handleActiveSortClick }
+                        getActiveOption = { this.getActiveOption }
+                        renderSorting = { this.renderSorting }
+                        options = { SORTING_OPTIONS }
+                    />
                 </div>
             </div>
             <div className={styles.productsWrapper}>
