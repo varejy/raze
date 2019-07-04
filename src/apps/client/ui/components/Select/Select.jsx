@@ -20,14 +20,14 @@ class Select extends Component {
         options: PropTypes.array.isRequired,
         onChange: PropTypes.func.isRequired,
         activeOption: PropTypes.string.isRequired,
-        arrowIsClicked: PropTypes.bool.isRequired
+        optionsVisibility: PropTypes.bool.isRequired
     };
 
     static defaultProps = {
         turnOnClickOutside: noop,
         options: [],
         activeOption: '',
-        arrowIsClicked: false
+        optionsVisibility: false
     };
 
     handleArrowClick = () => {
@@ -64,8 +64,8 @@ class Select extends Component {
     };
 
     componentWillReceiveProps (nextProps) {
-        if (this.state.arrowClicked !== nextProps.arrowIsClicked) {
-            this.setState({ arrowClicked: this.props.arrowIsClicked });
+        if (this.props.optionsVisibility !== nextProps.optionsVisibility) {
+            this.setState({ arrowClicked: false });
         }
     }
 

@@ -79,7 +79,7 @@ class ProductsList extends Component {
         this.setState({
             products: products.sort(sortOption.min),
             activeOption: activeOption,
-            arrowClicked: true
+            arrowClicked: !this.state.arrowClicked
         });
     };
 
@@ -96,7 +96,7 @@ class ProductsList extends Component {
                         renderSorting = { this.renderSorting }
                         options = { SORTING_OPTIONS }
                         activeOption = { this.state.activeOption }
-                        arrowIsClicked= { this.state.arrowClicked }
+                        optionsVisibility = { this.state.arrowClicked }
                     />
                 </div>
             </div>
