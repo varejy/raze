@@ -4,12 +4,29 @@
     justify-content: center;
     align-items: start;
     height: 100vh;
-    background-color: rgba(255, 255 , 255, 0.5);
     position: fixed;
     top: 0;
     right: 0;
     overflow: hidden;
     z-index: 1000;
+    visibility: hidden;
+}
+
+.rootVisible{
+    visibility: visible;
+}
+
+.backing{
+    opacity: 0;
+    transition: 800ms ease;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(255, 255 , 255, 0.5);
+}
+
+.backingVisible{
+    visibility: visible;
+    opacity: 1;
 }
 
 .popupContent{
@@ -23,10 +40,11 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: right 2s ease;
+    transition: 800ms ease;
+    z-index: 1000;
 }
 
-.popupContentAnimated{
+.popupContentVisible{
     right: 0;
 }
 
@@ -189,7 +207,6 @@
     line-height: 35px;
     width: 100%;
     height: 44px;
-    cursor: pointer;
 }
 
 .continueShopping{

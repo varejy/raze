@@ -5,7 +5,7 @@
     right: 0;
     bottom: 0;
     background-color: rgba(255, 255, 255, 0.8);
-    z-index: 3;
+    z-index: 100;
 }
 
 .container {
@@ -14,10 +14,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 4;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 200;
 }
 
 .content {
