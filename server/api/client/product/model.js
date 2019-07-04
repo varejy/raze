@@ -15,7 +15,7 @@ const Product = new Schema({
     }],
     avatar: { type: String },
     files: [{ type: String, required: true }],
-    rating: { type: Number, required: true },
+    rating: { type: Number },
     notAvailable: { type: Boolean, required: true },
     hidden: { type: Boolean, required: true },
     tags: [{ type: String, required: true }],
