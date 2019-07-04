@@ -23,13 +23,14 @@ const validateComment = cond([
 
 export default function saveComment (req, res) {
     const { productId } = req.query;
-    const { name, email, rating } = req.body;
+    const { name, email, text, rating } = req.body;
     const comment = {
         id: uniqid(),
         productId,
         date: Date.now(),
         name,
         email,
+        text,
         rating
     };
     const isValid = validateComment(comment);
