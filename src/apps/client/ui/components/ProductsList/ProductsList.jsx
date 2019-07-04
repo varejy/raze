@@ -67,7 +67,7 @@ class ProductsList extends Component {
     }
 
     componentDidMount () {
-        this.handleActiveSortClick(SORTING_OPTIONS[0].id);
+        this.handleActiveSortClick(SORTING_OPTIONS[0].id)();
     }
 
     handleActiveSortClick = activeOption => () => {
