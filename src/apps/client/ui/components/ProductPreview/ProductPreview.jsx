@@ -54,13 +54,13 @@ class ProductPreview extends Component {
                     </div>
                     { leftPosition !== 0 && <button
                         className={classNames(styles.buttonLeft)}
-                        onClick={leftPosition !== 0 && this.handleArrowClick('left')}
+                        onClick={this.handleArrowClick('left')}
                     >
                         <div className={styles.arrowButton}/>
                     </button>}
                     { leftPosition !== (PREVIEW_WIDTH * (slidesQuantity - 1)) && <button
                         className={classNames(styles.buttonRight)}
-                        onClick={leftPosition !== (PREVIEW_WIDTH * (slidesQuantity - 1)) && this.handleArrowClick('right')}
+                        onClick={this.handleArrowClick('right')}
                     >
                         <div className={styles.arrowButton}/>
                     </button>}
