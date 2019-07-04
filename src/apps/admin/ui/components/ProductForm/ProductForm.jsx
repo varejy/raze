@@ -192,9 +192,7 @@ class ProductForm extends Component {
         super(...args);
 
         const { product, categories } = this.props;
-
         const category = find(category => category.id === product.categoryId, categories);
-
         const newProduct = {
             hidden: false,
             notAvailable: false,
@@ -208,7 +206,9 @@ class ProductForm extends Component {
             ...pick(PRODUCTS_VALUES, product)
         };
 
-        this.category = category;
+        this.category = category || {
+            filters: []
+        };
 
         this.prevProductHidden = newProduct.hidden;
 
@@ -237,7 +237,7 @@ class ProductForm extends Component {
                     loading: false
                 });
             });
-        'categoryId' in product && this.getFilters(category);
+        product.categoryId && this.setFilters(category);
     }
 
     componentWillReceiveProps (nextProps) {
@@ -370,14 +370,14 @@ class ProductForm extends Component {
     };
 
     handleChange = prop => event => {
-        if (prop === 'categoryId') {
-            this.handleCategoryIdChange(event);
-        }
-
         this.setState({
             product: {
                 ...this.state.product,
                 [prop]: event.target.value
+            }
+        }, () => {
+            if (prop === 'categoryId') {
+                this.handleCategoryIdChange(event);
             }
         });
     };
@@ -411,17 +411,20 @@ class ProductForm extends Component {
 
     getFilterValue = (categoryId, filters) => find(productFilter => categoryId === productFilter.id, filters).value;
 
-    getFilters = (category) => {
+    setFilters = (category) => {
         const { product } = this.state;
+
+        const filters = map((categoryFilter) => {
+            return {
+                id: categoryFilter.id,
+                value: product.filters.length ? this.getFilterValue(categoryFilter.id, product.filters) : ''
+            };
+        }, category.filters);
+
         this.setState({
             product: {
                 ...product,
-                filters: map((categoryFilter) => {
-                    return {
-                        id: categoryFilter.id,
-                        value: product.filters.length ? this.getFilterValue(categoryFilter.id, product.filters) : ''
-                    };
-                }, category.filters)
+                filters
             }
         });
     }
@@ -440,9 +443,9 @@ class ProductForm extends Component {
             }
         }));
 
-        this.category = category;
+        this.setFilters(category);
 
-        this.getFilters(category);
+        this.category = category;
     };
 
     handleAvatarFileUpload = avatar => {
@@ -481,6 +484,7 @@ class ProductForm extends Component {
     render () {
         const { classes } = this.props;
         const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
+        const titleFiltersLength = this.category.filters.length ? 'Фильтры' : 'В этой категории еще нет фильтрров';
 
         if (loading) {
             return <div className={classes.loader}>
@@ -579,14 +583,12 @@ class ProductForm extends Component {
             <Divider className={classes.divider}/>
             <div className={classes.filtersTitle}>
                 <Typography variant='h6'>{
-                    'categoryId' in product
-                        ? this.category.filters.length ? 'Фильтры' : 'В этой категории еще нет фильтрров'
-                        : 'Вы не выбрали категорию'
+                    product.categoryId ? titleFiltersLength : 'Вы не выбрали категорию'
                 }</Typography>
             </div>
             <div>
                 {
-                    'categoryId' in product && this.category.filters.map((filter, i) => <FormGroup key={i} className={classes.filter} row>
+                    product.categoryId && this.category.filters.map((filter, i) => <FormGroup key={i} className={classes.filter} row>
                         <div className={classes.filterGroup}>
                             <div className={classes.filterName}>
                                 <Typography variant='h6'>{filter.name}</Typography>
@@ -599,7 +601,7 @@ class ProductForm extends Component {
                                 margin='normal'
                                 variant='outlined'
                                 required
-                                type={ filter.type === 'Range' ? 'number' : 'text' }
+                                type={ filter.type === 'range' ? 'number' : 'text' }
                             />
                         </div>
                     </FormGroup>)
