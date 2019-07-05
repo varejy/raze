@@ -7,7 +7,7 @@ import getProductById from '../../../services/client/getProductById';
 
 import getStarsArray from '../../../utils/getStarsArray';
 
-import { withRouter, matchPath } from 'react-router-dom';
+import { Link, withRouter, matchPath } from 'react-router-dom';
 
 import styles from './ProductPage.css';
 
@@ -192,11 +192,13 @@ class ProductPage extends Component {
                                 : <div className={styles.prices}>
                                     <div className={styles.price}>{product.price} грн.</div>
                                 </div>}
-                            <button className={classNames(
-                                styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
-                            )}>
+                            <Link className={styles.link} to={`/order?id=${product.id}`}>
+                                <button className={classNames(
+                                    styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
+                                )}>
                                     Оформление заказа
-                            </button>
+                                </button>
+                            </Link>
                         </div>
                         {product.notAvailable &&
                         <div className={styles.notAvailableContent}>

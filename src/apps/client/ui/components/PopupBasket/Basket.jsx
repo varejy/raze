@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import classNames from 'classnames';
 
 import styles from './Basket.css';
@@ -9,6 +8,8 @@ import PropTypes from 'prop-types';
 import setBasket from '../../../actions/setBasket';
 import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
 import remove from '@tinkoff/utils/array/remove';
+
+import { Link, withRouter } from 'react-router-dom';
 
 const mapStateToProps = ({ popup, savedProducts }) => {
     return {
@@ -151,9 +152,17 @@ class Basket extends Component {
                             onClick={this.handleCloseBasket}>
                                 продолжить покупки
                         </button>
-                        <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
-                            заказа
-                        </button>
+                        {
+                            basket.length
+                                ? <Link className={styles.link} to='/order'>
+                                    <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
+                                        заказа
+                                    </button>
+                                </Link>
+                                : <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
+                                заказа
+                                </button>
+                        }
                     </div>
                 </div>
             </div>}
@@ -161,4 +170,4 @@ class Basket extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Basket);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Basket));
