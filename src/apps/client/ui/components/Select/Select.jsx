@@ -11,7 +11,7 @@ import remove from '@tinkoff/utils/array/remove';
 @outsideClick
 class Select extends Component {
     state = {
-        arrowClicked: false
+        isOpened: false
     };
 
     static propTypes = {
@@ -19,32 +19,26 @@ class Select extends Component {
         outsideClickEnabled: PropTypes.bool,
         options: PropTypes.array.isRequired,
         onChange: PropTypes.func.isRequired,
-        activeOption: PropTypes.string.isRequired,
-        optionsVisibility: PropTypes.bool.isRequired
+        activeOption: PropTypes.string.isRequired
     };
 
     static defaultProps = {
         turnOnClickOutside: noop,
         options: [],
-        activeOption: '',
-        optionsVisibility: false
+        activeOption: ''
     };
 
-    handleArrowClick = () => {
-        const { arrowClicked } = this.state;
+    handleOpen = () => {
+        const { isOpened } = this.state;
         const { outsideClickEnabled, turnOnClickOutside } = this.props;
 
         !outsideClickEnabled && turnOnClickOutside(this, this.handleCloseClick);
 
-        if (!arrowClicked) {
-            this.setState({ arrowClicked: true });
-        } else {
-            this.setState({ arrowClicked: false });
-        }
+        this.setState({ isOpened: !isOpened });
     };
 
     handleCloseClick = () => {
-        this.setState({ arrowClicked: false });
+        this.setState({ isOpened: false });
     };
 
     getActiveOption = () => {
@@ -54,7 +48,7 @@ class Select extends Component {
         return !activeSort ? options[0] : activeSort;
     };
 
-    renderSorting = () => {
+    getNotActiveOptions = () => {
         const { options } = this.props;
         const index = findIndex(sort => sort === this.getActiveOption(), options);
 
@@ -63,34 +57,36 @@ class Select extends Component {
         ];
     };
 
-    componentWillReceiveProps (nextProps) {
-        if (this.props.optionsVisibility !== nextProps.optionsVisibility) {
-            this.setState({ arrowClicked: false });
-        }
-    }
+    handleNotActiveOptionsClick = (option) => () => {
+        const { onChange } = this.props;
+
+        onChange(option)();
+        this.handleCloseClick();
+    };
 
     render () {
-        const { arrowClicked } = this.state;
-        const { onChange } = this.props;
+        const { isOpened } = this.state;
 
         return <div className={styles.filterWrapp}>
             <ul className={classNames(styles.sortingOptions, {
-                [styles.sortingOptionsOpen]: arrowClicked
+                [styles.sortingOptionsOpen]: isOpened
             })}>
-                <li className={classNames(styles.filterItem, styles.activeFilterItem)} onClick={this.handleArrowClick}>
-                    <div className={styles.activeOption}>{this.getActiveOption().text}</div>
-                    <div className={styles.arrowButton}>
-                        <img className={classNames({
-                            [styles.arrowReversed]: arrowClicked
-                        })}
-                        src='/src/apps/client/ui/components/Select/images/sortingArrow.png' alt='arrow'/>
+                <li className={classNames(styles.filterItem, styles.activeFilterItem)} onClick={this.handleOpen}>
+                    <div className={styles.activeOption}>
+                        {this.getActiveOption().text}
+                        <div className={styles.arrowButton}>
+                            <img className={classNames({
+                                [styles.arrowReversed]: isOpened
+                            })}
+                            src='/src/apps/client/ui/components/Select/images/arrowIcon.png' alt='arrow'/>
+                        </div>
                     </div>
                 </li>
-                { arrowClicked && this.renderSorting().map((option, i) =>
+                { isOpened && this.getNotActiveOptions().map((option, i) =>
                     <li
                         key={i}
                         className={styles.filterItem}
-                        onClick={onChange(option.id)}>
+                        onClick={this.handleNotActiveOptionsClick(`${option.id}`)}>
                         {option.text}
                     </li>)}
             </ul>

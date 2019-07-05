@@ -45,8 +45,7 @@ class ProductsList extends Component {
         this.state = {
             products: props.products,
             activeOption: '',
-            category: props.category,
-            arrowClicked: false
+            category: props.category
         };
     }
 
@@ -62,6 +61,7 @@ class ProductsList extends Component {
     componentWillReceiveProps (nextProps) {
         if (nextProps.products !== this.props.products) {
             const { activeOption } = this.state;
+
             this.setState({ products: nextProps.products }, () => activeOption && this.handleActiveSortClick(activeOption)());
         }
     }
@@ -72,30 +72,25 @@ class ProductsList extends Component {
 
     handleActiveSortClick = activeOption => () => {
         const { products } = this.state;
-
         const sortOption = find(sort => sort.id === activeOption, SORTING_OPTIONS);
 
         this.setState({
             products: products.sort(sortOption.sort),
-            activeOption: activeOption,
-            arrowClicked: !this.state.arrowClicked
+            activeOption: activeOption
         });
     };
 
     render () {
-        const { category, products } = this.state;
+        const { category, products, activeOption } = this.state;
 
         return <section className={styles.root}>
             <div className={styles.productsFilter}>
                 <div className={styles.filter}>
                     <div className={styles.sortingHeader}>Сортировать:</div>
                     <Select
-                        onChange = { this.handleActiveSortClick }
-                        getActiveOption = { this.getActiveOption }
-                        renderSorting = { this.renderSorting }
-                        options = { SORTING_OPTIONS }
-                        activeOption = { this.state.activeOption }
-                        optionsVisibility = { this.state.arrowClicked }
+                        onChange = {this.handleActiveSortClick}
+                        options = {SORTING_OPTIONS}
+                        activeOption = {activeOption}
                     />
                 </div>
             </div>
