@@ -1,6 +1,6 @@
 .searchFormInput{
     font-family: MontserratRegular;
-    color: #666666;
+    color: #9c9c9c;
     line-height: 24px;
     font-size: 11px;
     text-align: left;
@@ -56,15 +56,19 @@
 .break {
     width: 240px;
     height: 1px;
-    background-color: #000000;
+    background-color: #030503;
 }
 
-.adviceСontainer{
+.adviceContainer{
     width: 268px;
     margin-top: 8px;
     display: flex;
     justify-content: center;
     flex-direction: column;
+}
+
+.adviceContainer :last-child{
+    margin-bottom: 5px;
 }
 
 .tipLink{
@@ -76,14 +80,14 @@
     align-items: center;
     width: 100%;
     height: 22px;
-    color: #4c4c4c;
+    color: #9c9c9c;
     font-family: HelveticaNeueCyrRoman;
     font-size: 11.5px;
-    padding-left: 22px;
+    padding: 5px 0 5px 22px;
+    cursor: pointer;
+    transition: color .1s ease;
 }
 
 .tip:hover {
-    height: 22px;
-    background-color: #000000;
     color: #00a046;
 }

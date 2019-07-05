@@ -9,7 +9,7 @@ const Comment = new Schema({
     email: { type: String, required: true },
     text: { type: String, required: true },
     rating: { type: Number, required: true },
-    date: { type: Date, required: true }
+    date: { type: Number, required: true }
 });
 
 export default mongoose.model('Comment', Comment);

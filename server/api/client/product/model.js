@@ -20,7 +20,7 @@ const Product = new Schema({
     hidden: { type: Boolean, required: true },
     tags: [{ type: String, required: true }],
     categoryId: { type: String, required: true },
-    date: { type: Date, required: true },
+    date: { type: Number, required: true },
     views: { type: Number, required: true }
 });
 
