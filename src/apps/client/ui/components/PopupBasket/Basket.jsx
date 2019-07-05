@@ -107,39 +107,48 @@ class Basket extends Component {
         const { basket, basketVisible } = this.props;
         const { productsMap } = this.state;
 
-        return <div>
-            {basketVisible && <div className={styles.root}>
-                <div className={classNames(styles.popupContent, basketVisible && styles.popupContentAnimated)}>
-                    <div>
-                        <div className={styles.headerContainer}>
-                            <div className={styles.header}>корзина</div>
-                            <div className={styles.closeButton} onClick={this.handleCloseBasket}>+</div>
-                        </div>
-                        <div className={styles.amountTxt}>
-                            <div>Количество</div>
-                        </div>
-                        <div className={styles.items}>
-                            {basket.map((item, i) => productsMap[i] !== 0 &&
-                                <div className={styles.item} key={i}>
-                                    <div className={styles.itemImageWrapp}>
-                                        <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
-                                            <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
-                                        </div>
-                                        <div className={styles.itemImage}>
-                                            <img className={styles.itemAvatar}
-                                                src={item.product.avatar}
-                                                alt='product'/>
-                                        </div>
+        return <div className={classNames(styles.root, {
+            [styles.rootVisible]: basketVisible
+        })}>
+            <div className={classNames(styles.backing, {
+                [styles.backingVisible]: basketVisible
+            })}/>
+            <div className={classNames(styles.popupContent, {
+                [styles.popupContentVisible]: basketVisible
+            })}>
+                <div>
+                    <div className={styles.headerContainer}>
+                        <div className={styles.header}>корзина</div>
+                        <div className={styles.closeButton} onClick={this.handleCloseBasket}>+</div>
+                    </div>
+                    <div className={styles.amountTxt}>
+                        <div>Количество</div>
+                    </div>
+                    <div className={styles.items}>
+                        {basket.map((item, i) => productsMap[i] !== 0 &&
+                            <div className={styles.item} key={i}>
+                                <div className={styles.itemImageWrapp}>
+                                    <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
+                                        <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
                                     </div>
-                                    <div className={styles.itemInfo}>
-                                        <h2 className={styles.itemName}>{item.product.name}</h2>
-                                        <div className={styles.itemCategory}>{item.product.company}</div>
-                                        <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
+                                    <div className={styles.itemImage}>
+                                        <img
+                                            className={styles.itemAvatar}
+                                            src={item.product.avatar}
+                                            alt='product'
+                                        />
                                     </div>
-                                    <div className={styles.itemAmount}>
-                                        <div className={styles.amountButton} onClick={this.handleCountClick(i, 'minus')}>-</div>
-                                        <div className={styles.countWrapp}>{productsMap[i]}</div>
-                                        <div className={styles.amountButton} onClick={this.handleCountClick(i, 'plus')}>+</div>
+                                </div>
+                                <div className={styles.itemInfo}>
+                                    <h2 className={styles.itemName}>{item.product.name}</h2>
+                                    <div className={styles.itemCategory}>{item.product.company}</div>
+                                    <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
+                                </div>
+                                <div className={styles.itemAmount}>
+                                    <div className={styles.amountButton} onClick={this.handleCountClick(i, 'minus')}>-
+                                    </div>
+                                    <div className={styles.countWrapp}>{productsMap[i]}</div>
+                                    <div className={styles.amountButton} onClick={this.handleCountClick(i, 'plus')}>+
                                     </div>
                                 </div>
                             )}
@@ -164,8 +173,7 @@ class Basket extends Component {
                                 </button>
                         }
                     </div>
-                </div>
-            </div>}
+            </div>
         </div>;
     }
 }

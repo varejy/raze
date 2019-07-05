@@ -7,7 +7,9 @@ export default function getAvailableProductsByIds (req, res) {
 
     getProductsByIds(ids)
         .then(products => {
-            const availableProducts = products.filter(product => !product.hidden);
+            const availableProducts = products
+                .filter(product => !product.hidden)
+                .sort((prev, next) => next.date - prev.date);
 
             res.status(OKEY_STATUS_CODE).send(availableProducts);
         })
