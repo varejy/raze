@@ -51,7 +51,7 @@ class App extends Component {
 
     componentWillReceiveProps (nextProps) {
         if (this.props.location !== nextProps.location) {
-            window.scrollTo(0,0);
+            window.scrollTo(0, 0);
             this.props.closePopup();
             this.props.closeBasketPopup();
             this.props.closeLikedPopup();
