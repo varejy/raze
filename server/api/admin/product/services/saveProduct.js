@@ -2,12 +2,12 @@ import uniqid from 'uniqid';
 
 import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
 
-import getProduct from '../utils/getProduct';
+import prepareProduct from '../utils/prepareProduct';
 
 import saveProductQuery from '../../../client/product/queries/saveProduct';
 
 export default function saveProduct (req, res) {
-    const product = getProduct(req.body);
+    const product = prepareProduct(req.body);
     const id = uniqid();
     const date = Date.now();
     const views = 0;

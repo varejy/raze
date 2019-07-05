@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import closePopup from '../../../actions/closePopup';
 
 import styles from './Popup.css';
+import { withRouter } from 'react-router-dom';
 
 const mapStateToProps = ({ popup }) => {
     return {
@@ -48,6 +49,7 @@ class Popup extends Component {
 
     componentWillUnmount () {
         window.removeEventListener('keydown', this.handleKeyDown);
+        document.body.style.overflowY = 'auto';
     }
 
     openPopup = content => {
@@ -56,8 +58,8 @@ class Popup extends Component {
     };
 
     closePopup = () => {
-        document.body.style.overflowY = 'auto';
         this.setState({ content: null });
+        document.body.style.overflowY = 'auto';
     };
 
     handleKeyDown = e => {
@@ -88,4 +90,4 @@ class Popup extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Popup);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Popup));

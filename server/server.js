@@ -16,6 +16,7 @@ import adminProductApi from './api/admin/product';
 import adminMainSliderApi from './api/admin/mainSlider';
 import clientCategoryApi from './api/client/category';
 import clientProductApi from './api/client/product';
+import clientCommentApi from './api/client/comment';
 import clientMainSliderApi from './api/client/mainSlider';
 import clientSavedProductsApi from './api/client/savedProducts';
 
@@ -56,6 +57,7 @@ app.use('/api/admin/product', adminProductApi);
 app.use('/api/admin/main-slider', adminMainSliderApi);
 app.use('/api/client/category', clientCategoryApi);
 app.use('/api/client/product', clientProductApi);
+app.use('/api/client/comment', clientCommentApi);
 app.use('/api/client/main-slider', clientMainSliderApi);
 app.use('/api/client/saved-products', clientSavedProductsApi);
 
