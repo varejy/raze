@@ -76,7 +76,7 @@ class ProductsList extends Component {
 
         this.setState({
             products: products.sort(sortOption.sort),
-            activeOption: activeOption
+            activeOption
         });
     };
 
@@ -88,9 +88,9 @@ class ProductsList extends Component {
                 <div className={styles.filter}>
                     <div className={styles.sortingHeader}>Сортировать:</div>
                     <Select
-                        onChange = {this.handleActiveSortClick}
-                        options = {SORTING_OPTIONS}
-                        activeOption = {activeOption}
+                        onChange={this.handleActiveSortClick}
+                        options={SORTING_OPTIONS}
+                        activeOption={activeOption}
                     />
                 </div>
             </div>
