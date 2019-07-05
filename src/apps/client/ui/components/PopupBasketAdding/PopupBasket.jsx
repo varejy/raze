@@ -45,7 +45,7 @@ class PopupBasket extends Component {
     setProductsMap = () => {
         const { basket } = this.props;
         const productsMap = basket.reduce((acc, product, i) => {
-            acc[i] = product.amount;
+            acc[i] = product.count;
             return acc;
         }, {});
 
@@ -82,7 +82,7 @@ class PopupBasket extends Component {
         ];
 
         this.props.setBasket(newBasket);
-        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.amount })));
+        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.count })));
     };
 
     handleDuplicates = () => {
@@ -94,15 +94,15 @@ class PopupBasket extends Component {
 
     handleClosePopup = () => {
         const previouslyAdded = this.props.basket.map((product, i) => {
-            return { product: product.product, amount: this.state.productsMap[i] };
+            return { product: product.product, count: this.state.productsMap[i] };
         }, {});
 
         const newBasket = !this.handleDuplicates() ? [
-            { product: this.props.product, amount: this.state.productCount }, ...previouslyAdded
+            { product: this.props.product, count: this.state.productCount }, ...previouslyAdded
         ] : [...previouslyAdded];
 
         this.props.setBasket(newBasket);
-        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.amount })));
+        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.count })));
         this.props.closePopup();
     };
 
