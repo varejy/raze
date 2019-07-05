@@ -104,7 +104,7 @@ const materialStyles = theme => ({
     },
     filtersTitle: {
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
         justifyContent: 'space-between'
     },
     filterName: {
@@ -411,15 +411,16 @@ class ProductForm extends Component {
 
     getFilterValue = (categoryId, filters) => find(productFilter => categoryId === productFilter.id, filters).value;
 
-    setFilters = (category) => {
-        const { product } = this.state;
+    setFilters = (thisCategory) => {
+        const { category, product } = this.state;
+        const filterValue = categoryFilter => product.filters.length && this.getFilterValue(categoryFilter.id, product.filters);
 
         const filters = map((categoryFilter) => {
             return {
                 id: categoryFilter.id,
-                value: product.filters.length ? this.getFilterValue(categoryFilter.id, product.filters) : ''
+                value: category === thisCategory ? filterValue(categoryFilter) : ''
             };
-        }, category.filters);
+        }, thisCategory.filters);
 
         this.setState({
             product: {
@@ -484,7 +485,7 @@ class ProductForm extends Component {
     render () {
         const { classes } = this.props;
         const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
-        const titleFiltersLength = this.category.filters.length ? 'Фильтры' : 'В этой категории еще нет фильтрров';
+        const titleFiltersLength = !this.category.filters.length && 'В этой категории еще нет фильтрров';
 
         if (loading) {
             return <div className={classes.loader}>
@@ -582,7 +583,8 @@ class ProductForm extends Component {
             </div>
             <Divider className={classes.divider}/>
             <div className={classes.filtersTitle}>
-                <Typography variant='h6'>{
+                <Typography variant='h5'>Фильтры</Typography>
+                <Typography>{
                     product.categoryId ? titleFiltersLength : 'Вы не выбрали категорию'
                 }</Typography>
             </div>
