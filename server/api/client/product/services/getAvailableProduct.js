@@ -2,6 +2,9 @@ import { OKEY_STATUS_CODE, NOT_FOUND_STATUS_CODE, SERVER_ERROR_STATUS_CODE } fro
 
 import getProductById from '../queries/getProductById';
 import editProduct from '../queries/editProduct';
+import getCommentsByProductId from '../../comment/queries/getCommentsByProductId';
+
+import getProductValues from '../utils/getProductValues';
 
 export default function getAvailableProduct (req, res) {
     const { id } = req.query;
@@ -16,7 +19,22 @@ export default function getAvailableProduct (req, res) {
 
             editProduct(product)
                 .then((product) => {
-                    res.status(OKEY_STATUS_CODE).send(product);
+                    return getCommentsByProductId(product.id)
+                        .then((comments) => {
+                            const validComments = comments
+                                .map(comment => ({
+                                    id: comment.id,
+                                    name: comment.name,
+                                    text: comment.text,
+                                    rating: comment.rating
+                                }))
+                                .sort((prev, next) => next.date - prev.date);
+
+                            res.status(OKEY_STATUS_CODE).send({
+                                ...getProductValues(product),
+                                comments: validComments
+                            });
+                        });
                 })
                 .catch(() => {
                     res.status(SERVER_ERROR_STATUS_CODE).end();

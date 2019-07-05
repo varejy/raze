@@ -1,11 +1,11 @@
 import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
 
-import getProduct from '../utils/getProduct';
+import prepareProduct from '../utils/prepareProduct';
 
 import editProductQuery from '../../../client/product/queries/editProduct';
 
 export default function editProduct (req, res) {
-    const product = getProduct(req.body);
+    const product = prepareProduct(req.body);
 
     editProductQuery(product)
         .then(product => {

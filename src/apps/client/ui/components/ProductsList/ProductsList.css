@@ -5,7 +5,7 @@
 
 .productsFilter{
     display: flex;
-    height: 17px;
+    height: 10px;
     justify-content: flex-end;
 }
 
@@ -18,32 +18,16 @@
     color: #232323;
 }
 
-.filterWrapp{
-    display: flex;
-    justify-content: space-between;
-    font-family: Montserrat-Bold, arial;
-    width: 218px;
-    font-weight: bold;
+.link {
+    text-decoration: none;
 }
 
-.filterItem{
-    cursor: pointer;
-
-    &:hover {
-         border-bottom: #00a651 solid 5px;
-    }
-}
-
-.filterItemActive {
-    border-bottom: #00a651 solid 5px;
+.sortingHeader{
+    padding-top: 18px;
 }
 
 .productsWrapper{
-   display: flex;
-   flex-wrap: wrap;
-   margin-top: 90px
-}
-
-.link {
-    text-decoration: none;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 90px
 }

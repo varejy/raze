@@ -37,7 +37,7 @@ export default function getSavedProducts (req, res) {
             const { basket, liked, viewed, id } = savedProducts;
 
             Promise.all([
-                getProductsByIds(basket),
+                getProductsByIds(basket.map(basket => basket.id)),
                 getProductsByIds(liked),
                 getProductsByIds(viewed)
             ])
