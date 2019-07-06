@@ -9,10 +9,6 @@ export default function authenticate () {
     return dispatch => {
         const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_NAME);
 
-        if (!token) {
-            return dispatch(authenticateAction(false));
-        }
-
         base(
             request
                 .get('/api/admin/authentication/check')
