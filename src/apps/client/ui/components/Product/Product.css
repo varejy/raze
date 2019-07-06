@@ -91,7 +91,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-family: Montserrat-Bold;
+    font-family: MontserratBold;
     font-size: 11px;
     font-weight: bold;
     line-height: 1.32;
@@ -101,7 +101,7 @@
 
 .manufacturer{
     font-size: 7.5px;
-    font-family: Montserrat-Bold;
+    font-family: MontserratBold;
     line-height: 18px;
     text-align: center;
     text-transform: uppercase;
@@ -116,7 +116,7 @@
 }
 
 .price{
-    font-family: Montserrat-Medium;
+    font-family: MontserratMedium;
     font-size: 16px;
     line-height: 24px;
     text-align: center;
@@ -157,7 +157,7 @@
     align-items: center;
     text-align: center;
     justify-content: space-around;
-    font-family: Myriad Pro Regular;
+    font-family: MyriadProRegular;
     color: #fff;
     font-size: 8.5px;
     flex-wrap: wrap;
@@ -235,7 +235,7 @@
 }
 
 .name{
-    font-family: Montserrat-Bold;
+    font-family: MontserratBold;
     font-size: 13.5px;
     line-height: 18px;
     text-align: center;
@@ -260,7 +260,7 @@
     height: 32px;
     background-color: #000000;
     text-transform: uppercase;
-    font-family: Montserrat-Bold;
+    font-family: MontserratBold;
     font-size: 11px;
     line-height: 11.5px;
     color: #ffffff;

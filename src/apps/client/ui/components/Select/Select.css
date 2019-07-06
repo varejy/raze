@@ -2,7 +2,7 @@
     cursor: pointer;
     margin-bottom: 20px;
     transition: color .1s ease;
-    font-family: Montserrat-Medium;
+    font-family: MontserratMedium;
 
 &:hover {
      color: #00a046;
@@ -20,7 +20,7 @@
     top: 0;
     left: 0;
     cursor: pointer;
-    font-family: Montserrat-Bold;
+    font-family: MontserratBold;
 
 &:hover {
      color: inherit;
