@@ -62,7 +62,10 @@ class ProductsList extends Component {
         if (nextProps.products !== this.props.products) {
             const { activeOption } = this.state;
 
-            this.setState({ products: nextProps.products }, () => activeOption && this.handleActiveSortClick(activeOption)());
+            this.setState({
+                products: nextProps.products,
+                category: nextProps.category
+            }, () => activeOption && this.handleActiveSortClick(activeOption)());
         }
     }
 
