@@ -161,11 +161,14 @@ class Product extends Component {
                     </div>
                 </div>}
             </div>
-            {product.notAvailable && <div className={styles.notAvailableHover}>
-                <div className={styles.notAvailable}>
-                    Нет в наличии
+            {product.notAvailable &&
+            <Link className={styles.link} key={product.id} to={`/${category.path}/${product.id}`}>
+                <div className={styles.notAvailableHover}>
+                    <div className={styles.notAvailable}>
+                        Нет в наличии
+                    </div>
                 </div>
-            </div>}
+            </Link>}
         </div>;
     }
 }
