@@ -14,11 +14,13 @@ import adminAuthenticationApi from './api/admin/authentication';
 import adminCategoryApi from './api/admin/category';
 import adminProductApi from './api/admin/product';
 import adminMainSliderApi from './api/admin/mainSlider';
+import adminOrderApi from './api/admin/order';
 import clientCategoryApi from './api/client/category';
 import clientProductApi from './api/client/product';
 import clientCommentApi from './api/client/comment';
 import clientMainSliderApi from './api/client/mainSlider';
 import clientSavedProductsApi from './api/client/savedProducts';
+import clientOrderApi from './api/client/order';
 
 import { DATABASE_URL } from './constants/constants';
 import actions from './actions';
@@ -55,11 +57,13 @@ app.use('/api/admin/authentication', adminAuthenticationApi);
 app.use('/api/admin/category', adminCategoryApi);
 app.use('/api/admin/product', adminProductApi);
 app.use('/api/admin/main-slider', adminMainSliderApi);
+app.use('/api/admin/order', adminOrderApi);
 app.use('/api/client/category', clientCategoryApi);
 app.use('/api/client/product', clientProductApi);
 app.use('/api/client/comment', clientCommentApi);
 app.use('/api/client/main-slider', clientMainSliderApi);
 app.use('/api/client/saved-products', clientSavedProductsApi);
+app.use('/api/client/order', clientOrderApi);
 
 // admin
 app.get(/^\/admin/, function (req, res) {
