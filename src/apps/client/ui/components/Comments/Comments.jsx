@@ -21,9 +21,9 @@ class Comments extends Component {
     render () {
         return <section className={styles.commentsWrapper}>
             {
-                COMMENTS.map(comment => {
+                COMMENTS.map((comment, i) => {
                     return (
-                        <div className={styles.feedback}>
+                        <div key={i} className={styles.feedback}>
                             <Comment name={comment.name} rating={comment.rating} comment={comment.comment} />
                         </div>
                     );
