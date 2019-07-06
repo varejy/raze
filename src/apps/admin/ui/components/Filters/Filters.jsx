@@ -50,8 +50,8 @@ const FilterSortable = SortableElement(({ index, filter, isSorting, handleFilter
                         onChange={handleFilterChange('type', index)}
                         input={<OutlinedInput value={filter.type} labelWidth={45} name="Type" />}
                     >
-                        <MenuItem value='Checkbox'>Checkbox</MenuItem>
-                        <MenuItem value='Range'>Range</MenuItem>
+                        <MenuItem value='checkbox'>Checkbox</MenuItem>
+                        <MenuItem value='range'>Range</MenuItem>
                     </Select>
                 </FormControl>
             </div>
