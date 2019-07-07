@@ -127,6 +127,12 @@ class Product extends Component {
                 <div className={styles.imageWrapper}>
                     <img className={styles.img} src={product.avatar} alt={product.avatar}/>
                 </div>
+                {product.notAvailable &&
+                <div className={styles.notAvailableHover}>
+                    <div className={styles.notAvailable}>
+                        Нет в наличии
+                    </div>
+                </div>}
             </Link>
             <div className={!product.notAvailable ? styles.infoWrapper : styles.infoWrapperDisabled}>
                 <div className={styles.info}>
@@ -161,14 +167,6 @@ class Product extends Component {
                     </div>
                 </div>}
             </div>
-            {product.notAvailable &&
-            <Link className={styles.link} key={product.id} to={`/${category.path}/${product.id}`}>
-                <div className={styles.notAvailableHover}>
-                    <div className={styles.notAvailable}>
-                        Нет в наличии
-                    </div>
-                </div>
-            </Link>}
         </div>;
     }
 }
