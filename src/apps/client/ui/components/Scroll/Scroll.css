@@ -1,0 +1,67 @@
+.scroll {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+}
+
+.scrollContent {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    overflow-anchor: none;
+}
+
+.scrollContentY {
+    overflow-y: scroll;
+}
+
+.scrollBar {
+    position: absolute;
+    opacity: 0;
+    z-index: 2000;
+    top: 0;
+    right: 4px;
+    bottom: 0;
+    width: 6px;
+    transition: opacity .2s ease-in-out;
+}
+
+.scrollBarHovered {
+    opacity: 1;
+}
+
+.scrollBarCaret {
+    display: block;
+    width: 6px;
+    height: 100%;
+    border-radius: 6px;
+    will-change: transform;
+    transition: opacity .2s ease-in-out;
+    transform: translate3d(0, 0, 0);
+
+    &__black {
+         background: #000000;
+         opacity: .3;
+
+        &:hover {
+            opacity: .6;
+        }
+    }
+
+    &__white {
+         background: #ffffff;
+         opacity: .5;
+
+        &:hover {
+            opacity: .9;
+        }
+    }
+}
+
+.scrollBarCaret__black.scrollBarCaretHovered{
+    opacity: .6;
+}
+
+.scrollBarCaret__white.scrollBarCaretHovered{
+    opacity: .9;
+}

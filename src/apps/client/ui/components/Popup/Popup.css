@@ -1,15 +1,5 @@
-.coverage {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.8);
-    z-index: 1000;
-}
-
-.container {
-    position: fixed;
+.popup {
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -17,12 +7,28 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.coverage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.container {
+    position: relative;
     z-index: 1500;
+    height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .content {
     position: relative;
-    box-shadow: 0 0 50px -30px #000000;
 }
 
 .cross {
@@ -32,8 +38,23 @@
     width: 35px;
     height: 35px;
     position: absolute;
-    right: 0;
-    top: -29px;
-    background-color: #fff;
+    right: 10px;
+    top: 10px;
     cursor: pointer;
+}
+
+.scrollContentOuter {
+    height: 100%;
+
+    &:before {
+         display: inline-block;
+         height: 100%;
+         vertical-align: middle;
+         content: "";
+     }
+}
+
+.scrollContentInner {
+    display: inline-block;
+    vertical-align: middle;
 }
