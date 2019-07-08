@@ -128,8 +128,6 @@ class PopupBasket extends Component {
                                     <h2 className={styles.itemName}>{product.name}</h2>
                                     <div className={styles.itemCategory}>{product.company}</div>
                                     <h2 className={styles.itemPrice}>{product.price} UAH</h2>
-                                    {this.handleDuplicates() &&
-                                    <div className={styles.isInBasket}>*Этот товар уже в корзине</div>}
                                 </div>
                             </div>
                             {!this.handleDuplicates() && <div className={styles.itemAmount}>
