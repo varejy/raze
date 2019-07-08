@@ -12,8 +12,11 @@ export default function editCategory (req, res) {
     const { name, path, hidden, id, filters } = req.body;
 
     const addIdsFilters = map(filter => {
-        filter.id = 'id' in filter ? filter.id : uniqid();
-        return filter;
+        return {
+            name: filter.name,
+            type: filter.type,
+            id: filter.id || uniqid()
+        };
     }, filters);
 
     getCategory(id)

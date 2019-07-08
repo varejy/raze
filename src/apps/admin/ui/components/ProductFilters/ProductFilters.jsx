@@ -90,8 +90,8 @@ class ProductFilters extends Component {
                 hidden: true
             },
             selectedFiltration: {
-                active: true,
-                hidden: true
+                completed: true,
+                notCompleted: true
             }
         };
     };
@@ -177,23 +177,21 @@ class ProductFilters extends Component {
 
     handleFiltrationChange = prop => (event, value) => {
         const { selectedFiltration, filters } = this.state;
-
         const newSelectedFiltration = {
             ...selectedFiltration,
             [prop]: value
         };
-
         const selectedFiltrations = compose(
             keys,
             pickBy(value => !!value)
         )(newSelectedFiltration);
-
         const newFilters = {
             ...filters,
             filter: product => {
                 return (
-                    !product.filters.length && includes('hidden', selectedFiltrations) ||
-                    product.filters.length && includes('active', selectedFiltrations)
+                    product.filters.length
+                        ? includes('completed', selectedFiltrations)
+                        : includes('notCompleted', selectedFiltrations)
                 );
             }
         };
@@ -324,8 +322,8 @@ class ProductFilters extends Component {
                     <FormControlLabel
                         control ={
                             <Checkbox
-                                checked={selectedFiltration.active}
-                                onChange={this.handleFiltrationChange('active')}
+                                checked={selectedFiltration.completed}
+                                onChange={this.handleFiltrationChange('completed')}
                                 value='none'
                                 color='primary'
                                 className={classes.checkbox}
@@ -338,8 +336,8 @@ class ProductFilters extends Component {
                     <FormControlLabel
                         control ={
                             <Checkbox
-                                checked={selectedFiltration.hidden}
-                                onChange={this.handleFiltrationChange('hidden')}
+                                checked={selectedFiltration.notCompleted}
+                                onChange={this.handleFiltrationChange('notCompleted')}
                                 value='none'
                                 color='primary'
                                 className={classes.checkbox}
