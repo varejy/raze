@@ -8,6 +8,7 @@ const Category = new Schema({
     path: { type: String, required: true },
     hidden: { type: Boolean, required: true },
     filters: [{
+        id: { type: String, required: true },
         name: { type: String, required: true },
         type: { type: String, required: true }
     }]

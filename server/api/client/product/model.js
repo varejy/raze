@@ -14,13 +14,17 @@ const Product = new Schema({
         value: { type: String, required: true }
     }],
     avatar: { type: String },
+    filters: [{
+        id: { type: String, required: true },
+        value: { type: String, required: true }
+    }],
     files: [{ type: String, required: true }],
     rating: { type: Number },
     notAvailable: { type: Boolean, required: true },
     hidden: { type: Boolean, required: true },
     tags: [{ type: String, required: true }],
     categoryId: { type: String, required: true },
-    date: { type: Date, required: true },
+    date: { type: Number, required: true },
     views: { type: Number, required: true }
 });
 

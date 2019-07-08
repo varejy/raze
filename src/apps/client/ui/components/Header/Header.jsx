@@ -55,9 +55,17 @@ class Header extends Component {
         this.props.openLicensePopup();
     };
 
+    calculateBasketAmount = () => {
+        const { basket } = this.props;
+
+        return basket.reduce((acc, basketItem) => {
+            return acc + basketItem.count;
+        }, 0);
+    };
+
     render () {
         const { categories } = this.props;
-        const basketAmount = this.props.basket.length;
+        const basketAmount = this.calculateBasketAmount();
         const likedAmount = this.props.liked.length;
 
         return <div className={styles.headerContainer}>
