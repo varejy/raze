@@ -36,7 +36,7 @@ function retry (cb) {
 
 app.use(require('webpack-dev-middleware')(compiler, {
     headers: { 'Access-Control-Allow-Origin': '*' },
-    publicPath: config.output.publicPath,
+    publicPath: config[0].output.publicPath,
     quiet: false,
     noInfo: true,
     hot: false,

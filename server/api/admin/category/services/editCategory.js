@@ -11,7 +11,11 @@ import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constant
 export default function editCategory (req, res) {
     const { name, path, hidden, id, filters } = req.body;
 
+<<<<<<< HEAD
     const addIdsFilters = map(filter => {
+=======
+    const filtersWithIds = map(filter => {
+>>>>>>> c41d644da3ca5076108899a4f22e90bd27211408
         return {
             name: filter.name,
             type: filter.type,
@@ -21,7 +25,7 @@ export default function editCategory (req, res) {
 
     getCategory(id)
         .then(oldCategory => {
-            editCategoryQuery({ name, hidden, path, id, filters: addIdsFilters })
+            editCategoryQuery({ name, hidden, path, id, filters: filtersWithIds })
                 .then(() => {
                     if (oldCategory.hidden === hidden) {
                         return;

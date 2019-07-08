@@ -66,4 +66,7 @@ const config = {
     ]
 };
 
-module.exports = merge.smart(common, config);
+const admin = merge.smart(common.admin, config)
+const client = merge.smart(common.client, config)
+
+module.exports = [admin, client];

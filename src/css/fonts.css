@@ -1,68 +1,54 @@
 @font-face {
   font-family: 'HelveticaNeueCyr';
-
   src: url('./font/HelveticaNeueCyr-Medium.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: 'HelveticaNeueCyrThin';
-
-  src: url('./font/HelveticaNeueCyr-Thin.ttf') format('truetype');
-}
-
-@font-face {
   font-family: 'HelveticaNeueCyrBold';
-
   src: url('./font/HelveticaNeueCyr-Bold.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'HelveticaNeueCyrRoman';
-
   src: url('./font/HelveticaNeueCyr-Roman.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: 'HelveticaNeueCyrLight';
+  src: url('./font/HelveticaNeueCyr-Light.ttf') format('truetype');
+}
+
 @font-face {
   font-family: 'PFBeauSansProBlack';
-
   src: url('./font/PFBeauSansPro-Black.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'MontserratRegular';
   src: url('./font/Montserrat-Regular.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'MontserratSemiBold';
   src: url('./font/Montserrat-SemiBold.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'MontserratBold';
   src: url('./font/Montserrat-ExtraBold.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: 'Montserrat-Bold';
-
-  src: url('./font/Montserrat-Bold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Montserrat-Medium';
-
+  font-family: 'MontserratMedium';
   src: url('./font/Montserrat-Medium.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'Montserrat';
-
     src: url('./font/montserrat-black.ttf') format('truetype');
 }
-@font-face {
-  font-family: 'HelveticaNeueCyrLight';
-
-  src: url('./font/HelveticaNeueCyr-Light.ttf') format('truetype');
-}
 
 @font-face {
-  font-family: 'Myriad Pro Regular';
-
+  font-family: 'MyriadProRegular';
   src: url('./font/MyriadProRegular.ttf') format('truetype');
 }
