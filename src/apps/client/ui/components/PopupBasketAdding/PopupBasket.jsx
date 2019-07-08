@@ -10,6 +10,7 @@ import closePopup from '../../../actions/closePopup';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
 import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
+import Scroll from '../Scroll/Scroll';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
@@ -117,7 +118,7 @@ class PopupBasket extends Component {
         return <section>
             <div className={styles.root}>
                 <div className={styles.itemsWrapper}>
-                    <div>
+                    <div className={styles.addedItem}>
                         {productCount > 0 && <div className={styles.item}>
                             <div className={styles.wrapper}>
                                 <div className={styles.itemImageWrapp}>
@@ -127,7 +128,8 @@ class PopupBasket extends Component {
                                     <h2 className={styles.itemName}>{product.name}</h2>
                                     <div className={styles.itemCategory}>{product.company}</div>
                                     <h2 className={styles.itemPrice}>{product.price} UAH</h2>
-                                    {this.handleDuplicates() && <div className={styles.isInBasket}>*Этот товар уже в корзине</div>}
+                                    {this.handleDuplicates() &&
+                                    <div className={styles.isInBasket}>*Этот товар уже в корзине</div>}
                                 </div>
                             </div>
                             {!this.handleDuplicates() && <div className={styles.itemAmount}>
@@ -144,39 +146,47 @@ class PopupBasket extends Component {
                     </div>
                     {basket.length > 0 && <div className={styles.previouslyAdded}>
                         <h1 className={styles.previouslyAddedTitle}>ранее добавленные</h1>
-                        {basket.map((item, i) =>
-                            <div className={styles.previouslyAddedItemWrapp} key={i}>
-                                <div className={styles.item}>
-                                    <div className={styles.wrapper}>
-                                        <div className={styles.itemImageWrapp}>
-                                            <div className={styles.deleteItem} onClick={this.deletePreviouslyAdded(i)}>
-                                                <span className={styles.deleteItemIcon}/>
+                        <div className={styles.previouslyAddedContainer}>
+                            <Scroll theme='black'>
+                                {basket.map((item, i) =>
+                                    <div className={styles.previouslyAddedItemWrapp} key={i}>
+                                        <div className={styles.item}>
+                                            <div className={styles.wrapper}>
+                                                <div className={styles.itemImageWrapp}>
+                                                    <div className={styles.deleteItem}
+                                                        onClick={this.deletePreviouslyAdded(i)}>
+                                                        <span className={styles.deleteItemIcon}/>
+                                                    </div>
+                                                    <img className={styles.itemImage}
+                                                        src={item.product.avatar}
+                                                        alt={item.product.name}/>
+                                                </div>
+                                                <div className={styles.itemInfo}>
+                                                    <h2 className={styles.itemName}>{item.product.name}</h2>
+                                                    <div className={styles.itemCategory}>{item.product.company}</div>
+                                                    <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
+                                                </div>
                                             </div>
-                                            <img className={styles.itemImage}
-                                                src={item.product.avatar}
-                                                alt={item.product.name}/>
+                                            <div className={styles.itemAmount}>
+                                                <div className={styles.amountTxt}>Количество</div>
+                                                <div className={styles.amount}>
+                                                    <span className={styles.amountButton}
+                                                        onClick={this.handlePreviouslyAddedCountClick(i, 'minus')}>-</span>
+                                                    <div className={styles.countWrapp}>{productsMap[i]}</div>
+                                                    <span className={styles.amountButton}
+                                                        onClick={this.handlePreviouslyAddedCountClick(i, 'plus')}>+</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className={styles.itemInfo}>
-                                            <h2 className={styles.itemName}>{item.product.name}</h2>
-                                            <div className={styles.itemCategory}>{item.product.company}</div>
-                                            <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
-                                        </div>
-                                    </div>
-                                    <div className={styles.itemAmount}>
-                                        <div className={styles.amountTxt}>Количество</div>
-                                        <div className={styles.amount}>
-                                            <span className={styles.amountButton} onClick={this.handlePreviouslyAddedCountClick(i, 'minus')}>-</span>
-                                            <div className={styles.countWrapp}>{productsMap[i]}</div>
-                                            <span className={styles.amountButton} onClick={this.handlePreviouslyAddedCountClick(i, 'plus')}>+</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>)}
+                                    </div>)}
+                            </Scroll>
+                        </div>
                     </div>}
                 </div>
                 <div className={styles.buttonsWrapp}>
                     <button
-                        className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)} onClick={this.handleClosePopup}>продолжить
+                        className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
+                        onClick={this.handleClosePopup}>продолжить
                         покупки
                     </button>
                     <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление

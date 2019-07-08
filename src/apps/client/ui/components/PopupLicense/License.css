@@ -83,3 +83,10 @@
     color: #000000;
     max-width: 480px;
 }
+
+.textContainer{
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 80vh;
+    width: 100%;
+}

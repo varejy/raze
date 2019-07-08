@@ -78,7 +78,12 @@
 .items{
     width: 100%;
     height: 80vh ;
-    overflow-y: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.itemsBorder {
+    border-bottom: 1px solid #eaeaea;
 }
 
 .item{
@@ -150,10 +155,4 @@
     font-size: 10.8px;
     font-family: HelveticaNeueCyr;
     line-height: 13px;
-}
-
-.catalogLink{
-    color: #00a046;
-    text-decoration: none;
-    border-bottom: 1px solid #00a046;
 }
