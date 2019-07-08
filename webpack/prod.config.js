@@ -75,8 +75,11 @@ let config = {
 
 config.plugins = config.plugins.concat(optimizeConfig('production'));
 
-config = merge.smartStrategy({
+const admin = merge.smartStrategy({
     entry: 'prepend'
-})(common, config);
+})(common.admin, config)
+const client = merge.smartStrategy({
+    entry: 'prepend'
+})(common.client, config)
 
-module.exports = config;
+module.exports = [admin, client];

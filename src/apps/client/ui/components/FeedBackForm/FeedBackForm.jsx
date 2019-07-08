@@ -6,28 +6,33 @@ import getSchema from './feedbackFormSchema';
 
 import { connect } from 'react-redux';
 
-import getProductComments from '../../../services/client/getProductComments';
+import saveComment from '../../../services/client/saveComment';
+
+import styles from './FeedBackForm.css';
 
 import noop from '@tinkoff/utils/function/noop';
 
 const mapDispatchToProps = (dispatch) => ({
-    getProductComments: payload => dispatch(getProductComments(payload))
+    saveComment: (...payload) => dispatch(saveComment(...payload))
 });
 
 class FeedBackForm extends Component {
     static propTypes = {
         productId: PropTypes.string,
-        getProductComments: PropTypes.func
+        saveComment: PropTypes.func
     };
 
     static defaultProps = {
         productId: '',
-        getProductComments: noop
+        saveComment: noop
     };
 
-    handleButtonClick = event => {
-        const { productId } = this.props;
+    state = {
+        formVisible: true
+    }
 
+    handleButtonClick = event => {
+        const { productId, saveComment } = this.props;
         const newComment = {
             name: event.fio,
             email: event.email,
@@ -35,12 +40,21 @@ class FeedBackForm extends Component {
             text: event.comment
         };
 
-        this.props.getProductComments(productId);
+        saveComment(productId, newComment);
+
+        this.setState({
+            formVisible: false
+        });
     }
 
     render () {
+        const { formVisible } = this.state;
         return <section>
-            <Form schema={getSchema()} onSubmit={this.handleButtonClick}/>
+            { formVisible
+                ? <Form schema={getSchema()} onSubmit={this.handleButtonClick}/>
+                : <div className={styles.submitMessage}>
+                    Ваш комментарий отправлен на обработку ! В ближайшее время он будет размещен на нашем сайте, Спасибо вам за ваш отзыв !
+                </div> }
         </section>;
     }
 }

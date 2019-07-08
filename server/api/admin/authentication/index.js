@@ -5,7 +5,6 @@ import verification from '../../../middlewares/verification';
 import authenticate from './services/authenticate';
 import checkAuthentication from './services/checkAuthentication';
 import changeCredentials from './services/changeCredentials';
-import createTestAdmin from './services/createTestAdmin';
 import recover from './services/recover';
 import checkRecoveryToken from './services/checkRecoveryToken';
 import changeRecoveryCredentials from './services/changeRecoveryCredentials';
@@ -26,9 +25,6 @@ router.route('/check-recovery-token')
 
 router.route('/recover-change')
     .post(changeRecoveryCredentials);
-
-router.route('/create-test-admin')
-    .get(createTestAdmin);
 
 router.use(verification);
 

@@ -38,11 +38,14 @@ import remove from '@tinkoff/utils/array/remove';
 import reduce from '@tinkoff/utils/array/reduce';
 import compose from '@tinkoff/utils/function/compose';
 import keys from '@tinkoff/utils/object/keys';
+import map from '@tinkoff/utils/array/map';
 import pickBy from '@tinkoff/utils/object/pickBy';
 
 import arrayMove from '../../../utils/arrayMove';
 
 import Tooltip from '@material-ui/core/Tooltip';
+
+const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -85,8 +88,6 @@ const SlidesFeature = SortableContainer(({ features, classes, ...reset }) =>
     </div>
 );
 
-const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features'];
-
 const materialStyles = theme => ({
     loader: {
         width: '100%',
@@ -101,15 +102,36 @@ const materialStyles = theme => ({
         justifyContent: 'space-between',
         width: '210px'
     },
+    filtersTitle: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
+    },
+    filterName: {
+        width: '180px',
+        display: 'flex',
+        alignItems: 'center'
+    },
     feature: {
         display: 'flex',
         flexWrap: 'nowrap',
         zIndex: '2000',
         alignItems: 'center'
     },
+    filter: {
+        display: 'flex',
+        flexWrap: 'nowrap',
+        alignItems: 'center'
+    },
     featureGroup: {
         display: 'flex',
         justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%'
+    },
+    filterGroup: {
+        display: 'flex',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
         width: '100%'
     },
@@ -175,12 +197,17 @@ class ProductForm extends Component {
             hidden: false,
             notAvailable: false,
             features: [],
+            filters: [],
             tagsMap: reduce((acc, tag) => {
                 acc[tag] = true;
 
                 return acc;
             }, {}, product.tags),
             ...pick(PRODUCTS_VALUES, product)
+        };
+
+        this.category = category || {
+            filters: []
         };
 
         this.prevProductHidden = newProduct.hidden;
@@ -196,17 +223,21 @@ class ProductForm extends Component {
             })),
             initialAvatarFile: product.avatar,
             initialFiles: product.files,
-            removedFiles: []
+            removedFiles: [],
+            category: category
         };
     }
 
     componentDidMount () {
+        const { product, category } = this.state;
+
         this.props.getCategories()
             .then(() => {
                 this.setState({
                     loading: false
                 });
             });
+        product.categoryId && this.setFilters(category);
     }
 
     componentWillReceiveProps (nextProps) {
@@ -230,6 +261,7 @@ class ProductForm extends Component {
             tagsMap,
             features,
             categoryId,
+            filters,
             hidden,
             notAvailable,
             id
@@ -247,6 +279,7 @@ class ProductForm extends Component {
             description,
             features,
             categoryId,
+            filters,
             tags,
             notAvailable,
             hidden,
@@ -337,14 +370,14 @@ class ProductForm extends Component {
     };
 
     handleChange = prop => event => {
-        if (prop === 'categoryId') {
-            this.handleCategoryIdChange(event);
-        }
-
         this.setState({
             product: {
                 ...this.state.product,
                 [prop]: event.target.value
+            }
+        }, () => {
+            if (prop === 'categoryId') {
+                this.handleCategoryIdChange(event);
             }
         });
     };
@@ -376,6 +409,27 @@ class ProductForm extends Component {
         });
     };
 
+    getFilterValue = (categoryId, filters) => find(productFilter => categoryId === productFilter.id, filters).value;
+
+    setFilters = (thisCategory) => {
+        const { category, product } = this.state;
+        const filterValue = categoryFilter => product.filters.length && this.getFilterValue(categoryFilter.id, product.filters);
+
+        const filters = map((categoryFilter) => {
+            return {
+                id: categoryFilter.id,
+                value: category === thisCategory ? filterValue(categoryFilter) : ''
+            };
+        }, thisCategory.filters);
+
+        this.setState({
+            product: {
+                ...product,
+                filters
+            }
+        });
+    }
+
     handleCategoryIdChange = (event) => {
         const { categories } = this.props;
         const categoryId = event.target.value;
@@ -389,6 +443,10 @@ class ProductForm extends Component {
                 hidden: category.hidden ? category.hidden : this.prevProductHidden
             }
         }));
+
+        this.setFilters(category);
+
+        this.category = category;
     };
 
     handleAvatarFileUpload = avatar => {
@@ -404,6 +462,16 @@ class ProductForm extends Component {
         });
     };
 
+    handleFilterChange = i => event => {
+        const { product } = this.state;
+
+        product.filters[i].value = event.target.value;
+
+        this.setState({
+            product
+        });
+    }
+
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { product } = this.state;
         this.setState({
@@ -416,7 +484,8 @@ class ProductForm extends Component {
 
     render () {
         const { classes } = this.props;
-        const { product, isSorting, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
+        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
+        const titleFiltersLength = !this.category.filters.length && 'В этой категории еще нет фильтрров';
 
         if (loading) {
             return <div className={classes.loader}>
@@ -508,10 +577,37 @@ class ProductForm extends Component {
                     handleFeatureChange={this.handleFeatureChange}
                     onSortStart={this.onDragStart}
                     onSortEnd={this.onDragEnd}
-                    isSorting={isSorting}
                     useDragHandle
                     classes={classes}
                 />
+            </div>
+            <Divider className={classes.divider}/>
+            <div className={classes.filtersTitle}>
+                <Typography variant='h6'>Фильтры</Typography>
+                <Typography>{
+                    product.categoryId ? titleFiltersLength : 'Вы не выбрали категорию'
+                }</Typography>
+            </div>
+            <div>
+                {
+                    product.categoryId && this.category.filters.map((filter, i) => <FormGroup key={i} className={classes.filter} row>
+                        <div className={classes.filterGroup}>
+                            <div className={classes.filterName}>
+                                <Typography variant='h6'>{filter.name}</Typography>
+                            </div>
+                            <TextField
+                                className={classes.featureField}
+                                label='Значение'
+                                value={!product.filters[i] ? '' : product.filters[i].value}
+                                onChange={this.handleFilterChange(i)}
+                                margin='normal'
+                                variant='outlined'
+                                required
+                                type={ filter.type === 'range' ? 'number' : 'text' }
+                            />
+                        </div>
+                    </FormGroup>)
+                }
             </div>
             <Divider className={classes.divider}/>
             <ProductAvatarFile onAvatarFileUpload={this.handleAvatarFileUpload} initialAvatarFile={initialAvatarFile}/>

@@ -53,9 +53,12 @@ class Search extends Component {
 
     handleInputSubmit = event => {
         const { inputTxt } = this.state;
+
         event.preventDefault();
-        this.props.history.push(`/search?text=${inputTxt}`);
-        this.handleTipsClose();
+        if (inputTxt) {
+            this.props.history.push(`/search?text=${inputTxt}`);
+            this.handleTipsClose();
+        }
     };
 
     handleInputChange = event => {
@@ -101,6 +104,7 @@ class Search extends Component {
                 onChange={this.handleInputChange}
                 className={classNames(styles.searchFormInput, { [styles.searchFormInputActive]: !!tips.length })}
                 placeholder='Поиск продуктов...'
+                onFocus={this.handleInputChange}
             />
             {
                 !!tips.length && <div className={styles.tipsRoot}>
@@ -120,7 +124,7 @@ class Search extends Component {
                     </div>
                 </div>
             }
-            <button className={styles.searchFormIcon} onClick={this.handleInputSubmit}>
+            <button className={styles.searchFormIcon} type='submit'>
                 <img src='/src/apps/client/ui/components/Header/images/search.png' alt='search'/>
             </button>
         </form>;
