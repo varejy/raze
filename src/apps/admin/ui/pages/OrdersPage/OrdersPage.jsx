@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Modal from '@material-ui/core/Modal';
@@ -18,26 +19,44 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withStyles } from '@material-ui/core/styles';
 
-import ProductForm from '../../components/ProductForm/ProductForm';
 import ProductFilters from '../../components/ProductFilters/ProductFilters';
 
 import { connect } from 'react-redux';
 import getOrders from '../../../services/getOrders';
 
 import format from 'date-fns/format';
+import OrderForm from '../../components/OrderForm/OrderForm';
 
+import map from '@tinkoff/utils/array/map';
+
+const STATUS_ARRAY = [
+    {
+        status: 'new',
+        theme: ['status', 'statusNew']
+    },
+    {
+        status: 'paid',
+        theme: ['status', 'statusPaid']
+    },
+    {
+        status: 'sent',
+        theme: ['status', 'statusSent']
+    },
+    {
+        status: 'done',
+        theme: ['status', 'statusDone']
+    },
+    {
+        status: 'declined',
+        theme: ['status', 'statusDeclined']
+    }
+];
 const ROWS_PER_PAGE = 10;
 const headerRows = [
     { id: 'name', label: 'Имя' },
     { id: 'phone', label: 'Телефон' },
     { id: 'date', label: 'Дата' },
     { id: 'status', label: 'Статус' }
-];
-const tableCells = [
-    { prop: order => order.name },
-    { prop: order => order.phone },
-    { prop: order => format(order.date, 'hh:mm:ss - DD MMM YYYY') },
-    { prop: order => order.status }
 ];
 
 const materialStyles = theme => ({
@@ -67,6 +86,32 @@ const materialStyles = theme => ({
     },
     actions: {
         color: theme.palette.text.secondary
+    },
+    status: {
+        width: '88px',
+        height: '24px',
+        color: 'white',
+        fontFamily: 'HelveticaNeueCyr',
+        fontSize: '14px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: '25px'
+    },
+    statusNew: {
+        backgroundColor: '#761CEA'
+    },
+    statusPaid: {
+        backgroundColor: '#FFD600'
+    },
+    statusSent: {
+        backgroundColor: '#8CBA51'
+    },
+    statusDone: {
+        backgroundColor: '#008736'
+    },
+    statusDeclined: {
+        backgroundColor: '#BC0022'
     },
     valuesActions: {
         display: 'flex',
@@ -102,6 +147,7 @@ class OrdersPage extends Component {
 
     constructor (...args) {
         super(...args);
+        const { classes } = this.props;
 
         this.state = {
             loading: true,
@@ -110,6 +156,15 @@ class OrdersPage extends Component {
             editableOrder: null,
             page: 0
         };
+
+        this.tableCells = [
+            { prop: order => order.name },
+            { prop: order => order.phone },
+            { prop: order => format(order.date, 'hh:mm:ss - DD MMM YYYY') },
+            { prop: order => map((prop, i) => order.status === prop.status && <div key={i} className={classNames(prop.theme.map(style => classes[style]))}>
+                {prop.status}
+            </div>, STATUS_ARRAY) }
+        ];
     }
 
     componentDidMount () {
@@ -132,7 +187,7 @@ class OrdersPage extends Component {
 
     handleFormDone = () => {
         this.props.getOrders()
-            .then(this.handleCloseProductForm);
+            .then(this.handleCloseOrderForm);
     };
 
     handleFormOpen = order => () => {
@@ -229,7 +284,7 @@ class OrdersPage extends Component {
                                             key={i}
                                             className={classes.row}
                                         >
-                                            { tableCells.map((tableCell, i) => <TableCell key={i}>{tableCell.prop(value)}</TableCell>) }
+                                            {this.tableCells.map((tableCell, i) => <TableCell key={i}>{tableCell.prop(value)}</TableCell>)}
                                             <TableCell padding='checkbox' align='right'>
                                                 <div className={classes.valueActions}>
                                                     <IconButton onClick={this.handleFormOpen(value)}>
@@ -260,7 +315,7 @@ class OrdersPage extends Component {
             </Paper>
             <Modal open={formShowed} onClose={this.handleCloseOrderForm} className={classes.modal}>
                 <Paper className={classes.modalContent}>
-                    <ProductForm product={editableOrder} onDone={this.handleFormDone}/>
+                    <OrderForm order={editableOrder} onDone={this.handleFormDone}/>
                 </Paper>
             </Modal>
             <Modal open={filtersShowed} onClose={this.handleCloseFilters} className={classes.modal} keepMounted>

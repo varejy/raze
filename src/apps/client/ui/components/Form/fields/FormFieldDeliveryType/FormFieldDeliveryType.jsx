@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import styles from './FormFieldDeliveryType.css';
 
 import noop from '@tinkoff/utils/function/noop';
-import propOr from '@tinkoff/utils/object/propOr';
 
 class FormFieldDeliveryType extends Component {
     static propTypes = {
@@ -24,25 +23,22 @@ class FormFieldDeliveryType extends Component {
         this.state = {
             title: props.schema.title,
             options: props.schema.options,
-            optionsMap: {}
+            optionsMap: ''
         };
     }
 
     handleOptionClick = prop => event => {
         event.preventDefault();
-        const { optionsMap } = this.state;
-
-        const nextOptionsMap = {
-            [prop]: !optionsMap[prop]
-        };
+        const nextOptionsMap = prop;
 
         this.setState({
             optionsMap: nextOptionsMap
-        }, () => this.props.onChange(optionsMap));
+        }, () => this.props.onChange(this.state.optionsMap));
     };
 
     render () {
         const { title, options, optionsMap } = this.state;
+        const check = (event) => optionsMap === event;
 
         return <section className={styles.delivery}>
             <div className={styles.title}>{title}</div>
@@ -50,15 +46,13 @@ class FormFieldDeliveryType extends Component {
             <div className={styles.options}>
                 {
                     options.map((option, i) => {
-                        const isChecked = propOr([i], false, optionsMap);
-
                         return (
                             <button
                                 key={i}
-                                onClick={this.handleOptionClick(i)}
-                                className={classNames(styles.buttonDefault, styles.optionButton, { [styles.optionButtonActive]: isChecked })}
+                                onClick={this.handleOptionClick(option.id)}
+                                className={classNames(styles.buttonDefault, styles.optionButton, { [styles.optionButtonActive]: check(option.id) })}
                             >
-                                <img className={styles.optionImg} src={option} alt={option} />
+                                <img className={styles.optionImg} src={option.img} alt={option.id} />
                             </button>
                         );
                     })

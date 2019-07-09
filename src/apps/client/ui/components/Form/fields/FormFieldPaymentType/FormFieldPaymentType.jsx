@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import styles from './FormFieldPaymentType.css';
 
 import noop from '@tinkoff/utils/function/noop';
-import propOr from '@tinkoff/utils/object/propOr';
 
 class FormFieldPaymentType extends Component {
     static propTypes = {
@@ -24,24 +23,21 @@ class FormFieldPaymentType extends Component {
         this.state = {
             title: props.schema.title,
             options: props.schema.options,
-            optionsMap: {}
+            optionsMap: ''
         };
     }
 
     handleOptionChange = prop => () => {
-        const { optionsMap } = this.state;
-
-        const nextOptionsMap = {
-            [prop]: !optionsMap[prop]
-        };
+        const nextOptionsMap = prop;
 
         this.setState({
             optionsMap: nextOptionsMap
-        }, () => this.props.onChange(optionsMap));
+        }, () => this.props.onChange(this.state.optionsMap));
     };
 
     render () {
         const { title, options, optionsMap } = this.state;
+        const check = (event) => optionsMap === event;
 
         return <section className={styles.payment}>
             <div>{title}</div>
@@ -49,8 +45,6 @@ class FormFieldPaymentType extends Component {
             <div className={styles.options}>
                 {
                     options.map((option, i) => {
-                        const isChecked = propOr([i], false, optionsMap);
-
                         return (
                             <div key={i}>
                                 <label className={styles.option}>
@@ -59,10 +53,10 @@ class FormFieldPaymentType extends Component {
                                         name="payment"
                                         className={classNames(styles.input, styles.radioButton)}
                                         value={option.value}
-                                        onChange={this.handleOptionChange(i)}
-                                        checked={isChecked}
+                                        onChange={this.handleOptionChange(option.id)}
+                                        checked={check(option.id)}
                                     />
-                                    <div className={classNames(styles.radioButton, { [styles.radioButtonActive]: isChecked })} />
+                                    <div className={classNames(styles.radioButton, { [styles.radioButtonActive]: check(option.id) })} />
                                     <div>{option.value}</div>
                                 </label>
                             </div>
