@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import CrossButton from '../CrossButton/CrossButton';
+import Scroll from '../Scroll/Scroll';
 
 import { connect } from 'react-redux';
 import closePopup from '../../../actions/closePopup';
@@ -53,8 +54,8 @@ class Popup extends Component {
     }
 
     openPopup = content => {
-        document.body.style.overflowY = 'hidden';
         this.setState({ content });
+        document.body.style.overflowY = 'hidden';
     };
 
     closePopup = () => {
@@ -69,15 +70,20 @@ class Popup extends Component {
         }
     };
 
-    renderPopup = content => <div>
-        <div className={styles.coverage} />
-        <div className={styles.container}>
-            <div className={styles.content}>
-                <div className={styles.cross} onClick={this.props.closePopup}>
-                    <CrossButton />
-                </div>
-                { content }
+    renderPopup = content => <div className={styles.popup}>
+        <div className={styles.coverage} onClick={this.props.closePopup}>
+            <div className={styles.cross}>
+                <CrossButton />
             </div>
+        </div>
+        <div className={styles.container}>
+            <Scroll>
+                <div className={styles.scrollContentOuter}>
+                    <div className={styles.scrollContentInner}>
+                        { content }
+                    </div>
+                </div>
+            </Scroll>
         </div>
     </div>;
 

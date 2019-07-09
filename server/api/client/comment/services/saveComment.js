@@ -3,8 +3,10 @@ import uniqid from 'uniqid';
 import { OKEY_STATUS_CODE, FORBIDDEN_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
 import isString from '@tinkoff/utils/is/string';
 import isNumber from '@tinkoff/utils/is/number';
+import isEmpty from '@tinkoff/utils/is/empty';
 import cond from '@tinkoff/utils/function/cond';
 import T from '@tinkoff/utils/function/T';
+import F from '@tinkoff/utils/function/F';
 
 import saveCommentQuery from '../queries/saveComment';
 import getCommentsByProductId from '../queries/getCommentsByProductId';
@@ -15,10 +17,11 @@ const MAX_EMAIL_LENGTH = 200;
 const MAX_TEXT_LENGTH = 1200;
 
 const validateComment = cond([
-    [({ name }) => isString(name) && name < MAX_NAME_LENGTH, T],
-    [({ email }) => isString(email) && email < MAX_EMAIL_LENGTH, T],
-    [({ text }) => isString(text) && text < MAX_TEXT_LENGTH, T],
-    [({ rating }) => isNumber(rating) && rating > 0 && rating < 6, T]
+    [({ name }) => !isString(name) || isEmpty(name) || name.length > MAX_NAME_LENGTH, F],
+    [({ email }) => !isString(email) || isEmpty(email) || email.length > MAX_EMAIL_LENGTH, F],
+    [({ text }) => !isString(text) || isEmpty(text) || text.length > MAX_TEXT_LENGTH, F],
+    [({ rating }) => !isNumber(rating) || rating < 1 || rating > 5, F],
+    [T, T]
 ]);
 
 export default function saveComment (req, res) {

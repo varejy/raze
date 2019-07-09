@@ -583,7 +583,7 @@ class ProductForm extends Component {
             </div>
             <Divider className={classes.divider}/>
             <div className={classes.filtersTitle}>
-                <Typography variant='h5'>Фильтры</Typography>
+                <Typography variant='h6'>Фильтры</Typography>
                 <Typography>{
                     product.categoryId ? titleFiltersLength : 'Вы не выбрали категорию'
                 }</Typography>
