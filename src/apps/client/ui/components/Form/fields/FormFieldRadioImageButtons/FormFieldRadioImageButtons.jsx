@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import styles from './FormFieldDeliveryType.css';
+import styles from './FormFieldRadioImageButtons.css';
 
 import noop from '@tinkoff/utils/function/noop';
 import propOr from '@tinkoff/utils/object/propOr';
@@ -22,8 +22,6 @@ class FormFieldDeliveryType extends Component {
         super(props);
 
         this.state = {
-            title: props.schema.title,
-            options: props.schema.options,
             optionsMap: {}
         };
     }
@@ -31,22 +29,21 @@ class FormFieldDeliveryType extends Component {
     handleOptionClick = prop => event => {
         event.preventDefault();
         const { optionsMap } = this.state;
-
         const nextOptionsMap = {
             [prop]: !optionsMap[prop]
         };
 
         this.setState({
             optionsMap: nextOptionsMap
-        }, () => this.props.onChange(optionsMap));
+        }, () => this.props.onChange(nextOptionsMap));
     };
 
     render () {
-        const { title, options, optionsMap } = this.state;
+        const { optionsMap } = this.state;
+        const { title, options } = this.props.schema;
 
         return <section className={styles.delivery}>
             <div className={styles.title}>{title}</div>
-
             <div className={styles.options}>
                 {
                     options.map((option, i) => {

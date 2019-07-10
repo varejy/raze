@@ -32,7 +32,7 @@ export default class FormFieldButton extends Component {
                 className={classNames(styles.buttonDefault, styles.button, {
                     [styles.uppercase]: schema.uppercase
                 },
-                styles[`buttonField_background_${schema.backgroundColor}`])}
+                styles[`buttonField_background_${schema.theme}`])}
                 onClick={this.handleClick}
                 type={schema.type}
             >
