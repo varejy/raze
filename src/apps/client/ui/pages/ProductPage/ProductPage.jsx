@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { connect } from 'react-redux';
-import getProductById from '../../../services/client/getProductById';
 
 import getStarsArray from '../../../utils/getStarsArray';
 
@@ -13,12 +12,13 @@ import styles from './ProductPage.css';
 
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
 import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
-
 import Comments from '../../components/Comments/Comments';
-
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
+
 import setViewed from '../../../actions/setViewed';
+
 import saveProductsViewed from '../../../services/client/saveProductsViewed';
+import getProductById from '../../../services/client/getProductById';
 
 import filter from '@tinkoff/utils/array/filter';
 import tail from '@tinkoff/utils/array/tail';
@@ -235,13 +235,13 @@ class ProductPage extends Component {
                     <div className={classNames(styles.productFeedbacks, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>всего отзывов</div>
                         <div className={styles.feedbacks}>
-                            <Comments />
+                            <Comments productComments={product.comments}/>
                         </div>
                     </div>
                     <div className={classNames(styles.feedbackForm, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>добавьте комментарий</div>
                         <div className={styles.creatingFeedback}>
-                            <FeedBackForm/>
+                            <FeedBackForm productId={product.id}/>
                         </div>
                     </div>
                     {!!viewed.length && <PreviouslyViewed viewed={tail(viewed)} />}
