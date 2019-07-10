@@ -7,19 +7,19 @@ import Comment from '../Comment/Comment';
 
 class Comments extends Component {
     static propTypes = {
-        product: PropTypes.object
+        productComments: PropTypes.object
     };
 
     static defaultProps = {
-        product: {}
+        productComments: {}
     };
 
     render () {
-        const { product } = this.props;
+        const { productComments } = this.props;
         return <section className={styles.commentsWrapper}>
             {
-                product.comments.length
-                    ? product.comments.map((comment, i) => {
+                productComments.length
+                    ? productComments.map((comment, i) => {
                         return (
                             <div key={i} className={styles.feedback}>
                                 <Comment name={comment.name} rating={comment.rating} comment={comment.text} />

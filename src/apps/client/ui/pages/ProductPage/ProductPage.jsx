@@ -235,7 +235,7 @@ class ProductPage extends Component {
                     <div className={classNames(styles.productFeedbacks, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>всего отзывов</div>
                         <div className={styles.feedbacks}>
-                            <Comments product={product}/>
+                            <Comments productComments={product.comments}/>
                         </div>
                     </div>
                     <div className={classNames(styles.feedbackForm, styles.infoContainer)}>

@@ -28,30 +28,30 @@ class FeedBackForm extends Component {
     };
 
     state = {
-        formVisible: true
+        commentSaved: true
     }
 
-    handleButtonClick = event => {
+    handleSubmit = values => {
         const { productId, saveComment } = this.props;
         const newComment = {
-            name: event.fio,
-            email: event.email,
-            rating: event.rating,
-            text: event.comment
+            name: values.fio,
+            email: values.email,
+            rating: values.rating,
+            text: values.comment
         };
 
         saveComment(productId, newComment);
 
         this.setState({
-            formVisible: false
+            commentSaved: false
         });
     }
 
     render () {
-        const { formVisible } = this.state;
+        const { commentSaved } = this.state;
         return <section>
-            { formVisible
-                ? <Form schema={getSchema()} onSubmit={this.handleButtonClick}/>
+            { commentSaved
+                ? <Form schema={getSchema()} onSubmit={this.handleSubmit}/>
                 : <div className={styles.submitMessage}>
                     Ваш комментарий отправлен на обработку ! В ближайшее время он будет размещен на нашем сайте, Спасибо вам за ваш отзыв !
                 </div> }
