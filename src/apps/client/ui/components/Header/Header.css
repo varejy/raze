@@ -23,6 +23,7 @@
     align-items: center;
     justify-content: left;
     text-decoration: none;
+    margin-right: 50px;
 }
 
 .logoLeft{
@@ -128,6 +129,33 @@
     margin-right: 27px;
 }
 
+.contactsHidden{
+    display: none;
+}
+
+.burgerContacts{
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    background-color: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.burgerContacts .contacts{
+    height: auto;
+    padding: 30px 0;
+}
+
+.burgerContacts .tollEmail{
+    font-size: 14px;
+    line-height: normal;
+}
+
 .headerBottom{
     position: relative;
     top: -59px;
@@ -146,6 +174,23 @@
     margin: 0 auto;
 }
 
+.menuHidden{
+    display: none;
+}
+
+.menuVisible{
+    display: flex;
+}
+
+.burgerMenu{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1100;
+}
+
 .menuListCategory{
     display: inline-block;
     font-family: MontserratRegular;
@@ -160,6 +205,27 @@
     }
 }
 
+.burgerMenu .menuList{
+    display: unset;
+}
+
+.burgerMenu .menuListCategory{
+    display: block;
+    text-align: center;
+    font-size: 31px;
+    line-height: normal;
+    font-family: MontserratSemiBold;
+    margin-left: 0;
+
+&:not(:last-child) {
+     margin-bottom: 20px;
+ }
+}
+
+.burgerMenu .menuListCategoryActive{
+    color: #ffffff;
+}
+
 .menuListCategoryActive{
     color: #00a046;
 }
@@ -168,7 +234,7 @@
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
-    padding: 25px 0;
+    padding: 25px 25px;
 }
 
 .likesBasket{
@@ -286,4 +352,37 @@
     display: flex;
     align-items: center;
     text-align: right;
+}
+
+@media all and (max-width: 1169px){
+    .headerTop, .headerBottom{
+        max-width: 100%;
+        min-width: 100%;
+        padding: 0 8%;
+    }
+
+    .likesBasket{
+        right: 8%;
+    }
+
+    .headerContainer{
+        padding: 0;
+    }
+}
+@media all and (max-width: 415px) {
+    .logo {
+        margin-right: 8%;
+    }
+
+    .logoLeft {
+        line-height: 15px;
+        font-size: 56.5px;
+    }
+
+    .logoRight {
+        margin-left: 6%;
+        line-height: 17.5px;
+        font-size: 8px;
+        letter-spacing: 6.24px;
+    }
 }

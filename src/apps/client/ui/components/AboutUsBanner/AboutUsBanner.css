@@ -60,3 +60,46 @@
     justify-content: center;
     padding: 30px 0;
 }
+
+@media all and (max-width: 1169px){
+    .banner{
+        max-width: 100%;
+        min-width: 100%;
+        padding: 8%;
+        height: unset;
+    }
+
+    .bannerContainer{
+        padding: 8%;
+    }
+
+    .bannerText{
+        font-size: 14px;
+        line-height: 48px;
+        margin: 0 auto 50px auto;
+        width: 75%;
+    }
+
+    .readMoreButton{
+        width: 184px;
+        height: 67px;
+        font-size: 13.5px;
+        line-height: 40px;
+        letter-spacing: 1.35px;
+    }
+
+    .bannerHeader{
+        padding: 30px 0;
+        margin-bottom: 30px;
+    }
+}
+
+@media all and (max-width: 720px) {
+    .bannerText{
+        width: 100%;
+    }
+
+    .bannerButton{
+        padding: 0 0 30px 0;
+    }
+}

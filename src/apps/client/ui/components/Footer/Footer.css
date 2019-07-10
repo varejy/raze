@@ -40,5 +40,19 @@
     height: 19px;
     cursor: pointer;
 }
-.socialLink{
+
+@media all and (max-width: 1169px) {
+    .iconsContainer{
+        max-width: 100%;
+        min-width: 100%;
+        padding: 0 8%;
+    }
+
+    .footerContainer{
+        padding: 0;
+    }
+
+    .icons{
+        width: 150px;
+    }
 }

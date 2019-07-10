@@ -98,7 +98,7 @@ class Search extends Component {
     render () {
         const { inputTxt, tips } = this.state;
 
-        return <form onSubmit={this.handleInputSubmit}>
+        return <form onSubmit={this.handleInputSubmit} className={styles.form}>
             <input
                 value={inputTxt}
                 onChange={this.handleInputChange}
