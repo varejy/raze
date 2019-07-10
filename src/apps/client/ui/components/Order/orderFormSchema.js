@@ -1,7 +1,7 @@
 import FormFieldInput from '../Form/fields/FormFieldInput/FormFieldInput';
 import FormFieldButton from '../Form/fields/FormFieldButton/FormFieldButton';
-import FormFieldDeliveryType from '../Form/fields/FormFieldDeliveryType/FormFieldDeliveryType';
-import FormFieldPaymentType from '../Form/fields/FormFieldPaymentType/FormFieldPaymentType';
+import FormFieldRadioImageButtons from '../Form/fields/FormFieldRadioImageButtons/FormFieldRadioImageButtons';
+import FormFieldRadioButtons from '../Form/fields/FormFieldRadioButtons/FormFieldRadioButtons';
 
 export default function () {
     return {
@@ -24,16 +24,16 @@ export default function () {
                 ]
             },
             {
-                component: FormFieldDeliveryType,
+                component: FormFieldRadioImageButtons,
                 name: 'orderType',
                 title: 'Выберите тип доставки: ',
                 options: [
                     {
-                        img: 'src/apps/client/ui/components/Order/icons/Nova_Poshta.png',
+                        img: 'src/apps/client/ui/components/Order/icons/nova_Poshta.png',
                         id: 'nova'
                     },
                     {
-                        img: 'src/apps/client/ui/components/Order/icons/Ukrposhta.png',
+                        img: 'src/apps/client/ui/components/Order/icons/ukrposhta.png',
                         id: 'ukr'
                     }
                 ],
@@ -58,7 +58,7 @@ export default function () {
                 ]
             },
             {
-                component: FormFieldPaymentType,
+                component: FormFieldRadioButtons,
                 name: 'paymentType',
                 title: 'Выберите тип оплаты: ',
                 options: [
@@ -78,7 +78,7 @@ export default function () {
             {
                 component: FormFieldButton,
                 position: 'center',
-                backgroundColor: 'green',
+                theme: 'typeOrder',
                 name: 'submit',
                 title: 'отправить заказ'
             }

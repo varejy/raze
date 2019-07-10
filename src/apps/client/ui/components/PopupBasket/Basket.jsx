@@ -11,7 +11,7 @@ import Scroll from '../Scroll/Scroll';
 
 import styles from './Basket.css';
 
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const mapStateToProps = ({ popup, savedProducts }) => {
     return {
@@ -184,4 +184,4 @@ class Basket extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Basket));
+export default connect(mapStateToProps, mapDispatchToProps)(Basket);

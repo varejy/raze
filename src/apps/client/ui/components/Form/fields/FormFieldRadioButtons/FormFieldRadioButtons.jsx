@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import styles from './FormFieldPaymentType.css';
+import styles from './FormFieldRadioButtons.css';
 
 import noop from '@tinkoff/utils/function/noop';
 
@@ -21,23 +21,23 @@ class FormFieldPaymentType extends Component {
         super(props);
 
         this.state = {
-            title: props.schema.title,
-            options: props.schema.options,
-            optionsMap: ''
+            optionsMap: {}
         };
     }
 
-    handleOptionChange = prop => () => {
+    handleOptionChange = prop => event => {
+        event.preventDefault();
         const nextOptionsMap = prop;
 
         this.setState({
             optionsMap: nextOptionsMap
-        }, () => this.props.onChange(this.state.optionsMap));
+        }, () => this.props.onChange(nextOptionsMap));
     };
 
     render () {
-        const { title, options, optionsMap } = this.state;
+        const { optionsMap } = this.state;
         const check = (event) => optionsMap === event;
+        const { name, title, options } = this.props.schema;
 
         return <section className={styles.payment}>
             <div>{title}</div>
@@ -50,7 +50,7 @@ class FormFieldPaymentType extends Component {
                                 <label className={styles.option}>
                                     <input
                                         type="radio"
-                                        name="payment"
+                                        name={name}
                                         className={classNames(styles.input, styles.radioButton)}
                                         value={option.value}
                                         onChange={this.handleOptionChange(option.id)}
