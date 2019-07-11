@@ -12,8 +12,6 @@ import flatten from '@tinkoff/utils/array/flatten';
 import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
 
-import styles from './ProductsFilters.css';
-
 const DEFAULT_FILTERS = [
     {
         name: 'Компании',
@@ -34,7 +32,7 @@ class ProductsFilters extends Component {
 
         this.state = {
             filters: flatten([
-                this.defaultFilters(),
+                this.getDefaultFilters(),
                 this.getFilters()
             ])
         };
@@ -53,20 +51,20 @@ class ProductsFilters extends Component {
         if (nextProps.products !== this.props.products) {
             this.setState({
                 filters: flatten([
-                    this.defaultFilters(nextProps),
+                    this.getDefaultFilters(nextProps),
                     this.getFilters(nextProps)
                 ])
             });
         }
     }
 
-    defaultFilters = (props = this.props) => {
+    getDefaultFilters = (props = this.props) => {
         const { products } = props;
 
         return DEFAULT_FILTERS.map((filter) => {
             switch (filter.type) {
             case 'checkbox':
-                let options = compose(
+                const options = compose(
                     uniq,
                     map(product => product.company)
                 )(products);
@@ -78,8 +76,6 @@ class ProductsFilters extends Component {
             case 'range':
                 const price = compose(
                     uniq,
-                    filterUtil(elem => !!elem),
-                    flatten,
                     map(product => product.discountPrice
                         ? product.discountPrice
                         : product.price
@@ -158,7 +154,7 @@ class ProductsFilters extends Component {
         const { filters } = this.state;
 
         return <section>
-            { filters.map((filter, i) => <div className={styles.filter} key={i}>
+            { filters.map((filter, i) => <div key={i}>
                 {this.renderFilter(filter)}
             </div>) }
         </section>;
