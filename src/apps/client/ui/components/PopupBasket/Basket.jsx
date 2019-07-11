@@ -94,7 +94,7 @@ class Basket extends Component {
         const { productsMap } = this.state;
 
         return basket.reduce((acc, productInfo, i) => {
-            return acc + productInfo.product.price * productsMap[i];
+            return acc + (productInfo.product.discountPrice || productInfo.product.price) * productsMap[i];
         }, 0);
     };
 

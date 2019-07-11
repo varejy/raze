@@ -30,20 +30,38 @@ class OrderPage extends Component {
         this.state = {
             productsMap: {}
         };
+
+        this.productsCount = 0;
     }
 
-    componentDidMount () {
+    getProductsCount = (arr) => {
+        const count = (oldElem, nextElem) => oldElem + nextElem;
+        this.productsCount = arr.reduce(count);
+    }
+
+    componentDidMount = () => {
         this.setProductsMap();
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (this.props !== nextProps) {
+            this.setProductsMap();
+        }
     }
 
     setProductsMap = () => {
         const { basket } = this.props;
+        const productsCount = [];
         const productsMap = basket.reduce((acc, productInfo, i) => {
+            productsCount.push(productInfo.count);
             acc[i] = productInfo.count;
             return acc;
         }, {});
 
-        this.setState({ productsMap });
+        this.setState({
+            productsMap
+        });
+        this.getProductsCount(productsCount);
     };
 
     totalPrice = () => {
@@ -51,19 +69,19 @@ class OrderPage extends Component {
         const { productsMap } = this.state;
 
         return basket.reduce((acc, productInfo, i) => {
-            return acc + productInfo.product.discountPrice || productInfo.product.price * productsMap[i];
+            return acc + (productInfo.product.discountPrice || productInfo.product.price) * productsMap[i];
         }, 0);
     };
 
     render () {
-        const { basket } = this.props;
+        const { productsCount } = this;
 
         return <section className={styles.orderPage}>
             <div className={styles.orderTitle}>оформление заказа</div>
             <div
                 className={classNames(styles.text)}
             >
-                {this.totalPrice()} грн за {basket.length} {getWordCaseByNumber(basket.length, ['товаров', 'товар', 'товара'])}
+                {this.totalPrice()} грн за {productsCount} {getWordCaseByNumber(productsCount, ['товаров', 'товар', 'товара'])}
             </div>
             <Order/>
         </section>;

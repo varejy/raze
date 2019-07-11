@@ -149,8 +149,6 @@ class OrderForm extends Component {
         const { order, loading } = this.state;
         const formatOrder = formatedOrderDate.date(order);
 
-        console.log(order)
-
         if (loading) {
             return <div className={classes.loader}>
                 <CircularProgress />
@@ -163,21 +161,21 @@ class OrderForm extends Component {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell colSpan={2}>Название</TableCell>
+                            <TableCell colSpan={4}>Название</TableCell>
                             <TableCell align="center">Значение</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         <TableRow>
-                            <TableCell colSpan={2}>Имя заказчика</TableCell>
+                            <TableCell colSpan={4}>Имя заказчика</TableCell>
                             <TableCell align="center">{order.name}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Город</TableCell>
+                            <TableCell colSpan={4}>Город</TableCell>
                             <TableCell align="center">{order.city}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Тип доставки</TableCell>
+                            <TableCell colSpan={4}>Тип доставки</TableCell>
                             <TableCell align="center">{
                                 ORDER_TYPES.map(type => {
                                     return order.orderType === type.id && type.value;
@@ -185,7 +183,7 @@ class OrderForm extends Component {
                             }</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Тип оплаты</TableCell>
+                            <TableCell colSpan={4}>Тип оплаты</TableCell>
                             <TableCell align="center">{
                                 PAYMENT_TYPES.map(type => {
                                     return order.paymentType === type.id && type.value;
@@ -193,17 +191,36 @@ class OrderForm extends Component {
                             }</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Отделение</TableCell>
+                            <TableCell colSpan={4}>Отделение</TableCell>
                             <TableCell align="center">{order.department}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Дата реестрации</TableCell>
+                            <TableCell colSpan={4}>Дата реестрации</TableCell>
                             <TableCell align="center">{formatOrder}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Номер телефона</TableCell>
+                            <TableCell colSpan={4}>Номер телефона</TableCell>
                             <TableCell align="center">{order.phone}</TableCell>
                         </TableRow>
+                    </TableBody>
+                    <Typography variant='h6'>Товары</Typography>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell colSpan={1}>Название</TableCell>
+                            <TableCell colSpan={3} align="center">Количество</TableCell>
+                            <TableCell colSpan={1} align="right">Цена</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            order.products.map((product, i) => {
+                                return <TableRow key={i}>
+                                    <TableCell colSpan={1}>{product.name}</TableCell>
+                                    <TableCell colSpan={3} align="center">{product.count}</TableCell>
+                                    <TableCell colSpan={1} align="right">{product.price}</TableCell>
+                                </TableRow>;
+                            })
+                        }
                     </TableBody>
                 </Table>
             </Paper>

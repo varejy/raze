@@ -45,15 +45,13 @@ export default function saveOrder (req, res) {
 
             const { basket } = savedProducts;
 
-            console.log(basket);
-
             getProductsByIds(basket.map(basket => basket.id))
                 .then((baskedProducts) => {
                     const products = reduce((products, { id, count }) => {
                         const product = find(product => product.id === id, baskedProducts);
 
                         return !product || product.hidden ? products : append({ product, count }, products);
-                    }, [], baskedProducts);
+                    }, [], basket);
 
                     const orderProductsMap = products.map(elem => {
                         const { product } = elem;
