@@ -27,28 +27,6 @@ import noop from '@tinkoff/utils/function/noop';
 import prop from '@tinkoff/utils/object/prop';
 import format from 'date-fns/format';
 
-const PAYMENT_TYPES = [
-    {
-        id: 'card',
-        value: 'На карту банка'
-    },
-    {
-        id: 'cod',
-        value: 'Наложенным платежом'
-    }
-];
-
-const ORDER_TYPES = [
-    {
-        id: 'nova',
-        value: 'Новая Почта'
-    },
-    {
-        id: 'ukr',
-        value: 'Укр Почта'
-    }
-];
-
 const mapStateToProps = ({ application }) => {
     return {
         categories: application.categories
@@ -101,6 +79,8 @@ class OrderForm extends Component {
         classes: PropTypes.object.isRequired,
         order: PropTypes.object.isRequired,
         editOrder: PropTypes.func,
+        orderTypes: PropTypes.array,
+        paymentTypes: PropTypes.array,
         onDone: PropTypes.func
     };
 
@@ -145,7 +125,7 @@ class OrderForm extends Component {
     };
 
     render () {
-        const { classes } = this.props;
+        const { classes, orderTypes, paymentTypes } = this.props;
         const { order, loading } = this.state;
         const formatOrder = formatedOrderDate.date(order);
 
@@ -177,7 +157,7 @@ class OrderForm extends Component {
                         <TableRow>
                             <TableCell colSpan={2}>Тип доставки</TableCell>
                             <TableCell align="center">{
-                                ORDER_TYPES.map(type => {
+                                orderTypes.map(type => {
                                     return order.orderType === type.id && type.value;
                                 })
                             }</TableCell>
@@ -185,7 +165,7 @@ class OrderForm extends Component {
                         <TableRow>
                             <TableCell colSpan={2}>Тип оплаты</TableCell>
                             <TableCell align="center">{
-                                PAYMENT_TYPES.map(type => {
+                                paymentTypes.map(type => {
                                     return order.paymentType === type.id && type.value;
                                 })
                             }</TableCell>

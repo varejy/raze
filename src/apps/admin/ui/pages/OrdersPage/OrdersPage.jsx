@@ -19,7 +19,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withStyles } from '@material-ui/core/styles';
 
-import ProductFilters from '../../components/ProductFilters/ProductFilters';
+import OrderFilters from '../../components/OrderFilters/OrderFilters';
 
 import { connect } from 'react-redux';
 import getOrders from '../../../services/getOrders';
@@ -49,6 +49,28 @@ const STATUS_ARRAY = [
     {
         status: 'declined',
         theme: ['status', 'statusDeclined']
+    }
+];
+
+const PAYMENT_TYPES = [
+    {
+        id: 'card',
+        value: 'На карту банка'
+    },
+    {
+        id: 'cod',
+        value: 'Наложенным платежом'
+    }
+];
+
+const ORDER_TYPES = [
+    {
+        id: 'nova',
+        value: 'Новая Почта'
+    },
+    {
+        id: 'ukr',
+        value: 'Укр Почта'
     }
 ];
 const ROWS_PER_PAGE = 10;
@@ -126,7 +148,7 @@ const materialStyles = theme => ({
 
 const mapStateToProps = ({ orders }) => {
     return {
-        orders: orders.orders
+        orders: orders.filtered
     };
 };
 
@@ -315,12 +337,12 @@ class OrdersPage extends Component {
             </Paper>
             <Modal open={formShowed} onClose={this.handleCloseOrderForm} className={classes.modal}>
                 <Paper className={classes.modalContent}>
-                    <OrderForm order={editableOrder} onDone={this.handleFormDone}/>
+                    <OrderForm paymentTypes={PAYMENT_TYPES} orderTypes={ORDER_TYPES} order={editableOrder} onDone={this.handleFormDone}/>
                 </Paper>
             </Modal>
             <Modal open={filtersShowed} onClose={this.handleCloseFilters} className={classes.modal} keepMounted>
                 <Paper className={classes.modalContent}>
-                    <ProductFilters />
+                    <OrderFilters paymentTypes={PAYMENT_TYPES}/>
                 </Paper>
             </Modal>
         </div>;
