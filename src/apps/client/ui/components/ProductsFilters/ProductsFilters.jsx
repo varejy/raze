@@ -7,24 +7,22 @@ import RangeFilter from './filters/RangeFilter/RangeFilter';
 import compose from '@tinkoff/utils/function/compose';
 import uniq from '@tinkoff/utils/array/uniq';
 import map from '@tinkoff/utils/array/map';
-import reduceObj from '@tinkoff/utils/object/reduce';
 import filterUtil from '@tinkoff/utils/array/filter';
-import includes from '@tinkoff/utils/array/includes';
+import flatten from '@tinkoff/utils/array/flatten';
 import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
 
-const FILTERS = [
+const DEFAULT_FILTERS = [
     {
+        name: 'Компании',
         type: 'checkbox',
-        prop: 'company',
-        title: 'Производитель',
-        id: '1'
+        options: []
     },
     {
+        name: 'Цена',
         type: 'range',
-        prop: 'price',
-        title: 'Цена',
-        id: '2'
+        min: 0,
+        max: 0
     }
 ];
 
@@ -33,29 +31,42 @@ class ProductsFilters extends Component {
         super(props);
 
         this.state = {
-            filters: this.getFilters()
+            filters: flatten([
+                this.getDefaultFilters(),
+                this.getFilters()
+            ])
         };
         this.filtersMap = {};
     }
 
     static propTypes = {
-        products: PropTypes.array,
-        onFilter: PropTypes.func.isRequired
+        products: PropTypes.array
     };
 
     static defaultProps = {
         products: []
     };
 
-    getFilters = (props = this.props) => {
-        return FILTERS.map((filter) => {
-            const { products } = props;
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.products !== this.props.products) {
+            this.setState({
+                filters: flatten([
+                    this.getDefaultFilters(nextProps),
+                    this.getFilters(nextProps)
+                ])
+            });
+        }
+    }
 
+    getDefaultFilters = (props = this.props) => {
+        const { products } = props;
+
+        return DEFAULT_FILTERS.map((filter) => {
             switch (filter.type) {
             case 'checkbox':
                 const options = compose(
                     uniq,
-                    map(product => product[filter.prop])
+                    map(product => product.company)
                 )(products);
 
                 return {
@@ -63,7 +74,53 @@ class ProductsFilters extends Component {
                     options
                 };
             case 'range':
-                const propsArr = map(product => product[filter.prop], products);
+                const prices = compose(
+                    uniq,
+                    map(product => product.discountPrice
+                        ? product.discountPrice
+                        : product.price
+                    )
+                )(products);
+
+                const min = getMinOfArray(prices);
+                const max = getMaxOfArray(prices);
+
+                return {
+                    ...filter,
+                    min,
+                    max
+                };
+            }
+        });
+    }
+
+    getFilters = (props = this.props) => {
+        return props.category.filters.map((filter, i) => {
+            const { products } = props;
+
+            switch (filter.type) {
+            case 'checkbox':
+                const options = compose(
+                    uniq,
+                    filterUtil(elem => !!elem),
+                    flatten,
+                    map(product => product.filters.map(productFilter => filter.id === productFilter.id && productFilter.value))
+                )(products);
+
+                return {
+                    ...filter,
+                    options
+                };
+            case 'range':
+                const propsArr = compose(
+                    uniq,
+                    filterUtil(elem => !!elem),
+                    flatten,
+                    map(product => product.filters
+                        .map(productFilter => filter.id === productFilter.id && productFilter.value)
+                    )
+                )(products);
+
                 const min = getMinOfArray(propsArr);
                 const max = getMaxOfArray(propsArr);
 
@@ -76,30 +133,11 @@ class ProductsFilters extends Component {
         });
     };
 
-    filter = () => {
-        const { products } = this.props;
-
-        let newFilteredProducts = reduceObj((filteredProducts, { filter, values }) => {
-            switch (filter.type) {
-            case 'checkbox':
-                return !values.length ? filteredProducts : filterUtil(product => includes(product[filter.prop], values), filteredProducts);
-            case 'range':
-                return filterUtil(product => values.min <= product[filter.prop] && product[filter.prop] <= values.max, filteredProducts);
-            default:
-                return filteredProducts;
-            }
-        }, products, this.filtersMap);
-
-        this.props.onFilter(newFilteredProducts);
-    }
-
     handleFilter = filter => values => {
         this.filtersMap[filter.id] = {
             filter,
             values
         };
-
-        this.filter();
     };
 
     renderFilter = filter => {
