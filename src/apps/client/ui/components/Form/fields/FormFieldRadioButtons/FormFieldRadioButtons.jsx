@@ -9,35 +9,24 @@ import noop from '@tinkoff/utils/function/noop';
 class FormFieldPaymentType extends Component {
     static propTypes = {
         schema: PropTypes.object,
+        value: PropTypes.any,
         onChange: PropTypes.func
     };
 
     static defaultProps = {
+        value: '',
         schema: {},
         onChange: noop
     };
 
-    constructor (props) {
-        super(props);
-
-        this.state = {
-            optionsMap: {}
-        };
-    }
-
-    handleOptionChange = prop => event => {
-        event.preventDefault();
-        const nextOptionsMap = prop;
-
-        this.setState({
-            optionsMap: nextOptionsMap
-        }, () => this.props.onChange(nextOptionsMap));
+    handleOptionChange = prop => () => {
+        this.props.onChange(prop);
     };
 
     render () {
-        const { optionsMap } = this.state;
-        const check = (event) => optionsMap === event;
         const { name, title, options } = this.props.schema;
+        const { value } = this.props;
+        const check = (event) => value === event;
 
         return <section className={styles.payment}>
             <div>{title}</div>
