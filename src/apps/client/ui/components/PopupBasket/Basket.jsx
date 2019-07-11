@@ -169,7 +169,9 @@ class Basket extends Component {
                         {
                             basket.length
                                 ? <Link className={styles.link} to='/order'>
-                                    <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
+                                    <button
+                                        className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}
+                                        onClick={this.handleCloseBasket}>оформление
                                         заказа
                                     </button>
                                 </Link>

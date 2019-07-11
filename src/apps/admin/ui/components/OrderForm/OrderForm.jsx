@@ -149,6 +149,8 @@ class OrderForm extends Component {
         const { order, loading } = this.state;
         const formatOrder = formatedOrderDate.date(order);
 
+        console.log(order)
+
         if (loading) {
             return <div className={classes.loader}>
                 <CircularProgress />

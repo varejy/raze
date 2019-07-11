@@ -4,6 +4,8 @@ import classNames from 'classnames';
 
 import { connect } from 'react-redux';
 import getProductById from '../../../services/client/getProductById';
+import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
+import saveProductsViewed from '../../../services/client/saveProductsViewed';
 
 import getStarsArray from '../../../utils/getStarsArray';
 
@@ -13,12 +15,11 @@ import styles from './ProductPage.css';
 
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
 import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
-
 import Comments from '../../components/Comments/Comments';
-
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
+
+import setBasket from '../../../actions/setBasket';
 import setViewed from '../../../actions/setViewed';
-import saveProductsViewed from '../../../services/client/saveProductsViewed';
 
 import filter from '@tinkoff/utils/array/filter';
 import tail from '@tinkoff/utils/array/tail';
@@ -47,14 +48,17 @@ const MAX_VIEWED = 7;
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
         productMap: application.productMap,
-        viewed: savedProducts.viewed
+        viewed: savedProducts.viewed,
+        basket: savedProducts.basket
     };
 };
 
 const mapDispatchToProps = (dispatch) => ({
     getProductById: payload => dispatch(getProductById(payload)),
     setViewed: payload => dispatch(setViewed(payload)),
-    saveProductsViewed: payload => dispatch(saveProductsViewed(payload))
+    saveProductsViewed: payload => dispatch(saveProductsViewed(payload)),
+    setBasket: payload => dispatch(setBasket(payload)),
+    saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload))
 });
 
 class ProductPage extends Component {
@@ -63,6 +67,9 @@ class ProductPage extends Component {
         location: PropTypes.object,
         productMap: PropTypes.object,
         viewed: PropTypes.array,
+        basket: PropTypes.array.isRequired,
+        setBasket: PropTypes.func.isRequired,
+        saveProductsToBasket: PropTypes.func.isRequired,
         setViewed: PropTypes.func.isRequired,
         saveProductsViewed: PropTypes.func.isRequired
     };
@@ -70,6 +77,7 @@ class ProductPage extends Component {
     static defaultProps = {
         location: {},
         productMap: {},
+        basket: [],
         viewed: []
     };
 
@@ -145,6 +153,20 @@ class ProductPage extends Component {
         return newViewed.length > MAX_VIEWED ? tail(newViewed) : newViewed;
     };
 
+    handlePushProductToBasket = () => {
+        const { product } = this.state;
+        const previouslyAdded = this.props.basket.map((product, i) => {
+            return { product: product.product, count: 1 };
+        }, {});
+
+        const newBasket = !this.handleDuplicates() ? [
+            { product: product, count: 1 }, ...previouslyAdded
+        ] : [...previouslyAdded];
+
+        this.props.setBasket(newBasket);
+        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.count })));
+    };
+
     render () {
         const { viewed } = this.props;
         const { loading, product } = this.state;
@@ -195,7 +217,8 @@ class ProductPage extends Component {
                             <Link className={styles.link} to={`/order?id=${product.id}`}>
                                 <button className={classNames(
                                     styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
-                                )}>
+                                )}
+                                onClick={this.handlePushProductToBasket}>
                                     Оформление заказа
                                 </button>
                             </Link>
