@@ -4,6 +4,8 @@ import classNames from 'classnames';
 
 import { connect } from 'react-redux';
 import getProductById from '../../../services/client/getProductById';
+import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
+import saveProductsViewed from '../../../services/client/saveProductsViewed';
 
 import getStarsArray from '../../../utils/getStarsArray';
 
@@ -13,12 +15,12 @@ import styles from './ProductPage.css';
 
 import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCardCarousel';
 import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
-
 import Comments from '../../components/Comments/Comments';
-
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
+
 import setViewed from '../../../actions/setViewed';
-import saveProductsViewed from '../../../services/client/saveProductsViewed';
+import setBasket from '../../../actions/setBasket';
+import closePopup from '../../../actions/closePopup';
 
 import filter from '@tinkoff/utils/array/filter';
 import tail from '@tinkoff/utils/array/tail';
@@ -47,6 +49,7 @@ const MAX_VIEWED = 7;
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
         productMap: application.productMap,
+        basket: savedProducts.basket,
         viewed: savedProducts.viewed
     };
 };
@@ -54,7 +57,10 @@ const mapStateToProps = ({ application, savedProducts }) => {
 const mapDispatchToProps = (dispatch) => ({
     getProductById: payload => dispatch(getProductById(payload)),
     setViewed: payload => dispatch(setViewed(payload)),
-    saveProductsViewed: payload => dispatch(saveProductsViewed(payload))
+    saveProductsViewed: payload => dispatch(saveProductsViewed(payload)),
+    setBasket: payload => dispatch(setBasket(payload)),
+    closePopup: payload => dispatch(closePopup(payload)),
+    saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload))
 });
 
 class ProductPage extends Component {
@@ -64,6 +70,10 @@ class ProductPage extends Component {
         productMap: PropTypes.object,
         viewed: PropTypes.array,
         setViewed: PropTypes.func.isRequired,
+        basket: PropTypes.array.isRequired,
+        setBasket: PropTypes.func.isRequired,
+        closePopup: PropTypes.func.isRequired,
+        saveProductsToBasket: PropTypes.func.isRequired,
         saveProductsViewed: PropTypes.func.isRequired
     };
 
@@ -143,6 +153,20 @@ class ProductPage extends Component {
         )(viewed);
 
         return newViewed.length > MAX_VIEWED ? tail(newViewed) : newViewed;
+    };
+
+    handleSendToBasket = () => {
+        const previouslyAdded = this.props.basket.map((product, i) => {
+            return { product: product.product, count: 1 };
+        }, {});
+
+        const newBasket = !this.handleDuplicates() ? [
+            { product: this.state.product, count: 1 }, ...previouslyAdded
+        ] : [...previouslyAdded];
+
+        this.props.setBasket(newBasket);
+        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.count })));
+        this.props.closePopup();
     };
 
     render () {
