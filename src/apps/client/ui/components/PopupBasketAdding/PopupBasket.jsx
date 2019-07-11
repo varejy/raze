@@ -182,7 +182,7 @@ class PopupBasket extends Component {
                         покупки
                     </button>
                     <Link to='/order'>
-                        <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
+                        <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)} onClick={this.handleClosePopup}>оформление
                                 заказа
                         </button>
                     </Link>
