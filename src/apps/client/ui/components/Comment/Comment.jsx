@@ -34,7 +34,7 @@ class Comment extends Component {
             </div>
             <div className={styles.infoWrapper}>
                 <div className={styles.header}>
-                    <div className={styles.title}><div className={styles.name}>{name}</div> написал</div>
+                    <div className={styles.title}><div className={styles.name}>{name}</div></div>
                 </div>
                 <div className={styles.comment}>
                     {comment}

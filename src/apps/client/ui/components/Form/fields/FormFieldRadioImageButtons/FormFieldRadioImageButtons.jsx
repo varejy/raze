@@ -9,35 +9,24 @@ import noop from '@tinkoff/utils/function/noop';
 class FormFieldDeliveryType extends Component {
     static propTypes = {
         schema: PropTypes.object,
+        value: PropTypes.any,
         onChange: PropTypes.func
     };
 
     static defaultProps = {
+        value: '',
         schema: {},
         onChange: noop
     };
 
-    constructor (props) {
-        super(props);
-
-        this.state = {
-            optionsMap: {}
-        };
-    }
-
-    handleOptionClick = prop => event => {
-        event.preventDefault();
-        const nextOptionsMap = prop;
-
-        this.setState({
-            optionsMap: nextOptionsMap
-        }, () => this.props.onChange(nextOptionsMap));
+    handleOptionClick = prop => () => {
+        this.props.onChange(prop);
     };
 
     render () {
-        const { optionsMap } = this.state;
-        const check = (event) => optionsMap === event;
         const { title, options } = this.props.schema;
+        const { value } = this.props;
+        const check = (prop) => value === prop;
 
         return <section className={styles.delivery}>
             <div className={styles.title}>{title}</div>
