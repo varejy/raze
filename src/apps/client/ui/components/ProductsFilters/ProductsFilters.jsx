@@ -74,7 +74,7 @@ class ProductsFilters extends Component {
                     options
                 };
             case 'range':
-                const price = compose(
+                const prices = compose(
                     uniq,
                     map(product => product.discountPrice
                         ? product.discountPrice
@@ -82,8 +82,8 @@ class ProductsFilters extends Component {
                     )
                 )(products);
 
-                const min = getMinOfArray(price);
-                const max = getMaxOfArray(price);
+                const min = getMinOfArray(prices);
+                const max = getMaxOfArray(prices);
 
                 return {
                     ...filter,
