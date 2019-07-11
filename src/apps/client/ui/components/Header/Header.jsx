@@ -15,7 +15,7 @@ import openLikedPopup from '../../../actions/openLikedPopup';
 import openLicensePopup from '../../../actions/openLicensePopup';
 import MenuButton from '../MenuButton/MenuButton';
 
-const screenWidthBurgerMenu = 900;
+const SCREEN_WIDTH_BURGER_MENU = 900;
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
         categories: application.categories,
@@ -73,11 +73,7 @@ class Header extends Component {
     };
 
     handleBurgerMenuClick = () => {
-        if (!this.state.menuVisible) {
-            this.setState({ menuVisible: true });
-        } else {
-            this.setState({ menuVisible: false });
-        }
+        this.setState({ menuVisible: !this.state.menuVisible });
     };
 
     handleBurgerCategoryClick = () => {
@@ -89,7 +85,7 @@ class Header extends Component {
         const { menuVisible } = this.state;
         const basketAmount = this.calculateBasketAmount();
         const likedAmount = this.props.liked.length;
-        const burgerMenu = media.width <= screenWidthBurgerMenu;
+        const isBurgerMenuShowed = media.width <= SCREEN_WIDTH_BURGER_MENU;
 
         return <div className={styles.headerContainer}>
             <div className={styles.headerTop}>
@@ -97,18 +93,18 @@ class Header extends Component {
                     <div className={styles.logoLeft}>raze</div>
                     <div className={styles.logoRight}>Your<br/>knife<br/><div className={styles.logoGreen}>world</div></div>
                 </Link>
-                {(burgerMenu || menuVisible) &&
+                {(isBurgerMenuShowed || menuVisible) &&
                 <MenuButton
                     menuVisible = {menuVisible}
                     onClick={this.handleBurgerMenuClick}/>
                 }
-                {!burgerMenu &&
+                {!isBurgerMenuShowed &&
                 <div className={styles.searchForm}>
                     <Search />
                 </div>
                 }
                 <div className={classNames(styles.contactsWrapper, {
-                    [styles.contactsHidden]: burgerMenu,
+                    [styles.contactsHidden]: isBurgerMenuShowed,
                     [styles.burgerContacts]: menuVisible
                 })}>
                     <div className={styles.contacts}>
@@ -139,7 +135,7 @@ class Header extends Component {
                 </div>
             </div>
             <div className={classNames(styles.headerBottom, {
-                [styles.menuHidden]: burgerMenu,
+                [styles.menuHidden]: isBurgerMenuShowed,
                 [styles.menuVisible]: menuVisible
             })}>
                 <div className={classNames(styles.menu, {
