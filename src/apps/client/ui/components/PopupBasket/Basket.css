@@ -215,6 +215,10 @@
     background-color: #fff;
 }
 
+.link {
+    width: 100%
+}
+
 .ordering{
     background-color: #4cb34f;
     color: white;
