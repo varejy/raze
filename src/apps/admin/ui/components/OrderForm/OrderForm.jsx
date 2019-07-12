@@ -71,8 +71,9 @@ const materialStyles = theme => ({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    root: {
-        marginBottom: '15px'
+    table: {
+        marginBottom: '25px',
+        marginTop: '15px'
     },
     title: {
         marginBottom: '12px'
@@ -157,8 +158,8 @@ class OrderForm extends Component {
 
         return <form onSubmit={this.handleSubmit}>
             <Typography variant='h5' className={classes.title}>Редактирование заказа</Typography>
-            <Paper className={classes.root}>
-                <Table className={classes.table}>
+            <Paper className={classes.table}>
+                <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell colSpan={4}>Название</TableCell>
@@ -203,7 +204,11 @@ class OrderForm extends Component {
                             <TableCell align="center">{order.phone}</TableCell>
                         </TableRow>
                     </TableBody>
-                    <Typography variant='h6'>Товары</Typography>
+                </Table>
+            </Paper>
+            <Typography variant='h6'>Товары</Typography>
+            <Paper>
+                <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
                             <TableCell colSpan={1}>Название</TableCell>

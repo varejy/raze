@@ -34,9 +34,9 @@ class OrderPage extends Component {
         this.productsCount = 0;
     }
 
-    getProductsCount = (arr) => {
+    getProductsCount = (arr = []) => {
         const count = (oldElem, nextElem) => oldElem + nextElem;
-        this.productsCount = arr.reduce(count);
+        this.productsCount = arr.reduce(count, 0);
     }
 
     componentDidMount = () => {

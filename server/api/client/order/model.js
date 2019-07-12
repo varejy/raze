@@ -11,7 +11,8 @@ const Order = new Schema({
     products: [{
         id: { type: String, required: true },
         name: { type: String, required: true },
-        count: { type: Number, required: true }
+        count: { type: Number, required: true },
+        price: { type: Number, required: true }
     }],
     city: { type: String, required: true },
     department: { type: String, required: true },

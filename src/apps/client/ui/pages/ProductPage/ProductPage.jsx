@@ -71,10 +71,6 @@ class ProductPage extends Component {
         setBasket: PropTypes.func.isRequired,
         saveProductsToBasket: PropTypes.func.isRequired,
         setViewed: PropTypes.func.isRequired,
-        basket: PropTypes.array.isRequired,
-        setBasket: PropTypes.func.isRequired,
-        closePopup: PropTypes.func.isRequired,
-        saveProductsToBasket: PropTypes.func.isRequired,
         saveProductsViewed: PropTypes.func.isRequired
     };
 
@@ -157,10 +153,10 @@ class ProductPage extends Component {
         return newViewed.length > MAX_VIEWED ? tail(newViewed) : newViewed;
     };
 
-    handlePushProductToBasket = () => {
-        const { product } = this.state;
+    handleSendProductToBasket = () => {
+        const { product, productsMap } = this.state;
         const previouslyAdded = this.props.basket.map((product, i) => {
-            return { product: product.product, count: 1 };
+            return { product: product.product, count: productsMap[i] };
         }, {});
 
         const newBasket = !this.handleDuplicates() ? [
@@ -169,6 +165,14 @@ class ProductPage extends Component {
 
         this.props.setBasket(newBasket);
         this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.count })));
+    };
+
+    handleDuplicates = () => {
+        const { basket } = this.props;
+        const { product } = this.state;
+        const isInBasket = find(item => product.id === item.product.id, basket);
+
+        return !!isInBasket;
     };
 
     render () {
@@ -222,7 +226,7 @@ class ProductPage extends Component {
                                 <button className={classNames(
                                     styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
                                 )}
-                                onClick={this.handlePushProductToBasket}>
+                                onClick={this.handleSendProductToBasket}>
                                     Оформление заказа
                                 </button>
                             </Link>
