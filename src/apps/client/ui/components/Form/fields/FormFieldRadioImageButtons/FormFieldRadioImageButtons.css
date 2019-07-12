@@ -4,11 +4,19 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+
+    @media (max-width: 375px){
+        display: unset;
+    }
 }
 
 .title{
     font-family: MontserratRegular;
     font-size: 11px;
+
+    @media (max-width: 375px){
+        margin-bottom: 10px;
+    }
 }
 
 .options {
@@ -16,6 +24,11 @@
     width: 270px;
     justify-content: space-between;
     margin-left: 14px;
+
+    @media (max-width: 375px){
+        width: 100%;
+        margin: 0;
+    }
 }
 
 .buttonDefault {
