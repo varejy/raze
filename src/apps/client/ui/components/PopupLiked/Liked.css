@@ -51,7 +51,7 @@
         z-index: 2000;
     }
 
-    @media (max-width: 420px){
+    @media (max-width: 500px){
         width: 100%;
         right: -100%;
     }
@@ -163,10 +163,4 @@
     font-size: 10.8px;
     font-family: HelveticaNeueCyr;
     line-height: 13px;
-}
-
-.catalogLink{
-    color: #00a046;
-    text-decoration: none;
-    border-bottom: 1px solid #00a046;
 }
