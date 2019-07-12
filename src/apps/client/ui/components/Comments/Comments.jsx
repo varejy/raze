@@ -1,33 +1,34 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import styles from './Comments.css';
 
 import Comment from '../Comment/Comment';
 
-const COMMENTS = [
-    {
-        name: 'Валерий Шандыба',
-        rating: 3,
-        comment: 'Прекрасный нож. Вчера убил соседку. Отмыл мозги за 7 минут. Рекомендую.'
-    },
-    {
-        name: 'Василий Буденко',
-        rating: 5,
-        comment: 'Прекрасный нож. : )'
-    }
-];
-
 class Comments extends Component {
+    static propTypes = {
+        productComments: PropTypes.object
+    };
+
+    static defaultProps = {
+        productComments: {}
+    };
+
     render () {
+        const { productComments } = this.props;
         return <section className={styles.commentsWrapper}>
             {
-                COMMENTS.map((comment, i) => {
-                    return (
-                        <div key={i} className={styles.feedback}>
-                            <Comment name={comment.name} rating={comment.rating} comment={comment.comment} />
-                        </div>
-                    );
-                })
+                productComments.length
+                    ? productComments.map((comment, i) => {
+                        return (
+                            <div key={i} className={styles.feedback}>
+                                <Comment name={comment.name} rating={comment.rating} comment={comment.text} />
+                            </div>
+                        );
+                    })
+                    : <div className={styles.feedback}>
+                        У этого товара еще нет комментариев, будьте первым кто его оставит !
+                    </div>
             }
         </section>;
     }
