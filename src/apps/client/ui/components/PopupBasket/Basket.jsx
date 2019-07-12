@@ -11,6 +11,8 @@ import Scroll from '../Scroll/Scroll';
 
 import styles from './Basket.css';
 
+import { Link } from 'react-router-dom';
+
 const mapStateToProps = ({ popup, savedProducts }) => {
     return {
         basketVisible: popup.basketVisible,
@@ -158,16 +160,24 @@ class Basket extends Component {
                     </div>
 
                     <div className={styles.priceTotal}>Итог: {this.totalPrice()} грн</div>
-                </div>
-                <div className={styles.buttonsWrapp}>
-                    <button
-                        className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
-                        onClick={this.handleCloseBasket}>
-                        продолжить покупки
-                    </button>
-                    <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>
-                        оформление заказа
-                    </button>
+                    <div className={styles.buttonsWrapp}>
+                        <button
+                            className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
+                            onClick={this.handleCloseBasket}>
+                            продолжить покупки
+                        </button>
+                        {
+                            basket.length
+                                ? <Link className={styles.link} to='/order'>
+                                    <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
+                                        заказа
+                                    </button>
+                                </Link>
+                                : <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
+                                заказа
+                                </button>
+                        }
+                    </div>
                 </div>
             </div>
         </div>;
