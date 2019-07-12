@@ -129,9 +129,7 @@ class OrderForm extends Component {
         const { id } = this.state;
 
         this.props.editOrder({ ...this.state.order, id })
-            .then(
-                this.props.onDone()
-            );
+            .then(this.props.onDone);
     };
 
     handleOrderChange = prop => event => {

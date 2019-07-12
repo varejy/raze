@@ -33,23 +33,23 @@ import find from '@tinkoff/utils/array/find';
 const STATUS_ARRAY = [
     {
         status: 'new',
-        theme: 'New'
+        theme: 'new'
     },
     {
         status: 'paid',
-        theme: 'Paid'
+        theme: 'paid'
     },
     {
         status: 'sent',
-        theme: 'Sent'
+        theme: 'sent'
     },
     {
         status: 'done',
-        theme: 'Done'
+        theme: 'done'
     },
     {
         status: 'declined',
-        theme: 'Declined'
+        theme: 'declined'
     }
 ];
 const ROWS_PER_PAGE = 10;
@@ -99,19 +99,19 @@ const materialStyles = theme => ({
         justifyContent: 'center',
         borderRadius: '25px'
     },
-    status__New: {
+    status__new: {
         backgroundColor: '#761CEA'
     },
-    status__Paid: {
+    status__paid: {
         backgroundColor: '#FFD600'
     },
-    status__Sent: {
+    status__sent: {
         backgroundColor: '#8CBA51'
     },
-    status__Done: {
+    status__done: {
         backgroundColor: '#008736'
     },
-    status__Declined: {
+    status__declined: {
         backgroundColor: '#BC0022'
     },
     valuesActions: {
@@ -163,10 +163,10 @@ class OrdersPage extends Component {
             { prop: order => order.phone },
             { prop: order => format(order.date, 'hh:mm:ss - DD MMM YYYY') },
             { prop: order => {
-                const status = find(propEq('status', order.status), STATUS_ARRAY);
+                const { status, theme } = find(propEq('status', order.status), STATUS_ARRAY);
 
-                return <div className={classNames(classes.status, classes[`status__${status.theme}`])}>
-                    {status.status}
+                return <div className={classNames(classes.status, classes[`status__${theme}`])}>
+                    {status}
                 </div>;
             }
             }
