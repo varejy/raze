@@ -27,28 +27,29 @@ import getOrders from '../../../services/getOrders';
 import format from 'date-fns/format';
 import OrderForm from '../../components/OrderForm/OrderForm';
 
-import map from '@tinkoff/utils/array/map';
+import propEq from '@tinkoff/utils/object/propEq';
+import find from '@tinkoff/utils/array/find';
 
 const STATUS_ARRAY = [
     {
         status: 'new',
-        theme: ['status', 'statusNew']
+        theme: 'New'
     },
     {
         status: 'paid',
-        theme: ['status', 'statusPaid']
+        theme: 'Paid'
     },
     {
         status: 'sent',
-        theme: ['status', 'statusSent']
+        theme: 'Sent'
     },
     {
         status: 'done',
-        theme: ['status', 'statusDone']
+        theme: 'Done'
     },
     {
         status: 'declined',
-        theme: ['status', 'statusDeclined']
+        theme: 'Declined'
     }
 ];
 const ROWS_PER_PAGE = 10;
@@ -98,19 +99,19 @@ const materialStyles = theme => ({
         justifyContent: 'center',
         borderRadius: '25px'
     },
-    statusNew: {
+    status__New: {
         backgroundColor: '#761CEA'
     },
-    statusPaid: {
+    status__Paid: {
         backgroundColor: '#FFD600'
     },
-    statusSent: {
+    status__Sent: {
         backgroundColor: '#8CBA51'
     },
-    statusDone: {
+    status__Done: {
         backgroundColor: '#008736'
     },
-    statusDeclined: {
+    status__Declined: {
         backgroundColor: '#BC0022'
     },
     valuesActions: {
@@ -161,9 +162,14 @@ class OrdersPage extends Component {
             { prop: order => order.name },
             { prop: order => order.phone },
             { prop: order => format(order.date, 'hh:mm:ss - DD MMM YYYY') },
-            { prop: order => map((prop, i) => order.status === prop.status && <div key={i} className={classNames(prop.theme.map(style => classes[style]))}>
-                {prop.status}
-            </div>, STATUS_ARRAY) }
+            { prop: order => {
+                const status = find(propEq('status', order.status), STATUS_ARRAY);
+
+                return <div className={classNames(classes.status, classes[`status__${status.theme}`])}>
+                    {status.status}
+                </div>;
+            }
+            }
         ];
     }
 
