@@ -2,18 +2,27 @@ import React, { Component } from 'react';
 import styles from './ProductCardCarousel.css';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 const BIG_SLIDE_WIDTH = 600;
 const LEFT_SLIDER_HEIGHT = 80;
 const SLIDES_WITHOUT_ARROWS = 3;
+const SCREEN_WIDTH_SLIDER_HIDDEN = 900;
+const mapStateToProps = ({ application, savedProducts }) => {
+    return {
+        media: application.media
+    };
+};
 
 class ProductCardCarousel extends Component {
     static propTypes = {
-        sliderImages: PropTypes.array
+        sliderImages: PropTypes.array,
+        media: PropTypes.object.isRequired
     };
 
     static defaultProps = {
-        sliderImages: []
+        sliderImages: [],
+        media: {}
     };
 
     constructor (...args) {
@@ -78,11 +87,13 @@ class ProductCardCarousel extends Component {
 
     render () {
         const { activeSlide, leftSliderTopIndex } = this.state;
-        const { sliderImages } = this.props;
+        const { sliderImages, media } = this.props;
         const isTop = activeSlide === this.minSlideIndex;
         const isBottom = activeSlide === this.maxSlideIndex;
+        const leftSliderHidden = media.width < SCREEN_WIDTH_SLIDER_HIDDEN
 
         return <div className={styles.sliders}>
+            {!leftSliderHidden &&
             <div className={styles.sliderLeftContainer}>
                 {this.arrowsShowed && <button
                     className={classNames(styles.button, styles.buttonTop)}
@@ -113,6 +124,7 @@ class ProductCardCarousel extends Component {
                     <div className={classNames(styles.buttonImage, isBottom ? styles.buttonDisabled : styles.buttonEnabled)}/>
                 </button>}
             </div>
+            }
             <div className={styles.sliderContainer}>
                 <div className={styles.slides} style={{ left: -activeSlide * BIG_SLIDE_WIDTH }}>
                     {sliderImages.map((sliderImage, i) =>
@@ -136,4 +148,4 @@ class ProductCardCarousel extends Component {
     }
 }
 
-export default ProductCardCarousel;
+export default connect(mapStateToProps)(ProductCardCarousel);
