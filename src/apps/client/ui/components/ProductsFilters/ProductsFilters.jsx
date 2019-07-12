@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import CheckboxFilter from './filters/CheckboxFilter/CheckboxFilter';
 import RangeFilter from './filters/RangeFilter/RangeFilter';
+import styles from './ProductsFilters.css';
 
 import compose from '@tinkoff/utils/function/compose';
 import uniq from '@tinkoff/utils/array/uniq';
@@ -11,7 +12,9 @@ import filterUtil from '@tinkoff/utils/array/filter';
 import flatten from '@tinkoff/utils/array/flatten';
 import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
+import { connect } from 'react-redux';
 
+const IS_FILTERS_OPEN_BUTTON_SCREEN_WIDTH = 1169;
 const DEFAULT_FILTERS = [
     {
         name: 'Компании',
@@ -25,8 +28,17 @@ const DEFAULT_FILTERS = [
         max: 0
     }
 ];
+const mapStateToProps = ({ application }) => {
+    return {
+        media: application.media
+    };
+};
 
 class ProductsFilters extends Component {
+    state = {
+        filtersVisible: false
+    };
+
     constructor (props) {
         super(props);
 
@@ -40,11 +52,13 @@ class ProductsFilters extends Component {
     }
 
     static propTypes = {
-        products: PropTypes.array
+        products: PropTypes.array,
+        media: PropTypes.object.isRequired
     };
 
     static defaultProps = {
-        products: []
+        products: [],
+        media: {}
     };
 
     componentWillReceiveProps (nextProps) {
@@ -150,14 +164,38 @@ class ProductsFilters extends Component {
         return null;
     };
 
-    render () {
-        const { filters } = this.state;
+    handleFilterClick = () => {
+        this.setState({ filtersVisible: !this.state.filtersVisible });
+    };
 
-        return <section>
-            { filters.map((filter, i) => <div key={i}>
-                {this.renderFilter(filter)}
-            </div>) }
-        </section>;
+    render () {
+        const { filters, filtersVisible } = this.state;
+        const { media } = this.props;
+        const isFiltersButton = media.width <= IS_FILTERS_OPEN_BUTTON_SCREEN_WIDTH;
+
+        return <div>
+            {isFiltersButton &&
+            <div className={styles.filterButton} onClick={this.handleFilterClick}>
+                {filtersVisible
+                    ? <div className={styles.filtersWrapper}>
+                        Спрятать фильтры
+                        <div className={styles.cross}>+</div>
+                    </div>
+                    : <div className={styles.filtersWrapper}>
+                        Показать фильтры
+                        <img className={styles.arrow} src='/src/apps/client/ui/components/ProductsFilters/images/arrowIcon.png' alt='arrow'/>
+                    </div>
+                }
+            </div>
+            }
+            <section className={styles.filtersContainer}>
+                {(!isFiltersButton || filtersVisible) &&
+                    filters.map((filter, i) => <div key={i}>
+                        {this.renderFilter(filter)}
+                    </div>)
+                }
+            </section>
+        </div>;
     }
 }
-export default ProductsFilters;
+export default connect(mapStateToProps)(ProductsFilters);

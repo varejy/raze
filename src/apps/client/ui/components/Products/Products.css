@@ -1,8 +1,16 @@
 .contentWrapp {
     display: flex;
+
+    @media (max-width: 1169px){
+        display: block;
+    }
 }
 
 .filtersWrapp {
     display: flex;
     flex-direction: column;
+
+    @media (max-width: 1169px){
+        flex-direction: row;
+    }
 }
