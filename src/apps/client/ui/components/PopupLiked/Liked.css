@@ -99,8 +99,7 @@
 
 .items{
     width: 100%;
-    height: 80vh ;
-    overflow-y: scroll;
+    height: calc(100vh - 138px);
 }
 
 .item{
