@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import pt from 'prop-types';
 
-// import drag from '../../hocs/drag/drag';
 import Draggable from '../Draggable/Draggable.jsx';
 
 import styles from './Scroll.css';
@@ -43,7 +42,7 @@ class ScrollBar extends PureComponent {
         onMouseDown(event, direction);
     };
 
-    render() {
+    render () {
         const { visible, barRef, size, dragging, direction } = this.props;
 
         return (
