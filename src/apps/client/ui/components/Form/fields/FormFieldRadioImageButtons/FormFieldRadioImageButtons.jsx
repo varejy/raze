@@ -19,14 +19,14 @@ class FormFieldDeliveryType extends Component {
         onChange: noop
     };
 
-    handleOptionChange = prop => () => {
+    handleOptionClick = prop => () => {
         this.props.onChange(prop);
     };
 
     render () {
         const { title, options } = this.props.schema;
         const { value } = this.props;
-        const check = (event) => value === event;
+        const check = (prop) => value === prop;
 
         return <section className={styles.delivery}>
             <div className={styles.title}>{title}</div>

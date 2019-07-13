@@ -45,9 +45,10 @@ class RangeFilter extends Component {
 
     render () {
         const { defaultValue: { min, max }, value } = this.state;
+        const { filter } = this.props;
 
         return <section className={styles.wrapp}>
-            <div className={styles.title}>Цена</div>
+            <div className={styles.title}>{filter.name}</div>
             <InputRange
                 maxValue={max}
                 minValue={min}
