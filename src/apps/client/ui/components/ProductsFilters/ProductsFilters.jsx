@@ -127,7 +127,11 @@ class ProductsFilters extends Component {
     }
 
     getFilters = (props = this.props) => {
-        return props.category.filters.map((filter, i) => {
+        if (!props.category.filters) {
+            return [];
+        }
+
+        return props.category.filters.map(filter => {
             const { products } = props;
 
             switch (filter.type) {
