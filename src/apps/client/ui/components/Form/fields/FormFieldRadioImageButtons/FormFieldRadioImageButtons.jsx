@@ -36,10 +36,10 @@ class FormFieldDeliveryType extends Component {
                         return (
                             <button
                                 key={i}
-                                onClick={this.handleOptionClick(i)}
-                                className={classNames(styles.buttonDefault, styles.optionButton, { [styles.optionButtonActive]: check(i) })}
+                                onClick={this.handleOptionClick(option.id)}
+                                className={classNames(styles.buttonDefault, styles.optionButton, { [styles.optionButtonActive]: check(option.id) })}
                             >
-                                <img className={styles.optionImg} src={option} alt={option} />
+                                <img className={styles.optionImg} src={option.img} alt={option.id} />
                             </button>
                         );
                     })

@@ -42,7 +42,7 @@ class FormFieldPaymentType extends Component {
                                         name={name}
                                         className={classNames(styles.input, styles.radioButton)}
                                         value={option.value}
-                                        onChange={this.handleOptionChange(i)}
+                                        onChange={this.handleOptionChange(option.id)}
                                         checked={check(option.id)}
                                     />
                                     <div className={classNames(styles.radioButton, { [styles.radioButtonActive]: check(option.id) })} />
