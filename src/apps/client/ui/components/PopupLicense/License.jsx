@@ -54,9 +54,9 @@ class License extends Component {
                         <div className={styles.header}>лицензионное соглашение</div>
                         <div className={styles.closeButton} onClick={this.handleCloseLicense}>+</div>
                     </div>
-                    <div className={styles.licenseText}>
+                    <div>
                         <Scroll>
-                            <div>
+                            <div className={styles.licenseText}>
                                 Давно выяснено, что при оценке дизайна и композиции читаемый текст мешает сосредоточиться.
                                 Lorem Ipsum используют потому, что тот обеспечивает более или менее стандартное заполнение
                                 шаблона, а также реальное распределение букв и пробелов в абзацах, которое не получается при

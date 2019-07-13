@@ -36,6 +36,7 @@
 .popupContent{
     height: 100%;
     padding: 35px;
+    padding-right: 10px;
     background-color: #ffffff;
     position: absolute;
     width: 420px;
@@ -106,8 +107,11 @@
     display: flex;
     justify-content: start;
     align-items: center;
-    margin-bottom: 22px;
     padding: 10px 0 0 10px;
+
+    &:not(:last-child) {
+         margin-bottom: 22px;
+     }
 }
 
 .itemImageWrapp{

@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import setLiked from '../../../actions/setLiked';
 import remove from '@tinkoff/utils/array/remove';
 import saveProductsLiked from '../../../services/client/saveProductsLiked';
+import Scroll from '../Scroll/Scroll';
 import classNames from 'classnames';
 
 const mapStateToProps = ({ popup, savedProducts }) => {
@@ -73,26 +74,28 @@ class Liked extends Component {
                         <div className={styles.closeButton} onClick={this.handleCloseLiked}>+</div>
                     </div>
                     {liked.length > 0 ? <div className={styles.items}>
-                        {liked.map((item, i) =>
-                            <div className={styles.item} key={i}>
-                                <div className={styles.itemImageWrapp}>
-                                    <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
-                                        <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
+                        <Scroll>
+                            {liked.map((item, i) =>
+                                <div className={styles.item} key={i}>
+                                    <div className={styles.itemImageWrapp}>
+                                        <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
+                                            <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
+                                        </div>
+                                        <div className={styles.itemImage}>
+                                            <img
+                                                className={styles.itemAvatar}
+                                                src={item.avatar}
+                                                alt='product'/>
+                                        </div>
                                     </div>
-                                    <div className={styles.itemImage}>
-                                        <img
-                                            className={styles.itemAvatar}
-                                            src={item.avatar}
-                                            alt='product'/>
+                                    <div className={styles.itemInfo}>
+                                        <h2 className={styles.itemName}>{item.name}</h2>
+                                        <div className={styles.itemCompany}>{item.company}</div>
+                                        <h2 className={styles.itemPrice}>{item.price} UAH</h2>
                                     </div>
                                 </div>
-                                <div className={styles.itemInfo}>
-                                    <h2 className={styles.itemName}>{item.name}</h2>
-                                    <div className={styles.itemCompany}>{item.company}</div>
-                                    <h2 className={styles.itemPrice}>{item.price} UAH</h2>
-                                </div>
-                            </div>
-                        )}
+                            )}
+                        </Scroll>
                     </div>
                         : <div className={styles.noLikedItems}>
                             К сожалению, Вы не добавили в избранное товары.<br/>
