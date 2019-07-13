@@ -10,6 +10,10 @@
     overflow: hidden;
     z-index: 1000;
     visibility: hidden;
+
+    @media (max-width: 900px){
+        z-index: 2000;
+    }
 }
 
 .rootVisible{
@@ -43,6 +47,15 @@
     justify-content: space-between;
     transition: 800ms ease;
     z-index: 1000;
+
+    @media (max-width: 900px){
+        z-index: 2000;
+    }
+
+    @media (max-width: 500px){
+        width: 100%;
+        right: -100%;
+    }
 }
 
 .popupContentVisible{
@@ -63,6 +76,10 @@
     color: #000000;
     text-transform: uppercase;
     margin-right: 20px;
+
+    @media (max-width: 420px){
+        font-size: 18px;
+    }
 }
 
 .closeButton{
@@ -74,6 +91,10 @@
     bottom: 3px;
     cursor: pointer;
     user-select: none;
+
+    @media (max-width: 420px){
+        font-size: 40px;
+    }
 }
 
 .licenseText{
@@ -83,4 +104,9 @@
     line-height: 35px;
     color: #000000;
     height: calc(100vh - 138px);
+    max-width: 480px;
+
+    @media (max-width: 420px){
+        line-height: normal;
+    }
 }

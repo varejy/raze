@@ -96,7 +96,7 @@ class Liked extends Component {
                     </div>
                         : <div className={styles.noLikedItems}>
                             К сожалению, Вы не добавили в избранное товары.<br/>
-                            Исправить ситуацию Вы можете <a href='' className={styles.catalogLink}>выбрав</a> товар в каталоге.
+                            Исправить ситуацию Вы можете выбрав товар в каталоге.
                         </div>
                     }
                 </div>

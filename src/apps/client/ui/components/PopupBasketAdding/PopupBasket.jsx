@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import classNames from 'classnames';
 
+import { Link } from 'react-router-dom';
+
 import styles from './PopupBasket.css';
 import setBasket from '../../../actions/setBasket';
 import closePopup from '../../../actions/closePopup';
@@ -179,9 +181,11 @@ class PopupBasket extends Component {
                         className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)} onClick={this.handleClosePopup}>продолжить
                         покупки
                     </button>
-                    <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}>оформление
-                        заказа
-                    </button>
+                    <Link to='/order'>
+                        <button className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)} onClick={this.handleClosePopup}>оформление
+                                заказа
+                        </button>
+                    </Link>
                 </div>
             </div>
         </section>;

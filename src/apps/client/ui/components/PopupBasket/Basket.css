@@ -10,6 +10,10 @@
     overflow: hidden;
     z-index: 1000;
     visibility: hidden;
+
+    @media (max-width: 900px){
+        z-index: 2000;
+    }
 }
 
 .rootVisible{
@@ -43,6 +47,15 @@
     justify-content: space-between;
     transition: 800ms ease;
     z-index: 1000;
+
+    @media (max-width: 900px){
+        z-index: 2000;
+    }
+
+    @media (max-width: 500px){
+        width: 100%;
+        right: -100%;
+    }
 }
 
 .popupContentVisible{
@@ -230,6 +243,10 @@
 .continueShopping{
     margin-bottom: 22px;
     background-color: #fff;
+}
+
+.link {
+    width: 100%
 }
 
 .ordering{

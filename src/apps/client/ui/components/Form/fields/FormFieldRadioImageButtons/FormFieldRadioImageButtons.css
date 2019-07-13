@@ -1,0 +1,53 @@
+.delivery{
+    margin-top: 32px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    @media (max-width: 375px){
+        display: unset;
+    }
+}
+
+.title{
+    font-family: MontserratRegular;
+    font-size: 11px;
+
+    @media (max-width: 375px){
+        margin-bottom: 10px;
+    }
+}
+
+.options {
+    display: flex;
+    width: 270px;
+    justify-content: space-between;
+    margin-left: 14px;
+
+    @media (max-width: 375px){
+        width: 100%;
+        margin: 0;
+    }
+}
+
+.buttonDefault {
+    @mixin removeDefaultButton
+}
+
+.optionButton {
+    width: 130px;
+    height: 50px;
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+}
+
+.optionButtonActive {
+    border: 1px solid #85cf73;
+}
+
+.optionImg{
+    width: 103px;
+    height: 38px;
+}
