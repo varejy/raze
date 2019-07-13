@@ -182,14 +182,14 @@ class Scroll extends PureComponent {
         }
     };
 
-    onDragProcess = (event, current, prev, start) => {
+    onDragProcess = ({ start, client }) => {
         switch (this.direction) {
         case 'horizontal':
-            this.content.scrollLeft = (this.startOffset + current.x - start.x) / this.horizontalProportion;
+            this.content.scrollLeft = (this.startOffset + client.x - start.client.x) / this.horizontalProportion;
             break;
 
         case 'vertical':
-            this.content.scrollTop = (this.startOffset + current.y - start.y) / this.verticalProportion;
+            this.content.scrollTop = (this.startOffset + client.y - start.client.y) / this.verticalProportion;
             break;
         }
     };
