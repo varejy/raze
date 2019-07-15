@@ -13,6 +13,8 @@
 
 .rating {
     display: flex;
+    position: relative;
+    top: -3px;
 }
 
 .stars :last-child{

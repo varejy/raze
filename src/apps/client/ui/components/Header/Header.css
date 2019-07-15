@@ -279,6 +279,7 @@
 
     @media (max-width: 1169px) {
         right: 8%;
+        bottom: -60px;
     }
 
     @media (max-width: 900px){
