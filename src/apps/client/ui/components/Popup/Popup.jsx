@@ -78,11 +78,7 @@ class Popup extends Component {
         </div>
         <div className={styles.container}>
             <Scroll>
-                <div className={styles.scrollContentOuter}>
-                    <div className={styles.scrollContentInner}>
-                        { content }
-                    </div>
-                </div>
+                { content }
             </Scroll>
         </div>
     </div>;

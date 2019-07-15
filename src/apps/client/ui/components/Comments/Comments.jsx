@@ -7,11 +7,11 @@ import Comment from '../Comment/Comment';
 
 class Comments extends Component {
     static propTypes = {
-        productComments: PropTypes.object
+        productComments: PropTypes.array
     };
 
     static defaultProps = {
-        productComments: {}
+        productComments: []
     };
 
     render () {

@@ -36,6 +36,7 @@
 .popupContent{
     height: 100%;
     padding: 35px;
+    padding-right: 10px;
     background-color: #ffffff;
     position: absolute;
     width: 560px;
@@ -102,6 +103,8 @@
     text-align: left;
     line-height: 35px;
     color: #000000;
+    padding-right: 20px;
+    height: calc(100vh - 138px);
     max-width: 480px;
 
     @media (max-width: 420px){

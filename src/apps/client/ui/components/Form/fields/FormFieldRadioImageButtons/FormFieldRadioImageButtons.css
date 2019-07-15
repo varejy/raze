@@ -39,6 +39,7 @@
     width: 130px;
     height: 50px;
     display: flex;
+    cursor: pointer;
     justify-content: center;
 }
 
