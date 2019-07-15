@@ -1,21 +1,22 @@
 .commentWrapper {
     display: flex;
-    align-items: center;
-    width: 826px;
+    width: 537px;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 32px;
+
+    @media (max-width: 720px){
+        width: 100%;
+    }
 }
 
 .rating {
     display: flex;
-    height: 29px;
-}
-
-.stars{
-    margin-bottom: 33px;
 }
 
 .stars :last-child{
     margin-right: 0;
-    width: 16px;
 }
 
 .star{
@@ -26,31 +27,37 @@
 .infoWrapper {
     display: flex;
     flex-direction: column;
-    margin-left: 34px;
+    width: 100%;
 }
 
 .header {
     display: flex;
-    height: 26px;
 }
 
 .title {
     display: flex;
     font-family: HelveticaNeueCyrLight;
     font-size: 16px;
-    align-items: center;
-    height: 26px;
+    align-items: flex-start;
+    line-height: normal;
+    margin-bottom: 16px;
 }
 
 .name {
     margin-right: 12px;
     display: flex;
     align-items: center;
+    text-align: left;
     font-family: HelveticaNeueCyrBold;
+    line-height: normal;
 }
 
 .comment {
     font-family: HelveticaNeueCyr;
     font-size: 12px;
     display: flex;
+    width: 100%;
+    text-align: left;
+    line-height: 24px;
+
 }

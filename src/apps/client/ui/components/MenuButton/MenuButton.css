@@ -10,26 +10,12 @@
     transition: .5s ease-in-out;
     cursor: pointer;
     z-index: 1200;
-
-    @media (max-width: 415px) {
-        width: 30px;
-        .line{
-            width: 30px;
-        }
-    }
 }
 
 .changedPosition {
     position: fixed;
     top: 30px;
     right: 20px;
-
-    @media (max-width: 415px) {
-        width: 50px;
-        .line{
-            width: 50px;
-        }
-    }
 }
 
 .line {

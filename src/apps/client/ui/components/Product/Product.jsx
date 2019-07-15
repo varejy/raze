@@ -17,6 +17,7 @@ import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
 import saveProductsLiked from '../../../services/client/saveProductsLiked';
 import findIndex from '@tinkoff/utils/array/findIndex';
+import openBasketPopup from '../../../actions/openBasketPopup';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
@@ -41,7 +42,8 @@ const LABELS_MAP = {
 const mapDispatchToProps = (dispatch) => ({
     openPopup: payload => dispatch(openPopup(payload)),
     setLiked: payload => dispatch(setLiked(payload)),
-    saveProductsLiked: payload => dispatch(saveProductsLiked(payload))
+    saveProductsLiked: payload => dispatch(saveProductsLiked(payload)),
+    openBasketPopup: (payload) => dispatch(openBasketPopup(payload))
 });
 
 class Product extends Component {
@@ -55,7 +57,8 @@ class Product extends Component {
         basket: PropTypes.array.isRequired,
         liked: PropTypes.array.isRequired,
         setLiked: PropTypes.func.isRequired,
-        saveProductsLiked: PropTypes.func.isRequired
+        saveProductsLiked: PropTypes.func.isRequired,
+        openBasketPopup: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -95,6 +98,10 @@ class Product extends Component {
     handleOpenBasket = () => {
         const { openPopup, product } = this.props;
         openPopup(<PopupBasket product={product}/>);
+    };
+
+    handleOpenBasketMain = () => {
+        this.props.openBasketPopup();
     };
 
     isInBasket = () => {
@@ -161,7 +168,7 @@ class Product extends Component {
                         <div className={classNames(styles.toolBarIcon, !isLiked ? styles.heartIcon : styles.isLikedHeart)}/>
                         {!isLiked ? <div>Избранное</div> : <div className={styles.isLiked}>Уже в избранном</div>}
                     </div>
-                    <div className={classNames(styles.basket, styles.toolBarItem)} onClick={this.handleOpenBasket}>
+                    <div className={classNames(styles.basket, styles.toolBarItem)} onClick={!inBasket ? this.handleOpenBasket : this.handleOpenBasketMain}>
                         <div className={classNames(styles.toolBarIcon, !inBasket ? styles.basketIcon : styles.isInBasketIcon)}/>
                         {!inBasket ? <div>В корзину</div> : <div className={styles.isInBasket}>Уже в корзине</div>}
                     </div>

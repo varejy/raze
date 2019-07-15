@@ -27,7 +27,7 @@ class Comments extends Component {
                         );
                     })
                     : <div className={styles.feedback}>
-                        У этого товара еще нет комментариев, будьте первым кто его оставит !
+                        У этого товара еще нет комментариев, будьте первым кто его оставит!
                     </div>
             }
         </section>;

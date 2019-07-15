@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 const BIG_SLIDE_WIDTH = 600;
 const LEFT_SLIDER_HEIGHT = 80;
 const SLIDES_WITHOUT_ARROWS = 3;
-const SCREEN_WIDTH_SLIDER_HIDDEN = 900;
+const SCREEN_WIDTH_SLIDER_FULL = 1169;
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
         media: application.media
@@ -90,10 +90,10 @@ class ProductCardCarousel extends Component {
         const { sliderImages, media } = this.props;
         const isTop = activeSlide === this.minSlideIndex;
         const isBottom = activeSlide === this.maxSlideIndex;
-        const leftSliderHidden = media.width < SCREEN_WIDTH_SLIDER_HIDDEN
+        const sliderIsFullScreen = media.width <= SCREEN_WIDTH_SLIDER_FULL;
+        const leftSliderWidth = media.width * 0.2 + 20;
 
         return <div className={styles.sliders}>
-            {!leftSliderHidden &&
             <div className={styles.sliderLeftContainer}>
                 {this.arrowsShowed && <button
                     className={classNames(styles.button, styles.buttonTop)}
@@ -103,7 +103,8 @@ class ProductCardCarousel extends Component {
                 </button>}
                 <div className={styles.slidesContainer}>
                     <div className={styles.sliderLeftSlides}
-                        style={{ top: -leftSliderTopIndex * LEFT_SLIDER_HEIGHT }}
+                        style={{ top: !sliderIsFullScreen ? -leftSliderTopIndex * LEFT_SLIDER_HEIGHT : 0,
+                            left: sliderIsFullScreen ? -leftSliderTopIndex * leftSliderWidth : 0 }}
                     >
                         {sliderImages.map((sliderLeftImage, i) =>
                             <div
@@ -124,9 +125,8 @@ class ProductCardCarousel extends Component {
                     <div className={classNames(styles.buttonImage, isBottom ? styles.buttonDisabled : styles.buttonEnabled)}/>
                 </button>}
             </div>
-            }
             <div className={styles.sliderContainer}>
-                <div className={styles.slides} style={{ left: -activeSlide * BIG_SLIDE_WIDTH }}>
+                <div className={styles.slides} style={{ left: -activeSlide * (!sliderIsFullScreen ? BIG_SLIDE_WIDTH : (media.width - 6)) }}>
                     {sliderImages.map((sliderImage, i) =>
                         <div className={styles.productPreviewSlide} key={i}>
                             <img className={styles.slidePhoto} src={sliderImage} alt={`slide${i}`}/>
