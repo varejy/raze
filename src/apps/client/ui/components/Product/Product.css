@@ -177,14 +177,20 @@
     color: #fff;
     font-size: 8.5px;
     flex-wrap: wrap;
-    width: 42px;
-    height: 42px;
+    width: 46px;
+    height: 46px;
     cursor: pointer;
     text-transform: uppercase;
 }
 
 .toolBarIcon{
     margin-bottom: 6px;
+}
+
+.toolBarItemName {
+    width: 46px;
+    text-align: center;
+    line-height: 10px;
 }
 
 .quickInspection .toolBarIcon{

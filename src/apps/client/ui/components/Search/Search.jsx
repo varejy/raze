@@ -125,7 +125,7 @@ class Search extends Component {
                 </div>
             }
             <button className={styles.searchFormIcon} type='submit'>
-                <img src='/src/apps/client/ui/components/Header/images/search.png' alt='search'/>
+                <img className={styles.searchIcon} src='/src/apps/client/ui/components/Header/images/search.png' alt='search'/>
             </button>
         </form>;
     }
