@@ -10,6 +10,8 @@ import { renderToString } from 'react-dom/server';
 
 import map from '@tinkoff/utils/array/map';
 
+import verification from './helpers/verification';
+
 import adminAuthenticationApi from './api/admin/authentication';
 import adminCategoryApi from './api/admin/category';
 import adminProductApi from './api/admin/product';
@@ -39,6 +41,9 @@ const app = express();
 
 // mongodb
 mongoose.connect(DATABASE_URL, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true });
+
+// verification
+app.use(verification);
 
 // static
 app.get(/\.chunk\.(js|css)$/, expressStaticGzip(rootPath, {
