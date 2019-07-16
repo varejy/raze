@@ -65,7 +65,7 @@ class Header extends Component {
     };
 
     calculateBasketAmount = () => {
-        const { basket } = this.props;
+        const {basket} = this.props;
 
         return basket.reduce((acc, basketItem) => {
             return acc + basketItem.count;
@@ -73,11 +73,11 @@ class Header extends Component {
     };
 
     handleBurgerMenuClick = () => {
-        this.setState({ menuVisible: !this.state.menuVisible });
+        this.setState({menuVisible: !this.state.menuVisible});
     };
 
     handleBurgerCategoryClick = () => {
-        this.setState({ menuVisible: false });
+        this.setState({menuVisible: false});
     };
 
     render () {
@@ -103,6 +103,9 @@ class Header extends Component {
                     <Search />
                 </div>
                 }
+                {menuVisible && <div className={styles.deliveryPayment}>
+                    <div className={styles.infoLink}>Доставка и оплата</div>
+                </div>}
                 <div className={classNames(styles.contactsWrapper, {
                     [styles.contactsHidden]: isBurgerMenuShowed,
                     [styles.burgerContacts]: menuVisible

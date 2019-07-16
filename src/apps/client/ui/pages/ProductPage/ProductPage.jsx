@@ -190,18 +190,18 @@ class ProductPage extends Component {
     };
 
     handleLikeClick = () => {
-        const { setLiked, productMap, liked, saveProductsLiked } = this.props;
-        const { isLiked } = this.state;
+        const { setLiked, liked, saveProductsLiked } = this.props;
+        const { product } = this.state;
         let newLiked;
 
-        if (!isLiked) {
+        if (!this.isLiked()) {
             newLiked = !this.isLiked() ? [
-                productMap,
+                product,
                 ...liked
             ] : [...liked];
             this.setState({ isLiked: true });
         } else {
-            const index = findIndex(likedItem => likedItem.id === productMap.id, liked);
+            const index = findIndex(likedItem => likedItem.id === product.id, liked);
             newLiked = [
                 ...remove(index, 1, liked)
             ];
@@ -212,8 +212,9 @@ class ProductPage extends Component {
     };
 
     isLiked = () => {
-        const { liked, productMap } = this.props;
-        return !!find(likedProduct => productMap.id === likedProduct.id, liked);
+        const { liked } = this.props;
+        const { product } = this.state;
+        return !!find(likedProduct => product.id === likedProduct.id, liked);
     };
 
     render () {
