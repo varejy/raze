@@ -171,20 +171,6 @@ class ProductPage extends Component {
         return newViewed.length > MAX_VIEWED ? tail(newViewed) : newViewed;
     };
 
-    handleSendToBasket = () => {
-        const previouslyAdded = this.props.basket.map((product, i) => {
-            return { product: product.product, count: 1 };
-        }, {});
-
-        const newBasket = !this.handleDuplicates() ? [
-            { product: this.state.product, count: 1 }, ...previouslyAdded
-        ] : [...previouslyAdded];
-
-        this.props.setBasket(newBasket);
-        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.count })));
-        this.props.closePopup();
-    };
-
     handleLikeClick = () => {
         const { setLiked, liked, saveProductsLiked } = this.props;
         const { product } = this.state;
@@ -217,7 +203,6 @@ class ProductPage extends Component {
         const { viewed, media } = this.props;
         const { loading, product } = this.state;
         const infoIsModified = media.width <= INFO_MOD_SCREEN_WIDTH;
-        const isLiked = this.isLiked();
 
         // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
@@ -229,6 +214,8 @@ class ProductPage extends Component {
                 <img src='/src/apps/client/ui/icons/loader.svg' alt='loader'/>
             </div>;
         }
+
+        const isLiked = this.isLiked();
 
         return <section>
             <div className={styles.productCardContainer}>
