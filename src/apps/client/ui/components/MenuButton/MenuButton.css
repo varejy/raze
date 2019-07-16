@@ -1,0 +1,66 @@
+.buttonDefault {
+    @mixin removeDefaultButton
+}
+
+.button {
+    width: 50px;
+    height: 40px;
+    position: relative;
+    transform: rotate(0deg);
+    transition: .5s ease-in-out;
+    cursor: pointer;
+    z-index: 1250;
+}
+
+.changedPosition {
+    position: fixed;
+    top: 30px;
+    right: 20px;
+}
+
+.line {
+    display: block;
+    position: absolute;
+    height: 7px;
+    width: 50px;
+    background: #ffffff;
+    border-radius: 9px;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+}
+
+.top {
+    top: 0;
+    transform-origin: left center;
+}
+
+.middle {
+    top: 14px;
+    transform-origin: left center;
+}
+
+.bottom {
+    top: 28px;
+    transform-origin: left center;
+}
+
+.opened {
+    .top {
+        transform: rotate(45deg);
+        top: -2px;
+        left: 8px;
+    }
+
+    .middle {
+        width: 0%;
+        opacity: 0;
+    }
+
+    .bottom {
+        transform: rotate(-45deg);
+        top: 34px;
+        left: 8px;
+    }
+}

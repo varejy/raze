@@ -22,19 +22,21 @@ class Comment extends Component {
         const { name, comment, rating } = this.props;
 
         return <section className={styles.commentWrapper}>
-            <div className={styles.rating}>
-                {getStarsArray(rating).map((star, i) =>
-                    <div
-                        key={i}
-                        className={styles.star}
-                    >
-                        <img src={star} alt='star'/>
-                    </div>
-                )}
-            </div>
             <div className={styles.infoWrapper}>
                 <div className={styles.header}>
-                    <div className={styles.title}><div className={styles.name}>{name}</div></div>
+                    <div className={styles.title}>
+                        <div className={styles.name}>{name}</div>
+                        <div className={styles.rating}>
+                            {getStarsArray(rating).map((star, i) =>
+                                <div
+                                    key={i}
+                                    className={styles.star}
+                                >
+                                    <img src={star} alt='star'/>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
                 <div className={styles.comment}>
                     {comment}

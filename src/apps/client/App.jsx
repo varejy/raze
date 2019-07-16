@@ -10,9 +10,7 @@ import MainPage from './ui/pages/MainPage/MainPage.jsx';
 import ProductsPage from './ui/pages/ProductsPage/ProductsPage.jsx';
 import SearchPage from './ui/pages/SearchPage/SearchPage.jsx';
 import ProductPage from './ui/pages/ProductPage/ProductPage.jsx';
-import Header from './ui/components/Header/Header';
-import Footer from './ui/components/Footer/Footer';
-import Popup from './ui/components/Popup/Popup';
+import OrderPage from './ui/pages/OrderPage/OrderPage.jsx';
 
 import { Switch, Route, withRouter } from 'react-router-dom';
 
@@ -20,6 +18,10 @@ import styles from './App.css';
 import Basket from './ui/components/PopupBasket/Basket';
 import Liked from './ui/components/PopupLiked/Liked';
 import License from './ui/components/PopupLicense/License';
+import Header from './ui/components/Header/Header';
+import Footer from './ui/components/Footer/Footer';
+import Popup from './ui/components/Popup/Popup';
+
 import PropTypes from 'prop-types';
 import closePopup from './actions/closePopup';
 import closeBasketPopup from './actions/closeBasketPopup';
@@ -69,6 +71,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path='/' component={MainPage} />
                         <Route exact path='/search' component={SearchPage} />
+                        <Route exact path='/order' component={OrderPage} />
                         <Route exact path='/:category' component={ProductsPage} />
                         <Route exact path='/:category/:id' component={ProductPage} />
                     </Switch>

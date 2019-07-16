@@ -1,3 +1,8 @@
+.form{
+    position: relative;
+    margin-right: 50px;
+}
+
 .searchFormInput{
     font-family: MontserratRegular;
     color: #9c9c9c;
@@ -27,9 +32,9 @@
     border: none;
     outline: none;
     cursor: pointer;
-    position: relative;
-    right: 44px;
-    top: 4px;
+    position: absolute;
+    right: 26px;
+    top: 14px;
 }
 
 .tipsRoot {

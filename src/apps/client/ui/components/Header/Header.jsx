@@ -13,10 +13,13 @@ import styles from './Header.css';
 import openBasketPopup from '../../../actions/openBasketPopup';
 import openLikedPopup from '../../../actions/openLikedPopup';
 import openLicensePopup from '../../../actions/openLicensePopup';
+import MenuButton from '../MenuButton/MenuButton';
 
+const SCREEN_WIDTH_BURGER_MENU = 900;
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
         categories: application.categories,
+        media: application.media,
         basket: savedProducts.basket,
         liked: savedProducts.liked
     };
@@ -28,19 +31,25 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 class Header extends Component {
+    state = {
+        menuVisible: false
+    };
+
     static propTypes = {
         categories: PropTypes.array,
         openBasketPopup: PropTypes.func.isRequired,
         openLikedPopup: PropTypes.func.isRequired,
         openLicensePopup: PropTypes.func.isRequired,
         basket: PropTypes.array,
-        liked: PropTypes.array
+        liked: PropTypes.array,
+        media: PropTypes.object.isRequired
     };
 
     static defaultProps = {
         categories: [],
         basket: [],
-        liked: []
+        liked: [],
+        media: {}
     };
 
     handleOpenBasket = () => {
@@ -63,10 +72,20 @@ class Header extends Component {
         }, 0);
     };
 
+    handleBurgerMenuClick = () => {
+        this.setState({ menuVisible: !this.state.menuVisible });
+    };
+
+    handleBurgerCategoryClick = () => {
+        this.setState({ menuVisible: false });
+    };
+
     render () {
-        const { categories } = this.props;
+        const { categories, media } = this.props;
+        const { menuVisible } = this.state;
         const basketAmount = this.calculateBasketAmount();
         const likedAmount = this.props.liked.length;
+        const isBurgerMenuShowed = media.width <= SCREEN_WIDTH_BURGER_MENU;
 
         return <div className={styles.headerContainer}>
             <div className={styles.headerTop}>
@@ -74,14 +93,27 @@ class Header extends Component {
                     <div className={styles.logoLeft}>raze</div>
                     <div className={styles.logoRight}>Your<br/>knife<br/><div className={styles.logoGreen}>world</div></div>
                 </Link>
+                {(isBurgerMenuShowed || menuVisible) &&
+                <MenuButton
+                    menuVisible = {menuVisible}
+                    onClick={this.handleBurgerMenuClick}/>
+                }
+                {!isBurgerMenuShowed &&
                 <div className={styles.searchForm}>
                     <Search />
                 </div>
-                <div className={styles.contactsWrapper}>
+                }
+                {menuVisible && <div className={styles.deliveryPayment}>
+                    <div className={styles.infoLink}>Доставка и оплата</div>
+                </div>}
+                <div className={classNames(styles.contactsWrapper, {
+                    [styles.contactsHidden]: isBurgerMenuShowed,
+                    [styles.burgerContacts]: menuVisible
+                })}>
                     <div className={styles.contacts}>
-                        <div className={styles.contactsLicense} onClick={this.handleOpenLicense}>
+                        {!menuVisible && <div className={styles.contactsLicense} onClick={this.handleOpenLicense}>
                             <div>Лицензионное соглашение</div>
-                        </div>
+                        </div>}
                         <div className={styles.tollEmail}>
                             <div className={styles.toll}>
                                 <a href="tel:+38 (044) 232 13 14" className={styles.link}>
@@ -105,12 +137,17 @@ class Header extends Component {
                     </div>
                 </div>
             </div>
-            <div className={styles.headerBottom}>
-                <div className={styles.menu}>
+            <div className={classNames(styles.headerBottom)}>
+                <div className={classNames(styles.menu, {
+                    [styles.burgerMenu]: menuVisible,
+                    [styles.menuHidden]: isBurgerMenuShowed,
+                    [styles.menuVisible]: menuVisible
+                })}>
                     <ul className={styles.menuList}>
                         { categories.map((category, i) =>
                             <NavLink className={styles.menuListCategory}
                                 activeClassName={styles.menuListCategoryActive}
+                                onClick={this.handleBurgerCategoryClick}
                                 key={i} to={`/${category.path}`}>{category.name}
                             </NavLink>) }
                     </ul>
@@ -123,10 +160,11 @@ class Header extends Component {
                             [styles.ordersCounterHugePlus]: likedAmount > 999
                         })}
                     >
-                        <img className={styles.iconHeart} src='/src/apps/client/ui/components/Header/images/likeHeart.png' alt=''/>
+                        <img className={styles.iconHeart}
+                            src='/src/apps/client/ui/components/Header/images/likeHeart.png' alt=''/>
                         {likedAmount > 0 &&
                         <div className={classNames(styles.ordersCounter, styles.likedAmount)}>
-                            <div className={styles.ordersNumber}>{likedAmount < 1000 ? likedAmount : '999+' }</div>
+                            <div className={styles.ordersNumber}>{likedAmount < 1000 ? likedAmount : '999+'}</div>
                         </div>}
                     </div>
                     <div className={classNames(
@@ -137,10 +175,11 @@ class Header extends Component {
                         })}
                     onClick={this.handleOpenBasket}
                     >
-                        <img className={styles.iconBasket} src='/src/apps/client/ui/components/Header/images/basket.png' alt=''/>
+                        <img className={styles.iconBasket} src='/src/apps/client/ui/components/Header/images/basket.png'
+                            alt=''/>
                         {basketAmount > 0 &&
                         <div className={classNames(styles.ordersCounter, styles.basketAmount)}>
-                            <div className={styles.ordersNumber}>{basketAmount < 1000 ? basketAmount : '999+' }</div>
+                            <div className={styles.ordersNumber}>{basketAmount < 1000 ? basketAmount : '999+'}</div>
                         </div>}
                     </div>
                 </div>
