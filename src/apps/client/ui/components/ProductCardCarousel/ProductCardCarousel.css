@@ -6,6 +6,12 @@
     align-items: center;
     position: relative;
     border: 3px solid #ffffff;
+
+    @media (max-width: 1169px){
+        width: 100%;
+        height: auto;
+        border: none;
+    }
 }
 
 .slides{
@@ -20,6 +26,10 @@
     flex-shrink: 0;
     height: auto;
     display: inline-block;
+
+    @media (max-width: 1169px){
+        width: 100%;
+    }
 }
 
 .slidePhoto{
@@ -32,14 +42,26 @@
 
     position: absolute;
     cursor: pointer;
+
+    @media (max-width: 1169px){
+        position: unset;
+    }
 }
 
 .buttonTop{
     top: -46px;
+
+    @media (max-width: 1169px){
+        transform: rotate(-90deg);
+    }
 }
 
 .buttonBottom{
     bottom: -46px;
+
+    @media (max-width: 1169px){
+        transform: rotate(-90deg);
+    }
 }
 
 .buttonImage {
@@ -73,6 +95,10 @@
     position: absolute;
     bottom: 0;
     left: 0;
+
+    @media (max-width: 1169px){
+        width: 100%;
+    }
 }
 
 .buttonDots{
@@ -80,6 +106,7 @@
     align-items: center;
     justify-content: space-between;
 }
+
 .buttonDots :last-child{
     margin-right: 0;
 }
@@ -106,31 +133,57 @@
     flex-direction: column;
     align-items: center;
     position: relative;
+
+    @media (max-width: 1169px){
+        flex-direction: row;
+        margin: 2.5vw 0 52px 0;
+    }
 }
 
 .slidesContainer{
     overflow: hidden;
     height: 240px;
+
+    @media (max-width: 1169px){
+        width: 65vw;
+        height: auto;
+    }
 }
 
 .sliderLeftSlides{
     position: relative;
+
+    @media (max-width: 1169px) {
+        display: flex;
+        align-items: center;
+    }
 }
 
 .sliderLeftSlides :last-child{
-    margin-bottom: 0;
+    margin: 0;
 }
 
 .sliderLeftSlide{
     width: 80px;
     height: 70px;
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
     opacity: 0.5;
     transition: .5s ease;
     cursor: pointer;
+
+    @media (max-width: 1169px){
+        display: inline-block;
+        width: 20vw;
+        height: auto;
+
+    &:not(:last-child) {
+         margin: 0 2.5vw 0 0;
+     }
+    }
 }
 
 .sliderLeftActive{
@@ -147,4 +200,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    @media (max-width: 1169px){
+        flex-direction: column-reverse;
+        width: 100%;
+    }
 }

@@ -103,6 +103,9 @@ class Header extends Component {
                     <Search />
                 </div>
                 }
+                {menuVisible && <div className={styles.deliveryPayment}>
+                    <div className={styles.infoLink}>Доставка и оплата</div>
+                </div>}
                 <div className={classNames(styles.contactsWrapper, {
                     [styles.contactsHidden]: isBurgerMenuShowed,
                     [styles.burgerContacts]: menuVisible
