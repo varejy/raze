@@ -74,10 +74,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 class ProductPage extends Component {
-    state = {
-        isLiked: false
-    };
-
     static propTypes = {
         getProductById: PropTypes.func.isRequired,
         location: PropTypes.object,
