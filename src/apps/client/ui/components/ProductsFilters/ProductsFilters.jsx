@@ -93,7 +93,7 @@ class ProductsFilters extends Component {
     getDefaultFilters = (props = this.props) => {
         const { products } = props;
 
-        return DEFAULT_FILTERS.map((filter) => {
+        return DEFAULT_FILTERS.reduce((filters, filter) => {
             switch (filter.type) {
             case 'checkbox':
                 const options = compose(
@@ -101,11 +101,13 @@ class ProductsFilters extends Component {
                     map(product => product.company)
                 )(products);
 
-                return options.length > 1 ? {
-                    ...filter,
-                    options
-                }
-                    : {};
+                return options.length > 1 ? [
+                    ...filters,
+                    {
+                        ...filter,
+                        options
+                    }
+                ] : filters;
             case 'range':
                 const prices = compose(
                     uniq,
@@ -118,14 +120,16 @@ class ProductsFilters extends Component {
                 const min = getMinOfArray(prices);
                 const max = getMaxOfArray(prices);
 
-                return min !== max ? {
-                    ...filter,
-                    min,
-                    max
-                }
-                    : {};
+                return min !== max ? [
+                    ...filters,
+                    {
+                        ...filter,
+                        min,
+                        max
+                    }
+                ] : filters;
             }
-        });
+        }, []);
     }
 
     getFilters = (props = this.props) => {
@@ -133,7 +137,7 @@ class ProductsFilters extends Component {
             return [];
         }
 
-        return props.category.filters.map(filter => {
+        return props.category.filters.reduce((filters, filter) => {
             const { products } = props;
 
             switch (filter.type) {
@@ -145,11 +149,13 @@ class ProductsFilters extends Component {
                     map(product => product.filters.map(productFilter => filter.id === productFilter.id && productFilter.value))
                 )(products);
 
-                return options.length > 1 ? {
-                    ...filter,
-                    options
-                }
-                    : {};
+                return options.length > 1 ? [
+                    ...filters,
+                    {
+                        ...filter,
+                        options
+                    }
+                ] : filters;
             case 'range':
                 const propsArr = compose(
                     uniq,
@@ -163,14 +169,16 @@ class ProductsFilters extends Component {
                 const min = getMinOfArray(propsArr);
                 const max = getMaxOfArray(propsArr);
 
-                return min !== max ? {
-                    ...filter,
-                    min,
-                    max
-                }
-                    : {};
+                return min !== max ? [
+                    ...filters,
+                    {
+                        ...filter,
+                        min,
+                        max
+                    }
+                ] : filters;
             }
-        });
+        }, []);
     };
 
     handleFilter = filter => values => {
