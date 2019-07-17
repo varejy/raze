@@ -103,6 +103,9 @@ class Header extends Component {
                     <Search />
                 </div>
                 }
+                {menuVisible && <div className={styles.deliveryPayment}>
+                    <div className={styles.infoLink}>Доставка и оплата</div>
+                </div>}
                 <div className={classNames(styles.contactsWrapper, {
                     [styles.contactsHidden]: isBurgerMenuShowed,
                     [styles.burgerContacts]: menuVisible
@@ -134,12 +137,11 @@ class Header extends Component {
                     </div>
                 </div>
             </div>
-            <div className={classNames(styles.headerBottom, {
-                [styles.menuHidden]: isBurgerMenuShowed,
-                [styles.menuVisible]: menuVisible
-            })}>
+            <div className={classNames(styles.headerBottom)}>
                 <div className={classNames(styles.menu, {
-                    [styles.burgerMenu]: menuVisible
+                    [styles.burgerMenu]: menuVisible,
+                    [styles.menuHidden]: isBurgerMenuShowed,
+                    [styles.menuVisible]: menuVisible
                 })}>
                     <ul className={styles.menuList}>
                         { categories.map((category, i) =>
@@ -150,7 +152,6 @@ class Header extends Component {
                             </NavLink>) }
                     </ul>
                 </div>
-                {!menuVisible &&
                 <div className={styles.likesBasket}>
                     <div onClick={this.handleOpenLiked} className={classNames(
                         styles.bottomIconWrapper, {
@@ -182,7 +183,6 @@ class Header extends Component {
                         </div>}
                     </div>
                 </div>
-                }
             </div>
         </div>;
     }

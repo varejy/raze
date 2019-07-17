@@ -18,11 +18,21 @@
     padding: 0 26px;
 }
 
+.searchFormInput::-ms-clear {
+    width : 0;
+    height: 0;
+}
+
 .searchFormInputActive {
     border-radius: 25px;
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
     border-bottom: solid 0px black;
+}
+
+.searchFormInputActive::-ms-clear {
+    width : 0;
+    height: 0;
 }
 
 .searchFormIcon{
@@ -35,6 +45,12 @@
     position: absolute;
     right: 26px;
     top: 14px;
+}
+
+.searchIcon{
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .tipsRoot {

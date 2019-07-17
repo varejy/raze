@@ -8,7 +8,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -25,6 +24,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 import noop from '@tinkoff/utils/function/noop';
 import prop from '@tinkoff/utils/object/prop';
+import propEq from '@tinkoff/utils/object/propEq';
+import find from '@tinkoff/utils/array/find';
 import format from 'date-fns/format';
 
 const PAYMENT_TYPES = [
@@ -58,10 +59,6 @@ const mapStateToProps = ({ application }) => {
 const mapDispatchToProps = (dispatch) => ({
     editOrder: payload => dispatch(editOrder(payload))
 });
-
-const formatedOrderDate = {
-    date: order => format(order.date, 'hh:mm:ss - DD MMM YYYY')
-};
 
 const materialStyles = theme => ({
     loader: {
@@ -114,11 +111,12 @@ class OrderForm extends Component {
         super(props);
 
         this.state = {
-            loading: true,
             order: this.props.order,
             id: prop('id', this.props.order)
         };
     }
+
+    formatOrderDate = order => format(order.date, 'hh:mm:ss - DD MMM YYYY');
 
     componentDidMount () {
         this.props.order && this.setState({
@@ -131,8 +129,8 @@ class OrderForm extends Component {
 
         const { id } = this.state;
 
-        this.props.editOrder({ ...this.state.order, id });
-        this.props.onDone();
+        this.props.editOrder({ ...this.state.order, id })
+            .then(this.props.onDone);
     };
 
     handleOrderChange = prop => event => {
@@ -147,14 +145,8 @@ class OrderForm extends Component {
 
     render () {
         const { classes } = this.props;
-        const { order, loading } = this.state;
-        const formatOrder = formatedOrderDate.date(order);
-
-        if (loading) {
-            return <div className={classes.loader}>
-                <CircularProgress />
-            </div>;
-        }
+        const { order } = this.state;
+        const formatOrderDate = this.formatOrderDate(order);
 
         return <form onSubmit={this.handleSubmit}>
             <Typography variant='h5' className={classes.title}>Редактирование заказа</Typography>
@@ -178,17 +170,13 @@ class OrderForm extends Component {
                         <TableRow>
                             <TableCell colSpan={4}>Тип доставки</TableCell>
                             <TableCell align="center">{
-                                ORDER_TYPES.map(type => {
-                                    return order.orderType === type.id && type.value;
-                                })
+                                find(propEq('id', order.orderType))(ORDER_TYPES).value
                             }</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell colSpan={4}>Тип оплаты</TableCell>
                             <TableCell align="center">{
-                                PAYMENT_TYPES.map(type => {
-                                    return order.paymentType === type.id && type.value;
-                                })
+                                find(propEq('id', order.paymentType))(PAYMENT_TYPES).value
                             }</TableCell>
                         </TableRow>
                         <TableRow>
@@ -196,8 +184,8 @@ class OrderForm extends Component {
                             <TableCell align="center">{order.department}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={4}>Дата реестрации</TableCell>
-                            <TableCell align="center">{formatOrder}</TableCell>
+                            <TableCell colSpan={2}>Дата реестрации</TableCell>
+                            <TableCell align="center">{formatOrderDate}</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell colSpan={4}>Номер телефона</TableCell>

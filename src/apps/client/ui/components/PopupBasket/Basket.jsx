@@ -27,10 +27,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 class Basket extends Component {
-    state = {
-        productsMap: {}
-    };
-
     static propTypes = {
         closeBasketPopup: PropTypes.func.isRequired,
         basketVisible: PropTypes.bool.isRequired,
@@ -42,6 +38,10 @@ class Basket extends Component {
     static defaultProps = {
         basketVisible: false,
         basket: []
+    };
+
+    state = {
+        productsMap: {}
     };
 
     setProductsMap = () => {
@@ -127,7 +127,7 @@ class Basket extends Component {
                         <div>Количество</div>
                     </div>
                     <div className={styles.items}>
-                        <Scroll theme='white'>
+                        <Scroll theme='light'>
                             {basket.map((item, i) => productsMap[i] !== 0 &&
                                 <div className={styles.item} key={i}>
                                     <div className={styles.itemImageWrapp}>
@@ -158,8 +158,10 @@ class Basket extends Component {
                             )}
                         </Scroll>
                     </div>
-
-                    <div className={styles.priceTotal}>Итог: {this.totalPrice()} грн</div>
+                    <div className={styles.priceBlock}>
+                        <div className={styles.line} />
+                        <div className={styles.priceTotal}>Итог: {this.totalPrice()} грн</div>
+                    </div>
                     <div className={styles.buttonsWrapp}>
                         <button
                             className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
