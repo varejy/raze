@@ -42,9 +42,15 @@
 
     position: absolute;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    left: 0;
 
     @media (max-width: 1169px){
-        position: unset;
+        position: relative;
+        width: auto;
     }
 }
 
@@ -53,6 +59,7 @@
 
     @media (max-width: 1169px){
         transform: rotate(-90deg);
+        top: 0;
     }
 }
 
@@ -61,6 +68,7 @@
 
     @media (max-width: 1169px){
         transform: rotate(-90deg);
+        bottom: 0;
     }
 }
 

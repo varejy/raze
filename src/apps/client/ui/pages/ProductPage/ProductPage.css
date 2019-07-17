@@ -160,7 +160,7 @@ a {
 
 .prices{
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     position: relative;
 }

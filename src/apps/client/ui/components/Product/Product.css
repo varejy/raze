@@ -52,6 +52,7 @@
     left: 0;
     top: -40px;
     width: 100%;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -83,6 +84,14 @@
     text-align: left;
     text-transform: uppercase;
     letter-spacing: 2px;
+}
+
+.labelsEmptyContainer{
+    height: 38px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: -40px;
 }
 
 .img{
@@ -177,14 +186,20 @@
     color: #fff;
     font-size: 8.5px;
     flex-wrap: wrap;
-    width: 42px;
-    height: 42px;
+    width: 46px;
+    height: 46px;
     cursor: pointer;
     text-transform: uppercase;
 }
 
 .toolBarIcon{
     margin-bottom: 6px;
+}
+
+.toolBarItemName {
+    width: 46px;
+    text-align: center;
+    line-height: 10px;
 }
 
 .quickInspection .toolBarIcon{
