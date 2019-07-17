@@ -101,10 +101,11 @@ class ProductsFilters extends Component {
                     map(product => product.company)
                 )(products);
 
-                return {
+                return options.length > 1 ? {
                     ...filter,
                     options
-                };
+                }
+                    : {};
             case 'range':
                 const prices = compose(
                     uniq,
@@ -117,11 +118,12 @@ class ProductsFilters extends Component {
                 const min = getMinOfArray(prices);
                 const max = getMaxOfArray(prices);
 
-                return {
+                return min !== max ? {
                     ...filter,
                     min,
                     max
-                };
+                }
+                    : {};
             }
         });
     }
@@ -143,10 +145,11 @@ class ProductsFilters extends Component {
                     map(product => product.filters.map(productFilter => filter.id === productFilter.id && productFilter.value))
                 )(products);
 
-                return {
+                return options.length > 1 ? {
                     ...filter,
                     options
-                };
+                }
+                    : {};
             case 'range':
                 const propsArr = compose(
                     uniq,
@@ -160,11 +163,12 @@ class ProductsFilters extends Component {
                 const min = getMinOfArray(propsArr);
                 const max = getMaxOfArray(propsArr);
 
-                return {
+                return min !== max ? {
                     ...filter,
                     min,
                     max
-                };
+                }
+                    : {};
             }
         });
     };
