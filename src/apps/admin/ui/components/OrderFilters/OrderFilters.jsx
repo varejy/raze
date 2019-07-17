@@ -10,7 +10,6 @@ import ListItem from '@material-ui/core/ListItem';
 import propOr from '@tinkoff/utils/object/propOr';
 import compose from '@tinkoff/utils/function/compose';
 import reduceObj from '@tinkoff/utils/object/reduce';
-import filterUtil from '@tinkoff/utils/array/filter';
 import includes from '@tinkoff/utils/array/includes';
 import keys from '@tinkoff/utils/object/keys';
 import pickBy from '@tinkoff/utils/object/pickBy';
@@ -20,7 +19,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import setFilteredOrders from '../../../actions/setFilteredOrders';
 
-const PAYMENT_TYPES_ARR = [
+const PAYMENT_TYPES = [
     {
         id: 'card',
         value: 'На карту банка'
@@ -31,7 +30,7 @@ const PAYMENT_TYPES_ARR = [
     }
 ];
 
-const STATUS_TYPES_ARR = ['new', 'paid', 'sent', 'done', 'declined'];
+const STATUS_TYPES = ['new', 'paid', 'sent', 'done', 'declined'];
 
 const materialStyles = {
     checkbox: {
@@ -67,110 +66,65 @@ class OrderFilters extends Component {
         super(...args);
 
         this.state = {
-            selectedPaymentTypes: this.defaulOptions('paymentType'),
-            selectedStatus: this.defaulOptions('status'),
-            paymentTypes: PAYMENT_TYPES_ARR,
-            statusArr: STATUS_TYPES_ARR
+            selectedPaymentTypes: PAYMENT_TYPES.reduce((result, type) => ({ ...result, [type.id]: true }), {}),
+            selectedStatuses: STATUS_TYPES.reduce((result, type) => ({ ...result, [type]: true }), {}),
+            filters: {}
         };
-
-        this.filtersMap = {};
     }
 
-    filter = () => {
-        const { orders, setFilteredOrders } = this.props;
+    setFilteredOrders = (props = this.props) => {
+        const { orders } = props;
+        const { filters } = this.state;
 
-        let newFilteredOrders = reduceObj((filteredOrders, { filter, values }) => {
-            return !values.length ? filteredOrders : filterUtil(order => includes(order[filter.prop], values), filteredOrders);
-        }, orders, this.filtersMap);
+        const filteredOrders = reduceObj((filteredOrders, order) => {
+            return filteredOrders.filter(order);
+        }, orders, filters);
 
-        setFilteredOrders(newFilteredOrders);
-    }
-
-    handleFilter = filter => values => {
-        this.filtersMap[filter.id] = {
-            filter,
-            values
-        };
-
-        this.filter();
+        this.props.setFilteredOrders(filteredOrders);
     };
 
-    defaulOptions = (type) => {
-        if (type === 'paymentType') {
-            let types = {
-                id: 1,
-                prop: 'paymentType'
-            };
+    handleFiltersChanged = () => {
+        this.setFilteredOrders();
+    };
 
-            PAYMENT_TYPES_ARR.map(type => {
-                types = {
-                    ...types,
-                    [type.id]: true
-                };
-            });
-            return types;
-        } else if (type === 'status') {
-            let types = {
-                id: 2,
-                prop: 'status'
-            };
-
-            STATUS_TYPES_ARR.map(type => {
-                types = {
-                    ...types,
-                    [type]: true
-                };
-            });
-            return types;
+    handleChecked = (value, prop) => () => {
+        const { filters } = this.state;
+        const selectedNamesMap = {
+            paymentType: 'selectedPaymentTypes',
+            status: 'selectedStatuses'
         }
-    }
+        const selected = this.state[selectedNamesMap[prop]];
+        const nextSelectedStatus = {
+            ...selected,
+            [value]: !selected[value]
+        };
+        const activeProps = compose(
+            keys,
+            pickBy(Boolean)
+        )(nextSelectedStatus);
+        const newFilters = {
+            ...filters,
+            [prop]: order => {
+                return includes(order[prop], activeProps);
+            }
+        };
 
-    handleChecked = (prop, event) => () => {
-        const { selectedStatus, selectedPaymentTypes } = this.state;
-
-        if (event === 'status') {
-            const nextSelectedStatus = {
-                ...selectedStatus,
-                [prop]: !selectedStatus[prop]
-            };
-            const activeProps = compose(
-                filterUtil(values => values !== 'id' || values !== 'prop'),
-                keys,
-                pickBy(Boolean)
-            )(nextSelectedStatus);
-
-            this.setState({
-                selectedStatus: nextSelectedStatus
-            });
-            this.handleFilter(nextSelectedStatus)(activeProps);
-        } else if (event === 'paymentType') {
-            const nextSelectedPaymentTypes = {
-                ...selectedPaymentTypes,
-                [prop]: !selectedPaymentTypes[prop]
-            };
-            const activeProps = compose(
-                filterUtil(values => values !== 'id' || values !== 'prop'),
-                keys,
-                pickBy(Boolean)
-            )(nextSelectedPaymentTypes);
-
-            this.setState({
-                selectedPaymentTypes: nextSelectedPaymentTypes
-            });
-            this.handleFilter(nextSelectedPaymentTypes)(activeProps);
-        }
+        this.setState({
+            [selectedNamesMap[prop]]: nextSelectedStatus,
+            filters: newFilters
+        }, this.handleFiltersChanged);
     };
 
     renderStatus = () => {
         const { classes } = this.props;
-        const { statusArr, selectedStatus } = this.state;
+        const { selectedStatuses } = this.state;
 
         return <div>
             <Typography variant='h6'>Статусы</Typography>
             <List dense>
                 {
-                    statusArr.map((status, i) => {
-                        const value = propOr([status], false, selectedStatus);
+                    STATUS_TYPES.map((status, i) => {
+                        const value = propOr([status], false, selectedStatuses);
 
                         return <ListItem key={i}>
                             <FormControlLabel
@@ -195,12 +149,12 @@ class OrderFilters extends Component {
 
     renderPaymentTypes = () => {
         const { classes } = this.props;
-        const { paymentTypes, selectedPaymentTypes } = this.state;
+        const { selectedPaymentTypes } = this.state;
 
         return <div>
             <Typography variant='h6'>Тип оплаты</Typography>
             <List dense>
-                { paymentTypes.map((type, i) => {
+                { PAYMENT_TYPES.map((type, i) => {
                     const value = propOr([type.id], false, selectedPaymentTypes);
 
                     return <ListItem key={i}>
