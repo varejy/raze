@@ -103,43 +103,45 @@ class Header extends Component {
                     <Search />
                 </div>
                 }
+                {menuVisible && <div className={styles.deliveryPayment}>
+                    <div className={styles.infoLink}>Доставка и оплата</div>
+                </div>}
                 <div className={classNames(styles.contactsWrapper, {
                     [styles.contactsHidden]: isBurgerMenuShowed,
                     [styles.burgerContacts]: menuVisible
                 })}>
                     <div className={styles.contacts}>
                         {!menuVisible && <div className={styles.contactsLicense} onClick={this.handleOpenLicense}>
-                            <div>Лицензионное соглашение</div>
+                            <div>Доставка и оплата</div>
                         </div>}
                         <div className={styles.tollEmail}>
                             <div className={styles.toll}>
-                                <a href="tel:+38 (044) 232 13 14" className={styles.link}>
+                                <a href="tel:+38 (093) 089 86 97" className={styles.link}>
                                     <div className={styles.iconWrapper}>
                                         <img className={styles.iconPhone} src='/src/apps/client/ui/components/Header/images/iPhone.png' alt=''/>
                                         <img className={styles.colorElement} src='/src/apps/client/ui/components/Header/images/colorElement1.png' alt=''/>
                                     </div>
-                                    <div>+38 (044) 232 13 14</div>
+                                    <div>+38 (093) 089 86 97</div>
                                 </a>
                             </div>
                             <div className={styles.email}>
-                                <a href="mailto:info@oneblade.org" className={styles.link}>
+                                <a href="mailto:raze.com.ua@gmail.com" className={styles.link}>
                                     <div className={styles.iconWrapper}>
                                         <img className={styles.iconMail} src='/src/apps/client/ui/components/Header/images/mail.png' alt=''/>
                                         <img className={styles.colorElement} src='/src/apps/client/ui/components/Header/images/colorElement2.png' alt=''/>
                                     </div>
-                                    <div>info@oneblade.org</div>
+                                    <div>raze.com.ua@gmail.com</div>
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className={classNames(styles.headerBottom, {
-                [styles.menuHidden]: isBurgerMenuShowed,
-                [styles.menuVisible]: menuVisible
-            })}>
+            <div className={classNames(styles.headerBottom)}>
                 <div className={classNames(styles.menu, {
-                    [styles.burgerMenu]: menuVisible
+                    [styles.burgerMenu]: menuVisible,
+                    [styles.menuHidden]: isBurgerMenuShowed,
+                    [styles.menuVisible]: menuVisible
                 })}>
                     <ul className={styles.menuList}>
                         { categories.map((category, i) =>
@@ -150,7 +152,6 @@ class Header extends Component {
                             </NavLink>) }
                     </ul>
                 </div>
-                {!menuVisible &&
                 <div className={styles.likesBasket}>
                     <div onClick={this.handleOpenLiked} className={classNames(
                         styles.bottomIconWrapper, {
@@ -182,7 +183,6 @@ class Header extends Component {
                         </div>}
                     </div>
                 </div>
-                }
             </div>
         </div>;
     }

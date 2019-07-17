@@ -4,7 +4,7 @@ import setMediaInfo from '../../actions/setMediaInfo';
 
 export default function getLangFromCookie ({ headers = {} } = {}) {
     return dispatch => {
-        const deviceType = device(headers['User-Agent']).type;
+        const deviceType = device(headers['user-agent']).type;
         let media;
 
         switch (deviceType) {

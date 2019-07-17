@@ -1,6 +1,7 @@
 .formContainer {
     background-color: transparent;
     width: 100%;
+    position: relative;
 }
 
 .field {

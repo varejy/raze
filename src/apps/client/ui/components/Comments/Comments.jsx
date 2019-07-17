@@ -7,11 +7,11 @@ import Comment from '../Comment/Comment';
 
 class Comments extends Component {
     static propTypes = {
-        productComments: PropTypes.object
+        productComments: PropTypes.array
     };
 
     static defaultProps = {
-        productComments: {}
+        productComments: []
     };
 
     render () {
@@ -27,7 +27,7 @@ class Comments extends Component {
                         );
                     })
                     : <div className={styles.feedback}>
-                        У этого товара еще нет комментариев, будьте первым кто его оставит !
+                        У этого товара еще нет комментариев, будьте первым кто его оставит!
                     </div>
             }
         </section>;

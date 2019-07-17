@@ -19,7 +19,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withStyles } from '@material-ui/core/styles';
 
-import ProductFilters from '../../components/ProductFilters/ProductFilters';
+import OrderFilters from '../../components/OrderFilters/OrderFilters';
 
 import { connect } from 'react-redux';
 import getOrders from '../../../services/getOrders';
@@ -27,28 +27,51 @@ import getOrders from '../../../services/getOrders';
 import format from 'date-fns/format';
 import OrderForm from '../../components/OrderForm/OrderForm';
 
-import map from '@tinkoff/utils/array/map';
+import propEq from '@tinkoff/utils/object/propEq';
+import find from '@tinkoff/utils/array/find';
 
 const STATUS_ARRAY = [
     {
         status: 'new',
-        theme: ['status', 'statusNew']
+        theme: 'new'
     },
     {
         status: 'paid',
-        theme: ['status', 'statusPaid']
+        theme: 'paid'
     },
     {
         status: 'sent',
-        theme: ['status', 'statusSent']
+        theme: 'sent'
     },
     {
         status: 'done',
-        theme: ['status', 'statusDone']
+        theme: 'done'
     },
     {
         status: 'declined',
-        theme: ['status', 'statusDeclined']
+        theme: 'declined'
+    }
+];
+
+const PAYMENT_TYPES = [
+    {
+        id: 'card',
+        value: 'На карту банка'
+    },
+    {
+        id: 'cod',
+        value: 'Наложенным платежом'
+    }
+];
+
+const ORDER_TYPES = [
+    {
+        id: 'nova',
+        value: 'Новая Почта'
+    },
+    {
+        id: 'ukr',
+        value: 'Укр Почта'
     }
 ];
 const ROWS_PER_PAGE = 10;
@@ -98,19 +121,19 @@ const materialStyles = theme => ({
         justifyContent: 'center',
         borderRadius: '25px'
     },
-    statusNew: {
+    status__new: {
         backgroundColor: '#761CEA'
     },
-    statusPaid: {
+    status__paid: {
         backgroundColor: '#FFD600'
     },
-    statusSent: {
+    status__sent: {
         backgroundColor: '#8CBA51'
     },
-    statusDone: {
+    status__done: {
         backgroundColor: '#008736'
     },
-    statusDeclined: {
+    status__declined: {
         backgroundColor: '#BC0022'
     },
     valuesActions: {
@@ -126,7 +149,7 @@ const materialStyles = theme => ({
 
 const mapStateToProps = ({ orders }) => {
     return {
-        orders: orders.orders
+        orders: orders.filtered
     };
 };
 
@@ -161,9 +184,14 @@ class OrdersPage extends Component {
             { prop: order => order.name },
             { prop: order => order.phone },
             { prop: order => format(order.date, 'hh:mm:ss - DD MMM YYYY') },
-            { prop: order => map((prop, i) => order.status === prop.status && <div key={i} className={classNames(prop.theme.map(style => classes[style]))}>
-                {prop.status}
-            </div>, STATUS_ARRAY) }
+            { prop: order => {
+                const { status, theme } = find(propEq('status', order.status), STATUS_ARRAY);
+
+                return <div className={classNames(classes.status, classes[`status__${theme}`])}>
+                    {status}
+                </div>;
+            }
+            }
         ];
     }
 
@@ -315,12 +343,12 @@ class OrdersPage extends Component {
             </Paper>
             <Modal open={formShowed} onClose={this.handleCloseOrderForm} className={classes.modal}>
                 <Paper className={classes.modalContent}>
-                    <OrderForm order={editableOrder} onDone={this.handleFormDone}/>
+                    <OrderForm paymentTypes={PAYMENT_TYPES} orderTypes={ORDER_TYPES} order={editableOrder} onDone={this.handleFormDone}/>
                 </Paper>
             </Modal>
             <Modal open={filtersShowed} onClose={this.handleCloseFilters} className={classes.modal} keepMounted>
                 <Paper className={classes.modalContent}>
-                    <ProductFilters />
+                    <OrderFilters paymentTypes={PAYMENT_TYPES}/>
                 </Paper>
             </Modal>
         </div>;

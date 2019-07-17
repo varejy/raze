@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import getProductById from '../../../services/client/getProductById';
 import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
 import saveProductsViewed from '../../../services/client/saveProductsViewed';
+import setLiked from '../../../actions/setLiked';
 
 import getStarsArray from '../../../utils/getStarsArray';
 
@@ -26,6 +27,10 @@ import filter from '@tinkoff/utils/array/filter';
 import tail from '@tinkoff/utils/array/tail';
 import concat from '@tinkoff/utils/array/concat';
 import compose from '@tinkoff/utils/function/compose';
+import saveProductsLiked from '../../../services/client/saveProductsLiked';
+import findIndex from '@tinkoff/utils/array/findIndex';
+import remove from '@tinkoff/utils/array/remove';
+import find from '@tinkoff/utils/array/find';
 
 const PRODUCT_PATH = '/:category/:id';
 const LABELS_MAP = {
@@ -44,12 +49,15 @@ const LABELS_MAP = {
 };
 
 const MAX_VIEWED = 7;
+const INFO_MOD_SCREEN_WIDTH = 1169;
 
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
         productMap: application.productMap,
         basket: savedProducts.basket,
-        viewed: savedProducts.viewed
+        viewed: savedProducts.viewed,
+        media: application.media,
+        liked: savedProducts.liked
     };
 };
 
@@ -58,7 +66,10 @@ const mapDispatchToProps = (dispatch) => ({
     setViewed: payload => dispatch(setViewed(payload)),
     saveProductsViewed: payload => dispatch(saveProductsViewed(payload)),
     setBasket: payload => dispatch(setBasket(payload)),
-    saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload))
+    closePopup: payload => dispatch(closePopup(payload)),
+    saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload)),
+    setLiked: payload => dispatch(setLiked(payload)),
+    saveProductsLiked: payload => dispatch(saveProductsLiked(payload))
 });
 
 class ProductPage extends Component {
@@ -70,15 +81,21 @@ class ProductPage extends Component {
         basket: PropTypes.array.isRequired,
         setBasket: PropTypes.func.isRequired,
         saveProductsToBasket: PropTypes.func.isRequired,
+        saveProductsViewed: PropTypes.func.isRequired,
         setViewed: PropTypes.func.isRequired,
-        saveProductsViewed: PropTypes.func.isRequired
+        media: PropTypes.object.isRequired,
+        liked: PropTypes.array.isRequired,
+        setLiked: PropTypes.func.isRequired,
+        saveProductsLiked: PropTypes.func.isRequired
     };
 
     static defaultProps = {
         location: {},
         productMap: {},
+        viewed: [],
+        media: {},
+        liked: [],
         basket: [],
-        viewed: []
     };
 
     constructor (...args) {
@@ -175,9 +192,38 @@ class ProductPage extends Component {
         return !!isInBasket;
     };
 
+    handleLikeClick = () => {
+        const { setLiked, liked, saveProductsLiked } = this.props;
+        const { product } = this.state;
+        let newLiked;
+
+        if (!this.isLiked()) {
+            newLiked = !this.isLiked() ? [
+                product,
+                ...liked
+            ] : [...liked];
+            this.setState({ isLiked: true });
+        } else {
+            const index = findIndex(likedItem => likedItem.id === product.id, liked);
+            newLiked = [
+                ...remove(index, 1, liked)
+            ];
+            this.setState({ isLiked: false });
+        }
+        setLiked(newLiked);
+        saveProductsLiked(newLiked.map((product) => product.id));
+    };
+
+    isLiked = () => {
+        const { liked } = this.props;
+        const { product } = this.state;
+        return !!find(likedProduct => product.id === likedProduct.id, liked);
+    };
+
     render () {
-        const { viewed } = this.props;
+        const { viewed, media } = this.props;
         const { loading, product } = this.state;
+        const infoIsModified = media.width <= INFO_MOD_SCREEN_WIDTH;
 
         // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
@@ -190,11 +236,14 @@ class ProductPage extends Component {
             </div>;
         }
 
+        const isLiked = this.isLiked();
+
         return <section>
             <div className={styles.productCardContainer}>
                 <div className={styles.topProductInfo}>
                     <ProductCardCarousel sliderImages={product.files}/>
                     <div className={styles.productInfo}>
+                        {!infoIsModified &&
                         <div className={styles.tags}>
                             { product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP.lowPrice.color }}>
                                 {LABELS_MAP.lowPrice.text}</div>}
@@ -203,16 +252,18 @@ class ProductPage extends Component {
                                     style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text}</div>
                             )}
                         </div>
+                        }
                         <div className={styles.productCardHeader}>
                             <div className={styles.productName}>{product.name}</div>
-                            <div><img className={styles.heartIcon}
-                                src='/src/apps/client/ui/pages/ProductPage/images/likeHeart.png' alt='like'/></div>
                         </div>
+                        {!infoIsModified &&
                         <div className={styles.stars}>
                             {getStarsArray(product.rating).map((star, i) => <div key={i} className={styles.star}>
                                 <img src={star} alt='star'/>
                             </div>)}
                         </div>
+                        }
+                        {infoIsModified && <div className={styles.description}>{product.description}</div>}
                         <div className={styles.order}>
                             {product.discountPrice
                                 ? <div className={styles.prices}>
@@ -222,14 +273,24 @@ class ProductPage extends Component {
                                 : <div className={styles.prices}>
                                     <div className={styles.price}>{product.price} грн.</div>
                                 </div>}
-                            <Link className={styles.link} to={`/order?id=${product.id}`}>
-                                <button className={classNames(
-                                    styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
-                                )}
-                                onClick={this.handleSendProductToBasket}>
+                            <div className={styles.buttonContainer}>
+                                <Link className={styles.link} to='/order'>
+                                    <button className={classNames(
+                                        styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
+                                    )}
+                                    onClick={this.handleSendProductToBasket}>
                                     Оформление заказа
-                                </button>
-                            </Link>
+                                    </button>
+                                </Link>
+                                <div onClick={this.handleLikeClick}>
+                                    <img
+                                        className={styles.heartIcon}
+                                        src={!isLiked
+                                            ? '/src/apps/client/ui/pages/ProductPage/images/likeHeart.png'
+                                            : '/src/apps/client/ui/pages/ProductPage/images/heartGreen.png'}
+                                        alt='like'/>
+                                </div>
+                            </div>
                         </div>
                         {product.notAvailable &&
                         <div className={styles.notAvailableContent}>
@@ -246,11 +307,12 @@ class ProductPage extends Component {
                     </div>
                 </div>
                 <div className={styles.bottomProductInfo}>
+                    {!infoIsModified &&
                     <div className={classNames(styles.productDescription, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>описание товара</div>
-                        <div className={styles.description}>{product.description}
-                        </div>
+                        <div className={styles.description}>{product.description}</div>
                     </div>
+                    }
                     {product.features.length > 0 && <div className={classNames(styles.productParameters, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>характеристика товара</div>
                         <div className={styles.parameters}>
