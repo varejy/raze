@@ -98,11 +98,6 @@ class Header extends Component {
                     <div className={styles.logoLeft}>raze</div>
                     <div className={styles.logoRight}>Your<br/>knife<br/><div className={styles.logoGreen}>world</div></div>
                 </Link>
-                {(isBurgerMenuShowed || menuVisible) &&
-                <MenuButton
-                    menuVisible = {menuVisible}
-                    onClick={this.handleBurgerMenuClick}/>
-                }
                 {(searchVisible || !isBurgerMenuShowed) &&
                 <div className={styles.searchForm}>
                     <Search
@@ -110,6 +105,11 @@ class Header extends Component {
                         handleCloseSearch = {this.handleOpenSearch}
                     />
                 </div>
+                }
+                {(isBurgerMenuShowed || menuVisible) &&
+                <MenuButton
+                    menuVisible = {menuVisible}
+                    onClick={this.handleBurgerMenuClick}/>
                 }
                 {menuVisible && <div className={styles.deliveryPayment} onClick={() => { this.handleBurgerCategoryClick(); this.handleOpenLicense(); }}>
                     <div className={styles.infoLink}>Доставка и оплата</div>
