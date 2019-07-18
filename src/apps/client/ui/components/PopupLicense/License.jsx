@@ -51,7 +51,7 @@ class License extends Component {
             })}>
                 <div>
                     <div className={styles.headerContainer}>
-                        <div className={styles.header}>лицензионное соглашение</div>
+                        <div className={styles.header}>Доставка и оплата</div>
                         <div className={styles.closeButton} onClick={this.handleCloseLicense}>+</div>
                     </div>
                     <div>

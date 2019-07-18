@@ -93,7 +93,8 @@ class ProductPage extends Component {
         productMap: {},
         viewed: [],
         media: {},
-        liked: []
+        liked: [],
+        basket: []
     };
 
     constructor (...args) {
@@ -272,7 +273,7 @@ class ProductPage extends Component {
                                 </div>}
 
                             <div className={styles.buttonContainer}>
-                                <Link className={styles.link} to={`/order?id=${product.id}`}>
+                                <Link className={styles.link} to='/order'>
                                     <button className={classNames(
                                         styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
                                     )}
