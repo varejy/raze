@@ -21,6 +21,7 @@
     height: 100%;
     padding: 24px;
     display: flex;
+    justify-content: flex-end;
 
     @media (max-width: 1169px){
         max-width: 100%;

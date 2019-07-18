@@ -28,28 +28,6 @@ import propEq from '@tinkoff/utils/object/propEq';
 import find from '@tinkoff/utils/array/find';
 import format from 'date-fns/format';
 
-const PAYMENT_TYPES = [
-    {
-        id: 'card',
-        value: 'На карту банка'
-    },
-    {
-        id: 'cod',
-        value: 'Наложенным платежом'
-    }
-];
-
-const ORDER_TYPES = [
-    {
-        id: 'nova',
-        value: 'Новая Почта'
-    },
-    {
-        id: 'ukr',
-        value: 'Укр Почта'
-    }
-];
-
 const mapStateToProps = ({ application }) => {
     return {
         categories: application.categories
@@ -98,6 +76,8 @@ class OrderForm extends Component {
         classes: PropTypes.object.isRequired,
         order: PropTypes.object.isRequired,
         editOrder: PropTypes.func,
+        orderTypes: PropTypes.array,
+        paymentTypes: PropTypes.array,
         onDone: PropTypes.func
     };
 
@@ -143,7 +123,7 @@ class OrderForm extends Component {
     };
 
     render () {
-        const { classes } = this.props;
+        const { classes, orderTypes, paymentTypes } = this.props;
         const { order } = this.state;
         const formatOrderDate = this.formatOrderDate(order);
 
@@ -169,13 +149,13 @@ class OrderForm extends Component {
                         <TableRow>
                             <TableCell colSpan={2}>Тип доставки</TableCell>
                             <TableCell align="center">{
-                                find(propEq('id', order.orderType))(ORDER_TYPES).value
+                                find(propEq('id', order.orderType))(orderTypes).value
                             }</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell colSpan={2}>Тип оплаты</TableCell>
                             <TableCell align="center">{
-                                find(propEq('id', order.paymentType))(PAYMENT_TYPES).value
+                                find(propEq('id', order.paymentType))(paymentTypes).value
                             }</TableCell>
                         </TableRow>
                         <TableRow>

@@ -106,7 +106,7 @@ class Search extends Component {
                 value={inputTxt}
                 onChange={this.handleInputChange}
                 className={classNames(styles.searchFormInput, { [styles.searchFormInputActive]: !!tips.length })}
-                placeholder='Поиск продуктов...'
+                placeholder='Поиск продуктов'
                 onFocus={this.handleInputChange}
                 onBlur={handleCloseSearch}
                 autoFocus={isMobileVersion}
