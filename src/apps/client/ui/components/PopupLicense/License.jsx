@@ -31,9 +31,24 @@ class License extends Component {
         this.props.closeLicensePopup();
     };
 
+    componentDidMount () {
+        window.addEventListener('keydown', this.handleKeyDown);
+    }
+
     componentWillReceiveProps (nextProps) {
         if (this.props.licenseVisible !== nextProps.licenseVisible) {
             document.body.style.overflowY = nextProps.licenseVisible ? 'hidden' : 'auto';
+        }
+    };
+
+    componentWillUnmount () {
+        window.removeEventListener('keydown', this.handleKeyDown);
+    }
+
+    handleKeyDown = e => {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            this.props.closeLicensePopup();
         }
     };
 
@@ -51,7 +66,7 @@ class License extends Component {
             })}>
                 <div>
                     <div className={styles.headerContainer}>
-                        <div className={styles.header}>лицензионное соглашение</div>
+                        <div className={styles.header}>доставка и оплата</div>
                         <div className={styles.closeButton} onClick={this.handleCloseLicense}>+</div>
                     </div>
                     <div>

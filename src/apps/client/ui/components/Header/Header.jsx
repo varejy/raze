@@ -103,7 +103,7 @@ class Header extends Component {
                     <Search />
                 </div>
                 }
-                {menuVisible && <div className={styles.deliveryPayment}>
+                {menuVisible && <div className={styles.deliveryPayment} onClick={() => { this.handleBurgerCategoryClick(); this.handleOpenLicense(); }}>
                     <div className={styles.infoLink}>Доставка и оплата</div>
                 </div>}
                 <div className={classNames(styles.contactsWrapper, {
@@ -111,8 +111,10 @@ class Header extends Component {
                     [styles.burgerContacts]: menuVisible
                 })}>
                     <div className={styles.contacts}>
-                        {!menuVisible && <div className={styles.contactsLicense} onClick={this.handleOpenLicense}>
-                            <div>Лицензионное соглашение</div>
+                        {!menuVisible && <div
+                            className={styles.contactsLicense}
+                            onClick={this.handleOpenLicense}>
+                            <div>Доставка и оплата</div>
                         </div>}
                         <div className={styles.tollEmail}>
                             <div className={styles.toll}>
