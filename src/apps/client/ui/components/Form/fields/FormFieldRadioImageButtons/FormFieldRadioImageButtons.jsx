@@ -19,7 +19,8 @@ class FormFieldDeliveryType extends Component {
         onChange: noop
     };
 
-    handleOptionClick = prop => () => {
+    handleOptionClick = prop => event => {
+        event.preventDefault();
         this.props.onChange(prop);
     };
 

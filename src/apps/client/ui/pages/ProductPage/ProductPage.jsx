@@ -174,7 +174,7 @@ class ProductPage extends Component {
             return { product: product.product, count: productsMap[i] };
         }, {});
 
-        const newBasket = !this.handleDuplicates() ? [
+        const newBasket = !this.isInBasket() ? [
             { product: product, count: 1 }, ...previouslyAdded
         ] : [...previouslyAdded];
 
@@ -182,12 +182,11 @@ class ProductPage extends Component {
         this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.count })));
     };
 
-    handleDuplicates = () => {
+    isInBasket = () => {
         const { basket } = this.props;
         const { product } = this.state;
-        const isInBasket = find(item => product.id === item.product.id, basket);
 
-        return !!isInBasket;
+        return !!find(item => product.id === item.product.id, basket);
     };
 
     handleLikeClick = () => {

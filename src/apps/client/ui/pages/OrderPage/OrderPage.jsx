@@ -28,7 +28,7 @@ class OrderPage extends Component {
         super(props);
 
         this.state = {
-            productsMap: {}
+            basket: []
         };
 
         this.productsCount = 0;
@@ -40,52 +40,42 @@ class OrderPage extends Component {
     }
 
     componentDidMount = () => {
-        this.setProductsMap();
+        this.setState({ basket: this.props.basket });
     }
 
     componentWillReceiveProps (nextProps) {
-        if (this.props !== nextProps) {
-            this.setProductsMap();
+        if (this.props.basket !== nextProps.basket) {
+            this.setState({ basket: nextProps.basket });
         }
     }
 
-    setProductsMap = () => {
-        const { basket } = this.props;
-        const productsCount = [];
-        const productsMap = basket.reduce((acc, productInfo, i) => {
-            productsCount.push(productInfo.count);
-            acc[i] = productInfo.count;
-            return acc;
-        }, {});
-
-        this.setState({
-            productsMap
-        });
-        this.getProductsCount(productsCount);
-    };
-
-    totalPrice = () => {
-        const { basket } = this.props;
-        const { productsMap } = this.state;
-
+    getBasketStat = () => {
+        const { basket } = this.state;
         return basket.reduce((acc, productInfo, i) => {
-            return acc + (productInfo.product.discountPrice || productInfo.product.price) * productsMap[i];
-        }, 0);
+            return {
+                count: productInfo.count + acc.count,
+                price: ((productInfo.product.discountPrice || productInfo.product.price) * productInfo.count) + acc.price
+            };
+        }, { count: 0, price: 0 });
     };
 
     render () {
-        const { productsCount } = this;
+        const values = this.getBasketStat();
+
+        if (!values.count) {
+            return <section className={styles.orderPage}><div className={styles.orderTitle}>ваша корзина пуста!</div></section>;
+        }
 
         return <section className={styles.orderPage}>
             <div className={styles.orderTitle}>оформление заказа</div>
             <div
                 className={classNames(styles.text)}
             >
-                {this.totalPrice()} грн за {productsCount} {getWordCaseByNumber(productsCount, ['товаров', 'товар', 'товара'])}
+                {values.price} грн за {values.count} {getWordCaseByNumber(values.count, ['товаров', 'товар', 'товара'])}
             </div>
             <Order/>
         </section>;
     }
 }
 
-export default connect(mapStateToProps, null)(OrderPage);
+export default connect(mapStateToProps)(OrderPage);
