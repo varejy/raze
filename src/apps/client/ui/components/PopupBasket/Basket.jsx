@@ -98,12 +98,27 @@ class Basket extends Component {
         }, 0);
     };
 
+    componentDidMount () {
+        window.addEventListener('keydown', this.handleKeyDown);
+    }
+
     componentWillReceiveProps (nextProps) {
         if (this.props.basketVisible !== nextProps.basketVisible) {
             document.body.style.overflowY = nextProps.basketVisible ? 'hidden' : 'auto';
             this.setProductsMap();
         }
     }
+
+    componentWillUnmount () {
+        window.removeEventListener('keydown', this.handleKeyDown);
+    }
+
+    handleKeyDown = e => {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            this.props.closeBasketPopup();
+        }
+    };
 
     render () {
         const { basket, basketVisible } = this.props;

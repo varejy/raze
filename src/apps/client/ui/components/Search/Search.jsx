@@ -31,7 +31,9 @@ class Search extends Component {
         searchByText: PropTypes.func,
         outsideClickEnabled: PropTypes.bool,
         categories: PropTypes.array,
-        history: PropTypes.object
+        history: PropTypes.object,
+        isMobileVersion: PropTypes.bool.isRequired,
+        handleCloseSearch: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -97,6 +99,7 @@ class Search extends Component {
 
     render () {
         const { inputTxt, tips } = this.state;
+        const { isMobileVersion, handleCloseSearch } = this.props;
 
         return <form onSubmit={this.handleInputSubmit} className={styles.form}>
             <input
@@ -105,6 +108,8 @@ class Search extends Component {
                 className={classNames(styles.searchFormInput, { [styles.searchFormInputActive]: !!tips.length })}
                 placeholder='Поиск продуктов'
                 onFocus={this.handleInputChange}
+                onBlur={handleCloseSearch}
+                autoFocus={isMobileVersion}
             />
             {
                 !!tips.length && <div className={styles.tipsRoot}>

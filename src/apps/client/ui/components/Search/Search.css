@@ -1,6 +1,10 @@
 .form{
     position: relative;
     margin-right: 50px;
+
+    @media (max-width: 900px){
+        margin-right: 0;
+    }
 }
 
 .searchFormInput{

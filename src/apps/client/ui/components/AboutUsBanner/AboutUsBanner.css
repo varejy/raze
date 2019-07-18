@@ -17,8 +17,9 @@
     width: 100%;
     min-width: 1170px;
     max-width: 1438px;
-    background-image: url('/src/apps/client/ui/components/AboutUsBanner/images/aboutUsImage.jpg');
+    background-image: url('/src/apps/client/ui/components/AboutUsBanner/images/aboutUsBannerBg.jpg');
     background-size: cover;
+    background-position: center;
     margin: 0 auto;
 
     @media (max-width: 1169px) {

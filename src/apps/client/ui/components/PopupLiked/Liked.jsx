@@ -50,9 +50,24 @@ class Liked extends Component {
         this.props.saveProductsLiked(newLiked.map((product) => product.id));
     };
 
+    componentDidMount () {
+        window.addEventListener('keydown', this.handleKeyDown);
+    };
+
     componentWillReceiveProps (nextProps) {
         if (this.props.likedVisible !== nextProps.likedVisible) {
             document.body.style.overflowY = nextProps.likedVisible ? 'hidden' : 'auto';
+        }
+    };
+
+    componentWillUnmount () {
+        window.removeEventListener('keydown', this.handleKeyDown);
+    };
+
+    handleKeyDown = e => {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            this.props.closeLikedPopup();
         }
     };
 
@@ -70,7 +85,7 @@ class Liked extends Component {
             })}>
                 <div>
                     <div className={styles.headerContainer}>
-                        <div className={styles.header}>избранные товары</div>
+                        <div className={styles.header}>избранные</div>
                         <div className={styles.closeButton} onClick={this.handleCloseLiked}>+</div>
                     </div>
                     {liked.length > 0 ? <div className={styles.items}>
