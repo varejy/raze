@@ -170,9 +170,9 @@ class ProductPage extends Component {
     };
 
     handleSendProductToBasket = () => {
-        const { product, productsMap } = this.state;
+        const { product } = this.state;
         const previouslyAdded = this.props.basket.map((product, i) => {
-            return { product: product.product, count: productsMap[i] };
+            return { product: product.product, count: product.count };
         }, {});
 
         const newBasket = !this.isInBasket() ? [

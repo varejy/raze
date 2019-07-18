@@ -164,7 +164,7 @@ class OrderForm extends Component {
                             <TableCell align="center">{order.department}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Дата реестрации</TableCell>
+                            <TableCell colSpan={4}>Дата реестрации</TableCell>
                             <TableCell align="center">{formatOrderDate}</TableCell>
                         </TableRow>
                         <TableRow>
