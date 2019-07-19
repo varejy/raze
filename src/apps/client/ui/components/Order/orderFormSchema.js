@@ -8,7 +8,7 @@ export default function () {
         fields: [
             {
                 component: FormFieldInput,
-                name: 'fio',
+                name: 'name',
                 placeholder: 'Имя Фамилия',
                 validators: [
                     { name: 'required' }
@@ -25,12 +25,34 @@ export default function () {
             },
             {
                 component: FormFieldRadioImageButtons,
-                name: 'deliveryType',
+                name: 'orderType',
                 title: 'Выберите тип доставки: ',
                 options: [
-                    'src/apps/client/ui/components/Order/icons/nova_Poshta.png',
-                    'src/apps/client/ui/components/Order/icons/ukrposhta.png'
+                    {
+                        img: 'src/apps/client/ui/components/Order/icons/nova_Poshta.png',
+                        id: 'nova'
+                    },
+                    {
+                        img: 'src/apps/client/ui/components/Order/icons/ukrposhta.png',
+                        id: 'ukr'
+                    }
                 ],
+                validators: [
+                    { name: 'required' }
+                ]
+            },
+            {
+                component: FormFieldInput,
+                name: 'city',
+                placeholder: 'Город',
+                validators: [
+                    { name: 'required' }
+                ]
+            },
+            {
+                component: FormFieldInput,
+                name: 'department',
+                placeholder: 'Отделение',
                 validators: [
                     { name: 'required' }
                 ]
@@ -41,16 +63,12 @@ export default function () {
                 title: 'Выберите тип оплаты: ',
                 options: [
                     {
-                        value: 'Карточкой на сайте',
-                        id: 0
-                    },
-                    {
                         value: 'Наложенный платеж',
-                        id: 1
+                        id: 'cod'
                     },
                     {
-                        value: 'Перевод на карту',
-                        id: 2
+                        value: 'Перевод на карту Приват банка',
+                        id: 'card'
                     }
                 ],
                 validators: [

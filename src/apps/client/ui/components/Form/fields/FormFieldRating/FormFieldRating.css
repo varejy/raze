@@ -1,5 +1,7 @@
 .starsWrapper {
     height: 12px;
+    position: relative;
+    top: -43px;
 }
 
 .stars{

@@ -31,7 +31,9 @@ class Search extends Component {
         searchByText: PropTypes.func,
         outsideClickEnabled: PropTypes.bool,
         categories: PropTypes.array,
-        history: PropTypes.object
+        history: PropTypes.object,
+        isMobileVersion: PropTypes.bool.isRequired,
+        handleCloseSearch: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -97,14 +99,17 @@ class Search extends Component {
 
     render () {
         const { inputTxt, tips } = this.state;
+        const { isMobileVersion, handleCloseSearch } = this.props;
 
         return <form onSubmit={this.handleInputSubmit} className={styles.form}>
             <input
                 value={inputTxt}
                 onChange={this.handleInputChange}
                 className={classNames(styles.searchFormInput, { [styles.searchFormInputActive]: !!tips.length })}
-                placeholder='Поиск продуктов...'
+                placeholder='Поиск продуктов'
                 onFocus={this.handleInputChange}
+                onBlur={handleCloseSearch}
+                autoFocus={isMobileVersion}
             />
             {
                 !!tips.length && <div className={styles.tipsRoot}>
@@ -125,7 +130,7 @@ class Search extends Component {
                 </div>
             }
             <button className={styles.searchFormIcon} type='submit'>
-                <img src='/src/apps/client/ui/components/Header/images/search.png' alt='search'/>
+                <img className={styles.searchIcon} src='/src/apps/client/ui/components/Header/images/search.png' alt='search'/>
             </button>
         </form>;
     }

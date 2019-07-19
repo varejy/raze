@@ -53,7 +53,7 @@ class FeedBackForm extends Component {
             { commentSaved
                 ? <Form schema={getSchema()} onSubmit={this.handleSubmit}/>
                 : <div className={styles.submitMessage}>
-                    Ваш комментарий отправлен на обработку ! В ближайшее время он будет размещен на нашем сайте, Спасибо вам за ваш отзыв !
+                    Ваш комментарий отправлен на обработку! В ближайшее время он будет размещен на нашем сайте. Спасибо за Ваш отзыв!
                 </div> }
         </section>;
     }

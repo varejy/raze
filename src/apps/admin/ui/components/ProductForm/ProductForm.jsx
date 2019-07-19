@@ -485,7 +485,7 @@ class ProductForm extends Component {
     render () {
         const { classes } = this.props;
         const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
-        const titleFiltersLength = !this.category.filters.length && 'В этой категории еще нет фильтрров';
+        const titleFiltersLength = !this.category.filters.length && 'В этой категории еще нет фильтров';
 
         if (loading) {
             return <div className={classes.loader}>
@@ -547,7 +547,7 @@ class ProductForm extends Component {
                 label='Скидочная цена'
                 value={product.discountPrice}
                 onChange={this.handleChange('discountPrice')}
-                InputProps={{ inputProps: { min: 0 } }}
+                InputProps={{ inputProps: { min: 1 } }}
                 margin='normal'
                 variant='outlined'
                 type='number'

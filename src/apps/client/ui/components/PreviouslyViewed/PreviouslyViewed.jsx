@@ -83,14 +83,14 @@ class PreviouslyViewed extends Component {
                 <div className={styles.buttons}>
                     <button
                         className={classNames(styles.buttonLeft)}
-                        onClick={this.state.leftPosition !== 0 && this.handleArrowClick('left')}
+                        onClick={this.state.leftPosition !== 0 ? this.handleArrowClick('left') : undefined}
                     >
                         <div
                             className={this.state.leftPosition === 0 && styles.buttonDisabled ? styles.buttonDisabled : styles.buttonEnabled}/>
                     </button>
                     <button
                         className={classNames(styles.buttonRight)}
-                        onClick={this.state.leftPosition !== PREVIEW_WIDTH * (1) && this.handleArrowClick('right')}
+                        onClick={this.state.leftPosition !== PREVIEW_WIDTH * (1) ? this.handleArrowClick('right') : undefined}
                     >
                         <div
                             className={this.state.leftPosition === (PREVIEW_WIDTH * (1)) ? styles.buttonDisabled : styles.buttonEnabled}/>

@@ -3,7 +3,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    max-height: 90vh;
     padding: 31px 28px;
     background-color: #fff;
 }
@@ -11,7 +10,6 @@
 .itemsWrapper{
     max-height: 70%;
     width: 492px;
-    overflow-y: scroll;
 }
 
 .item{
