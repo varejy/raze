@@ -6,10 +6,18 @@
     margin-bottom: 60px;
 }
 
+.text{
+    font-size: 14px;
+    text-transform: none;
+    font-family: MontserratRegular;
+    color: #131313;
+    margin-bottom: 35px;
+}
+
 .orderTitle {
     font-family: HelveticaNeueCyrBold;
     text-transform: uppercase;
     font-size: 18px;
     color: #131313;
-    margin-bottom: 50px
+    margin-bottom: 20px;
 }

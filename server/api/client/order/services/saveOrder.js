@@ -6,8 +6,15 @@ import cond from '@tinkoff/utils/function/cond';
 import includes from '@tinkoff/utils/array/includes';
 import T from '@tinkoff/utils/function/T';
 import F from '@tinkoff/utils/function/F';
+import append from '@tinkoff/utils/array/append';
+import reduce from '@tinkoff/utils/array/reduce';
+import find from '@tinkoff/utils/array/find';
 
-import { OKEY_STATUS_CODE, FORBIDDEN_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
+import getProductsByIds from '../../product/queries/getProductsByIds';
+
+import getSavedProductsQuery from '../../savedProducts/queries/getSavedProducts';
+
+import { NOT_FOUND_STATUS_CODE, OKEY_STATUS_CODE, FORBIDDEN_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
 
 const MAX_NAME_LENGTH = 200;
 const MAX_PHONE_LENGTH = 100;
@@ -28,30 +35,62 @@ const validateOrder = cond([
 
 export default function saveOrder (req, res) {
     const { name, phone, orderType, paymentType, department, city } = req.body;
+    const { id } = req.query;
 
-    const order = {
-        id: uniqid(),
-        date: Date.now(),
-        name,
-        phone,
-        orderType,
-        paymentType,
-        city,
-        comment: '',
-        status: 'new',
-        department
+    getSavedProductsQuery(id)
+        .then(([savedProducts]) => {
+            if (!savedProducts) {
+                return res.status(NOT_FOUND_STATUS_CODE).end();
+            }
 
-    };
+            const { basket } = savedProducts;
 
-    const isValid = validateOrder(order);
+            getProductsByIds(basket.map(basket => basket.id))
+                .then((baskedProducts) => {
+                    const products = reduce((products, { id, count }) => {
+                        const product = find(product => product.id === id, baskedProducts);
 
-    if (!isValid) {
-        return res.status(FORBIDDEN_STATUS_CODE).end();
-    }
+                        return !product || product.hidden ? products : append({ product, count }, products);
+                    }, [], basket);
 
-    saveOrderQuery(order)
-        .then(() => {
-            res.status(OKEY_STATUS_CODE).end();
+                    const orderProductsMap = products.map(elem => {
+                        const { product } = elem;
+                        return {
+                            id: product.id,
+                            name: product.name,
+                            count: elem.count,
+                            price: product.price
+                        };
+                    });
+
+                    const order = {
+                        id: uniqid(),
+                        date: Date.now(),
+                        name,
+                        phone,
+                        orderType,
+                        paymentType,
+                        city,
+                        products: orderProductsMap,
+                        comment: '',
+                        status: 'new',
+                        department
+                    };
+
+                    const isValid = validateOrder(order);
+
+                    if (!isValid) {
+                        return res.status(FORBIDDEN_STATUS_CODE).end();
+                    }
+
+                    saveOrderQuery(order)
+                        .then(() => {
+                            res.status(OKEY_STATUS_CODE).end();
+                        })
+                        .catch(() => {
+                            res.status(SERVER_ERROR_STATUS_CODE).end();
+                        });
+                });
         })
         .catch(() => {
             res.status(SERVER_ERROR_STATUS_CODE).end();
