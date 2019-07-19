@@ -30,6 +30,7 @@ export default function saveComment (req, res) {
     const comment = {
         id: uniqid(),
         productId,
+        verified: false,
         date: Date.now(),
         name,
         email,
@@ -53,15 +54,7 @@ export default function saveComment (req, res) {
 
                     return editProduct({ id: productId, rating: averageRating })
                         .then(() => {
-                            const validComments = comments
-                                .map(comment => ({
-                                    id: comment.id,
-                                    name: comment.name,
-                                    text: comment.text,
-                                    rating: comment.rating
-                                }))
-                                .sort((prev, next) => next.date - prev.date);
-                            return res.status(OKEY_STATUS_CODE).send(validComments);
+                            return res.status(OKEY_STATUS_CODE).end();
                         });
                 });
         })
