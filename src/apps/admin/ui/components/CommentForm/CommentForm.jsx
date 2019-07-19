@@ -109,9 +109,10 @@ class CommentForm extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         comment: PropTypes.object.isRequired,
+        products: PropTypes.array,
+        categories: PropTypes.array,
         editComment: PropTypes.func,
         getProducts: PropTypes.func,
-        products: PropTypes.array,
         getCategories: PropTypes.func,
         deleteCommentsByIds: PropTypes.func,
         onDone: PropTypes.func
@@ -120,6 +121,7 @@ class CommentForm extends Component {
     static defaultProps = {
         onDone: noop,
         comment: {},
+        categories: [],
         products: []
     };
 
@@ -133,8 +135,8 @@ class CommentForm extends Component {
         };
     }
 
-    getProduct = (props = this.props) => {
-        const { products, comment, categories } = props;
+    setProduct = () => {
+        const { products, comment, categories } = this.props;
         const product = find(product => comment.productId === product.id, products);
         const category = find(category => product.categoryId === category.id, categories);
 
@@ -152,7 +154,7 @@ class CommentForm extends Component {
             this.props.getCategories()
         ])
             .then(() => {
-                this.getProduct(this.props);
+                this.setProduct();
                 this.setState({
                     loading: false
                 });
