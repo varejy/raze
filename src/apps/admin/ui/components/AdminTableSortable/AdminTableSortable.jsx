@@ -78,7 +78,7 @@ const SortableWrapp = SortableContainer((
         isSelected,
         tableCells,
         classes,
-        ...reset
+        ...rest
     }) =>
     <TableBody>
         {values
@@ -88,6 +88,7 @@ const SortableWrapp = SortableContainer((
 
                 return (
                     <ItemSortable
+                        {...rest}
                         key={i}
                         tableCells={tableCells}
                         isSelectedItem={isSelectedItem}
@@ -97,7 +98,6 @@ const SortableWrapp = SortableContainer((
                         classes={classes}
                         value={value}
                         index={i}
-                        {...reset}
                     />
                 );
             })}
