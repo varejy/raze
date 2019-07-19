@@ -36,11 +36,15 @@
     position: relative;
     z-index: 1500;
     height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     @media (max-width: 720px){
         height: 100vh;
         position: relative;
         z-index: 1500;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 }
 
