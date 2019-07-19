@@ -80,10 +80,10 @@ const FeatureSortable = SortableElement(({ index, feature, handleFeatureDelete, 
     </FormGroup>
 ));
 
-const SlidesFeature = SortableContainer(({ features, classes, ...reset }) =>
+const SlidesFeature = SortableContainer(({ features, classes, ...rest }) =>
     <div className={classes.filtersWrapp}>
         {
-            features.map((feature, i) => <FeatureSortable key={i} index={i} feature={feature} {...reset} classes={classes}/>)
+            features.map((feature, i) => <FeatureSortable key={i} index={i} feature={feature} {...rest} classes={classes}/>)
         }
     </div>
 );
