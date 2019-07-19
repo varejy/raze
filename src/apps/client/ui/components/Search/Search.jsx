@@ -51,6 +51,7 @@ class Search extends Component {
         this.setState({
             tips: []
         });
+        this.props.handleCloseSearch();
     };
 
     handleInputSubmit = event => {
@@ -97,9 +98,16 @@ class Search extends Component {
             });
     };
 
+    componentWillReceiveProps (nextProps) {
+        if (this.props.isMobileVersion !== nextProps.isMobileVersion) {
+            const { outsideClickEnabled, turnOnClickOutside, handleCloseSearch } = this.props;
+            !outsideClickEnabled && turnOnClickOutside(this, handleCloseSearch);
+        }
+    }
+
     render () {
         const { inputTxt, tips } = this.state;
-        const { isMobileVersion, handleCloseSearch } = this.props;
+        const { isMobileVersion } = this.props;
 
         return <form onSubmit={this.handleInputSubmit} className={styles.form}>
             <input
@@ -108,7 +116,6 @@ class Search extends Component {
                 className={classNames(styles.searchFormInput, { [styles.searchFormInputActive]: !!tips.length })}
                 placeholder='Поиск продуктов'
                 onFocus={this.handleInputChange}
-                onBlur={handleCloseSearch}
                 autoFocus={isMobileVersion}
             />
             {
