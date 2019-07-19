@@ -2,6 +2,12 @@
     width: 700px;
     background-color: #ffffff;
     position: relative;
+
+    @media (max-width: 720px){
+        width: 100vw;
+        top: 0;
+        left: 0;
+    }
 }
 
 .productPhotoContainer{
@@ -12,6 +18,12 @@
     align-items: center;
     position: relative;
     border: 3px solid #ffffff;
+
+    @media (max-width: 720px){
+        width: 100vw;
+        height: 40vw;
+        border: none;
+    }
 }
 
 .slides{
@@ -26,6 +38,10 @@
     flex-shrink: 0;
     height: auto;
     display: inline-block;
+
+    @media (max-width: 720px){
+        width: 100vw;
+    }
 }
 
 .slidePhoto{
@@ -75,6 +91,10 @@
     position: absolute;
     bottom: 0;
     left: 0;
+
+    @media (max-width: 720px){
+        width: 100vw;
+    }
 }
 
 .buttonDots{
@@ -108,6 +128,10 @@
     align-items: center;
     justify-content: center;
     margin: 34px 0 47px 0;
+
+    @media (max-width: 720px){
+        margin: 34px 0;
+    }
 }
 
 .productName{
@@ -133,10 +157,22 @@
     justify-content: space-between;
     padding: 0 14px;
     width: 700px;
+
+    @media (max-width: 720px){
+        width: 100vw;
+    }
+
+    @media (max-width: 699px){
+        flex-direction: column-reverse;
+    }
 }
 
-.productPreviewInfo{
+.parameters{
     width: 273px;
+
+    @media (max-width: 699px){
+        margin: 34px auto 0 auto;
+    }
 }
 
 .parameterLine{
@@ -144,8 +180,8 @@
     align-items: center;
     justify-content: space-between;
     width: 273px;
-    height: 26px;
-    padding: 0 13px;
+    min-height: 26px;
+    padding: 5px 13px;
 }
 
 .parameterLineGrey{
@@ -165,6 +201,7 @@
     line-height: 24px;
     color: #000000;
     text-transform: uppercase;
+    text-align: right;
 }
 
 .description{
@@ -175,6 +212,12 @@
     text-align: left;
     flex-shrink: 0;
     margin-left: 16px;
+
+    @media (max-width: 699px){
+        width: 84%;
+        margin: 0;
+        text-align: center;
+    }
 }
 
 .buttonContainer{
@@ -184,6 +227,10 @@
     justify-content: center;
     padding: 27px 0 19px 0;
     background-color: #ffffff;
+
+    @media (max-width: 720px){
+        width: 100vw;
+    }
 }
 .buttonDefault{
     @mixin removeDefaultButton

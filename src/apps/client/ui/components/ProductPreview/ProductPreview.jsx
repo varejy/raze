@@ -2,8 +2,37 @@ import React, { Component } from 'react';
 import styles from './ProductPreview.css';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import findIndex from '@tinkoff/utils/array/findIndex';
+import remove from '@tinkoff/utils/array/remove';
+import find from '@tinkoff/utils/array/find';
+import setBasket from '../../../actions/setBasket';
+import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
+import setLiked from '../../../actions/setLiked';
+import saveProductsLiked from '../../../services/client/saveProductsLiked';
+import closePopup from '../../../actions/closePopup';
+import PopupBasket from '../PopupBasketAdding/PopupBasket';
+import openPopup from '../../../actions/openPopup';
 
+const SLIDER_IS_FULL_SCREEN_DEVICE_WIDTH = 720;
 const PREVIEW_WIDTH = 700;
+
+const mapStateToProps = ({ application, savedProducts }) => {
+    return {
+        media: application.media,
+        liked: savedProducts.liked,
+        basket: savedProducts.basket
+    };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+    setBasket: payload => dispatch(setBasket(payload)),
+    saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload)),
+    closePopup: payload => dispatch(closePopup(payload)),
+    setLiked: payload => dispatch(setLiked(payload)),
+    saveProductsLiked: payload => dispatch(saveProductsLiked(payload)),
+    openPopup: payload => dispatch(openPopup(payload))
+});
 
 class ProductPreview extends Component {
     state = {
@@ -12,36 +41,84 @@ class ProductPreview extends Component {
     };
 
     static propTypes = {
-        product: PropTypes.object
+        product: PropTypes.object,
+        media: PropTypes.object.isRequired,
+        basket: PropTypes.array.isRequired,
+        setBasket: PropTypes.func.isRequired,
+        saveProductsToBasket: PropTypes.func.isRequired,
+        closePopup: PropTypes.func.isRequired,
+        liked: PropTypes.array.isRequired,
+        setLiked: PropTypes.func.isRequired,
+        saveProductsLiked: PropTypes.func.isRequired,
+        openPopup: PropTypes.func.isRequired
     };
 
     static defaultProps = {
-        product: {}
+        product: {},
+        media: {}
     };
 
     handleDotClick = (leftMoveIndex) => () => {
+        const { media } = this.props;
+        const sliderIsFullScreen = media.width <= SLIDER_IS_FULL_SCREEN_DEVICE_WIDTH;
+
         this.setState({
-            leftPosition: leftMoveIndex * PREVIEW_WIDTH
+            leftPosition: !sliderIsFullScreen ? (leftMoveIndex * PREVIEW_WIDTH) : (leftMoveIndex * media.width)
         });
     };
 
     handleArrowClick = (arrowType) => () => {
         const { leftPosition } = this.state;
+        const { media } = this.props;
+        const sliderIsFullScreen = media.width <= SLIDER_IS_FULL_SCREEN_DEVICE_WIDTH;
 
         if (arrowType === 'left') {
             this.setState({
-                leftPosition: leftPosition - PREVIEW_WIDTH
+                leftPosition: !sliderIsFullScreen ? (leftPosition - PREVIEW_WIDTH) : (leftPosition - media.width)
             });
         } else {
             this.setState({
-                leftPosition: leftPosition + PREVIEW_WIDTH
+                leftPosition: !sliderIsFullScreen ? (leftPosition + PREVIEW_WIDTH) : (leftPosition + media.width)
             });
         }
     };
 
+    handleLikeClick = () => {
+        const { setLiked, liked, saveProductsLiked, product } = this.props;
+        let newLiked;
+
+        if (!this.isLiked()) {
+            newLiked = !this.isLiked() ? [
+                product,
+                ...liked
+            ] : [...liked];
+            this.setState({ isLiked: true });
+        } else {
+            const index = findIndex(likedItem => likedItem.id === product.id, liked);
+            newLiked = [
+                ...remove(index, 1, liked)
+            ];
+            this.setState({ isLiked: false });
+        }
+        setLiked(newLiked);
+        saveProductsLiked(newLiked.map((product) => product.id));
+    };
+
+    isLiked = () => {
+        const { liked, product } = this.props;
+        return !!find(likedProduct => product.id === likedProduct.id, liked);
+    };
+
+    handleOpenBasket = () => {
+        const { openPopup, product } = this.props;
+        openPopup(<PopupBasket product={product}/>);
+    };
+
     render () {
-        const { product } = this.props;
+        const { product, media } = this.props;
         const { slidesQuantity, leftPosition } = this.state;
+        const sliderIsFullScreen = media.width <= SLIDER_IS_FULL_SCREEN_DEVICE_WIDTH;
+        const isLiked = this.isLiked();
 
         return <div className={styles.productPreviewContainer}>
             <div className={styles.productPreview}>
@@ -58,7 +135,7 @@ class ProductPreview extends Component {
                     >
                         <div className={styles.arrowButton}/>
                     </button>}
-                    { leftPosition !== (PREVIEW_WIDTH * (slidesQuantity - 1)) && <button
+                    { leftPosition !== ((!sliderIsFullScreen ? PREVIEW_WIDTH : media.width) * (slidesQuantity - 1)) && <button
                         className={classNames(styles.buttonRight)}
                         onClick={this.handleArrowClick('right')}
                     >
@@ -68,7 +145,7 @@ class ProductPreview extends Component {
                         <div className={styles.buttonDots}>
                             {product.files.map((sliderImage, i) =>
                                 <div key={i} className={classNames(styles.dot, {
-                                    [styles.dotActive]: leftPosition === i * PREVIEW_WIDTH
+                                    [styles.dotActive]: leftPosition === i * (!sliderIsFullScreen ? PREVIEW_WIDTH : media.width)
                                 })}
                                 onClick={this.handleDotClick(i)}/>
                             )}
@@ -78,7 +155,13 @@ class ProductPreview extends Component {
                 <div className={styles.productInfoContainer}>
                     <div className={styles.productPreviewHeader}>
                         <div className={styles.productName}>{product.name}</div>
-                        <div className={styles.likeIcon}><img src='/src/apps/client/ui/components/ProductPreview/images/heartIcon.png' alt='' /></div>
+                        <div className={styles.likeIcon} onClick={this.handleLikeClick}>
+                            <img src={!isLiked
+                                ? '/src/apps/client/ui/components/ProductPreview/images/likeHeart.png'
+                                : '/src/apps/client/ui/components/ProductPreview/images/heartGreen.png'}
+                            alt='like'
+                            />
+                        </div>
                     </div>
                     <div className={styles.productPreviewInfo}>
                         <div className={styles.parameters}>
@@ -95,7 +178,9 @@ class ProductPreview extends Component {
                         </div>
                     </div>
                     <div className={styles.buttonContainer}>
-                        <button className={classNames(styles.addToBasketButton, styles.buttonDefault)}>в корзину</button>
+                        <button className={classNames(styles.addToBasketButton, styles.buttonDefault)} onClick={this.handleOpenBasket}>
+                            в корзину
+                        </button>
                     </div>
                 </div>
             </div>
@@ -103,4 +188,4 @@ class ProductPreview extends Component {
     }
 }
 
-export default ProductPreview;
+export default connect(mapStateToProps, mapDispatchToProps)(ProductPreview);
