@@ -17,15 +17,50 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Order extends Component {
     static propTypes = {
-        saveOrder: PropTypes.func
+        saveOrder: PropTypes.func,
+        onVisibleMessage: PropTypes.func
     };
 
     static defaultProps = {
-        saveOrder: noop
+        saveOrder: noop,
+        onVisibleMessage: noop
     };
 
+    state = {
+        sendStat: {
+            status: '',
+            paymentType: ''
+        }
+    }
+
+    handleSendDone = paymentType => {
+        this.setState({
+            sendStat: {
+                status: 'done',
+                paymentType
+            }
+        });
+    }
+
+    handleSendErron = () => {
+        this.setState({
+            sendStat: {
+                status: 'err',
+                paymentType: ''
+            }
+        });
+    }
+
     handleFormSubmit = (event) => {
-        this.props.saveOrder(event);
+        this.props.saveOrder(event)
+            .then(() => {
+                this.handleSendDone(event.paymentType);
+                this.props.onVisibleMessage(this.state.sendStat);
+            })
+            .catch(() => {
+                this.handleSendErron();
+                this.props.onVisibleMessage(this.state.sendStat);
+            });
     }
 
     render () {
