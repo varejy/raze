@@ -1,0 +1,42 @@
+.filterButton{
+    font-family: MontserratMedium, arial;
+    font-size: 14px;
+    color: #00a046;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.filtersWrapper{
+    position: relative;
+    width: 160px;
+}
+
+.cross {
+    transform: rotate(135deg);
+    font-size: 30px;
+    position: absolute;
+    top: -8px;
+    right: 0;
+}
+
+.arrow {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.filtersContainer{
+    @media (max-width: 1169px){
+        display: flex;
+        justify-content: space-around;
+    }
+
+    @media (max-width: 560px){
+        flex-direction: column-reverse;
+        justify-content: flex-start;
+        align-items: center;
+    }
+}

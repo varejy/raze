@@ -1,4 +1,5 @@
 ﻿.headerContainer {
+    flex-shrink: 0;
     margin: 0;
     width: 100%;
     height: 228px;
@@ -7,7 +8,12 @@
     padding: 0 52px;
 
     @media (max-width: 1169px) {
-        padding: 0;
+        padding: 30px 0;
+        height: auto;
+    }
+
+    @media (max-width: 900px) {
+        padding: 30px 0 106px 0;
     }
 }
 
@@ -25,6 +31,7 @@
             max-width: 100%;
             min-width: 100%;
             padding: 0 8%;
+            height: auto;
     }
 }
 
@@ -50,7 +57,7 @@
 
     @media (max-width: 415px) {
         line-height: 15px;
-        font-size: 56.5px;
+        font-size: 50px;
     }
 }
 
@@ -65,7 +72,7 @@
 
     @media (max-width: 415px) {
         margin-left: 6%;
-        line-height: 17.5px;
+        line-height: 15px;
         font-size: 8px;
         letter-spacing: 6.24px;
     }
@@ -79,6 +86,14 @@
     display: flex;
     align-items: center;
     position: relative;
+
+    @media (max-width: 900px){
+        position: absolute;
+        width: 84%;
+        justify-content: center;
+        bottom: 30px;
+        right: 8%;
+    }
 }
 
 .contactsWrapper{
@@ -96,9 +111,9 @@
 .contactsLicense{
     align-self: start;
     font-family: MontserratRegular;
-    font-size: 11px;
+    font-size: 14px;
     line-height: 11.5px;
-    color: #5e5e5e;
+    color: #929292;
     position: absolute;
     right: 0;
     text-align: right;
@@ -109,7 +124,7 @@
     align-self: center;
     color: #00a046;
     font-family: MontserratSemiBold;
-    font-size: 10px;
+    font-size: 15px;
     line-height: normal;
 }
 
@@ -161,11 +176,10 @@
 
 .burgerContacts{
     position: fixed;
-    top: 0;
+    bottom: 0;
     right: 0;
     width: 100vw;
-    height: 100vh;
-    z-index: 1000;
+    z-index: 1200;
     background-color: #000000;
     display: flex;
     justify-content: center;
@@ -195,6 +209,7 @@
         max-width: 100%;
         min-width: 100%;
         padding: 0 8%;
+        height: 0;
     }
 }
 
@@ -206,11 +221,11 @@
     margin: 0 auto;
 }
 
-.menuHidden{
+.menuHidden .menuList{
     display: none;
 }
 
-.menuVisible{
+.menuVisible .menuList{
     display: flex;
 }
 
@@ -221,13 +236,14 @@
     width: 100vw;
     height: 100vh;
     z-index: 1100;
+    background-color: #000000;
 }
 
 .menuListCategory{
     display: inline-block;
     font-family: MontserratRegular;
     line-height: 11.5px;
-    font-size: 11px;
+    font-size: 18px;
     color: #ffffff;
     cursor: pointer;
     text-decoration: none;
@@ -238,7 +254,7 @@
 }
 
 .burgerMenu .menuList{
-    display: unset;
+    display: block;
 }
 
 .burgerMenu .menuListCategory{
@@ -271,30 +287,62 @@
 
 .likesBasket {
     position: absolute;
+    width: 71px;
+    display: flex;
+    justify-content: space-between;
     right: 0;
     bottom: 0;
 
     @media (max-width: 1169px) {
         right: 8%;
+        bottom: -60px;
+    }
+
+    @media (max-width: 900px){
+        position: absolute;
+        width: 84%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        bottom: -125px;
+        margin: 0 auto;
     }
 }
 
 .bottomIconWrapper{
     display: inline-block;
     position: relative;
+
+    @media (max-width: 900px){
+        margin: 0 13px;
+    }
 }
 
 .iconHeart{
     height: 18px;
     width: 21px;
-    margin: 20px 15px;
+    margin: 20px 0;
     cursor: pointer;
+
+    @media (max-width: 900px){
+        margin: 20px 0 0 0;
+    }
 }
 
 .iconBasket{
     width: 25px;
     height: 22px;
     margin: 18px 0;
+    cursor: pointer;
+
+    @media (max-width: 900px){
+        margin: 18px 0 0 0;
+        position: relative;
+        bottom: -2px;
+    }
+}
+
+.iconSearch{
     cursor: pointer;
 }
 
@@ -354,22 +402,22 @@
 
 .likedAmount{
     top: 10px;
-    right: 5px;
+    right: -10px;
 }
 
 .ordersCounterBig .likedAmount{
     top: 8px;
-    right: 4px;
+    right: -11px;
 }
 
 .ordersCounterHuge .likedAmount{
     top: 2px;
-    right: 0;
+    right: -15px;
 }
 
 .ordersCounterHugePlus .likedAmount{
     top: -3px;
-    right: -5px;
+    right: -20px;
 }
 
 .ordersNumber{
@@ -388,4 +436,23 @@
     display: flex;
     align-items: center;
     text-align: right;
+}
+
+.deliveryPayment{
+    position: fixed;
+    z-index: 1200;
+    top: 45px;
+    width: 100%;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: MontserratRegular;
+    font-size: 18px;
+    text-align: center;
+    color: #ffffff;
+}
+
+.infoLink{
+    cursor: pointer;
 }

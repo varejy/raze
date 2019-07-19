@@ -3,30 +3,50 @@ import PropTypes from 'prop-types';
 
 import CheckboxFilter from './filters/CheckboxFilter/CheckboxFilter';
 import RangeFilter from './filters/RangeFilter/RangeFilter';
+import styles from './ProductsFilters.css';
 
 import compose from '@tinkoff/utils/function/compose';
 import uniq from '@tinkoff/utils/array/uniq';
 import map from '@tinkoff/utils/array/map';
 import filterUtil from '@tinkoff/utils/array/filter';
+import find from '@tinkoff/utils/array/find';
+import reduceObj from '@tinkoff/utils/object/reduce';
+import prop from '@tinkoff/utils/object/prop';
+import includes from '@tinkoff/utils/array/includes';
 import flatten from '@tinkoff/utils/array/flatten';
 import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
+import { connect } from 'react-redux';
 
+const IS_FILTERS_OPEN_BUTTON_SCREEN_WIDTH = 1169;
 const DEFAULT_FILTERS = [
     {
         name: 'Компании',
         type: 'checkbox',
-        options: []
+        options: [],
+        id: 'company',
+        prop: 'company'
     },
     {
         name: 'Цена',
         type: 'range',
         min: 0,
-        max: 0
+        max: 0,
+        id: 'price',
+        prop: 'price'
     }
 ];
+const mapStateToProps = ({ application }) => {
+    return {
+        media: application.media
+    };
+};
 
 class ProductsFilters extends Component {
+    state = {
+        filtersVisible: false
+    };
+
     constructor (props) {
         super(props);
 
@@ -40,11 +60,14 @@ class ProductsFilters extends Component {
     }
 
     static propTypes = {
-        products: PropTypes.array
+        onFilter: PropTypes.func.isRequired,
+        products: PropTypes.array,
+        media: PropTypes.object.isRequired
     };
 
     static defaultProps = {
-        products: []
+        products: [],
+        media: {}
     };
 
     componentWillReceiveProps (nextProps) {
@@ -58,10 +81,19 @@ class ProductsFilters extends Component {
         }
     }
 
+    getFilterValue = (product, filter) => {
+        const productFilterValue = compose(
+            prop('value'),
+            find(productFilter => productFilter.id === filter.id)
+        )(product.filters);
+
+        return filter.prop ? product[filter.prop] : productFilterValue;
+    };
+
     getDefaultFilters = (props = this.props) => {
         const { products } = props;
 
-        return DEFAULT_FILTERS.map((filter) => {
+        return DEFAULT_FILTERS.reduce((filters, filter) => {
             switch (filter.type) {
             case 'checkbox':
                 const options = compose(
@@ -69,10 +101,13 @@ class ProductsFilters extends Component {
                     map(product => product.company)
                 )(products);
 
-                return {
-                    ...filter,
-                    options
-                };
+                return options.length > 1 ? [
+                    ...filters,
+                    {
+                        ...filter,
+                        options
+                    }
+                ] : filters;
             case 'range':
                 const prices = compose(
                     uniq,
@@ -85,17 +120,24 @@ class ProductsFilters extends Component {
                 const min = getMinOfArray(prices);
                 const max = getMaxOfArray(prices);
 
-                return {
-                    ...filter,
-                    min,
-                    max
-                };
+                return min !== max ? [
+                    ...filters,
+                    {
+                        ...filter,
+                        min,
+                        max
+                    }
+                ] : filters;
             }
-        });
+        }, []);
     }
 
     getFilters = (props = this.props) => {
-        return props.category.filters.map((filter, i) => {
+        if (!props.category.filters) {
+            return [];
+        }
+
+        return props.category.filters.reduce((filters, filter) => {
             const { products } = props;
 
             switch (filter.type) {
@@ -107,10 +149,13 @@ class ProductsFilters extends Component {
                     map(product => product.filters.map(productFilter => filter.id === productFilter.id && productFilter.value))
                 )(products);
 
-                return {
-                    ...filter,
-                    options
-                };
+                return options.length > 1 ? [
+                    ...filters,
+                    {
+                        ...filter,
+                        options
+                    }
+                ] : filters;
             case 'range':
                 const propsArr = compose(
                     uniq,
@@ -124,13 +169,16 @@ class ProductsFilters extends Component {
                 const min = getMinOfArray(propsArr);
                 const max = getMaxOfArray(propsArr);
 
-                return {
-                    ...filter,
-                    min,
-                    max
-                };
+                return min !== max ? [
+                    ...filters,
+                    {
+                        ...filter,
+                        min,
+                        max
+                    }
+                ] : filters;
             }
-        });
+        }, []);
     };
 
     handleFilter = filter => values => {
@@ -138,6 +186,34 @@ class ProductsFilters extends Component {
             filter,
             values
         };
+
+        this.filter();
+    };
+
+    filter = () => {
+        const { products } = this.props;
+        const newFilteredProducts = reduceObj((filteredProducts, { filter, values }) => {
+            switch (filter.type) {
+            case 'checkbox':
+                return !values.length
+                    ? filteredProducts
+                    : filterUtil(product => {
+                        const value = this.getFilterValue(product, filter);
+
+                        return includes(value, values);
+                    }, filteredProducts);
+            case 'range':
+                return filterUtil(product => {
+                    const value = this.getFilterValue(product, filter);
+
+                    return values.min <= value && value <= values.max;
+                }, filteredProducts);
+            default:
+                return filteredProducts;
+            }
+        }, products, this.filtersMap);
+
+        this.props.onFilter(newFilteredProducts);
     };
 
     renderFilter = filter => {
@@ -150,14 +226,38 @@ class ProductsFilters extends Component {
         return null;
     };
 
-    render () {
-        const { filters } = this.state;
+    handleFilterClick = () => {
+        this.setState({ filtersVisible: !this.state.filtersVisible });
+    };
 
-        return <section>
-            { filters.map((filter, i) => <div key={i}>
-                {this.renderFilter(filter)}
-            </div>) }
-        </section>;
+    render () {
+        const { filters, filtersVisible } = this.state;
+        const { media } = this.props;
+        const isFiltersButton = media.width <= IS_FILTERS_OPEN_BUTTON_SCREEN_WIDTH;
+
+        return <div>
+            {isFiltersButton &&
+            <div className={styles.filterButton} onClick={this.handleFilterClick}>
+                {filtersVisible
+                    ? <div className={styles.filtersWrapper}>
+                        Спрятать фильтры
+                        <div className={styles.cross}>+</div>
+                    </div>
+                    : <div className={styles.filtersWrapper}>
+                        Показать фильтры
+                        <img className={styles.arrow} src='/src/apps/client/ui/components/ProductsFilters/images/arrowIcon.png' alt='arrow'/>
+                    </div>
+                }
+            </div>
+            }
+            <section className={styles.filtersContainer}>
+                {(!isFiltersButton || filtersVisible) &&
+                    filters.map((filter, i) => <div key={i}>
+                        {this.renderFilter(filter)}
+                    </div>)
+                }
+            </section>
+        </div>;
     }
 }
-export default ProductsFilters;
+export default connect(mapStateToProps)(ProductsFilters);

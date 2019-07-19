@@ -32,7 +32,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Header extends Component {
     state = {
-        menuVisible: false
+        menuVisible: false,
+        searchVisible: false
     };
 
     static propTypes = {
@@ -80,9 +81,13 @@ class Header extends Component {
         this.setState({ menuVisible: false });
     };
 
+    handleOpenSearch = () => {
+        this.setState({ searchVisible: !this.state.searchVisible });
+    };
+
     render () {
         const { categories, media } = this.props;
-        const { menuVisible } = this.state;
+        const { menuVisible, searchVisible } = this.state;
         const basketAmount = this.calculateBasketAmount();
         const likedAmount = this.props.liked.length;
         const isBurgerMenuShowed = media.width <= SCREEN_WIDTH_BURGER_MENU;
@@ -93,53 +98,60 @@ class Header extends Component {
                     <div className={styles.logoLeft}>raze</div>
                     <div className={styles.logoRight}>Your<br/>knife<br/><div className={styles.logoGreen}>world</div></div>
                 </Link>
+                {(searchVisible || !isBurgerMenuShowed) &&
+                <div className={styles.searchForm}>
+                    <Search
+                        isMobileVersion = {isBurgerMenuShowed}
+                        handleCloseSearch = {this.handleOpenSearch}
+                    />
+                </div>
+                }
                 {(isBurgerMenuShowed || menuVisible) &&
                 <MenuButton
                     menuVisible = {menuVisible}
                     onClick={this.handleBurgerMenuClick}/>
                 }
-                {!isBurgerMenuShowed &&
-                <div className={styles.searchForm}>
-                    <Search />
-                </div>
-                }
+                {menuVisible && <div className={styles.deliveryPayment} onClick={() => { this.handleBurgerCategoryClick(); this.handleOpenLicense(); }}>
+                    <div className={styles.infoLink}>Доставка и оплата</div>
+                </div>}
                 <div className={classNames(styles.contactsWrapper, {
                     [styles.contactsHidden]: isBurgerMenuShowed,
                     [styles.burgerContacts]: menuVisible
                 })}>
                     <div className={styles.contacts}>
-                        {!menuVisible && <div className={styles.contactsLicense} onClick={this.handleOpenLicense}>
-                            <div>Лицензионное соглашение</div>
+                        {!menuVisible && <div
+                            className={styles.contactsLicense}
+                            onClick={this.handleOpenLicense}>
+                            <div>Доставка и оплата</div>
                         </div>}
                         <div className={styles.tollEmail}>
                             <div className={styles.toll}>
-                                <a href="tel:+38 (044) 232 13 14" className={styles.link}>
+                                <a href="tel:+38 (093) 089 86 97" className={styles.link}>
                                     <div className={styles.iconWrapper}>
                                         <img className={styles.iconPhone} src='/src/apps/client/ui/components/Header/images/iPhone.png' alt=''/>
                                         <img className={styles.colorElement} src='/src/apps/client/ui/components/Header/images/colorElement1.png' alt=''/>
                                     </div>
-                                    <div>+38 (044) 232 13 14</div>
+                                    <div>+38 (093) 089 86 97</div>
                                 </a>
                             </div>
                             <div className={styles.email}>
-                                <a href="mailto:info@oneblade.org" className={styles.link}>
+                                <a href="mailto:raze.com.ua@gmail.com" className={styles.link}>
                                     <div className={styles.iconWrapper}>
                                         <img className={styles.iconMail} src='/src/apps/client/ui/components/Header/images/mail.png' alt=''/>
                                         <img className={styles.colorElement} src='/src/apps/client/ui/components/Header/images/colorElement2.png' alt=''/>
                                     </div>
-                                    <div>info@oneblade.org</div>
+                                    <div>raze.com.ua@gmail.com</div>
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className={classNames(styles.headerBottom, {
-                [styles.menuHidden]: isBurgerMenuShowed,
-                [styles.menuVisible]: menuVisible
-            })}>
+            <div className={classNames(styles.headerBottom)}>
                 <div className={classNames(styles.menu, {
-                    [styles.burgerMenu]: menuVisible
+                    [styles.burgerMenu]: menuVisible,
+                    [styles.menuHidden]: isBurgerMenuShowed,
+                    [styles.menuVisible]: menuVisible
                 })}>
                     <ul className={styles.menuList}>
                         { categories.map((category, i) =>
@@ -150,7 +162,7 @@ class Header extends Component {
                             </NavLink>) }
                     </ul>
                 </div>
-                {!menuVisible &&
+                {(!searchVisible || !isBurgerMenuShowed) &&
                 <div className={styles.likesBasket}>
                     <div onClick={this.handleOpenLiked} className={classNames(
                         styles.bottomIconWrapper, {
@@ -160,7 +172,7 @@ class Header extends Component {
                         })}
                     >
                         <img className={styles.iconHeart}
-                            src='/src/apps/client/ui/components/Header/images/likeHeart.png' alt=''/>
+                            src='/src/apps/client/ui/components/Header/images/likeHeart.png' alt='like'/>
                         {likedAmount > 0 &&
                         <div className={classNames(styles.ordersCounter, styles.likedAmount)}>
                             <div className={styles.ordersNumber}>{likedAmount < 1000 ? likedAmount : '999+'}</div>
@@ -175,12 +187,16 @@ class Header extends Component {
                     onClick={this.handleOpenBasket}
                     >
                         <img className={styles.iconBasket} src='/src/apps/client/ui/components/Header/images/basket.png'
-                            alt=''/>
+                            alt='basket'/>
                         {basketAmount > 0 &&
                         <div className={classNames(styles.ordersCounter, styles.basketAmount)}>
                             <div className={styles.ordersNumber}>{basketAmount < 1000 ? basketAmount : '999+'}</div>
                         </div>}
                     </div>
+                    {isBurgerMenuShowed && <div className={styles.bottomIconWrapper} onClick={this.handleOpenSearch}>
+                        <img className={styles.iconSearch} src='/src/apps/client/ui/components/Header/images/search.png'
+                            alt='search'/>
+                    </div>}
                 </div>
                 }
             </div>

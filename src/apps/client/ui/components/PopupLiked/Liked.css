@@ -10,6 +10,10 @@
     overflow: hidden;
     z-index: 1000;
     visibility: hidden;
+
+    @media (max-width: 900px){
+        z-index: 2000;
+    }
 }
 
 .rootVisible{
@@ -32,6 +36,7 @@
 .popupContent{
     height: 100%;
     padding: 35px;
+    padding-right: 10px;
     background-color: #ffffff;
     position: absolute;
     width: 420px;
@@ -42,6 +47,15 @@
     justify-content: space-between;
     transition: 800ms ease;
     z-index: 1000;
+
+    @media (max-width: 900px){
+        z-index: 2000;
+    }
+
+    @media (max-width: 500px){
+        width: 100%;
+        right: -100%;
+    }
 }
 
 .popupContentVisible{
@@ -73,20 +87,26 @@
     bottom: 3px;
     cursor: pointer;
     user-select: none;
+
+    @media (max-width: 420px){
+        font-size: 40px;
+    }
 }
 
 .items{
     width: 100%;
-    height: 80vh ;
-    overflow-y: scroll;
+    height: calc(100vh - 138px);
 }
 
 .item{
     display: flex;
     justify-content: start;
     align-items: center;
-    margin-bottom: 22px;
     padding: 10px 0 0 10px;
+
+    &:not(:last-child) {
+         margin-bottom: 22px;
+     }
 }
 
 .itemImageWrapp{
@@ -150,10 +170,9 @@
     font-size: 10.8px;
     font-family: HelveticaNeueCyr;
     line-height: 13px;
-}
 
-.catalogLink{
-    color: #00a046;
-    text-decoration: none;
-    border-bottom: 1px solid #00a046;
+@media (max-width: 420px){
+    font-size: 14px;
+    line-height: normal;
+}
 }

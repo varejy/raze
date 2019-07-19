@@ -24,8 +24,6 @@
     position: relative;
     z-index: 1500;
     height: 80vh;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 
 .content {
@@ -42,20 +40,4 @@
     right: 10px;
     top: 10px;
     cursor: pointer;
-}
-
-.scrollContentOuter {
-    height: 100%;
-
-    &:before {
-         display: inline-block;
-         height: 100%;
-         vertical-align: middle;
-         content: "";
-     }
-}
-
-.scrollContentInner {
-    display: inline-block;
-    vertical-align: middle;
 }

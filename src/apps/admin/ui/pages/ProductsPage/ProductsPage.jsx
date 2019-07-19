@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import find from '@tinkoff/utils/array/find';
+import omit from '@tinkoff/utils/object/omit';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CloseIcon from '@material-ui/icons/Close';
@@ -146,6 +147,13 @@ class ProductsPage extends Component {
         });
     };
 
+    handleProductClone = product => () => {
+        this.setState({
+            formShowed: true,
+            editableProduct: omit(['id'], product)
+        });
+    };
+
     handleFiltersOpen = () => {
         this.setState({
             filtersShowed: true
@@ -184,6 +192,7 @@ class ProductsPage extends Component {
                 deleteValueWarningTitle='Вы точно хотите удалить товар?'
                 deleteValuesWarningTitle='Вы точно хотите удалить следующие товары?'
                 onDelete={this.props.deleteProducts}
+                onProductClone={this.handleProductClone}
                 onFormOpen={this.handleFormOpen}
                 onFiltersOpen={this.handleFiltersOpen}
             />
