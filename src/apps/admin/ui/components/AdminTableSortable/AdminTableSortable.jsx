@@ -147,6 +147,7 @@ const materialStyles = theme => ({
         cursor: 'pointer'
     },
     valueActions: {
+        display: 'flex',
         visibility: 'hidden'
     }
 });
@@ -240,29 +241,6 @@ class AdminTableSortable extends React.Component {
             selected: [],
             checkboxIndeterminate: false
         });
-    };
-
-    handleClick = selectedValue => () => {
-        const { selected } = this.state;
-        const selectedIndex = findIndex(value => value.id === selectedValue.id, selected);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, selectedValue);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1)
-            );
-        }
-
-        const checkboxIndeterminate = this.checkCheckboxIndeterminate({ selected: newSelected });
-
-        this.setState({ selected: newSelected, checkboxIndeterminate });
     };
 
     handleChangePage = (event, page) => {

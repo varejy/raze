@@ -154,6 +154,11 @@ const materialStyles = theme => ({
     divider: {
         marginTop: 2 * theme.spacing.unit,
         marginBottom: 2 * theme.spacing.unit
+    },
+    addButton: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        paddingRight: '60px'
     }
 });
 
@@ -631,9 +636,6 @@ class ProductForm extends Component {
             <Divider className={classes.divider}/>
             <div className={classes.features}>
                 <Typography variant='h6'>Характеристики</Typography>
-                <Fab color='primary' size='small' onClick={this.handleFeatureAdd}>
-                    <AddIcon />
-                </Fab>
             </div>
             <div>
                 <SlidesFeature
@@ -646,6 +648,11 @@ class ProductForm extends Component {
                     useDragHandle
                     classes={classes}
                 />
+            </div>
+            <div className={classes.addButton}>
+                <Fab color='primary' size='small' onClick={this.handleFeatureAdd}>
+                    <AddIcon />
+                </Fab>
             </div>
             <Divider className={classes.divider}/>
             <ProductAvatarFile onAvatarFileUpload={this.handleAvatarFileUpload} initialAvatarFile={initialAvatarFile}/>
