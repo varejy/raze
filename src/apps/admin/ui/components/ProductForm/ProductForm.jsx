@@ -15,6 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import DeleteIcon from '@material-ui/icons/Delete';
+import CopyIcon from '@material-ui/icons/FileCopy';
 import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -40,6 +41,7 @@ import compose from '@tinkoff/utils/function/compose';
 import keys from '@tinkoff/utils/object/keys';
 import map from '@tinkoff/utils/array/map';
 import pickBy from '@tinkoff/utils/object/pickBy';
+import propOr from '@tinkoff/utils/object/propOr';
 
 import arrayMove from '../../../utils/arrayMove';
 
@@ -409,7 +411,7 @@ class ProductForm extends Component {
         });
     };
 
-    getFilterValue = (categoryId, filters) => find(productFilter => categoryId === productFilter.id, filters).value;
+    getFilterValue = (categoryId, filters) => propOr('value', '', find(productFilter => categoryId === productFilter.id, filters));
 
     setFilters = (thisCategory) => {
         const { category, product } = this.state;
@@ -469,6 +471,30 @@ class ProductForm extends Component {
 
         this.setState({
             product
+        });
+    }
+
+    handleCopyFilterToFeature = (name, value) => () => {
+        const { product } = this.state;
+        let isNew = true;
+
+        const features = product.features.map((feature) => {
+            if (feature.prop === name) {
+                isNew = false;
+
+                return {
+                    ...feature,
+                    value
+                };
+            }
+            return feature;
+        });
+
+        this.setState({
+            product: {
+                ...product,
+                features: isNew ? [...features, { prop: name, value }] : features
+            }
         });
     }
 
@@ -563,6 +589,46 @@ class ProductForm extends Component {
                 fullWidth
                 required
             />
+            <div className={classes.filtersTitle}>
+                <Typography variant='h6'>Фильтры</Typography>
+                <Typography>{
+                    product.categoryId ? titleFiltersLength : 'Вы не выбрали категорию'
+                }</Typography>
+            </div>
+            <div>
+                {
+                    product.categoryId && this.category.filters.map((filter, i) => {
+                        const value = !product.filters[i] ? '' : product.filters[i].value;
+
+                        return <FormGroup key={i} className={classes.filter} row>
+                            <div className={classes.filterGroup}>
+                                <div className={classes.filterName}>
+                                    <Typography variant='h6'>{filter.name}</Typography>
+                                </div>
+                                <TextField
+                                    className={classes.featureField}
+                                    label='Значение'
+                                    value={value}
+                                    onChange={this.handleFilterChange(i)}
+                                    margin='normal'
+                                    variant='outlined'
+                                    required
+                                    type={ filter.type === 'range' ? 'number' : 'text' }
+                                />
+                                <Tooltip
+                                    title='Копировать в характеристики'
+                                    placement='bottom'
+                                >
+                                    <IconButton aria-label='Copy' onClick={this.handleCopyFilterToFeature(filter.name, value)}>
+                                        <CopyIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                        </FormGroup>;
+                    })
+                }
+            </div>
+            <Divider className={classes.divider}/>
             <div className={classes.features}>
                 <Typography variant='h6'>Характеристики</Typography>
                 <Fab color='primary' size='small' onClick={this.handleFeatureAdd}>
@@ -580,34 +646,6 @@ class ProductForm extends Component {
                     useDragHandle
                     classes={classes}
                 />
-            </div>
-            <Divider className={classes.divider}/>
-            <div className={classes.filtersTitle}>
-                <Typography variant='h6'>Фильтры</Typography>
-                <Typography>{
-                    product.categoryId ? titleFiltersLength : 'Вы не выбрали категорию'
-                }</Typography>
-            </div>
-            <div>
-                {
-                    product.categoryId && this.category.filters.map((filter, i) => <FormGroup key={i} className={classes.filter} row>
-                        <div className={classes.filterGroup}>
-                            <div className={classes.filterName}>
-                                <Typography variant='h6'>{filter.name}</Typography>
-                            </div>
-                            <TextField
-                                className={classes.featureField}
-                                label='Значение'
-                                value={!product.filters[i] ? '' : product.filters[i].value}
-                                onChange={this.handleFilterChange(i)}
-                                margin='normal'
-                                variant='outlined'
-                                required
-                                type={ filter.type === 'range' ? 'number' : 'text' }
-                            />
-                        </div>
-                    </FormGroup>)
-                }
             </div>
             <Divider className={classes.divider}/>
             <ProductAvatarFile onAvatarFileUpload={this.handleAvatarFileUpload} initialAvatarFile={initialAvatarFile}/>
