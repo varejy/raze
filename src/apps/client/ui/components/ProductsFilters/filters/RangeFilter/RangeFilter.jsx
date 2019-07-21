@@ -7,6 +7,10 @@ import InputRange from 'react-input-range';
 
 import styles from './RangeFilter.css';
 
+const STEP_DIFF = 100;
+const BIG_STEP = 1;
+const SMALL_STEP = 0.01;
+
 class RangeFilter extends Component {
     static propTypes = {
         filter: PropTypes.object.isRequired,
@@ -20,6 +24,7 @@ class RangeFilter extends Component {
 
         this.state = {
             defaultValue: price,
+            step: (price.max - price.min) < STEP_DIFF ? SMALL_STEP : BIG_STEP,
             value: price
         };
     }
@@ -30,6 +35,7 @@ class RangeFilter extends Component {
 
             this.setState({
                 defaultValue: price,
+                step: (price.max - price.min) < STEP_DIFF ? SMALL_STEP : BIG_STEP,
                 value: price
             });
         }
@@ -41,17 +47,25 @@ class RangeFilter extends Component {
         };
     }
 
-    handleInputChange = value => this.setState({ value });
+    handleInputChange = value => {
+        const { defaultValue: { min, max } } = this.state;
+
+        if (value.min < min || value.max > max) {
+            return;
+        }
+
+        this.setState({ value });
+    }
 
     render () {
-        const { defaultValue: { min, max }, value } = this.state;
+        const { defaultValue: { min, max }, value, step } = this.state;
         const { filter } = this.props;
 
         return <section className={styles.wrapp}>
             <div className={styles.title}>{filter.name}</div>
             <InputRange
-                maxValue={max}
-                minValue={min}
+                maxValue={+max}
+                minValue={+min}
                 classNames={{
                     inputRange: styles.inputRange,
                     minLabel: styles.minLabel,
@@ -63,6 +77,7 @@ class RangeFilter extends Component {
                     sliderContainer: styles.sliderContainer,
                     slider: styles.slider
                 }}
+                step={step}
                 value={value}
                 onChange={this.handleInputChange}
                 onChangeComplete={this.props.onFilter}
