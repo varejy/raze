@@ -54,8 +54,7 @@ class ProductsFilters extends Component {
 
     static propTypes = {
         onFilter: PropTypes.func.isRequired,
-        products: PropTypes.array,
-        media: PropTypes.object.isRequired
+        products: PropTypes.array
     };
 
     static defaultProps = {
@@ -125,7 +124,7 @@ class ProductsFilters extends Component {
                 return [];
             }
         }, []);
-    }
+    };
 
     getFilters = (props = this.props) => {
         if (!props.category.filters) {
