@@ -6,13 +6,12 @@ import { connect } from 'react-redux';
 import findIndex from '@tinkoff/utils/array/findIndex';
 import remove from '@tinkoff/utils/array/remove';
 import find from '@tinkoff/utils/array/find';
-import setBasket from '../../../actions/setBasket';
-import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
 import setLiked from '../../../actions/setLiked';
 import saveProductsLiked from '../../../services/client/saveProductsLiked';
-import closePopup from '../../../actions/closePopup';
 import PopupBasket from '../PopupBasketAdding/PopupBasket';
 import openPopup from '../../../actions/openPopup';
+import closePopup from '../../../actions/closePopup';
+import openBasketPopup from '../../../actions/openBasketPopup';
 
 const SLIDER_IS_FULL_SCREEN_DEVICE_WIDTH = 720;
 const PREVIEW_WIDTH = 700;
@@ -26,12 +25,11 @@ const mapStateToProps = ({ application, savedProducts }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    setBasket: payload => dispatch(setBasket(payload)),
-    saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload)),
-    closePopup: payload => dispatch(closePopup(payload)),
     setLiked: payload => dispatch(setLiked(payload)),
     saveProductsLiked: payload => dispatch(saveProductsLiked(payload)),
-    openPopup: payload => dispatch(openPopup(payload))
+    openPopup: payload => dispatch(openPopup(payload)),
+    closePopup: payload => dispatch(closePopup(payload)),
+    openBasketPopup: payload => dispatch(openBasketPopup(payload))
 });
 
 class ProductPreview extends Component {
@@ -43,19 +41,19 @@ class ProductPreview extends Component {
     static propTypes = {
         product: PropTypes.object,
         media: PropTypes.object.isRequired,
-        basket: PropTypes.array.isRequired,
-        setBasket: PropTypes.func.isRequired,
-        saveProductsToBasket: PropTypes.func.isRequired,
-        closePopup: PropTypes.func.isRequired,
         liked: PropTypes.array.isRequired,
         setLiked: PropTypes.func.isRequired,
         saveProductsLiked: PropTypes.func.isRequired,
-        openPopup: PropTypes.func.isRequired
+        openPopup: PropTypes.func.isRequired,
+        closePopup: PropTypes.func.isRequired,
+        openBasketPopup: PropTypes.func.isRequired,
+        basket: PropTypes.array.isRequired
     };
 
     static defaultProps = {
         product: {},
-        media: {}
+        media: {},
+        basket: []
     };
 
     handleDotClick = (leftMoveIndex) => () => {
@@ -109,9 +107,19 @@ class ProductPreview extends Component {
         return !!find(likedProduct => product.id === likedProduct.id, liked);
     };
 
+    isInBasket = () => {
+        const { basket, product } = this.props;
+        return !!find(basketProduct => product.id === basketProduct.product.id, basket);
+    };
+
     handleOpenBasket = () => {
         const { openPopup, product } = this.props;
         openPopup(<PopupBasket product={product}/>);
+    };
+
+    handleOpenBasketMain = () => {
+        this.props.closePopup();
+        this.props.openBasketPopup();
     };
 
     render () {
@@ -119,6 +127,7 @@ class ProductPreview extends Component {
         const { slidesQuantity, leftPosition } = this.state;
         const sliderIsFullScreen = media.width <= SLIDER_IS_FULL_SCREEN_DEVICE_WIDTH;
         const isLiked = this.isLiked();
+        const inBasket = this.isInBasket();
 
         return <div className={styles.productPreviewContainer}>
             <div className={styles.productPreview}>
@@ -178,8 +187,10 @@ class ProductPreview extends Component {
                         </div>
                     </div>
                     <div className={styles.buttonContainer}>
-                        <button className={classNames(styles.addToBasketButton, styles.buttonDefault)} onClick={this.handleOpenBasket}>
-                            в корзину
+                        <button
+                            className={classNames(styles.addToBasketButton, styles.buttonDefault)}
+                            onClick={() => { !inBasket ? this.handleOpenBasket() : this.handleOpenBasketMain(); }}>
+                            {!inBasket ? 'в корзину' : 'уже в корзине'}
                         </button>
                     </div>
                 </div>
