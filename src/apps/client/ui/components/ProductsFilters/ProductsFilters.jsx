@@ -16,7 +16,6 @@ import includes from '@tinkoff/utils/array/includes';
 import flatten from '@tinkoff/utils/array/flatten';
 import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
-import { connect } from 'react-redux';
 
 const DEFAULT_FILTERS = [
     {
