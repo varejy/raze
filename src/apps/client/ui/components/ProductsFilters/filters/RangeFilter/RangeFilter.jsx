@@ -57,11 +57,12 @@ class RangeFilter extends Component {
     handleInputChange = value => {
         const { defaultValue: { min, max } } = this.state;
 
-        if (value.min < min || value.max > max) {
-            return;
-        }
-
-        this.setState({ value });
+        this.setState({
+            value: {
+                min: value.min < min ? min : value.min,
+                max: value.max > max ? max : value.max
+            }
+        });
     }
 
     render () {
