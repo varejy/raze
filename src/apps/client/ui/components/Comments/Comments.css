@@ -9,6 +9,13 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+}
+
+.feedback{
+    padding: 0;
+}
+
+.comment{
     padding: 12px 0;
 }
 

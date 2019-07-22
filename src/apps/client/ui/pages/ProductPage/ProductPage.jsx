@@ -31,6 +31,9 @@ import saveProductsLiked from '../../../services/client/saveProductsLiked';
 import findIndex from '@tinkoff/utils/array/findIndex';
 import remove from '@tinkoff/utils/array/remove';
 import find from '@tinkoff/utils/array/find';
+import PopupBasket from '../../components/PopupBasketAdding/PopupBasket';
+import openPopup from '../../../actions/openPopup';
+import openBasketPopup from '../../../actions/openBasketPopup';
 
 const PRODUCT_PATH = '/:category/:id';
 const LABELS_MAP = {
@@ -66,7 +69,9 @@ const mapDispatchToProps = (dispatch) => ({
     setBasket: payload => dispatch(setBasket(payload)),
     saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload)),
     setLiked: payload => dispatch(setLiked(payload)),
-    saveProductsLiked: payload => dispatch(saveProductsLiked(payload))
+    saveProductsLiked: payload => dispatch(saveProductsLiked(payload)),
+    openPopup: payload => dispatch(openPopup(payload)),
+    openBasketPopup: (payload) => dispatch(openBasketPopup(payload))
 });
 
 class ProductPage extends Component {
@@ -82,7 +87,9 @@ class ProductPage extends Component {
         saveProductsViewed: PropTypes.func.isRequired,
         liked: PropTypes.array.isRequired,
         setLiked: PropTypes.func.isRequired,
-        saveProductsLiked: PropTypes.func.isRequired
+        saveProductsLiked: PropTypes.func.isRequired,
+        openPopup: PropTypes.func.isRequired,
+        openBasketPopup: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -187,6 +194,16 @@ class ProductPage extends Component {
         return !!find(item => product.id === item.product.id, basket);
     };
 
+    handleOpenBasket = () => {
+        const { openPopup } = this.props;
+        const { product } = this.state;
+        openPopup(<PopupBasket product={product}/>);
+    };
+
+    handleOpenBasketMain = () => {
+        this.props.openBasketPopup();
+    };
+
     handleLikeClick = () => {
         const { setLiked, liked, saveProductsLiked } = this.props;
         const { product } = this.state;
@@ -231,6 +248,7 @@ class ProductPage extends Component {
         }
 
         const isLiked = this.isLiked();
+        const inBasket = this.isInBasket();
 
         return <section>
             <div className={styles.productCardContainer}>
@@ -281,10 +299,10 @@ class ProductPage extends Component {
                                             : '/src/apps/client/ui/pages/ProductPage/images/heartGreen.png'}
                                         alt='like'/>
                                 </div>
-                                <div onClick={this.handleLikeClick}>
+                                <div onClick={() => { !inBasket ? this.handleOpenBasket() : this.handleOpenBasketMain(); }}>
                                     <img
                                         className={styles.basketIcon}
-                                        src={!isLiked
+                                        src={!inBasket
                                             ? '/src/apps/client/ui/pages/ProductPage/images/basket.png'
                                             : '/src/apps/client/ui/pages/ProductPage/images/basketGreen.png'}
                                         alt='basket'/>
