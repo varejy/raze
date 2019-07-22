@@ -20,6 +20,7 @@ class RangeFilter extends Component {
 
         this.state = {
             defaultValue: price,
+            step: this.getStep(price),
             value: price
         };
     }
@@ -30,28 +31,49 @@ class RangeFilter extends Component {
 
             this.setState({
                 defaultValue: price,
+                step: this.getStep(price),
                 value: price
             });
         }
     }
 
-    getDefaultPrice (props = this.props) {
+    getStep = ({ min, max }) => {
+        switch (true) {
+        case (max - min < 1):
+            return 0.001;
+        case (max - min < 100):
+            return 0.01;
+        default:
+            return 1;
+        }
+    };
+
+    getDefaultPrice = (props = this.props) => {
         return {
             ...pick(['min', 'max'], props.filter)
         };
+    };
+
+    handleInputChange = value => {
+        const { defaultValue: { min, max } } = this.state;
+
+        this.setState({
+            value: {
+                min: value.min < min ? min : value.min,
+                max: value.max > max ? max : value.max
+            }
+        });
     }
 
-    handleInputChange = value => this.setState({ value });
-
     render () {
-        const { defaultValue: { min, max }, value } = this.state;
+        const { defaultValue: { min, max }, value, step } = this.state;
         const { filter } = this.props;
 
         return <section className={styles.wrapp}>
             <div className={styles.title}>{filter.name}</div>
             <InputRange
-                maxValue={max}
-                minValue={min}
+                maxValue={+max}
+                minValue={+min}
                 classNames={{
                     inputRange: styles.inputRange,
                     minLabel: styles.minLabel,
@@ -63,6 +85,7 @@ class RangeFilter extends Component {
                     sliderContainer: styles.sliderContainer,
                     slider: styles.slider
                 }}
+                step={step}
                 value={value}
                 onChange={this.handleInputChange}
                 onChangeComplete={this.props.onFilter}

@@ -1,26 +1,23 @@
 ﻿.carousel {
     position: relative;
-    height: 500px;
     overflow: hidden;
     justify-content: center;
 }
 
 .sliderTrack {
-    height: 500px;
     position: relative;
     width: 9999px;
     left: 0;
 }
 
 .slide {
-    height: 500px;
     display: inline-block;
     position: relative;
     width: 100vw;
 }
 
 .imageWrapper {
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     z-index: -1;
@@ -30,6 +27,11 @@
 
 .image {
     width: 100%;
+
+    @media (max-width: 1024px) {
+        width: auto;
+        height: 50vh;
+    }
 }
 
 .contentWrapper {
@@ -38,8 +40,19 @@
     top: 50%;
     transform: translate(0, -50%);
     right: 130px;
+    left: 130px;
     display: flex;
     justify-content: flex-end;
+
+    @media (max-width: 1024px) {
+        right: 90px;
+        left: 90px;
+    }
+
+    @media (max-width: 1024px) {
+        right: 20px;
+        left: 20px;
+    }
 }
 
 .content {
@@ -47,6 +60,10 @@
     flex-direction: column;
     align-items: flex-end;
     width: 1000px;
+
+    @media (max-width: 1024px) {
+        width: 100%;
+    }
 }
 
 .title {
@@ -56,6 +73,16 @@
     font-weight: 700;
     text-align: right;
     line-height: 96px;
+
+    @media (max-width: 1024px) {
+        font-size: 40px;
+        line-height: 40px;
+    }
+
+    @media (max-width: 600px) {
+        font-size: 30px;
+        line-height: 30px;
+    }
 }
 
 .description {
@@ -63,6 +90,16 @@
     color: #fff;
     font-size: 26px;
     text-align: right;
+
+    @media (max-width: 1024px) {
+        font-size: 18px;
+        margin-top: 15px;
+    }
+
+    @media (max-width: 1024px) {
+        font-size: 14px;
+        margin-top: 15px;
+    }
 }
 
 .dots {

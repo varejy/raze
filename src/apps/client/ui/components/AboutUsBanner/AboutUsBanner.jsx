@@ -7,11 +7,10 @@ class AboutUsBanner extends Component {
             <div className={styles.banner}>
                 <div className={styles.bannerHeader}><h2>о компании</h2></div>
                 <div className={styles.bannerText}>
-                    <div>With over a decade of experience, we have helped our clients all over the world to
-                        create eye-catching and head-turning creative solutions.  We work together from our
-                        three UK offices to create high quality work. </div>
+                    <div>Компания Raze специализируется на&nbsp;продаже ножей, аксессуаров и&nbsp;средств самообороны.
+                        Мы&nbsp;продаем только оригинальную продукцию, стараясь дать нашему Клиенту лучший сервис по&nbsp;низкой цене.
+                    </div>
                 </div>
-                <div className={styles.bannerButton}><button className={styles.readMoreButton}><div>читать далее</div></button></div>
             </div>
         </div>;
     }

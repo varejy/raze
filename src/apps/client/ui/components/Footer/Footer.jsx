@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
 import styles from './Footer.css';
 
+import ByStubbs from '../ByStubbs/ByStubbs';
+
 class Footer extends Component {
     render () {
         return <div className={styles.footerContainer}>
             <div className={styles.iconsContainer}>
+                <ByStubbs
+                    campaign='raze'
+                    color='#ffffff'
+                    underscoreColor='#00a046'
+                    position='static'
+                />
                 <div className={styles.icons}>
                     <a className={styles.socialLink} href='https://instagram.com' target='_blank'>
                         <img className={styles.instagramIcon} src='/src/apps/client/ui/components/Footer/images/instagram.png' alt=''/>

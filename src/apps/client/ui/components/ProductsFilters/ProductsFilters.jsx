@@ -128,6 +128,8 @@ class ProductsFilters extends Component {
                         max
                     }
                 ] : filters;
+            default:
+                return [];
             }
         }, []);
     }
@@ -177,6 +179,8 @@ class ProductsFilters extends Component {
                         max
                     }
                 ] : filters;
+            default:
+                return filters;
             }
         }, []);
     };

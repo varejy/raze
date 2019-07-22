@@ -22,6 +22,7 @@ export default function getAvailableProduct (req, res) {
                     return getCommentsByProductId(product.id)
                         .then((comments) => {
                             const validComments = comments
+                                .filter(comment => comment.verified)
                                 .map(comment => ({
                                     id: comment.id,
                                     name: comment.name,

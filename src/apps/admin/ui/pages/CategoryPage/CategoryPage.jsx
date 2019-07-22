@@ -9,7 +9,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
 import { withStyles } from '@material-ui/core/styles';
 
-import AdminTable from '../../components/AdminTable/AdminTable.jsx';
+import AdminTableSortable from '../../components/AdminTableSortable/AdminTableSortable.jsx';
 import CategoryForm from '../../components/CategoryForm/CategoryForm';
 
 import { connect } from 'react-redux';
@@ -143,7 +143,7 @@ class CategoryPage extends Component {
         }
 
         return <div>
-            <AdminTable
+            <AdminTableSortable
                 headerRows={headerRows}
                 tableCells={tableCells}
                 values={categories}
