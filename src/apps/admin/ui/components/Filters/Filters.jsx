@@ -127,6 +127,11 @@ const materialStyles = theme => ({
     },
     selectEmpty: {
         marginTop: 2 * theme.spacing.unit
+    },
+    addIcon: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        marginTop: '20px'
     }
 });
 
@@ -199,9 +204,6 @@ class Filters extends Component {
         return <div className={classes.createFiltersWrapp}>
             <div className={classes.createFiltersHeader}>
                 <Typography className={classes.filterTitle} variant='h5'>Фильтр</Typography>
-                <Fab size="small" color='primary' onClick={this.handleFilterAdd} aria-label="Add">
-                    <AddIcon />
-                </Fab>
             </div>
             <SlidesFilters
                 axis='xy'
@@ -214,6 +216,11 @@ class Filters extends Component {
                 useDragHandle
                 classes={classes}
             />
+            <div className={classes.addIcon}>
+                <Fab size="small" color='primary' onClick={this.handleFilterAdd} aria-label="Add">
+                    <AddIcon />
+                </Fab>
+            </div>
         </div>;
     }
 }

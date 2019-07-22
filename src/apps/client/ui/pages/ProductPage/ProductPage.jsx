@@ -20,9 +20,8 @@ import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
 import Comments from '../../components/Comments/Comments';
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
 
-import setViewed from '../../../actions/setViewed';
 import setBasket from '../../../actions/setBasket';
-import closePopup from '../../../actions/closePopup';
+import setViewed from '../../../actions/setViewed';
 
 import filter from '@tinkoff/utils/array/filter';
 import tail from '@tinkoff/utils/array/tail';
@@ -65,7 +64,6 @@ const mapDispatchToProps = (dispatch) => ({
     setViewed: payload => dispatch(setViewed(payload)),
     saveProductsViewed: payload => dispatch(saveProductsViewed(payload)),
     setBasket: payload => dispatch(setBasket(payload)),
-    closePopup: payload => dispatch(closePopup(payload)),
     saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload)),
     setLiked: payload => dispatch(setLiked(payload)),
     saveProductsLiked: payload => dispatch(saveProductsLiked(payload))
@@ -77,11 +75,10 @@ class ProductPage extends Component {
         location: PropTypes.object,
         productMap: PropTypes.object,
         viewed: PropTypes.array,
-        setViewed: PropTypes.func.isRequired,
         basket: PropTypes.array.isRequired,
         setBasket: PropTypes.func.isRequired,
-        closePopup: PropTypes.func.isRequired,
         saveProductsToBasket: PropTypes.func.isRequired,
+        setViewed: PropTypes.func.isRequired,
         saveProductsViewed: PropTypes.func.isRequired,
         liked: PropTypes.array.isRequired,
         setLiked: PropTypes.func.isRequired,
@@ -93,7 +90,8 @@ class ProductPage extends Component {
         productMap: {},
         viewed: [],
         media: {},
-        liked: []
+        liked: [],
+        basket: []
     };
 
     constructor (...args) {
@@ -166,6 +164,27 @@ class ProductPage extends Component {
         )(viewed);
 
         return newViewed.length > MAX_VIEWED ? tail(newViewed) : newViewed;
+    };
+
+    handleSendProductToBasket = () => {
+        const { product } = this.state;
+        const previouslyAdded = this.props.basket.map((product, i) => {
+            return { product: product.product, count: product.count };
+        }, {});
+
+        const newBasket = !this.isInBasket() ? [
+            { product: product, count: 1 }, ...previouslyAdded
+        ] : [...previouslyAdded];
+
+        this.props.setBasket(newBasket);
+        this.props.saveProductsToBasket(newBasket.map((product) => ({ id: product.product.id, count: product.count })));
+    };
+
+    isInBasket = () => {
+        const { basket } = this.props;
+        const { product } = this.state;
+
+        return !!find(item => product.id === item.product.id, basket);
     };
 
     handleLikeClick = () => {
@@ -244,11 +263,13 @@ class ProductPage extends Component {
                                 : <div className={styles.prices}>
                                     <div className={styles.price}>{product.price} грн.</div>
                                 </div>}
+
                             <div className={styles.buttonContainer}>
-                                <Link className={styles.link} to={`/order?id=${product.id}`}>
+                                <Link className={styles.link} to='/order'>
                                     <button className={classNames(
                                         styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
-                                    )}>
+                                    )}
+                                    onClick={this.handleSendProductToBasket}>
                                     Оформление заказа
                                     </button>
                                 </Link>

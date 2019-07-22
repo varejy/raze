@@ -267,7 +267,6 @@ class OrdersPage extends Component {
         }
 
         return <div>
-
             <Paper className={classes.paper}>
                 <Toolbar
                     className={classes.toolbar}

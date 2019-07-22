@@ -111,3 +111,24 @@
         line-height: normal;
     }
 }
+
+.licenseTextTitle {
+    font-size: 20px;
+    font-family: HelveticaNeueCyrBold;
+
+    &:not(:first-child) {
+         margin-top: 20px;
+     }
+}
+
+.licenseTextParagraph {
+    margin-top: 10px;
+}
+
+.licenseTextBold {
+    font-family: HelveticaNeueCyrBold;
+}
+
+.licenseTextItalics {
+    font-style: italic;
+}

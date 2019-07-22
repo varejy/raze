@@ -11,6 +11,7 @@ import { matchPath } from 'react-router';
 import MainPage from './ui/pages/MainPage/MainPage.jsx';
 import ProductsPage from './ui/pages/ProductsPage/ProductsPage.jsx';
 import CategoryPage from './ui/pages/CategoryPage/CategoryPage.jsx';
+import CommentsPage from './ui/pages/CommentsPage/CommentsPage';
 import CredentialsPage from './ui/pages/CredentialsPage/CredentialsPage.jsx';
 import OrdersPage from './ui/pages/OrdersPage/OrdersPage.jsx';
 import Header from './ui/components/Header/Header.jsx';
@@ -84,6 +85,7 @@ class App extends Component {
                 <Route exact path='/admin/products' component={ProductsPage} />
                 <Route exact path='/admin/categories' component={CategoryPage} />
                 <Route exact path='/admin/orders' component={OrdersPage} />
+                <Route exact path='/admin/comments' component={CommentsPage} />
                 <Route exact path='/admin/credentials' component={CredentialsPage} />
             </Switch>
         </main>;

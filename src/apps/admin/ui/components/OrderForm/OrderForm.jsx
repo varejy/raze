@@ -46,8 +46,9 @@ const materialStyles = theme => ({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    root: {
-        marginBottom: '15px'
+    table: {
+        marginBottom: '25px',
+        marginTop: '15px'
     },
     title: {
         marginBottom: '12px'
@@ -129,47 +130,70 @@ class OrderForm extends Component {
 
         return <form onSubmit={this.handleSubmit}>
             <Typography variant='h5' className={classes.title}>Редактирование заказа</Typography>
-            <Paper className={classes.root}>
-                <Table className={classes.table}>
+            <Paper className={classes.table}>
+                <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell colSpan={2}>Название</TableCell>
+                            <TableCell colSpan={4}>Название</TableCell>
                             <TableCell align="center">Значение</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         <TableRow>
-                            <TableCell colSpan={2}>Имя заказчика</TableCell>
+                            <TableCell colSpan={4}>Имя заказчика</TableCell>
                             <TableCell align="center">{order.name}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Город</TableCell>
+                            <TableCell colSpan={4}>Город</TableCell>
                             <TableCell align="center">{order.city}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Тип доставки</TableCell>
+                            <TableCell colSpan={4}>Тип доставки</TableCell>
                             <TableCell align="center">{
                                 find(propEq('id', order.orderType))(orderTypes).value
                             }</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Тип оплаты</TableCell>
+                            <TableCell colSpan={4}>Тип оплаты</TableCell>
                             <TableCell align="center">{
                                 find(propEq('id', order.paymentType))(paymentTypes).value
                             }</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Отделение</TableCell>
+                            <TableCell colSpan={4}>Отделение</TableCell>
                             <TableCell align="center">{order.department}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Дата реестрации</TableCell>
+                            <TableCell colSpan={4}>Дата реестрации</TableCell>
                             <TableCell align="center">{formatOrderDate}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell colSpan={2}>Номер телефона</TableCell>
+                            <TableCell colSpan={4}>Номер телефона</TableCell>
                             <TableCell align="center">{order.phone}</TableCell>
                         </TableRow>
+                    </TableBody>
+                </Table>
+            </Paper>
+            <Typography variant='h6'>Товары</Typography>
+            <Paper>
+                <Table className={classes.table}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell colSpan={1}>Название</TableCell>
+                            <TableCell colSpan={3} align="center">Количество</TableCell>
+                            <TableCell colSpan={1} align="right">Цена</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            order.products.map((product, i) => {
+                                return <TableRow key={i}>
+                                    <TableCell colSpan={1}>{product.name}</TableCell>
+                                    <TableCell colSpan={3} align="center">{product.count}</TableCell>
+                                    <TableCell colSpan={1} align="right">{product.price}</TableCell>
+                                </TableRow>;
+                            })
+                        }
                     </TableBody>
                 </Table>
             </Paper>
