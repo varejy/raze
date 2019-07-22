@@ -85,13 +85,26 @@ class ProductCardCarousel extends Component {
         }
     };
 
-    render () {
+    sliderPositionMoveCount = (direction) => () => {
         const { activeSlide, leftSliderTopIndex } = this.state;
-        const { sliderImages, media } = this.props;
-        const isTop = activeSlide === this.minSlideIndex;
-        const isBottom = activeSlide === this.maxSlideIndex;
+        const { media } = this.props;
         const sliderIsFullScreen = media.width <= SCREEN_WIDTH_SLIDER_FULL;
         const leftSliderWidth = media.width * 0.2 + 20;
+
+        if (direction === 'smallSliderLeft') {
+            return sliderIsFullScreen ? -leftSliderTopIndex * leftSliderWidth : 0;
+        } else if (direction === 'smallSliderTop') {
+            return !sliderIsFullScreen ? -leftSliderTopIndex * LEFT_SLIDER_HEIGHT : 0;
+        } else {
+            return -activeSlide * (!sliderIsFullScreen ? BIG_SLIDE_WIDTH : (media.width));
+        }
+    };
+
+    render () {
+        const { activeSlide } = this.state;
+        const { sliderImages } = this.props;
+        const isTop = activeSlide === this.minSlideIndex;
+        const isBottom = activeSlide === this.maxSlideIndex;
 
         return <div className={styles.sliders}>
             <div className={styles.sliderLeftContainer}>
@@ -103,8 +116,8 @@ class ProductCardCarousel extends Component {
                 </button>}
                 <div className={styles.slidesContainer}>
                     <div className={styles.sliderLeftSlides}
-                        style={{ top: !sliderIsFullScreen ? -leftSliderTopIndex * LEFT_SLIDER_HEIGHT : 0,
-                            left: sliderIsFullScreen ? -leftSliderTopIndex * leftSliderWidth : 0 }}
+                        style={{ top: this.sliderPositionMoveCount('smallSliderTop')(),
+                            left: this.sliderPositionMoveCount('smallSliderLeft')() }}
                     >
                         {sliderImages.map((sliderLeftImage, i) =>
                             <div
@@ -126,7 +139,7 @@ class ProductCardCarousel extends Component {
                 </button>}
             </div>
             <div className={styles.sliderContainer}>
-                <div className={styles.slides} style={{ left: -activeSlide * (!sliderIsFullScreen ? BIG_SLIDE_WIDTH : (media.width - 6)) }}>
+                <div className={styles.slides} style={{ left: this.sliderPositionMoveCount('bigSliderLeft')() }}>
                     {sliderImages.map((sliderImage, i) =>
                         <div className={styles.productPreviewSlide} key={i}>
                             <img className={styles.slidePhoto} src={sliderImage} alt={`slide${i}`}/>

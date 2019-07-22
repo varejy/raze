@@ -21,7 +21,7 @@ class Comments extends Component {
                 productComments.length
                     ? productComments.map((comment, i) => {
                         return (
-                            <div key={i} className={styles.feedback}>
+                            <div key={i} className={styles.comment}>
                                 <Comment name={comment.name} rating={comment.rating} comment={comment.text} />
                             </div>
                         );

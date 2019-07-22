@@ -50,14 +50,12 @@ const LABELS_MAP = {
 };
 
 const MAX_VIEWED = 7;
-const INFO_MOD_SCREEN_WIDTH = 1169;
 
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
         productMap: application.productMap,
         basket: savedProducts.basket,
         viewed: savedProducts.viewed,
-        media: application.media,
         liked: savedProducts.liked
     };
 };
@@ -85,7 +83,6 @@ class ProductPage extends Component {
         closePopup: PropTypes.func.isRequired,
         saveProductsToBasket: PropTypes.func.isRequired,
         saveProductsViewed: PropTypes.func.isRequired,
-        media: PropTypes.object.isRequired,
         liked: PropTypes.array.isRequired,
         setLiked: PropTypes.func.isRequired,
         saveProductsLiked: PropTypes.func.isRequired
@@ -200,9 +197,8 @@ class ProductPage extends Component {
     };
 
     render () {
-        const { viewed, media } = this.props;
+        const { viewed } = this.props;
         const { loading, product } = this.state;
-        const infoIsModified = media.width <= INFO_MOD_SCREEN_WIDTH;
 
         // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
@@ -222,7 +218,6 @@ class ProductPage extends Component {
                 <div className={styles.topProductInfo}>
                     <ProductCardCarousel sliderImages={product.files}/>
                     <div className={styles.productInfo}>
-                        {!infoIsModified &&
                         <div className={styles.tags}>
                             { product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP.lowPrice.color }}>
                                 {LABELS_MAP.lowPrice.text}</div>}
@@ -231,18 +226,15 @@ class ProductPage extends Component {
                                     style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text}</div>
                             )}
                         </div>
-                        }
                         <div className={styles.productCardHeader}>
                             <div className={styles.productName}>{product.name}</div>
                         </div>
-                        {!infoIsModified &&
                         <div className={styles.stars}>
                             {getStarsArray(product.rating).map((star, i) => <div key={i} className={styles.star}>
                                 <img src={star} alt='star'/>
                             </div>)}
                         </div>
-                        }
-                        {infoIsModified && <div className={styles.description}>{product.description}</div>}
+                        <div className={styles.description}>{product.description}</div>
                         <div className={styles.order}>
                             {product.discountPrice
                                 ? <div className={styles.prices}>
@@ -268,6 +260,14 @@ class ProductPage extends Component {
                                             : '/src/apps/client/ui/pages/ProductPage/images/heartGreen.png'}
                                         alt='like'/>
                                 </div>
+                                <div onClick={this.handleLikeClick}>
+                                    <img
+                                        className={styles.basketIcon}
+                                        src={!isLiked
+                                            ? '/src/apps/client/ui/pages/ProductPage/images/basket.png'
+                                            : '/src/apps/client/ui/pages/ProductPage/images/basketGreen.png'}
+                                        alt='basket'/>
+                                </div>
                             </div>
                         </div>
                         {product.notAvailable &&
@@ -285,12 +285,10 @@ class ProductPage extends Component {
                     </div>
                 </div>
                 <div className={styles.bottomProductInfo}>
-                    {!infoIsModified &&
-                    <div className={classNames(styles.productDescription, styles.infoContainer)}>
+                    <div className={classNames(styles.infoContainer, styles.productDescription)}>
                         <div className={styles.bottomHeader}>описание товара</div>
-                        <div className={styles.description}>{product.description}</div>
+                        <div className={styles.descriptionText}>{product.description}</div>
                     </div>
-                    }
                     {product.features.length > 0 && <div className={classNames(styles.productParameters, styles.infoContainer)}>
                         <div className={styles.bottomHeader}>характеристика товара</div>
                         <div className={styles.parameters}>

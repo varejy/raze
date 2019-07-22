@@ -20,11 +20,13 @@
         padding: 24px 8%;
     }
 }
+
 .loader {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-grow: 1;
+    height: 100%;
 }
 
 .searchInfoWrapper{

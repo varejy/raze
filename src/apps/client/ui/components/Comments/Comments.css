@@ -1,14 +1,28 @@
-.feedback{
+.feedback, .comment{
     font-family: HelveticaNeueCyrRoman;
     font-size: 12px;
     line-height: 3.25;
     text-align: center;
     color: #000000;
-    background-color: #f1f1f1;
     height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 10px;
+    padding: 12px 0;
+}
+
+.commentsWrapper{
+    padding: 24px 36px;
+    width: 60%;
+    margin: 0 auto;
+    background-color: #f1f1f1;
+
+    @media (max-width: 1169px){
+        width: 90%;
+    }
+
+    @media (max-width: 720px){
+        width: 100%;
+    }
 }

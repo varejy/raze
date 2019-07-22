@@ -3,6 +3,7 @@
     justify-content: center;
     align-items: center;
     flex-grow: 1;
+    height: 100%;
 }
 
 .productCardContainer{
@@ -54,16 +55,17 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-
-    @media (max-width: 600px){
         max-width: 100%;
         min-width: 100%;
     }
 }
 
 .productInfo .description{
-    width: 100%;
+    width: 80%;
+
+    @media (max-width: 720px){
+        width: 90%;
+    }
 }
 
 .tags{
@@ -71,6 +73,10 @@
     align-items: center;
     justify-content: flex-start;
     margin-bottom: 15px;
+
+    @media (max-width: 1169px){
+        display: none;
+    }
 }
 
 .tags :last-child{
@@ -126,12 +132,24 @@
     margin-left: 20px;
 }
 
+.basketIcon{
+    width: 21px;
+    height: 20px;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
 a {
     text-decoration: none;
 }
 
 .stars{
     margin-bottom: 33px;
+    display: block;
+
+    @media (max-width: 1169px){
+        display: none;
+    }
 }
 
 .stars :last-child{
@@ -235,9 +253,39 @@ a {
     line-height: 24px;
     text-align: center;
     color: #000000;
-    width: 537px;
+    width: 90%;
+    display: none;
 
-    @media (max-width: 600px){
+    @media (max-width: 1169px){
+        display: block;
+    }
+}
+
+.descriptionText{
+    font-family: HelveticaNeueCyrRoman;
+    font-size: 12px;
+    line-height: 24px;
+    text-align: center;
+    color: #000000;
+    width: 60%;
+
+    @media (max-width: 1169px){
+        width: 90%;
+    }
+
+    @media (max-width: 720px){
+        width: 100%;
+    }
+}
+
+.parameters{
+    width: 60%;
+
+    @media (max-width: 1169px){
+        width: 90%;
+    }
+
+    @media (max-width: 720px){
         width: 100%;
     }
 }
@@ -246,13 +294,9 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 408px;
+    width: 100%;
     min-height: 36px;
-    padding: 5px 20px;
-
-    @media (max-width: 600px){
-        width: 100%;
-    }
+    padding: 5px 36px;
 }
 
 .parameterLineGrey{
@@ -376,4 +420,12 @@ a {
     font-family: HelveticaNeueCyrRoman;
     font-size: 11px;
     outline: none;
+}
+
+.productDescription{
+    display: flex;
+
+    @media (max-width: 1169px){
+        display: none;
+    }
 }
