@@ -4,7 +4,9 @@ import getAllCategories from '../queries/getAllCategories';
 export default function getAvailableCategories (req, res) {
     getAllCategories()
         .then(categories => {
-            const availableCategories = categories.filter(category => !category.hidden);
+            const availableCategories = categories
+                .filter(category => !category.hidden)
+                .sort((oldCateg, newCateg) => oldCateg.positionId - newCateg.positionId);
 
             res.status(OKEY_STATUS_CODE).send(availableCategories);
         })

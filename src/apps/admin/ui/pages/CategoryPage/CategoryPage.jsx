@@ -157,7 +157,7 @@ class CategoryPage extends Component {
             />
             <Modal open={formShowed} onClose={this.handleCloseCategoryForm} className={classes.modal}>
                 <Paper className={classes.modalContent}>
-                    <CategoryForm category={editableCategory} onDone={this.handleFormDone}/>
+                    <CategoryForm categories={categories} category={editableCategory} onDone={this.handleFormDone}/>
                 </Paper>
             </Modal>
         </div>;
