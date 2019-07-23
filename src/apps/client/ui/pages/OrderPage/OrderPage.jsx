@@ -6,6 +6,8 @@ import classNames from 'classnames';
 import getWordCaseByNumber from '../../../utils/getWordCaseByNumber';
 
 import { connect } from 'react-redux';
+import setBasket from '../../../actions/setBasket';
+import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
 
 import styles from './OrderPage.css';
 
@@ -15,9 +17,16 @@ const mapStateToProps = ({ savedProducts }) => {
     };
 };
 
+const mapDispatchToProps = (dispatch) => ({
+    setBasket: payload => dispatch(setBasket(payload)),
+    saveProductsToBasket: payload => dispatch(saveProductsToBasket(payload))
+});
+
 class OrderPage extends Component {
     static propTypes = {
-        basket: PropTypes.array
+        basket: PropTypes.array,
+        setBasket: PropTypes.func.isRequired,
+        saveProductsToBasket: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -29,10 +38,8 @@ class OrderPage extends Component {
 
         this.state = {
             basket: [],
-            sendStat: {}
+            order: {}
         };
-
-        this.productsCount = 0;
     }
 
     componentDidMount = () => {
@@ -55,17 +62,25 @@ class OrderPage extends Component {
         }, { count: 0, price: 0 });
     };
 
-    handleVisibleMessage = state => {
+    handleVisibleMessage = ({ status, values }) => {
+        if (status === 'done') {
+            this.props.setBasket([]);
+            this.props.saveProductsToBasket([]);
+        }
+
         this.setState({
-            sendStat: state
+            order: {
+                status,
+                values
+            }
         });
     }
 
     render () {
-        const values = this.getBasketStat();
-        const { sendStat } = this.state;
+        const basketStat = this.getBasketStat();
+        const { order } = this.state;
 
-        if (!values.count) {
+        if (!basketStat.count && order.status !== 'done') {
             return <section className={styles.orderPage}><div className={styles.orderTitle}>ваша корзина пуста!</div></section>;
         }
 
@@ -74,20 +89,18 @@ class OrderPage extends Component {
             <div
                 className={classNames(styles.text)}
             >
-                {values.price} грн за {values.count} {getWordCaseByNumber(values.count, ['товаров', 'товар', 'товара'])}
+                {basketStat.price} грн за {basketStat.count} {getWordCaseByNumber(basketStat.count, ['товаров', 'товар', 'товара'])}
             </div>
             <Order onVisibleMessage={this.handleVisibleMessage}/>
             {
-                sendStat.status === 'done'
-                    ? sendStat.paymentType === 'cod'
-                        ? <div className={styles.blurryWrapp}>
-                            <div className={styles.messageWrapp}>
+                order.status === 'done' && <div className={styles.blurryWrapp}>
+                    {
+                        order.values.paymentType === 'cod'
+                            ? <div className={styles.messageWrapp}>
                                 <img className={styles.image} src="/src/apps/client/ui/components/Order/icons/ok.svg" alt="checked" />
                                 <div className={styles.txt}>Ваш заказ успешно отправлен</div>
                             </div>
-                        </div>
-                        : <div className={styles.blurryWrapp}>
-                            <div className={styles.messageWrapp}>
+                            : <div className={styles.messageWrapp}>
                                 <div className={classNames(styles.imageWrapp, styles.imageWrappCard)}>
                                     <img className={styles.imageCard} src="/src/apps/client/ui/components/Order/icons/credit-card.svg" alt="credit-card" />
                                 </div>
@@ -96,18 +109,21 @@ class OrderPage extends Component {
                                 </div>
                                 <div className={styles.cardTxt}>5432 6324 6432 2346</div>
                             </div>
+                    }
+                </div>
+            }
+            {
+                order.status === 'err' && <div className={styles.blurryWrapp}>
+                    <div className={classNames(styles.messageWrapp, styles.errorMessage)}>
+                        <div className={classNames(styles.imageWrapp, styles.imageWrappMarginB)}>
+                            <img className={styles.imageError} src="/src/apps/client/ui/components/Order/icons/error.svg" alt="checked" />
                         </div>
-                    : sendStat.status === 'err' && <div className={styles.blurryWrapp}>
-                        <div className={classNames(styles.messageWrapp, styles.errorMessage)}>
-                            <div className={classNames(styles.imageWrapp, styles.imageWrappMarginB)}>
-                                <img className={styles.imageError} src="/src/apps/client/ui/components/Order/icons/error.svg" alt="checked" />
-                            </div>
-                            <div className={styles.txt}>Ваш заказ не отправлен ! перезагрузите страницу и попробуйте снова</div>
-                        </div>
+                        <div className={styles.txt}>Ваш заказ не отправлен ! перезагрузите страницу и попробуйте снова</div>
                     </div>
+                </div>
             }
         </section>;
     }
 }
 
-export default connect(mapStateToProps)(OrderPage);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderPage);

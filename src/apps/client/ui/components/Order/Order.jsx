@@ -26,40 +26,19 @@ class Order extends Component {
         onVisibleMessage: noop
     };
 
-    state = {
-        sendStat: {
-            status: '',
-            paymentType: ''
-        }
-    }
-
-    handleSendDone = paymentType => {
-        this.setState({
-            sendStat: {
-                status: 'done',
-                paymentType
-            }
-        });
-    }
-
-    handleSendErron = () => {
-        this.setState({
-            sendStat: {
-                status: 'err',
-                paymentType: ''
-            }
-        });
-    }
-
-    handleFormSubmit = (event) => {
-        this.props.saveOrder(event)
+    handleFormSubmit = (values) => {
+        this.props.saveOrder(values)
             .then(() => {
-                this.handleSendDone(event.paymentType);
-                this.props.onVisibleMessage(this.state.sendStat);
+                this.props.onVisibleMessage({
+                    status: 'done',
+                    values
+                });
             })
             .catch(() => {
-                this.handleSendErron();
-                this.props.onVisibleMessage(this.state.sendStat);
+                this.props.onVisibleMessage({
+                    status: 'err',
+                    values
+                });
             });
     }
 
