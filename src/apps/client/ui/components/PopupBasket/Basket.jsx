@@ -12,11 +12,13 @@ import Scroll from '../Scroll/Scroll';
 import styles from './Basket.css';
 
 import { Link } from 'react-router-dom';
+import find from '@tinkoff/utils/array/find';
 
-const mapStateToProps = ({ popup, savedProducts }) => {
+const mapStateToProps = ({ popup, savedProducts, application }) => {
     return {
         basketVisible: popup.basketVisible,
-        basket: savedProducts.basket
+        basket: savedProducts.basket,
+        categories: application.categories
     };
 };
 
@@ -32,12 +34,14 @@ class Basket extends Component {
         basketVisible: PropTypes.bool.isRequired,
         basket: PropTypes.array.isRequired,
         setBasket: PropTypes.func.isRequired,
-        saveProductsToBasket: PropTypes.func.isRequired
+        saveProductsToBasket: PropTypes.func.isRequired,
+        categories: PropTypes.array
     };
 
     static defaultProps = {
         basketVisible: false,
-        basket: []
+        basket: [],
+        categories: []
     };
 
     state = {
@@ -120,6 +124,12 @@ class Basket extends Component {
         }
     };
 
+    getCategoryPath = categoryId => {
+        const { categories } = this.props;
+
+        return find(category => category.id === categoryId, categories).path;
+    };
+
     render () {
         const { basket, basketVisible } = this.props;
         const { productsMap } = this.state;
@@ -144,37 +154,43 @@ class Basket extends Component {
                     <div className={styles.items}>
                         <Scroll theme='light'>
                             {basket.map((item, i) => productsMap[i] !== 0 &&
-                                <div className={styles.item} key={i}>
-                                    <div className={styles.itemImageWrapp}>
-                                        <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
-                                            <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
-                                        </div>
-                                        <div className={styles.itemImage}>
-                                            <img
-                                                className={styles.itemAvatar}
-                                                src={item.product.avatar}
-                                                alt='product'
-                                            />
+                                    <div className={styles.item} key={i}>
+                                        <Link className={styles.productLink} key={item.product.id}
+                                            to={`/${this.getCategoryPath(item.product.categoryId)}/${item.product.id}`}>
+                                            <div className={styles.itemImageWrapp}>
+                                                <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
+                                                    <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png'
+                                                        alt='delete'/>
+                                                </div>
+                                                <div className={styles.itemImage}>
+                                                    <img
+                                                        className={styles.itemAvatar}
+                                                        src={item.product.avatar}
+                                                        alt='product'
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className={styles.itemInfo}>
+                                                <h2 className={styles.itemName}>{item.product.name}</h2>
+                                                <div className={styles.itemCategory}>{item.product.company}</div>
+                                                <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
+                                            </div>
+                                        </Link>
+                                        <div className={styles.itemAmount}>
+                                            <div className={styles.amountButton}
+                                                onClick={this.handleCountClick(i, 'minus')}>-
+                                            </div>
+                                            <div className={styles.countWrapp}>{productsMap[i]}</div>
+                                            <div className={styles.amountButton}
+                                                onClick={this.handleCountClick(i, 'plus')}>+
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className={styles.itemInfo}>
-                                        <h2 className={styles.itemName}>{item.product.name}</h2>
-                                        <div className={styles.itemCategory}>{item.product.company}</div>
-                                        <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
-                                    </div>
-                                    <div className={styles.itemAmount}>
-                                        <div className={styles.amountButton} onClick={this.handleCountClick(i, 'minus')}>-
-                                        </div>
-                                        <div className={styles.countWrapp}>{productsMap[i]}</div>
-                                        <div className={styles.amountButton} onClick={this.handleCountClick(i, 'plus')}>+
-                                        </div>
-                                    </div>
-                                </div>
                             )}
                         </Scroll>
                     </div>
                     <div className={styles.priceBlock}>
-                        <div className={styles.line} />
+                        <div className={styles.line}/>
                         <div className={styles.priceTotal}>Итог: {this.totalPrice()} грн</div>
                     </div>
                     {
@@ -194,7 +210,7 @@ class Basket extends Component {
                             </Link>
                         </div>
                         : <div className={styles.txt}>К сожалению, Вы не добавили в избранное товары.
-                        Исправить ситуацию Вы можете выбрав товар в каталоге.</div>                   
+                        Исправить ситуацию Вы можете выбрав товар в каталоге.</div>
                     }
                 </div>
             </div>

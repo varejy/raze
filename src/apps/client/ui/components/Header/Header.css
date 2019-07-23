@@ -88,6 +88,7 @@
     position: relative;
 
     @media (max-width: 900px){
+        display: none;
         position: absolute;
         width: 84%;
         justify-content: center;
@@ -99,6 +100,10 @@
 .contactsWrapper{
     position: relative;
     width: 200px;
+
+    @media (max-width: 900px){
+        display: none;
+    }
 }
 
 .contacts{
@@ -170,10 +175,6 @@
     margin-right: 27px;
 }
 
-.contactsHidden{
-    display: none;
-}
-
 .burgerContacts{
     position: fixed;
     bottom: 0;
@@ -221,8 +222,12 @@
     margin: 0 auto;
 }
 
-.menuHidden .menuList{
-    display: none;
+.menu .menuList{
+    display: flex;
+
+    @media(max-width: 900px) {
+        display: none;
+    }
 }
 
 .menuVisible .menuList{
@@ -315,6 +320,14 @@
 
     @media (max-width: 900px){
         margin: 0 13px;
+    }
+}
+
+.search{
+    display: none;
+
+    @media (max-width: 900px){
+        display: block;
     }
 }
 
@@ -455,4 +468,12 @@
 
 .infoLink{
     cursor: pointer;
+}
+
+.menuButton{
+    display: none;
+
+    @media (max-width: 900px){
+        display: block;
+    }
 }

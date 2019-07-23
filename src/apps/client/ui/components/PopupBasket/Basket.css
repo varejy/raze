@@ -259,3 +259,8 @@
     background-color: #4cb34f;
     color: white;
 }
+
+.productLink{
+    display: flex;
+    align-items: center;
+}
