@@ -11,38 +11,60 @@ import { Link, withRouter } from 'react-router-dom';
 
 import find from '@tinkoff/utils/array/find';
 
-const PREVIEW_WIDTH = 1110;
-const MAX_SLIDES = 3;
-
 const mapStateToProps = ({ application }) => {
     return {
-        categories: application.categories
+        categories: application.categories,
+        media: application.media
     };
 };
 
 class PreviouslyViewed extends Component {
     state = {
-        leftPosition: 0
+        leftPosition: 0,
+        containerWidth: 0,
+        maxSlides: 0,
+        slideSetsAmount: 0
     };
 
     static propTypes = {
         viewed: PropTypes.array,
-        categories: PropTypes.array
+        categories: PropTypes.array,
+        media: PropTypes.object.isRequired
     };
 
     static defaultProps = {
         viewed: [],
-        categories: []
+        categories: [],
+        media: {}
     };
 
+    componentWillReceiveProps (nextProps) {
+        if (this.props.media !== nextProps.media) {
+            const { media } = nextProps;
+            const { viewed } = this.props;
+
+            if (media.width < 550) {
+                this.setState({ containerWidth: 256, maxSlides: 1, slideSetsAmount: (viewed.length - 1) });
+            } else if (media.width < 990) {
+                this.setState({ containerWidth: 370, maxSlides: 1, slideSetsAmount: (viewed.length - 1) });
+            } else if (media.width < 1310) {
+                this.setState({ containerWidth: 740, maxSlides: 2, slideSetsAmount: 2 });
+            } else {
+                this.setState({ containerWidth: 1110, maxSlides: 3, slideSetsAmount: 1 });
+            }
+        }
+    }
+
     handleArrowClick = (arrowType) => () => {
+        const { containerWidth, leftPosition } = this.state;
+
         if (arrowType === 'left') {
             this.setState({
-                leftPosition: this.state.leftPosition - PREVIEW_WIDTH
+                leftPosition: leftPosition - containerWidth
             });
         } else {
             this.setState({
-                leftPosition: this.state.leftPosition + PREVIEW_WIDTH
+                leftPosition: leftPosition + containerWidth
             });
         }
     };
@@ -51,11 +73,11 @@ class PreviouslyViewed extends Component {
         const { categories } = this.props;
 
         return find(category => category.id === categoryId, categories).path;
-    }
+    };
 
     render () {
         const { viewed } = this.props;
-        const { leftPosition } = this.state;
+        const { leftPosition, containerWidth, maxSlides, slideSetsAmount } = this.state;
 
         return <div className={classNames(styles.productPreviouslyViewed, styles.infoContainer)}>
             {!!viewed.length && <div className={styles.bottomHeader}>недавно просматривали</div>}
@@ -79,7 +101,7 @@ class PreviouslyViewed extends Component {
                         )}
                     </div>
                 </div>
-                {viewed.length > MAX_SLIDES &&
+                {viewed.length > maxSlides &&
                 <div className={styles.buttons}>
                     <button
                         className={classNames(styles.buttonLeft)}
@@ -90,10 +112,14 @@ class PreviouslyViewed extends Component {
                     </button>
                     <button
                         className={classNames(styles.buttonRight)}
-                        onClick={this.state.leftPosition !== PREVIEW_WIDTH * (1) ? this.handleArrowClick('right') : undefined}
+                        onClick={this.state.leftPosition !== containerWidth * slideSetsAmount
+                            ? this.handleArrowClick('right')
+                            : undefined }
                     >
                         <div
-                            className={this.state.leftPosition === (PREVIEW_WIDTH * (1)) ? styles.buttonDisabled : styles.buttonEnabled}/>
+                            className={this.state.leftPosition === containerWidth * slideSetsAmount
+                                ? styles.buttonDisabled
+                                : styles.buttonEnabled }/>
                     </button>
                 </div>}
             </div>
