@@ -245,6 +245,12 @@
     background-color: #fff;
 }
 
+.txt {
+    color: white;
+    text-align: center;
+    font-family: HelveticaNeueCyrRoman;
+}
+
 .link {
     width: 100%
 }
