@@ -92,7 +92,7 @@ class OrderFilters extends Component {
         const selectedNamesMap = {
             paymentType: 'selectedPaymentTypes',
             status: 'selectedStatuses'
-        }
+        };
         const selected = this.state[selectedNamesMap[prop]];
         const nextSelectedStatus = {
             ...selected,
