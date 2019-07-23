@@ -21,6 +21,7 @@ import License from './ui/components/PopupLicense/License';
 import Header from './ui/components/Header/Header';
 import Footer from './ui/components/Footer/Footer';
 import Popup from './ui/components/Popup/Popup';
+import Helmet from './ui/components/Helmet/Helmet';
 
 import PropTypes from 'prop-types';
 import closePopup from './actions/closePopup';
@@ -62,6 +63,7 @@ class App extends Component {
     render () {
         return <main>
             <div className={styles.page}>
+                <Helmet/>
                 <Header/>
                 <Popup/>
                 <Basket/>
