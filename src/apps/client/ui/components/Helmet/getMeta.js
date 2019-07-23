@@ -2,11 +2,11 @@ import find from '@tinkoff/utils/array/find';
 import { matchPath } from 'react-router';
 
 const ROUTES = [
-    { id: 'mainPage', path: '/', exact: true, title: 'main', description: 'main' },
-    { id: 'searchPage', path: '/search', exact: true, title: 'search', description: 'search' },
-    { id: 'orderPage', path: '/order', exact: true, title: 'order', description: 'order' },
-    { id: 'productsPage', path: '/:category', exact: true, title: 'products', description: 'products' },
-    { id: 'productPage', path: '/:category/:id', exact: true, title: 'product', description: 'product' }
+    { id: 'mainPage', path: '/', exact: true },
+    { id: 'searchPage', path: '/search', exact: true },
+    { id: 'orderPage', path: '/order', exact: true },
+    { id: 'productsPage', path: '/:category', exact: true },
+    { id: 'productPage', path: '/:category/:id', exact: true }
 ];
 
 const META_DATA = {

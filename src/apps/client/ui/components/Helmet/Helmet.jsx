@@ -3,16 +3,8 @@ import PropTypes from 'prop-types';
 
 import ReactHelmet from 'react-helmet';
 
-import { connect } from 'react-redux';
-
 import { withRouter } from 'react-router-dom';
 import getMeta from './getMeta';
-
-const mapStateToProps = ({ application }) => {
-    return {
-        langMap: application.langMap
-    };
-};
 
 class Helmet extends Component {
     static propTypes = {
@@ -20,7 +12,6 @@ class Helmet extends Component {
     };
 
     static defaultProps = {
-        langMap: {},
         location: {}
     };
 
@@ -50,9 +41,8 @@ class Helmet extends Component {
         return <ReactHelmet>
             <title>{meta.title}</title>
             <meta name='description' content={meta.description} />
-            <meta name='title' content={meta.title} />
         </ReactHelmet>;
     }
 }
 
-export default withRouter(connect(mapStateToProps)(Helmet));
+export default withRouter(Helmet);
