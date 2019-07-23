@@ -16,6 +16,7 @@
     position: fixed;
     top: 35px;
     right: 8%;
+    z-index: 1250;
 }
 
 .line {
