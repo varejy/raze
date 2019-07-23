@@ -13,6 +13,7 @@ export default function editCategory (req, res) {
 
     const filtersWithIds = map(filter => {
         return {
+            options: filter.options,
             name: filter.name,
             type: filter.type,
             id: filter.id || uniqid()

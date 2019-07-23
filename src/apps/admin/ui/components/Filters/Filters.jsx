@@ -15,6 +15,7 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Chip from '@material-ui/core/Chip';
 import { withStyles } from '@material-ui/core/styles';
 
 import remove from '@tinkoff/utils/array/remove';
@@ -27,7 +28,18 @@ const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}>reorder</ReorderIcon>
 ));
 
-const FilterSortable = SortableElement(({ index, filter, isSorting, handleFilterDelete, handleFilterChange, classes }) => (
+const FilterSortable = SortableElement((
+    {
+        index,
+        filter,
+        filters,
+        isSorting,
+        handleFilterOptionAdd,
+        handleDelete,
+        handleFilterDelete,
+        handleFilterChange,
+        classes
+    }) => (
     <FormGroup className={classNames(classes.filter, { [classes.filterIsSortable]: isSorting })} row>
         <div className={classes.filterGroup}>
             <ButtonSortable imageClassName={classes.buttonSortable}/>
@@ -54,6 +66,34 @@ const FilterSortable = SortableElement(({ index, filter, isSorting, handleFilter
                         <MenuItem value='range'>Range</MenuItem>
                     </Select>
                 </FormControl>
+                {
+                    filters[index].type === 'checkbox' && <div>
+                        <TextField
+                            className={classes.filterField}
+                            label='Название новой опции'
+                            value={filter.optionsInput}
+                            onChange={handleFilterChange('optionsInput', index)}
+                            margin='normal'
+                            variant='outlined'
+                        />
+                        <Fab size="small" color='primary' className={classes.addOptionButton} onClick={handleFilterOptionAdd(index)} aria-label="Add">
+                            <AddIcon />
+                        </Fab>
+                        <div className={classes.optionsWrapp}>
+                            {
+                                filter.options &&
+                            filter.options.map((option, i) => <Chip
+                                key={i}
+                                label={option}
+                                variant="outlined"
+                                color="primary"
+                                onDelete={handleDelete(index, i)}
+                                className={classes.chip}
+                            />)
+                            }
+                        </div>
+                    </div>
+                }
             </div>
             <IconButton aria-label='Delete' className={classes.deleteFilterButton} onClick={handleFilterDelete(index)}>
                 <DeleteIcon />
@@ -65,7 +105,7 @@ const FilterSortable = SortableElement(({ index, filter, isSorting, handleFilter
 const SlidesFilters = SortableContainer(({ filters, classes, ...reset }) =>
     <div className={classes.filtersWrapp}>
         {
-            filters.map((filter, i) => <FilterSortable key={i} index={i} filter={filter} {...reset} classes={classes}/>)
+            filters.map((filter, i) => <FilterSortable key={i} filters={filters} index={i} filter={filter} {...reset} classes={classes}/>)
         }
     </div>
 );
@@ -76,7 +116,9 @@ const materialStyles = theme => ({
         flexDirection: 'column'
     },
     createFiltersHeader: {
-        display: 'flex'
+        display: 'flex',
+        marginTop: '8px',
+        marginBottom: '8px'
     },
     filterTitle: {
         marginRight: '20px',
@@ -125,13 +167,15 @@ const materialStyles = theme => ({
     buttonSortable: {
         cursor: 'grab'
     },
+    addOptionButton: {
+        margin: '18px'
+    },
+    chip: {
+        margin: '4px',
+        marginBottom: '19px'
+    },
     selectEmpty: {
         marginTop: 2 * theme.spacing.unit
-    },
-    addIcon: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-        marginTop: '20px'
     }
 });
 
@@ -146,10 +190,14 @@ class Filters extends Component {
         filters: []
     };
 
-    state = {
-        filters: this.props.filters,
-        isSorting: false
-    };
+    constructor (prop) {
+        super(prop);
+
+        this.state = {
+            filters: this.props.filters,
+            isSorting: false
+        };
+    }
 
     handleFilterAdd = () => {
         const { filters } = this.state;
@@ -162,11 +210,33 @@ class Filters extends Component {
         });
     }
 
+    handleFilterOptionAdd = i => () => {
+        const { filters } = this.state;
+
+        if (filters[i].optionsInput === ' ' || filters[i].optionsInput === '' || filters[i].optionsInput === undefined) {
+            return;
+        } else {
+            filters[i].options = [...filters[i].options, filters[i].optionsInput];
+
+            filters[i].optionsInput = '';
+
+            this.setState({
+                filters
+            });
+        }
+        this.setState({
+            filters
+        });
+    }
+
     handleFilterChange = (prop, i) => event => {
         const { filters } = this.state;
 
         filters[i][prop] = event.target.value;
 
+        if (filters[i].options === undefined) {
+            filters[i].options = [];
+        }
         this.setState({
             filters
         });
@@ -179,6 +249,16 @@ class Filters extends Component {
             filters: remove(i, 1, filters)
         });
     };
+
+    handleDelete = (filterId, i) => () => {
+        const { filters } = this.state;
+
+        filters[filterId].options = remove(i, 1, filters[filterId].options);
+
+        this.setState({
+            filters
+        });
+    }
 
     onDragStart = () => {
         this.setState({
@@ -204,23 +284,26 @@ class Filters extends Component {
         return <div className={classes.createFiltersWrapp}>
             <div className={classes.createFiltersHeader}>
                 <Typography className={classes.filterTitle} variant='h5'>Фильтр</Typography>
+                <div>
+                    <Fab size="small" color='primary' onClick={this.handleFilterAdd} aria-label="Add">
+                        <AddIcon />
+                    </Fab>
+                </div>
             </div>
             <SlidesFilters
                 axis='xy'
                 filters={filters}
                 handleFilterDelete={this.handleFilterDelete}
                 handleFilterChange={this.handleFilterChange}
+                handleFilterOptionAdd={this.handleFilterOptionAdd}
+                handleDelete={this.handleDelete}
                 onSortStart={this.onDragStart}
                 onSortEnd={this.onDragEnd}
+                filters={filters}
                 isSorting={isSorting}
                 useDragHandle
                 classes={classes}
             />
-            <div className={classes.addIcon}>
-                <Fab size="small" color='primary' onClick={this.handleFilterAdd} aria-label="Add">
-                    <AddIcon />
-                </Fab>
-            </div>
         </div>;
     }
 }
