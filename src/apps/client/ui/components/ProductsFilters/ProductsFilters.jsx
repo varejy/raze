@@ -38,7 +38,7 @@ const DEFAULT_FILTERS = [
 
 class ProductsFilters extends Component {
     state = {
-        filtersVisible: false
+        filtersVisible: null
     };
 
     constructor (props) {
@@ -50,7 +50,6 @@ class ProductsFilters extends Component {
                 this.getFilters()
             ])
         };
-        this.filtersMap = {};
     }
 
     static propTypes = {

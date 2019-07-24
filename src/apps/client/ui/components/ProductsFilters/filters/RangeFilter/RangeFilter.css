@@ -3,7 +3,7 @@
     flex-direction: column;
     margin-bottom: 45px;
 
-    @media (max-width: 1169px) {
+    @media (max-width: 1023px) {
         align-items: center;
     }
 }
