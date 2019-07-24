@@ -147,7 +147,7 @@ class ProductsFilters extends Component {
                 )(products);
                 const options = filterUtil(option => any(optionInProduct => option === optionInProduct, optionsInProduct), filter.options);
 
-                return filter.options.length > 1 ? [
+                return options.length > 1 ? [
                     ...filters,
                     {
                         ...filter,
