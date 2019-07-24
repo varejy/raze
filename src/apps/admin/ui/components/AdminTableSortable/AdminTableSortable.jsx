@@ -216,34 +216,6 @@ class AdminTableSortable extends React.Component {
         }
     }
 
-    handleSelectAllClick = event => {
-        const { values } = this.state;
-        const { selected, rowsPerPage, page, checkboxIndeterminate } = this.state;
-
-        if (event.target.checked && !checkboxIndeterminate) {
-            const newSelected = compose(
-                concat(selected),
-                without(selected),
-                slice(rowsPerPage * page, rowsPerPage * (page + 1))
-            )(values);
-
-            return this.setState({
-                selected: newSelected,
-                checkboxIndeterminate: true
-            });
-        }
-
-        const newSelected = without(
-            slice(rowsPerPage * page, rowsPerPage * (page + 1), values),
-            selected
-        );
-
-        this.setState({
-            selected: newSelected,
-            checkboxIndeterminate: false
-        });
-    };
-
     handleSelectedCloseClick = () => {
         this.setState({
             selected: [],
@@ -306,14 +278,15 @@ class AdminTableSortable extends React.Component {
 
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { values } = this.state;
-        this.setState({
-            values: arrayMove(values, oldIndex, newIndex)
-        });
-        console.log(this.state.values)
-        this.state.values.map((category, i) => {
+        const newValues = arrayMove(values, oldIndex, newIndex)
+        newValues.map((category, i) => {
             category.positionIndex = i;
 
             this.props.editCategory(category);
+        });
+
+        this.setState({
+            values: newValues
         });
     };
 
