@@ -651,7 +651,10 @@ class ProductForm extends Component {
                                     }}
                                     required
                                 >
-                                    {filter.options.map((option, i) => (
+                                    {[
+                                        '-',
+                                        ...filter.options
+                                    ].map((option, i) => (
                                         <MenuItem key={i} value={option}>
                                             {option}
                                         </MenuItem>

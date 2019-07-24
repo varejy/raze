@@ -111,7 +111,6 @@ class ProductsFilters extends Component {
                         : product.price
                     )
                 )(products);
-
                 const min = getMinOfArray(prices);
                 const max = getMaxOfArray(prices);
 
@@ -163,6 +162,10 @@ class ProductsFilters extends Component {
                         .map(productFilter => filter.id === productFilter.id && productFilter.value)
                     )
                 )(products);
+
+                if (propsArr.length < 2) {
+                    return filters;
+                }
 
                 const min = getMinOfArray(propsArr);
                 const max = getMaxOfArray(propsArr);

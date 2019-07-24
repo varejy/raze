@@ -17,6 +17,7 @@ import ReorderIcon from '@material-ui/icons/Reorder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Chip from '@material-ui/core/Chip';
 import { withStyles } from '@material-ui/core/styles';
+import trim from '@tinkoff/utils/string/trim';
 
 import remove from '@tinkoff/utils/array/remove';
 
@@ -212,17 +213,15 @@ class Filters extends Component {
     handleFilterOptionAdd = i => () => {
         const { filters } = this.state;
 
-        if (filters[i].optionsInput === ' ' || filters[i].optionsInput === '' || filters[i].optionsInput === undefined) {
+        const optionsInput = trim(filters[i].optionsInput);
+
+        if (!optionsInput) {
             return;
-        } else {
-            filters[i].options = [...filters[i].options, filters[i].optionsInput];
-
-            filters[i].optionsInput = '';
-
-            this.setState({
-                filters
-            });
         }
+
+        filters[i].options = [...filters[i].options, filters[i].optionsInput];
+        filters[i].optionsInput = '';
+
         this.setState({
             filters
         });
