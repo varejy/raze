@@ -245,6 +245,12 @@
     background-color: #fff;
 }
 
+.txt {
+    color: white;
+    text-align: center;
+    font-family: HelveticaNeueCyrRoman;
+}
+
 .link {
     width: 100%
 }
@@ -252,4 +258,9 @@
 .ordering{
     background-color: #4cb34f;
     color: white;
+}
+
+.productLink{
+    display: flex;
+    align-items: center;
 }

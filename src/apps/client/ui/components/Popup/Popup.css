@@ -1,6 +1,6 @@
 .popup {
     position: fixed;
-    z-index: 999;
+    z-index: 1300;
     top: 0;
     left: 0;
     right: 0;
@@ -17,13 +17,35 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 1350;
+
+    @media (max-width: 720px){
+        height: 10vw;
+        width: 10vw;
+        position: fixed;
+        top: 0;
+        left: 90vw;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0);
+        z-index: 1700;
+    }
 }
 
 .container {
     position: relative;
     z-index: 1500;
     height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    @media (max-width: 720px){
+        height: 100vh;
+        position: relative;
+        z-index: 1500;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 }
 
 .content {
