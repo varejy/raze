@@ -50,6 +50,8 @@ class ProductsFilters extends Component {
                 this.getFilters()
             ])
         };
+
+        this.filtersMap = {};
     }
 
     static propTypes = {
