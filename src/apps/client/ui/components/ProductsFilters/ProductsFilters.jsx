@@ -37,7 +37,7 @@ const DEFAULT_FILTERS = [
 
 class ProductsFilters extends Component {
     state = {
-        filtersVisible: false
+        filtersVisible: null
     };
 
     constructor (props) {
@@ -49,7 +49,6 @@ class ProductsFilters extends Component {
                 this.getFilters()
             ])
         };
-        this.filtersMap = {};
     }
 
     static propTypes = {
@@ -242,13 +241,20 @@ class ProductsFilters extends Component {
                     </div>
                 }
             </div>}
-            <section className={styles.filtersContainer} style={{ display: filtersVisible ? 'flex' : 'none' }}>
+            <section className={styles.filtersContainer}>
                 {
                     filters.map((filter, i) => <div key={i}>
                         {this.renderFilter(filter)}
                     </div>)
                 }
             </section>
+            { filtersVisible && <section className={styles.filtersContainerMobile} style={{ display: filtersVisible ? 'flex' : 'none' }}>
+                {
+                    filters.map((filter, i) => <div key={i}>
+                        {this.renderFilter(filter)}
+                    </div>)
+                }
+            </section> }
         </div>;
     }
 }

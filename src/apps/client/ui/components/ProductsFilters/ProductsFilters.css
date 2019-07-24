@@ -33,11 +33,18 @@
 }
 
 .filtersContainer{
+    @media (max-width: 1169px){
+        display: none;
+    }
+}
+
+.filtersContainerMobile{
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    align-items: center;
     display: none;
 
     @media (max-width: 1169px){
-        flex-direction: column-reverse;
-        justify-content: flex-start;
-        align-items: center;
+        display: block;
     }
 }
