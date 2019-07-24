@@ -29,11 +29,7 @@ import editCategory from '../../../services/editCategory';
 
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
-import compose from '@tinkoff/utils/function/compose';
 import difference from '@tinkoff/utils/array/difference';
-import slice from '@tinkoff/utils/array/slice';
-import concat from '@tinkoff/utils/array/concat';
-import without from '@tinkoff/utils/array/without';
 import noop from '@tinkoff/utils/function/noop';
 import any from '@tinkoff/utils/array/any';
 
@@ -278,7 +274,7 @@ class AdminTableSortable extends React.Component {
 
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { values } = this.state;
-        const newValues = arrayMove(values, oldIndex, newIndex)
+        const newValues = arrayMove(values, oldIndex, newIndex);
         newValues.map((category, i) => {
             category.positionIndex = i;
 
