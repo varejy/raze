@@ -47,7 +47,8 @@ import arrayMove from '../../../utils/arrayMove';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
-const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters'];
+const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
+    'metaTitle', 'metaDescription'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -274,7 +275,9 @@ class ProductForm extends Component {
             filters,
             hidden,
             notAvailable,
-            id
+            id,
+            metaTitle,
+            metaDescription
         }) => {
         const tags = compose(
             keys,
@@ -293,7 +296,9 @@ class ProductForm extends Component {
             tags,
             notAvailable,
             hidden,
-            id
+            id,
+            metaTitle,
+            metaDescription
         };
     };
 
@@ -752,6 +757,24 @@ class ProductForm extends Component {
                     />
                 </Tooltip>
             </div>
+            <Divider className={classes.divider}/>
+            <Typography variant='h6'>SEO</Typography>
+            <TextField
+                label='Title'
+                value={product.metaTitle}
+                onChange={this.handleChange('metaTitle')}
+                margin='normal'
+                variant='outlined'
+                fullWidth
+            />
+            <TextField
+                label='Description'
+                value={product.metaDescription}
+                onChange={this.handleChange('metaDescription')}
+                margin='normal'
+                variant='outlined'
+                fullWidth
+            />
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>
                     Сохранить
