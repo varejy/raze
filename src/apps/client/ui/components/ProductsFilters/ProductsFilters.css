@@ -1,7 +1,7 @@
 .filterButton{
     display: none;
 
-    @media (max-width: 1169px){
+    @media (max-width: 1023px){
         font-family: MontserratMedium, arial;
         font-size: 14px;
         color: #00a046;
@@ -33,11 +33,18 @@
 }
 
 .filtersContainer{
-    display: none;
+    display: block;
 
-    @media (max-width: 1169px){
+    @media (max-width: 1023px){
+        display: flex;
         flex-direction: column-reverse;
         justify-content: flex-start;
         align-items: center;
+    }
+}
+
+.filtersInvisible{
+    @media (max-width: 1023px){
+        display: none;
     }
 }
