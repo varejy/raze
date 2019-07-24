@@ -14,6 +14,7 @@ import reduceObj from '@tinkoff/utils/object/reduce';
 import prop from '@tinkoff/utils/object/prop';
 import includes from '@tinkoff/utils/array/includes';
 import flatten from '@tinkoff/utils/array/flatten';
+import any from '@tinkoff/utils/array/any';
 import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
 import { connect } from 'react-redux';
@@ -144,11 +145,19 @@ class ProductsFilters extends Component {
 
             switch (filter.type) {
             case 'checkbox':
+                const optionsInProduct = compose(
+                    uniq,
+                    filterUtil(elem => !!elem),
+                    flatten,
+                    map(product => product.filters.map(productFilter => filter.id === productFilter.id && productFilter.value))
+                )(products);
+                const options = filterUtil(option => any(optionInProduct => option === optionInProduct, optionsInProduct), filter.options);
+
                 return filter.options.length > 1 ? [
                     ...filters,
                     {
                         ...filter,
-                        options: filter.options
+                        options
                     }
                 ] : filters;
             case 'range':
