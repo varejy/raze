@@ -32,7 +32,6 @@ const FilterSortable = SortableElement((
     {
         index,
         filter,
-        filters,
         isSorting,
         handleFilterOptionAdd,
         handleDelete,
@@ -67,7 +66,7 @@ const FilterSortable = SortableElement((
                     </Select>
                 </FormControl>
                 {
-                    filters[index].type === 'checkbox' && <div>
+                    filter.type === 'checkbox' && <div>
                         <TextField
                             className={classes.filterField}
                             label='Название новой опции'
@@ -102,10 +101,10 @@ const FilterSortable = SortableElement((
     </FormGroup>
 ));
 
-const SlidesFilters = SortableContainer(({ filters, classes, ...reset }) =>
+const SlidesFilters = SortableContainer(({ filters, classes, ...rest }) =>
     <div className={classes.filtersWrapp}>
         {
-            filters.map((filter, i) => <FilterSortable key={i} filters={filters} index={i} filter={filter} {...reset} classes={classes}/>)
+            filters.map((filter, i) => <FilterSortable key={i} index={i} filter={filter} {...rest} classes={classes}/>)
         }
     </div>
 );
@@ -279,7 +278,7 @@ class Filters extends Component {
 
         if (filters !== this.props.filters) {
             this.props.onFilterChange(filters);
-        };
+        }
 
         return <div className={classes.createFiltersWrapp}>
             <div className={classes.createFiltersHeader}>
@@ -297,9 +296,8 @@ class Filters extends Component {
                 handleFilterChange={this.handleFilterChange}
                 handleFilterOptionAdd={this.handleFilterOptionAdd}
                 handleDelete={this.handleDelete}
-                onSortStart={this.onDragStart}
+                onSortStarТt={this.onDragStart}
                 onSortEnd={this.onDragEnd}
-                filters={filters}
                 isSorting={isSorting}
                 useDragHandle
                 classes={classes}
