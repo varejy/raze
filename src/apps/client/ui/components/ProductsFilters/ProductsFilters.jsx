@@ -144,18 +144,11 @@ class ProductsFilters extends Component {
 
             switch (filter.type) {
             case 'checkbox':
-                const options = compose(
-                    uniq,
-                    filterUtil(elem => !!elem),
-                    flatten,
-                    map(product => product.filters.map(productFilter => filter.id === productFilter.id && productFilter.value))
-                )(products);
-
-                return options.length > 1 ? [
+                return filter.options.length > 1 ? [
                     ...filters,
                     {
                         ...filter,
-                        options
+                        options: filter.options
                     }
                 ] : filters;
             case 'range':
