@@ -16,6 +16,7 @@ import includes from '@tinkoff/utils/array/includes';
 import flatten from '@tinkoff/utils/array/flatten';
 import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
+import classNames from 'classnames';
 
 const DEFAULT_FILTERS = [
     {
@@ -242,7 +243,9 @@ class ProductsFilters extends Component {
                     </div>
                 }
             </div>}
-            <section className={styles.filtersContainer} style={{ display: filtersVisible ? 'flex' : 'none' }}>
+            <section className={classNames(styles.filtersContainer, {
+                [styles.filtersInvisible]: !filtersVisible
+            })}>
                 {
                     filters.map((filter, i) => <div key={i}>
                         {this.renderFilter(filter)}

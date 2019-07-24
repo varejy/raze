@@ -99,13 +99,17 @@ class Header extends Component {
                     <div className={styles.logoLeft}>raze</div>
                     <div className={styles.logoRight}>Your<br/>knife<br/><div className={styles.logoGreen}>world</div></div>
                 </Link>
-                <div className={styles.searchForm} style={{ display: searchVisible && 'flex' }}>
+                <div className={classNames(styles.searchForm, {
+                    [styles.searchFormFlex]: searchVisible
+                })}>
                     <Search
                         isMobileVersion = {!!searchVisible}
                         handleCloseSearch = {this.handleCloseSearch}
                     />
                 </div>
-                <div className={styles.menuButton} style={{ display: menuVisible && 'block' }}>
+                <div className={classNames(styles.menuButton, {
+                    [styles.menuButtonBlock]: menuVisible
+                })}>
                     <MenuButton
                         menuVisible = {menuVisible}
                         onClick={this.handleBurgerMenuClick}
@@ -160,7 +164,9 @@ class Header extends Component {
                             </NavLink>) }
                     </ul>
                 </div>
-                <div className={styles.likesBasket} style={{ display: searchVisible && 'none' }}>
+                <div className={classNames(styles.likesBasket, {
+                    [ styles.likesBasketHidden ]: searchVisible
+                })}>
                     <div onClick={this.handleOpenLiked} className={classNames(
                         styles.bottomIconWrapper, {
                             [styles.ordersCounterBig]: likedAmount > 9,
