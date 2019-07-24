@@ -194,22 +194,22 @@ class Basket extends Component {
                         <div className={styles.priceTotal}>Итог: {this.totalPrice()} грн</div>
                     </div>
                     {
-                            basket.length
-                             ? <div className={styles.buttonsWrapp}>
-                            <button
-                                className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
-                                onClick={this.handleCloseBasket}>
-                                продолжить покупки
-                            </button>
-                            <Link className={styles.link} to='/order'>
+                        basket.length
+                            ? <div className={styles.buttonsWrapp}>
                                 <button
-                                    className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}
-                                    onClick={this.handleCloseBasket}>оформление
-                                    заказа
+                                    className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
+                                    onClick={this.handleCloseBasket}>
+                                продолжить покупки
                                 </button>
-                            </Link>
-                        </div>
-                        : <div className={styles.txt}>К сожалению, Вы не добавили в избранное товары.
+                                <Link className={styles.link} to='/order'>
+                                    <button
+                                        className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}
+                                        onClick={this.handleCloseBasket}>оформление
+                                    заказа
+                                    </button>
+                                </Link>
+                            </div>
+                            : <div className={styles.txt}>К сожалению, Вы не добавили в избранное товары.
                         Исправить ситуацию Вы можете выбрав товар в каталоге.</div>
                     }
                 </div>
