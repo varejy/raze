@@ -6,10 +6,18 @@ import ReactHelmet from 'react-helmet';
 import { connect } from 'react-redux';
 
 import { matchPath, withRouter } from 'react-router-dom';
-import getMeta from './getMeta';
+import getMeta from './utils/getMetaByUrl';
 import find from '@tinkoff/utils/array/find';
 
 const PRODUCT_PATH = '/:category/:id';
+
+const META_DATA = {
+    main: { title: 'main', description: 'main' },
+    search: { title: 'search', description: 'search' },
+    order: { title: 'order', description: 'order' },
+    products: { title: 'products', description: 'products' },
+    product: { title: 'product', description: 'product' }
+};
 
 const mapStateToProps = ({ application }) => {
     return {
@@ -35,11 +43,9 @@ class Helmet extends Component {
         super(...args);
 
         const { location: { pathname } } = this.props;
-        const category = find(route => matchPath(pathname, { path: `/${route.path}`, exact: true }), this.props.categories);
-        const product = this.getProduct(this.props);
 
         this.state = {
-            meta: getMeta(pathname, product, category)
+            meta: getMeta(pathname, META_DATA)
         };
     }
 
@@ -55,9 +61,18 @@ class Helmet extends Component {
         const { location: { pathname } } = nextProps;
         const category = find(route => matchPath(pathname, { path: `/${route.path}`, exact: true }), nextProps.categories);
 
+        let NEW_META_DATA;
+        if (product !== undefined) {
+            NEW_META_DATA = { product: { title: product.metaTitle, description: product.metaDescription } };
+        } else if (category) {
+            NEW_META_DATA = { products: { title: category.name, description: category.name } };
+        } else {
+            NEW_META_DATA = META_DATA;
+        }
+
         if (this.props !== nextProps) {
             this.setState({
-                meta: getMeta(pathname, product, category)
+                meta: getMeta(pathname, NEW_META_DATA)
             });
         }
     }
