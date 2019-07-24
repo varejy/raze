@@ -17,7 +17,9 @@ const VALUES = [
     'files',
     'tags',
     'filters',
-    'rating'
+    'rating',
+    'metaTitle',
+    'metaDescription'
 ];
 
 export default function getProductValues (product) {

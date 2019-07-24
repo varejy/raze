@@ -25,7 +25,9 @@ const Product = new Schema({
     tags: [{ type: String, required: true }],
     categoryId: { type: String, required: true },
     date: { type: Number, required: true },
-    views: { type: Number, required: true }
+    views: { type: Number, required: true },
+    metaTitle: { type: String },
+    metaDescription: { type: String }
 });
 
 export default mongoose.model('Product', Product);
