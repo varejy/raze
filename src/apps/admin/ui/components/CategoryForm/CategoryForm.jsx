@@ -66,8 +66,8 @@ class CategoryForm extends Component {
                     ...this.state.category,
                     positionIndex: this.props.categories.length
                 })
-                    .then(this.props.onDone())
-        );
+        )
+            .then(this.props.onDone());
     };
 
     handleChange = prop => event => {

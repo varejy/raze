@@ -309,6 +309,7 @@ class AdminTableSortable extends React.Component {
         this.setState({
             values: arrayMove(values, oldIndex, newIndex)
         });
+        console.log(this.state.values)
         this.state.values.map((category, i) => {
             category.positionIndex = i;
 
