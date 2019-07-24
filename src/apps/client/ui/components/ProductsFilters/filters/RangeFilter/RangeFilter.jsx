@@ -7,10 +7,6 @@ import InputRange from 'react-input-range';
 
 import styles from './RangeFilter.css';
 
-const STEP_DIFF = 100;
-const BIG_STEP = 1;
-const SMALL_STEP = 0.01;
-
 class RangeFilter extends Component {
     static propTypes = {
         filter: PropTypes.object.isRequired,
@@ -24,7 +20,7 @@ class RangeFilter extends Component {
 
         this.state = {
             defaultValue: price,
-            step: (price.max - price.min) < STEP_DIFF ? SMALL_STEP : BIG_STEP,
+            step: this.getStep(price),
             value: price
         };
     }
@@ -35,26 +31,38 @@ class RangeFilter extends Component {
 
             this.setState({
                 defaultValue: price,
-                step: (price.max - price.min) < STEP_DIFF ? SMALL_STEP : BIG_STEP,
+                step: this.getStep(price),
                 value: price
             });
         }
     }
 
-    getDefaultPrice (props = this.props) {
+    getStep = ({ min, max }) => {
+        switch (true) {
+        case (max - min < 1):
+            return 0.001;
+        case (max - min < 100):
+            return 0.01;
+        default:
+            return 1;
+        }
+    };
+
+    getDefaultPrice = (props = this.props) => {
         return {
             ...pick(['min', 'max'], props.filter)
         };
-    }
+    };
 
     handleInputChange = value => {
         const { defaultValue: { min, max } } = this.state;
 
-        if (value.min < min || value.max > max) {
-            return;
-        }
-
-        this.setState({ value });
+        this.setState({
+            value: {
+                min: value.min < min ? min : value.min,
+                max: value.max > max ? max : value.max
+            }
+        });
     }
 
     render () {

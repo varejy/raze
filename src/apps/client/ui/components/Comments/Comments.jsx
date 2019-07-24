@@ -19,14 +19,13 @@ class Comments extends Component {
         return <section className={styles.commentsWrapper}>
             {
                 productComments.length
-                    ? productComments
-                        .map((comment, i) => {
-                            return (
-                                <div key={i} className={styles.feedback}>
-                                    <Comment name={comment.name} rating={comment.rating} comment={comment.text} />
-                                </div>
-                            );
-                        })
+                    ? productComments.map((comment, i) => {
+                        return (
+                            <div key={i} className={styles.comment}>
+                                <Comment name={comment.name} rating={comment.rating} comment={comment.text} />
+                            </div>
+                        );
+                    })
                     : <div className={styles.feedback}>
                         У этого товара еще нет комментариев, будьте первым кто его оставит!
                     </div>
