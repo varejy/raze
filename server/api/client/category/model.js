@@ -11,7 +11,8 @@ const Category = new Schema({
     filters: [{
         id: { type: String, required: true },
         name: { type: String, required: true },
-        type: { type: String, required: true }
+        type: { type: String, required: true },
+        options: { type: Array, required: false }
     }]
 });
 

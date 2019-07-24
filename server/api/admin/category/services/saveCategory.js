@@ -10,6 +10,7 @@ export default function saveCategory (req, res) {
     const { name, path, positionIndex, hidden, filters } = req.body;
     const filtersWithIds = map(filter => {
         return {
+            options: filter.options,
             name: filter.name,
             type: filter.type,
             id: uniqid()

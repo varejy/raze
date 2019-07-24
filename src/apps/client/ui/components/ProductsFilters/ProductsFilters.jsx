@@ -14,6 +14,7 @@ import reduceObj from '@tinkoff/utils/object/reduce';
 import prop from '@tinkoff/utils/object/prop';
 import includes from '@tinkoff/utils/array/includes';
 import flatten from '@tinkoff/utils/array/flatten';
+import any from '@tinkoff/utils/array/any';
 import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
 import classNames from 'classnames';
@@ -110,7 +111,6 @@ class ProductsFilters extends Component {
                         : product.price
                     )
                 )(products);
-
                 const min = getMinOfArray(prices);
                 const max = getMaxOfArray(prices);
 
@@ -138,12 +138,13 @@ class ProductsFilters extends Component {
 
             switch (filter.type) {
             case 'checkbox':
-                const options = compose(
+                const optionsInProduct = compose(
                     uniq,
                     filterUtil(elem => !!elem),
                     flatten,
                     map(product => product.filters.map(productFilter => filter.id === productFilter.id && productFilter.value))
                 )(products);
+                const options = filterUtil(option => any(optionInProduct => option === optionInProduct, optionsInProduct), filter.options);
 
                 return options.length > 1 ? [
                     ...filters,
@@ -161,6 +162,10 @@ class ProductsFilters extends Component {
                         .map(productFilter => filter.id === productFilter.id && productFilter.value)
                     )
                 )(products);
+
+                if (propsArr.length < 2) {
+                    return filters;
+                }
 
                 const min = getMinOfArray(propsArr);
                 const max = getMaxOfArray(propsArr);
