@@ -9,7 +9,7 @@ import map from '@tinkoff/utils/array/map';
 import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constants/constants';
 
 export default function editCategory (req, res) {
-    const { name, path, hidden, id, filters } = req.body;
+    const { name, path, hidden, id, filters, metaTitle, metaDescription } = req.body;
 
     const filtersWithIds = map(filter => {
         return {
@@ -21,7 +21,7 @@ export default function editCategory (req, res) {
 
     getCategory(id)
         .then(oldCategory => {
-            editCategoryQuery({ name, hidden, path, id, filters: filtersWithIds })
+            editCategoryQuery({ name, hidden, path, id, filters: filtersWithIds, metaTitle, metaDescription })
                 .then(() => {
                     if (oldCategory.hidden === hidden) {
                         return;

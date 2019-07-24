@@ -11,7 +11,9 @@ const Category = new Schema({
         id: { type: String, required: true },
         name: { type: String, required: true },
         type: { type: String, required: true }
-    }]
+    }],
+    metaTitle: { type: String },
+    metaDescription: { type: String }
 });
 
 export default mongoose.model('Category', Category);

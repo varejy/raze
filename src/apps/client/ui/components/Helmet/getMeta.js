@@ -23,7 +23,7 @@ export default function (pathname, product, category) {
     if (match.id === 'productPage' && product !== undefined) {
         result = { title: product.metaTitle, description: product.metaDescription };
     } else if (category) {
-        result = { title: category.name, description: category.name };
+        result = { title: category.metaTitle, description: category.metaDescription };
     } else {
         result = META_DATA[match.id];
     }
