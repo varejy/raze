@@ -275,7 +275,7 @@ class AdminTableSortable extends React.Component {
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { values } = this.state;
         const newValues = arrayMove(values, oldIndex, newIndex);
-        newValues.map((category, i) => {
+        newValues.forEach((category, i) => {
             category.positionIndex = i;
 
             this.props.editCategory(category);
