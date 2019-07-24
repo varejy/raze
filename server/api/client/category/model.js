@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const Category = new Schema({
     id: { type: String, required: true },
-    positionId: { type: Number, required: true },
+    positionIndex: { type: Number, required: true },
     name: { type: String, required: true },
     path: { type: String, required: true },
     hidden: { type: Boolean, required: true },

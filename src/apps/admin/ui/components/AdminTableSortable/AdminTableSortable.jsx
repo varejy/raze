@@ -310,20 +310,16 @@ class AdminTableSortable extends React.Component {
             values: arrayMove(values, oldIndex, newIndex)
         });
         this.state.values.map((category, i) => {
-            category.positionId = i + 1;
+            category.positionIndex = i;
 
-            console.log(category)
-
-            this.props.editCategory(category)
-        })
+            this.props.editCategory(category);
+        });
     };
 
     render () {
         const { classes, headerRows, tableCells, headerText, deleteValueWarningTitle, deleteValuesWarningTitle, filters } = this.props;
         const { selected, rowsPerPage, page, values, valueForDelete } = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, values.length - page * rowsPerPage);
-
-        console.log(values)
 
         return (
             <Paper className={classes.paper}>

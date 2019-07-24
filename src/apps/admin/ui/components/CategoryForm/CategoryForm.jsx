@@ -64,7 +64,7 @@ class CategoryForm extends Component {
                 ? this.props.editCategory({ ...this.state.category, id })
                 : this.props.saveCategory({
                     ...this.state.category,
-                    positionId: this.props.categories.length + 1
+                    positionIndex: this.props.categories.length
                 })
                     .then(this.props.onDone())
         );

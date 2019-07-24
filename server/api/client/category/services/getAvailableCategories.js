@@ -6,7 +6,7 @@ export default function getAvailableCategories (req, res) {
         .then(categories => {
             const availableCategories = categories
                 .filter(category => !category.hidden)
-                .sort((oldCateg, newCateg) => oldCateg.positionId - newCateg.positionId);
+                .sort((oldCateg, newCateg) => oldCateg.positionIndex - newCateg.positionIndex);
 
             res.status(OKEY_STATUS_CODE).send(availableCategories);
         })
