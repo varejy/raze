@@ -1,9 +1,19 @@
 .filter{
-    margin-bottom: 45px
+    margin-bottom: 45px;
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 1023px) {
+        align-items: center;
+    }
 }
 
 .list {
     margin-top: 23px;
+
+    @media (max-width: 1023px) {
+        margin-top: 10px;
+    }
 }
 
 .filterTxt{

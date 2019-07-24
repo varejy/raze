@@ -17,9 +17,8 @@ import flatten from '@tinkoff/utils/array/flatten';
 import any from '@tinkoff/utils/array/any';
 import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
-import { connect } from 'react-redux';
+import classNames from 'classnames';
 
-const IS_FILTERS_OPEN_BUTTON_SCREEN_WIDTH = 1169;
 const DEFAULT_FILTERS = [
     {
         name: 'Компании',
@@ -37,15 +36,10 @@ const DEFAULT_FILTERS = [
         prop: 'price'
     }
 ];
-const mapStateToProps = ({ application }) => {
-    return {
-        media: application.media
-    };
-};
 
 class ProductsFilters extends Component {
     state = {
-        filtersVisible: false
+        filtersVisible: null
     };
 
     constructor (props) {
@@ -57,13 +51,13 @@ class ProductsFilters extends Component {
                 this.getFilters()
             ])
         };
+
         this.filtersMap = {};
     }
 
     static propTypes = {
         onFilter: PropTypes.func.isRequired,
-        products: PropTypes.array,
-        media: PropTypes.object.isRequired
+        products: PropTypes.array
     };
 
     static defaultProps = {
@@ -133,7 +127,7 @@ class ProductsFilters extends Component {
                 return [];
             }
         }, []);
-    }
+    };
 
     getFilters = (props = this.props) => {
         if (!props.category.filters) {
@@ -238,12 +232,9 @@ class ProductsFilters extends Component {
 
     render () {
         const { filters, filtersVisible } = this.state;
-        const { media } = this.props;
-        const isFiltersButton = media.width <= IS_FILTERS_OPEN_BUTTON_SCREEN_WIDTH;
 
         return <div>
-            {isFiltersButton &&
-            <div className={styles.filterButton} onClick={this.handleFilterClick}>
+            {filters.length > 0 && <div className={styles.filterButton} onClick={this.handleFilterClick}>
                 {filtersVisible
                     ? <div className={styles.filtersWrapper}>
                         Спрятать фильтры
@@ -254,10 +245,11 @@ class ProductsFilters extends Component {
                         <img className={styles.arrow} src='/src/apps/client/ui/components/ProductsFilters/images/arrowIcon.png' alt='arrow'/>
                     </div>
                 }
-            </div>
-            }
-            <section className={styles.filtersContainer}>
-                {(!isFiltersButton || filtersVisible) &&
+            </div>}
+            <section className={classNames(styles.filtersContainer, {
+                [styles.filtersInvisible]: !filtersVisible
+            })}>
+                {
                     filters.map((filter, i) => <div key={i}>
                         {this.renderFilter(filter)}
                     </div>)
@@ -266,4 +258,4 @@ class ProductsFilters extends Component {
         </div>;
     }
 }
-export default connect(mapStateToProps)(ProductsFilters);
+export default ProductsFilters;

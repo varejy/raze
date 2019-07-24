@@ -1,14 +1,9 @@
 .commentWrapper {
     display: flex;
-    width: 537px;
+    width: 100%;
     flex-direction: row-reverse;
     align-items: flex-start;
     justify-content: flex-end;
-    padding: 32px;
-
-    @media (max-width: 720px){
-        width: 100%;
-    }
 }
 
 .rating {
@@ -42,7 +37,7 @@
     font-size: 16px;
     align-items: flex-start;
     line-height: normal;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .name {

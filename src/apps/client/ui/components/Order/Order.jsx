@@ -17,15 +17,29 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Order extends Component {
     static propTypes = {
-        saveOrder: PropTypes.func
+        saveOrder: PropTypes.func,
+        onVisibleMessage: PropTypes.func
     };
 
     static defaultProps = {
-        saveOrder: noop
+        saveOrder: noop,
+        onVisibleMessage: noop
     };
 
-    handleFormSubmit = (event) => {
-        this.props.saveOrder(event);
+    handleFormSubmit = (values) => {
+        this.props.saveOrder(values)
+            .then(() => {
+                this.props.onVisibleMessage({
+                    status: 'done',
+                    values
+                });
+            })
+            .catch(() => {
+                this.props.onVisibleMessage({
+                    status: 'err',
+                    values
+                });
+            });
     }
 
     render () {

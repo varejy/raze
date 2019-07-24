@@ -171,8 +171,13 @@
     font-family: HelveticaNeueCyr;
     line-height: 13px;
 
-@media (max-width: 420px){
-    font-size: 14px;
-    line-height: normal;
+    @media (max-width: 420px){
+        font-size: 14px;
+        line-height: normal;
+    }
 }
+
+.productLink{
+    display: flex;
+    align-items: center;
 }

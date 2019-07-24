@@ -24,15 +24,18 @@ import AdminTableHeader from '../AdminTableHeader/AdminTableHeader.jsx';
 
 import arrayMove from '../../../utils/arrayMove';
 
+import { connect } from 'react-redux';
+import editCategory from '../../../services/editCategory';
+
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
-import compose from '@tinkoff/utils/function/compose';
 import difference from '@tinkoff/utils/array/difference';
-import slice from '@tinkoff/utils/array/slice';
-import concat from '@tinkoff/utils/array/concat';
-import without from '@tinkoff/utils/array/without';
 import noop from '@tinkoff/utils/function/noop';
 import any from '@tinkoff/utils/array/any';
+
+const mapDispatchToProps = (dispatch) => ({
+    editCategory: payload => dispatch(editCategory(payload))
+});
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -162,6 +165,7 @@ class AdminTableSortable extends React.Component {
         headerText: PropTypes.string,
         deleteValueWarningTitle: PropTypes.string,
         deleteValuesWarningTitle: PropTypes.string,
+        editCategory: PropTypes.func,
         onProductClone: PropTypes.func,
         onDelete: PropTypes.func,
         onFormOpen: PropTypes.func,
@@ -178,6 +182,7 @@ class AdminTableSortable extends React.Component {
         deleteValuesWarningTitle: '',
         onDelete: noop,
         onFormOpen: noop,
+        editCategory: noop,
         onFiltersOpen: noop,
         onProductClone: noop,
         filters: true
@@ -206,34 +211,6 @@ class AdminTableSortable extends React.Component {
             });
         }
     }
-
-    handleSelectAllClick = event => {
-        const { values } = this.state;
-        const { selected, rowsPerPage, page, checkboxIndeterminate } = this.state;
-
-        if (event.target.checked && !checkboxIndeterminate) {
-            const newSelected = compose(
-                concat(selected),
-                without(selected),
-                slice(rowsPerPage * page, rowsPerPage * (page + 1))
-            )(values);
-
-            return this.setState({
-                selected: newSelected,
-                checkboxIndeterminate: true
-            });
-        }
-
-        const newSelected = without(
-            slice(rowsPerPage * page, rowsPerPage * (page + 1), values),
-            selected
-        );
-
-        this.setState({
-            selected: newSelected,
-            checkboxIndeterminate: false
-        });
-    };
 
     handleSelectedCloseClick = () => {
         this.setState({
@@ -297,8 +274,15 @@ class AdminTableSortable extends React.Component {
 
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { values } = this.state;
+        const newValues = arrayMove(values, oldIndex, newIndex);
+        newValues.forEach((category, i) => {
+            category.positionIndex = i;
+
+            this.props.editCategory(category);
+        });
+
         this.setState({
-            values: arrayMove(values, oldIndex, newIndex)
+            values: newValues
         });
     };
 
@@ -383,4 +367,4 @@ class AdminTableSortable extends React.Component {
     }
 }
 
-export default withStyles(materialStyles)(AdminTableSortable);
+export default connect(null, mapDispatchToProps)(withStyles(materialStyles)(AdminTableSortable));
