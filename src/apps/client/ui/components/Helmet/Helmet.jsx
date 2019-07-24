@@ -6,17 +6,33 @@ import ReactHelmet from 'react-helmet';
 import { connect } from 'react-redux';
 
 import { matchPath, withRouter } from 'react-router-dom';
-import getMeta from './utils/getMetaByUrl';
 import find from '@tinkoff/utils/array/find';
+import propOr from '@tinkoff/utils/object/propOr';
 
 const PRODUCT_PATH = '/:category/:id';
-
-const META_DATA = {
-    main: { title: 'main', description: 'main' },
-    search: { title: 'search', description: 'search' },
-    order: { title: 'order', description: 'order' },
-    products: { title: 'products', description: 'products' },
-    product: { title: 'product', description: 'product' }
+const CATEGORY_PATH = '/:category';
+const STATIC_ROUTES = [
+    { id: 'main', path: '/', exact: true },
+    { id: 'search', path: '/search', exact: true },
+    { id: 'order', path: '/order', exact: true }
+];
+const STATIC_ROUTES_META = {
+    main: {
+        title: 'main',
+        description: 'main'
+    },
+    search: {
+        title: 'search',
+        description: 'search'
+    },
+    order: {
+        title: 'order',
+        description: 'order'
+    }
+};
+const NOT_FOUND_META = {
+    title: '404',
+    description: '404'
 };
 
 const mapStateToProps = ({ application }) => {
@@ -42,37 +58,57 @@ class Helmet extends Component {
     constructor (...args) {
         super(...args);
 
-        const { location: { pathname } } = this.props;
-
         this.state = {
-            meta: getMeta(pathname, META_DATA)
+            meta: this.getMeta()
         };
     }
 
-    getProduct = (props) => {
-        const { location: { pathname }, productMap } = props;
-        const match = matchPath(pathname, { path: PRODUCT_PATH, exact: true });
+    getMeta = (props = this.props) => {
+        const { location: { pathname }, productMap, categories } = props;
+        const meta = propOr('meta', {}, this.state);
+        const productPage = matchPath(pathname, { path: PRODUCT_PATH, exact: true });
+        const categoryPage = matchPath(pathname, { path: CATEGORY_PATH, exact: true });
+        const staticRouteMatch = find(route => matchPath(pathname, route), STATIC_ROUTES);
 
-        return match ? productMap[match.params.id] : undefined;
+        if (staticRouteMatch) {
+            return STATIC_ROUTES_META[staticRouteMatch.id];
+        }
+
+        if (productPage) {
+            const product = productMap[productPage.params.id];
+
+            if (product) {
+                return {
+                    title: product.metaTitle,
+                    description: product.metaDescription
+                };
+            }
+
+            return meta;
+        }
+
+        if (categoryPage) {
+            const category = find(route => matchPath(pathname, { path: `/${route.path}`, exact: true }), categories);
+
+            if (category) {
+                return {
+                    title: category.metaTitle,
+                    description: category.metaDescription
+                };
+            }
+
+            return meta;
+        }
+
+        return NOT_FOUND_META;
     };
 
     componentWillReceiveProps (nextProps) {
-        const product = this.getProduct(nextProps);
-        const { location: { pathname } } = nextProps;
-        const category = find(route => matchPath(pathname, { path: `/${route.path}`, exact: true }), nextProps.categories);
+        const { location: { pathname }, productMap } = nextProps;
 
-        let NEW_META_DATA;
-        if (product !== undefined) {
-            NEW_META_DATA = { product: { title: product.metaTitle, description: product.metaDescription } };
-        } else if (category) {
-            NEW_META_DATA = { products: { title: category.name, description: category.name } };
-        } else {
-            NEW_META_DATA = META_DATA;
-        }
-
-        if (this.props !== nextProps) {
+        if (this.props.location.pathname !== pathname || this.props.productMap !== productMap) {
             this.setState({
-                meta: getMeta(pathname, NEW_META_DATA)
+                meta: this.getMeta(nextProps)
             });
         }
     }
