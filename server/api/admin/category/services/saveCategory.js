@@ -7,7 +7,7 @@ import getAllCategories from '../../../client/category/queries/getAllCategories'
 import saveCategoryQuery from '../../../client/category/queries/saveCategory';
 
 export default function saveCategory (req, res) {
-    const { name, path, hidden, filters } = req.body;
+    const { name, path, positionIndex, hidden, filters } = req.body;
     const filtersWithIds = map(filter => {
         return {
             name: filter.name,
@@ -18,7 +18,7 @@ export default function saveCategory (req, res) {
 
     const id = uniqid();
 
-    saveCategoryQuery({ name, path, hidden, id, filters: filtersWithIds })
+    saveCategoryQuery({ name, path, positionIndex, hidden, id, filters: filtersWithIds })
         .then(() => {
             getAllCategories()
                 .then(categories => {
