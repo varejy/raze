@@ -62,14 +62,14 @@ class ProductsFilters extends Component {
             filters: flatten([
                 this.getDefaultFilters(),
                 this.getFilters()
-            ])            
+            ])
         };
         this.checkboxValues = [{
-            id: null, 
+            id: null,
             values: []
         }];
         this.rangeValues = [{
-            id: null, 
+            id: null,
             values: []
         }];
         this.filtersMap = {};
@@ -87,7 +87,7 @@ class ProductsFilters extends Component {
     };
 
     componentWillMount = () => {
-        this.getQueryParametrs()
+        this.getQueryParametrs();
     }
 
     componentWillReceiveProps (nextProps) {
@@ -106,27 +106,27 @@ class ProductsFilters extends Component {
         const { location: { search } } = this.props;
         const query = queryString.parse(search);
 
-        for(const key in query) {
+        for (const key in query) {
             const values = split(',', query[key]);
 
             filters.forEach(filter => {
                 if (filter.id === key) {
-                    if(filter.type === 'checkbox') {
+                    if (filter.type === 'checkbox') {
                         const findValues = [];
                         filter.options.forEach((option, i) => {
-                            includes(cyrillicToTranslit().transform(filter.options[i]), values) && findValues.push(option)
-                        })
+                            includes(cyrillicToTranslit().transform(filter.options[i]), values) && findValues.push(option);
+                        });
                         this.filtersMap[filter.id] = {
                             filter,
                             values: findValues
-                        }
+                        };
                         this.checkboxValues = [
                             ...this.checkboxValues,
                             {
                                 id: filter.id,
                                 values: findValues
                             }
-                        ]
+                        ];
                     } else {
                         this.filtersMap[filter.id] = {
                             filter,
@@ -134,7 +134,7 @@ class ProductsFilters extends Component {
                                 min: +values[0],
                                 max: +values[1]
                             }
-                        }
+                        };
                         this.rangeValues = [
                             ...this.rangeValues,
                             {
@@ -144,10 +144,10 @@ class ProductsFilters extends Component {
                                     max: +values[1]
                                 }
                             }
-                        ]
+                        ];
                     }
                 }
-            })
+            });
         }
         this.filter();
     }
@@ -266,10 +266,10 @@ class ProductsFilters extends Component {
             values
         };
 
-        for(const key in filtersMap ) {
+        for (const key in filtersMap) {
             filtersMap[key].filter.type === 'checkbox'
                 ? queries += `&${filtersMap[key].filter.id}=${filtersMap[key].values}`
-                : queries += `&${filtersMap[key].filter.id}=${filtersMap[key].values.min},${filtersMap[key].values.max}`
+                : queries += `&${filtersMap[key].filter.id}=${filtersMap[key].values.min},${filtersMap[key].values.max}`;
         }
 
         queries = queries.substring(1);
@@ -308,28 +308,28 @@ class ProductsFilters extends Component {
     renderFilter = filter => {
         switch (filter.type) {
         case 'checkbox':
-            const queryFilterCheckbox = find(propEq('id',filter.id), this.checkboxValues)
+            const queryFilterCheckbox = find(propEq('id', filter.id), this.checkboxValues);
             let nextOptionsMap = {};
 
-            if(type(queryFilterCheckbox) === 'Object') {
+            if (type(queryFilterCheckbox) === 'Object') {
                 queryFilterCheckbox.values.forEach(value => {
                     nextOptionsMap = {
                         ...nextOptionsMap,
                         [value]: !nextOptionsMap[value]
                     };
-                })
-                return <CheckboxFilter filter={filter} queryFilter={nextOptionsMap} onFilter={this.handleFilter(filter)} />
+                });
+                return <CheckboxFilter filter={filter} queryFilter={nextOptionsMap} onFilter={this.handleFilter(filter)} />;
             } else {
                 return <CheckboxFilter filter={filter} onFilter={this.handleFilter(filter)} />;
             }
         case 'range':
-                const queryFilterRange = find(propEq('id',filter.id), this.rangeValues)
+            const queryFilterRange = find(propEq('id', filter.id), this.rangeValues);
 
-                if(type(queryFilterRange) === 'Object') {
-                    return <RangeFilter filter={filter} queryValues={queryFilterRange.values} onFilter={this.handleFilter(filter)} />
-                } else {
-                    return <RangeFilter filter={filter} onFilter={this.handleFilter(filter)} />;
-                }
+            if (type(queryFilterRange) === 'Object') {
+                return <RangeFilter filter={filter} queryValues={queryFilterRange.values} onFilter={this.handleFilter(filter)} />;
+            } else {
+                return <RangeFilter filter={filter} onFilter={this.handleFilter(filter)} />;
+            }
         }
         return null;
     };
