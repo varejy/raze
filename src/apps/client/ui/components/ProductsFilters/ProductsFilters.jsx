@@ -21,7 +21,6 @@ import any from '@tinkoff/utils/array/any';
 import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
 
 import cyrillicToTranslit from 'cyrillic-to-translit-js';
 import queryString from 'query-string';
@@ -46,12 +45,6 @@ const DEFAULT_FILTERS = [
     }
 ];
 
-const mapStateToProps = ({ application }) => {
-    return {
-        media: application.media
-    };
-};
-
 class ProductsFilters extends Component {
     state = {
         filtersVisible: null
@@ -64,7 +57,8 @@ class ProductsFilters extends Component {
             filters: flatten([
                 this.getDefaultFilters(),
                 this.getFilters()
-            ])
+            ]),
+            reload: false
         };
         this.checkboxValues = [{
             id: null,
@@ -82,12 +76,10 @@ class ProductsFilters extends Component {
         products: PropTypes.array,
         location: PropTypes.object,
         history: PropTypes.object,
-        media: PropTypes.object.isRequired
     };
 
     static defaultProps = {
         products: [],
-        media: {},
         location: {},
         history: {}
     };
@@ -104,12 +96,30 @@ class ProductsFilters extends Component {
                     this.getFilters(nextProps)
                 ])
             });
+        } else if (nextProps.location.search !== this.props.location.search) {
+            this.setState({
+                filters: flatten([
+                    this.getDefaultFilters(nextProps),
+                    this.getFilters(nextProps)
+                ]),
+                reload: true
+            }, () => { this.setState({reload: false})});
+            this.checkboxValues = [{
+                id: null,
+                values: []
+            }];
+            this.rangeValues = [{
+                id: null,
+                values: []
+            }];
+            this.filtersMap = {};
+            this.getQueryParametrs(nextProps);
         }
     }
 
-    getQueryParametrs = () => {
+    getQueryParametrs = (props = this.props) => {
         const { filters } = this.state;
-        const { location: { search } } = this.props;
+        const { location: { search } } = props;
         const query = queryString.parse(search);
 
         for (const key in query) {
@@ -349,7 +359,7 @@ class ProductsFilters extends Component {
     };
 
     render () {
-        const { filters, filtersVisible } = this.state;
+        const { filters, filtersVisible, reload } = this.state;
 
         return <div>
             {filters.length > 0 && <div className={styles.filterButton} onClick={this.handleFilterClick}>
@@ -368,7 +378,7 @@ class ProductsFilters extends Component {
                 [styles.filtersInvisible]: !filtersVisible
             })}>
                 {
-                    filters.map((filter, i) => <div key={i}>
+                   !reload && filters.map((filter, i) => <div key={i}>
                         {this.renderFilter(filter)}
                     </div>)
                 }
@@ -376,4 +386,4 @@ class ProductsFilters extends Component {
         </div>;
     }
 }
-export default withRouter(connect(mapStateToProps)(ProductsFilters));
+export default withRouter(ProductsFilters);
