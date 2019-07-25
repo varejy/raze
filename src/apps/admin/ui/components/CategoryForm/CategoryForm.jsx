@@ -40,6 +40,7 @@ class CategoryForm extends Component {
         saveCategory: PropTypes.func.isRequired,
         editCategory: PropTypes.func.isRequired,
         onDone: PropTypes.func,
+        categories: PropTypes.array,
         category: PropTypes.object,
         classes: PropTypes.object.isRequired
     };
@@ -68,10 +69,15 @@ class CategoryForm extends Component {
 
         const { id } = this.state;
 
-        (id ? this.props.editCategory({ ...this.state.category, id }) : this.props.saveCategory(this.state.category))
-            .then(() => {
-                this.props.onDone();
-            });
+        (
+            id
+                ? this.props.editCategory({ ...this.state.category, id })
+                : this.props.saveCategory({
+                    ...this.state.category,
+                    positionIndex: this.props.categories.length
+                })
+        )
+            .then(this.props.onDone());
     };
 
     handleChange = prop => event => {
