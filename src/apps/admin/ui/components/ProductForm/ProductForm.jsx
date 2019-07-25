@@ -163,6 +163,16 @@ const materialStyles = theme => ({
     },
     selectFilterOptions: {
         width: '538px'
+    },
+    metaForm: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    metaAddDefault: {
+        marginLeft: '12px',
+        marginTop: '8px'
     }
 });
 
@@ -443,7 +453,7 @@ class ProductForm extends Component {
                 filters
             }
         });
-    }
+    };
 
     handleCategoryIdChange = (event) => {
         const { categories } = this.props;
@@ -485,7 +495,7 @@ class ProductForm extends Component {
         this.setState({
             product
         });
-    }
+    };
 
     handleCopyFilterToFeature = (name, value) => () => {
         const { product } = this.state;
@@ -509,7 +519,7 @@ class ProductForm extends Component {
                 features: isNew ? [...features, { prop: name, value }] : features
             }
         });
-    }
+    };
 
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { product } = this.state;
@@ -517,6 +527,20 @@ class ProductForm extends Component {
             product: {
                 ...product,
                 features: arrayMove(product.features, oldIndex, newIndex)
+            }
+        });
+    };
+
+    handleDefaultMetaAdd = (option) => () => {
+        const { product } = this.props;
+
+        this.setState({
+            product: {
+                ...this.state.product,
+                [option]: option === 'metaTitle'
+                    ? `${product.company} ${product.name}`
+                    : `Купите ${product.name} от бренда ${product.company} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice
+                        ? product.price : product.discountPrice} грн.`
             }
         });
     };
@@ -759,22 +783,46 @@ class ProductForm extends Component {
             </div>
             <Divider className={classes.divider}/>
             <Typography variant='h6'>SEO</Typography>
-            <TextField
-                label='Title'
-                value={product.metaTitle}
-                onChange={this.handleChange('metaTitle')}
-                margin='normal'
-                variant='outlined'
-                fullWidth
-            />
-            <TextField
-                label='Description'
-                value={product.metaDescription}
-                onChange={this.handleChange('metaDescription')}
-                margin='normal'
-                variant='outlined'
-                fullWidth
-            />
+            <div className={classes.metaForm}>
+                <TextField
+                    label='Title'
+                    value={product.metaTitle}
+                    onChange={this.handleChange('metaTitle')}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                />
+                <div className={classes.metaAddDefault}>
+                    <Tooltip
+                        title='Добавить значение по умолчанию'
+                        placement='bottom'
+                    >
+                        <Fab color='primary' size='small' onClick={this.handleDefaultMetaAdd('metaTitle')}>
+                            <AddIcon />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
+            <div className={classes.metaForm}>
+                <TextField
+                    label='Description'
+                    value={product.metaDescription}
+                    onChange={this.handleChange('metaDescription')}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                />
+                <div className={classes.metaAddDefault}>
+                    <Tooltip
+                        title='Добавить значение по умолчанию'
+                        placement='bottom'
+                    >
+                        <Fab color='primary' size='small' onClick={this.handleDefaultMetaAdd('metaDescription')}>
+                            <AddIcon />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>
                     Сохранить
