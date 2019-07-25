@@ -11,13 +11,30 @@ import styles from './CheckboxFilter.css';
 
 class CheckboxFilter extends Component {
     static propTypes = {
+        queryFilter: PropTypes.object,
         filter: PropTypes.object.isRequired,
         onFilter: PropTypes.func.isRequired
     };
 
-    state = {
-        optionsMap: {}
+    static defaultProps = {
+        queryFilter: {}
     };
+
+    constructor (prop) {
+        super(prop);
+
+        this.state = {
+            optionsMap: {}
+        };
+    }
+
+    componentDidMount () {
+        const { queryFilter } = this.props;
+
+        this.setState({
+            optionsMap: queryFilter
+        });
+    }
 
     handleLabelChecked = prop => () => {
         const { optionsMap } = this.state;

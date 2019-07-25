@@ -9,8 +9,13 @@ import styles from './RangeFilter.css';
 
 class RangeFilter extends Component {
     static propTypes = {
+        queryValues: PropTypes.object,
         filter: PropTypes.object.isRequired,
         onFilter: PropTypes.func.isRequired
+    };
+
+    static defaultProps = {
+        queryValues: {}
     };
 
     constructor (...args) {
@@ -21,7 +26,7 @@ class RangeFilter extends Component {
         this.state = {
             defaultValue: price,
             step: this.getStep(price),
-            value: price
+            value: this.props.queryValues !== {} ? price : this.props.queryValues
         };
     }
 
@@ -32,7 +37,7 @@ class RangeFilter extends Component {
             this.setState({
                 defaultValue: price,
                 step: this.getStep(price),
-                value: price
+                value: this.props.queryValues !== {} ? price : this.props.queryValues
             });
         }
     }
