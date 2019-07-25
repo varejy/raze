@@ -78,12 +78,16 @@ class ProductsFilters extends Component {
     static propTypes = {
         onFilter: PropTypes.func.isRequired,
         products: PropTypes.array,
+        location: PropTypes.object,
+        history: PropTypes.object,
         media: PropTypes.object.isRequired
     };
 
     static defaultProps = {
         products: [],
-        media: {}
+        media: {},
+        location: {},
+        history: {}
     };
 
     componentWillMount = () => {
