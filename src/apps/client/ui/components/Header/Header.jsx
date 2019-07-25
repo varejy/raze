@@ -15,7 +15,6 @@ import openLikedPopup from '../../../actions/openLikedPopup';
 import openLicensePopup from '../../../actions/openLicensePopup';
 import MenuButton from '../MenuButton/MenuButton';
 
-const SCREEN_WIDTH_BURGER_MENU = 900;
 const mapStateToProps = ({ application, savedProducts }) => {
     return {
         categories: application.categories,
@@ -42,8 +41,7 @@ class Header extends Component {
         openLikedPopup: PropTypes.func.isRequired,
         openLicensePopup: PropTypes.func.isRequired,
         basket: PropTypes.array,
-        liked: PropTypes.array,
-        media: PropTypes.object.isRequired
+        liked: PropTypes.array
     };
 
     static defaultProps = {
@@ -82,15 +80,18 @@ class Header extends Component {
     };
 
     handleOpenSearch = () => {
-        this.setState({ searchVisible: !this.state.searchVisible });
+        this.setState({ searchVisible: true });
+    };
+
+    handleCloseSearch = () => {
+        this.setState({ searchVisible: false });
     };
 
     render () {
-        const { categories, media } = this.props;
+        const { categories } = this.props;
         const { menuVisible, searchVisible } = this.state;
         const basketAmount = this.calculateBasketAmount();
         const likedAmount = this.props.liked.length;
-        const isBurgerMenuShowed = media.width <= SCREEN_WIDTH_BURGER_MENU;
 
         return <div className={styles.headerContainer}>
             <div className={styles.headerTop}>
@@ -98,24 +99,26 @@ class Header extends Component {
                     <div className={styles.logoLeft}>raze</div>
                     <div className={styles.logoRight}>Your<br/>knife<br/><div className={styles.logoGreen}>world</div></div>
                 </Link>
-                {(searchVisible || !isBurgerMenuShowed) &&
-                <div className={styles.searchForm}>
+                <div className={classNames(styles.searchForm, {
+                    [styles.searchFormFlex]: searchVisible
+                })}>
                     <Search
-                        isMobileVersion = {isBurgerMenuShowed}
-                        handleCloseSearch = {this.handleOpenSearch}
+                        isMobileVersion = {!!searchVisible}
+                        handleCloseSearch = {this.handleCloseSearch}
                     />
                 </div>
-                }
-                {(isBurgerMenuShowed || menuVisible) &&
-                <MenuButton
-                    menuVisible = {menuVisible}
-                    onClick={this.handleBurgerMenuClick}/>
-                }
+                <div className={classNames(styles.menuButton, {
+                    [styles.menuButtonBlock]: menuVisible
+                })}>
+                    <MenuButton
+                        menuVisible = {menuVisible}
+                        onClick={this.handleBurgerMenuClick}
+                    />
+                </div>
                 {menuVisible && <div className={styles.deliveryPayment} onClick={() => { this.handleBurgerCategoryClick(); this.handleOpenLicense(); }}>
                     <div className={styles.infoLink}>Доставка и оплата</div>
                 </div>}
                 <div className={classNames(styles.contactsWrapper, {
-                    [styles.contactsHidden]: isBurgerMenuShowed,
                     [styles.burgerContacts]: menuVisible
                 })}>
                     <div className={styles.contacts}>
@@ -150,7 +153,6 @@ class Header extends Component {
             <div className={classNames(styles.headerBottom)}>
                 <div className={classNames(styles.menu, {
                     [styles.burgerMenu]: menuVisible,
-                    [styles.menuHidden]: isBurgerMenuShowed,
                     [styles.menuVisible]: menuVisible
                 })}>
                     <ul className={styles.menuList}>
@@ -162,8 +164,9 @@ class Header extends Component {
                             </NavLink>) }
                     </ul>
                 </div>
-                {(!searchVisible || !isBurgerMenuShowed) &&
-                <div className={styles.likesBasket}>
+                <div className={classNames(styles.likesBasket, {
+                    [ styles.likesBasketHidden ]: searchVisible
+                })}>
                     <div onClick={this.handleOpenLiked} className={classNames(
                         styles.bottomIconWrapper, {
                             [styles.ordersCounterBig]: likedAmount > 9,
@@ -193,12 +196,11 @@ class Header extends Component {
                             <div className={styles.ordersNumber}>{basketAmount < 1000 ? basketAmount : '999+'}</div>
                         </div>}
                     </div>
-                    {isBurgerMenuShowed && <div className={styles.bottomIconWrapper} onClick={this.handleOpenSearch}>
+                    <div className={classNames(styles.bottomIconWrapper, styles.search)} onClick={this.handleOpenSearch}>
                         <img className={styles.iconSearch} src='/src/apps/client/ui/components/Header/images/search.png'
                             alt='search'/>
-                    </div>}
+                    </div>
                 </div>
-                }
             </div>
         </div>;
     }

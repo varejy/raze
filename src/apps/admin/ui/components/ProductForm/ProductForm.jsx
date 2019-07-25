@@ -47,7 +47,8 @@ import arrayMove from '../../../utils/arrayMove';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
-const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters'];
+const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
+    'metaTitle', 'metaDescription'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -159,6 +160,9 @@ const materialStyles = theme => ({
         display: 'flex',
         justifyContent: 'flex-end',
         paddingRight: '60px'
+    },
+    selectFilterOptions: {
+        width: '538px'
     }
 });
 
@@ -271,7 +275,9 @@ class ProductForm extends Component {
             filters,
             hidden,
             notAvailable,
-            id
+            id,
+            metaTitle,
+            metaDescription
         }) => {
         const tags = compose(
             keys,
@@ -290,7 +296,9 @@ class ProductForm extends Component {
             tags,
             notAvailable,
             hidden,
-            id
+            id,
+            metaTitle,
+            metaDescription
         };
     };
 
@@ -605,21 +613,58 @@ class ProductForm extends Component {
                     product.categoryId && this.category.filters.map((filter, i) => {
                         const value = !product.filters[i] ? '' : product.filters[i].value;
 
-                        return <FormGroup key={i} className={classes.filter} row>
-                            <div className={classes.filterGroup}>
+                        return filter.type === 'range'
+                            ? <FormGroup key={i} className={classes.filter} row>
+                                <div className={classes.filterGroup}>
+                                    <div className={classes.filterName}>
+                                        <Typography variant='h6'>{filter.name}</Typography>
+                                    </div>
+                                    <TextField
+                                        className={classes.featureField}
+                                        label='Значение'
+                                        value={value}
+                                        onChange={this.handleFilterChange(i)}
+                                        margin='normal'
+                                        variant='outlined'
+                                        required
+                                        type='number'
+                                    />
+                                    <Tooltip
+                                        title='Копировать в характеристики'
+                                        placement='bottom'
+                                    >
+                                        <IconButton aria-label='Copy' onClick={this.handleCopyFilterToFeature(filter.name, value)}>
+                                            <CopyIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>
+                            </FormGroup>
+                            : <div key={i} className={classes.filterGroup}>
                                 <div className={classes.filterName}>
                                     <Typography variant='h6'>{filter.name}</Typography>
                                 </div>
                                 <TextField
-                                    className={classes.featureField}
+                                    select
                                     label='Значение'
                                     value={value}
                                     onChange={this.handleFilterChange(i)}
                                     margin='normal'
+                                    className={classes.selectFilterOptions}
                                     variant='outlined'
+                                    InputLabelProps={{
+                                        shrink: !!filter.options
+                                    }}
                                     required
-                                    type={ filter.type === 'range' ? 'number' : 'text' }
-                                />
+                                >
+                                    {[
+                                        '-',
+                                        ...filter.options
+                                    ].map((option, i) => (
+                                        <MenuItem key={i} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
                                 <Tooltip
                                     title='Копировать в характеристики'
                                     placement='bottom'
@@ -628,14 +673,16 @@ class ProductForm extends Component {
                                         <CopyIcon />
                                     </IconButton>
                                 </Tooltip>
-                            </div>
-                        </FormGroup>;
+                            </div>;
                     })
                 }
             </div>
             <Divider className={classes.divider}/>
             <div className={classes.features}>
                 <Typography variant='h6'>Характеристики</Typography>
+                <Fab color='primary' size='small' onClick={this.handleFeatureAdd}>
+                    <AddIcon />
+                </Fab>
             </div>
             <div>
                 <SlidesFeature
@@ -648,11 +695,6 @@ class ProductForm extends Component {
                     useDragHandle
                     classes={classes}
                 />
-            </div>
-            <div className={classes.addButton}>
-                <Fab color='primary' size='small' onClick={this.handleFeatureAdd}>
-                    <AddIcon />
-                </Fab>
             </div>
             <Divider className={classes.divider}/>
             <ProductAvatarFile onAvatarFileUpload={this.handleAvatarFileUpload} initialAvatarFile={initialAvatarFile}/>
@@ -715,6 +757,24 @@ class ProductForm extends Component {
                     />
                 </Tooltip>
             </div>
+            <Divider className={classes.divider}/>
+            <Typography variant='h6'>SEO</Typography>
+            <TextField
+                label='Title'
+                value={product.metaTitle}
+                onChange={this.handleChange('metaTitle')}
+                margin='normal'
+                variant='outlined'
+                fullWidth
+            />
+            <TextField
+                label='Description'
+                value={product.metaDescription}
+                onChange={this.handleChange('metaDescription')}
+                margin='normal'
+                variant='outlined'
+                fullWidth
+            />
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>
                     Сохранить

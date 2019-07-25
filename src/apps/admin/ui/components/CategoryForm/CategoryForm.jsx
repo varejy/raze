@@ -18,12 +18,21 @@ import prop from '@tinkoff/utils/object/prop';
 import pick from '@tinkoff/utils/object/pick';
 
 import Filters from '../Filters/Filters';
+import Divider from '@material-ui/core/Divider';
+import { withStyles } from '@material-ui/core';
 
-const CATEGORY_VALUES = ['name', 'path', 'hidden', 'filters'];
+const CATEGORY_VALUES = ['name', 'path', 'hidden', 'filters', 'metaTitle', 'metaDescription'];
 
 const mapDispatchToProps = (dispatch) => ({
     saveCategory: payload => dispatch(saveCategory(payload)),
     editCategory: payload => dispatch(editCategory(payload))
+});
+
+const materialStyles = theme => ({
+    divider: {
+        marginTop: 2 * theme.spacing.unit,
+        marginBottom: 2 * theme.spacing.unit
+    }
 });
 
 class CategoryForm extends Component {
@@ -31,7 +40,9 @@ class CategoryForm extends Component {
         saveCategory: PropTypes.func.isRequired,
         editCategory: PropTypes.func.isRequired,
         onDone: PropTypes.func,
-        category: PropTypes.object
+        categories: PropTypes.array,
+        category: PropTypes.object,
+        classes: PropTypes.object.isRequired
     };
 
     static defaultProps = {
@@ -58,10 +69,15 @@ class CategoryForm extends Component {
 
         const { id } = this.state;
 
-        (id ? this.props.editCategory({ ...this.state.category, id }) : this.props.saveCategory(this.state.category))
-            .then(() => {
-                this.props.onDone();
-            });
+        (
+            id
+                ? this.props.editCategory({ ...this.state.category, id })
+                : this.props.saveCategory({
+                    ...this.state.category,
+                    positionIndex: this.props.categories.length
+                })
+        )
+            .then(this.props.onDone());
     };
 
     handleChange = prop => event => {
@@ -89,10 +105,11 @@ class CategoryForm extends Component {
                 filters
             }
         });
-    }
+    };
 
     render () {
         const { category, id } = this.state;
+        const { classes } = this.props;
 
         return <form onSubmit={this.handleSubmit}>
             <Typography variant='h5'>{id ? 'Редактирование категории' : 'Добавление новой категории'}</Typography>
@@ -127,6 +144,24 @@ class CategoryForm extends Component {
                     label='Скрыть категорию и товары в ней'
                 />
             </div>
+            <Divider className={classes.divider}/>
+            <Typography variant='h6'>SEO</Typography>
+            <TextField
+                label='Title'
+                value={category.metaTitle}
+                onChange={this.handleChange('metaTitle')}
+                margin='normal'
+                variant='outlined'
+                fullWidth
+            />
+            <TextField
+                label='Description'
+                value={category.metaDescription}
+                onChange={this.handleChange('metaDescription')}
+                margin='normal'
+                variant='outlined'
+                fullWidth
+            />
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>
                     Сохранить
@@ -136,4 +171,4 @@ class CategoryForm extends Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(CategoryForm);
+export default connect(null, mapDispatchToProps)(withStyles(materialStyles)(CategoryForm));

@@ -20,9 +20,13 @@
     justify-content: space-between;
     background-color: #131313;
 
-    @media (max-width: 1169px) {
+
+    @media (max-width: 1270px) {
         max-width: 100%;
         min-width: 100%;
+    }
+
+    @media (max-width: 1169px) {
         padding: 0 8%;
     }
 }
