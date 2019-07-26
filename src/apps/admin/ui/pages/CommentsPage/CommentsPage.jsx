@@ -171,6 +171,7 @@ class CommentsPage extends Component {
             editableComment: null,
             searchTxt: '',
             tips: [],
+            editCommentForm: false,
             notVerifiedComments: [],
             selectedProduct: null,
             tabsValue: 0,
@@ -214,12 +215,20 @@ class CommentsPage extends Component {
             .then(this.handleCloseCommentForm);
     };
 
-    handleFormOpen = comment => () => {
+    handleOpenFormCommentNotVerified = comment => () => {
         this.setState({
             formShowed: true,
             editableComment: comment
         });
     };
+
+    handleOpenFormCommentVerified = comment => () => {
+        this.setState({
+            formShowed: true,
+            editCommentForm: true,
+            editableComment: comment
+        });
+    }
 
     handleDelete = value => () => {
         this.setState({
@@ -227,12 +236,7 @@ class CommentsPage extends Component {
         });
     };
 
-    handleOpenFormComment = comment => () => {
-        this.setState({
-            formShowed: true,
-            editableComment: comment
-        });
-    }
+    
 
     handleDelete = value => () => {
         this.setState({
@@ -412,7 +416,7 @@ class CommentsPage extends Component {
                                                     <IconButton onClick={this.handleCheckClick(value)}>
                                                         <CheckIcon />
                                                     </IconButton>
-                                                    <IconButton onClick={this.handleFormOpen(value)}>
+                                                    <IconButton onClick={this.handleOpenFormCommentNotVerified(value)}>
                                                         <EditIcon />
                                                     </IconButton>
                                                     <IconButton onClick={this.handleDelete(value)}>
@@ -525,7 +529,7 @@ class CommentsPage extends Component {
                                                     {tableCells.map((tableCell, i) => <TableCell key={i}>{tableCell.prop(value)}</TableCell>)}
                                                     <TableCell padding='checkbox' align='right'>
                                                         <div className={classes.valueActions}>
-                                                            <IconButton onClick={this.handleOpenFormComment(value)}>
+                                                            <IconButton onClick={this.handleOpenFormCommentVerified(value)}>
                                                                 <EditIcon />
                                                             </IconButton>
                                                             <IconButton onClick={this.handleDelete(value)}>
@@ -561,7 +565,7 @@ class CommentsPage extends Component {
 
     render () {
         const { classes } = this.props;
-        const { loading, editableComment, formShowed, valueForDelete, tabsValue } = this.state;
+        const { loading, editableComment, formShowed, valueForDelete, tabsValue, editCommentForm } = this.state;
 
         if (loading) {
             return <div className={classes.loader}>
@@ -591,7 +595,7 @@ class CommentsPage extends Component {
             </SwipeableViews>
             <Modal open={formShowed} onClose={this.handleCloseCommentForm} className={classes.modal}>
                 <Paper className={classes.modalContent}>
-                    <CommentForm comment={editableComment} onDone={this.handleFormDone} />
+                    <CommentForm comment={editableComment} editCommentForm={editCommentForm} onDone={this.handleFormDone} />
                 </Paper>
             </Modal>
             <Dialog
