@@ -48,7 +48,12 @@ class ProductsPage extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        const { location: { pathname } } = this.props;
+        const { location: { pathname }, productsMap } = this.props;
+        const { category } = this.state;
+
+        if (nextProps.productsMap !== productsMap) {
+            this.setState({ products: nextProps.productsMap[category.path] });
+        }
 
         if (nextProps.location.pathname !== pathname) {
             this.setState(this.getNewState(nextProps), this.getProducts);
@@ -71,6 +76,7 @@ class ProductsPage extends Component {
     };
 
     getProducts = () => {
+        debugger;
         const { loading, category } = this.state;
 
         if (loading) {
