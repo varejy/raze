@@ -98,6 +98,10 @@ class Search extends Component {
             });
     };
 
+    getTipName = name => {
+        return name.length > 23 ? name.substring(0, 23) + '...' : name
+    }
+
     componentWillReceiveProps (nextProps) {
         if (this.props.isMobileVersion !== nextProps.isMobileVersion) {
             const { outsideClickEnabled, turnOnClickOutside, handleCloseSearch } = this.props;
@@ -127,7 +131,7 @@ class Search extends Component {
                                 tips.map((tip, i) => {
                                     return (
                                         <Link key={i} className={styles.tipLink} to={`/${tip.categoryPath}/${tip.id}`}>
-                                            <li className={styles.tip}>{tip.title}</li>
+                                            <li className={styles.tip}>{this.getTipName(tip.title)}</li>
                                         </Link>
                                     );
                                 })
