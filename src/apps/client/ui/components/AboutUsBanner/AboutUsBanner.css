@@ -32,7 +32,7 @@
 
 .bannerHeader {
     text-transform: uppercase;
-    font-family: MontserratBold;
+    font-family: MontserratSemiBold;
     font-size: 23px;
     line-height: 8px;
     color: #ffffff;
@@ -68,29 +68,6 @@
 
     @media (max-width: 720px) {
         width: 100%;
-    }
-}
-
-.readMoreButton {
-    text-transform: uppercase;
-    background: none;
-    border: 2px solid #ffffff;
-    width: 110px;
-    height: 40px;
-    font-family: MontserratBold;
-    font-size: 8px;
-    line-height: 24px;
-    letter-spacing: 1px;
-    color: #ffffff;
-    outline: none;
-    cursor: pointer;
-
-    @media (max-width: 1169px) {
-        width: 184px;
-        height: 67px;
-        font-size: 13.5px;
-        line-height: 40px;
-        letter-spacing: 1.35px;
     }
 }
 

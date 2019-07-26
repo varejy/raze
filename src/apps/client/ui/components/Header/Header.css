@@ -43,7 +43,9 @@
     }
 }
 
-.logo {
+.logoLink {
+    position: relative;
+    top: -5px;
     display: flex;
     align-items: center;
     justify-content: left;
@@ -53,6 +55,10 @@
     @media (max-width: 415px) {
         margin-right: 8%;
     }
+}
+
+.logo {
+    width: 240px;
 }
 
 .logoLeft {
@@ -84,10 +90,6 @@
         font-size: 8px;
         letter-spacing: 6.24px;
     }
-}
-
-.logo .logoGreen{
-    color: #00a046;
 }
 
 .searchForm{
@@ -142,7 +144,7 @@
 .tollEmail{
     align-self: center;
     color: #00a046;
-    font-family: MontserratSemiBold;
+    font-family: HelveticaNeueCyrBold;
     font-size: 15px;
     line-height: normal;
 }

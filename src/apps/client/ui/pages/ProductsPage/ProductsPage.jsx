@@ -48,12 +48,7 @@ class ProductsPage extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        const { location: { pathname }, productsMap } = this.props;
-        const { category } = this.state;
-
-        if (nextProps.productsMap !== productsMap) {
-            this.setState({ products: nextProps.productsMap[category.path] });
-        }
+        const { location: { pathname } } = this.props;
 
         if (nextProps.location.pathname !== pathname) {
             this.setState(this.getNewState(nextProps), this.getProducts);
