@@ -13,6 +13,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import AutoRenew from '@material-ui/icons/AutorenewRounded';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CopyIcon from '@material-ui/icons/FileCopy';
@@ -42,6 +43,7 @@ import keys from '@tinkoff/utils/object/keys';
 import map from '@tinkoff/utils/array/map';
 import pickBy from '@tinkoff/utils/object/pickBy';
 import propOr from '@tinkoff/utils/object/propOr';
+import trim from '@tinkoff/utils/string/trim';
 
 import arrayMove from '../../../utils/arrayMove';
 
@@ -249,6 +251,20 @@ class ProductForm extends Component {
         };
     }
 
+    componentWillMount () {
+        const { product } = this.state;
+
+        if (!product.metaTitle && !product.metaDescription) {
+            this.setState({
+                product: {
+                    ...this.state.product,
+                    metaTitle: '',
+                    metaDescription: ''
+                }
+            });
+        }
+    }
+
     componentDidMount () {
         const { product, category } = this.state;
 
@@ -271,6 +287,28 @@ class ProductForm extends Component {
             });
         }
     }
+
+    handleDefaultMetaAdd = (option) => () => {
+        const { product } = this.state;
+        const productName = trim(product.name);
+        const productCompany = trim(product.company);
+        const TITLE_DEFAULT = `${productCompany} ${productName}`;
+        const DESCRIPTION_DEFAULT = `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice
+            ? product.price : product.discountPrice} грн.`;
+        const dataAvailable = (product.name && product.company && product.price);
+
+        if (dataAvailable) {
+            this.handleChange(option);
+            this.setState({
+                product: {
+                    ...this.state.product,
+                    [option]: option === 'metaTitle'
+                        ? TITLE_DEFAULT
+                        : DESCRIPTION_DEFAULT
+                }
+            });
+        }
+    };
 
     getProductPayload = (
         {
@@ -531,24 +569,11 @@ class ProductForm extends Component {
         });
     };
 
-    handleDefaultMetaAdd = (option) => () => {
-        const { product } = this.props;
-
-        this.setState({
-            product: {
-                ...this.state.product,
-                [option]: option === 'metaTitle'
-                    ? `${product.company} ${product.name}`
-                    : `Купите ${product.name} от бренда ${product.company} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice
-                        ? product.price : product.discountPrice} грн.`
-            }
-        });
-    };
-
     render () {
         const { classes } = this.props;
         const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
         const titleFiltersLength = !this.category.filters.length && 'В этой категории еще нет фильтров';
+        const dataAvailable = (product.name && product.company && product.price);
 
         if (loading) {
             return <div className={classes.loader}>
@@ -791,14 +816,17 @@ class ProductForm extends Component {
                     margin='normal'
                     variant='outlined'
                     fullWidth
+                    required
                 />
                 <div className={classes.metaAddDefault}>
                     <Tooltip
-                        title='Добавить значение по умолчанию'
+                        title={dataAvailable
+                            ? 'Добавить значение по умолчанию'
+                            : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
                         placement='bottom'
                     >
-                        <Fab color='primary' size='small' onClick={this.handleDefaultMetaAdd('metaTitle')}>
-                            <AddIcon />
+                        <Fab color={dataAvailable ? 'primary' : '#e0e0e0'} size='small' onClick={this.handleDefaultMetaAdd('metaTitle')}>
+                            <AutoRenew />
                         </Fab>
                     </Tooltip>
                 </div>
@@ -811,14 +839,17 @@ class ProductForm extends Component {
                     margin='normal'
                     variant='outlined'
                     fullWidth
+                    required
                 />
                 <div className={classes.metaAddDefault}>
                     <Tooltip
-                        title='Добавить значение по умолчанию'
+                        title={dataAvailable
+                            ? 'Добавить значение по умолчанию'
+                            : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
                         placement='bottom'
                     >
-                        <Fab color='primary' size='small' onClick={this.handleDefaultMetaAdd('metaDescription')}>
-                            <AddIcon />
+                        <Fab color={dataAvailable ? 'primary' : '#e0e0e0'} size='small' onClick={this.handleDefaultMetaAdd('metaDescription')}>
+                            <AutoRenew />
                         </Fab>
                     </Tooltip>
                 </div>
