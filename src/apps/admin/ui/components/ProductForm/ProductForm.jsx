@@ -48,9 +48,10 @@ import trim from '@tinkoff/utils/string/trim';
 import arrayMove from '../../../utils/arrayMove';
 
 import Tooltip from '@material-ui/core/Tooltip';
+import Chip from '@material-ui/core/Chip';
 
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
-    'metaTitle', 'metaDescription'];
+    'metaTitle', 'metaDescription', 'keywords'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -175,6 +176,16 @@ const materialStyles = theme => ({
     metaAddDefault: {
         marginLeft: '12px',
         marginTop: '8px'
+    },
+    metaAddKeywords: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    metaKeyword: {
+        marginRight: '12px',
+        marginBottom: '20px'
     }
 });
 
@@ -325,7 +336,8 @@ class ProductForm extends Component {
             notAvailable,
             id,
             metaTitle,
-            metaDescription
+            metaDescription,
+            keywords
         }) => {
         const tags = compose(
             keys,
@@ -346,7 +358,8 @@ class ProductForm extends Component {
             hidden,
             id,
             metaTitle,
-            metaDescription
+            metaDescription,
+            keywords
         };
     };
 
@@ -566,6 +579,46 @@ class ProductForm extends Component {
                 ...product,
                 features: arrayMove(product.features, oldIndex, newIndex)
             }
+        });
+    };
+
+    handleKeywordAdd = () => {
+        const { product } = this.state;
+
+        const keywordsInput = trim(product.keywordsInput);
+
+        if (!keywordsInput) {
+            return;
+        }
+
+        product.keywords = [...product.keywords, product.keywordsInput];
+        product.keywordsInput = '';
+
+        this.setState({
+            product
+        });
+    };
+
+    handleKeywordChange = (prop) => event => {
+        const { product } = this.state;
+
+        product[prop] = event.target.value;
+
+        if (product.keywords === undefined) {
+            product.keywords = [];
+        }
+        this.setState({
+            product
+        });
+    };
+
+    handleKeywordDelete = (i) => () => {
+        const { product } = this.state;
+
+        product.keywords = remove(i, 1, product.keywords);
+
+        this.setState({
+            product
         });
     };
 
@@ -853,6 +906,36 @@ class ProductForm extends Component {
                         </Fab>
                     </Tooltip>
                 </div>
+            </div>
+            <div className={classes.metaAddKeywords}>
+                <TextField
+                    label='Новое ключевое слово'
+                    value={product.keywordsInput}
+                    onChange={this.handleKeywordChange('keywordsInput')}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                />
+                <div className={classes.metaAddDefault}>
+                    <Tooltip title='Добавить ключевое слово' placement='bottom'>
+                        <Fab size='small' color='primary' onClick={this.handleKeywordAdd} aria-label="Add">
+                            <AddIcon />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
+            <div className={classes.keywordsWrapper}>
+                {
+                    product.keywords &&
+                    product.keywords.map((option, i) => <Chip
+                        key={i}
+                        label={option}
+                        variant='outlined'
+                        color='primary'
+                        onDelete={this.handleKeywordDelete(i)}
+                        className={classes.metaKeyword}
+                    />)
+                }
             </div>
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>
