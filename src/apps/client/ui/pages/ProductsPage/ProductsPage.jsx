@@ -76,7 +76,6 @@ class ProductsPage extends Component {
     };
 
     getProducts = () => {
-        debugger;
         const { loading, category } = this.state;
 
         if (loading) {
