@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import classNames from 'classnames';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/Check';
@@ -43,8 +43,10 @@ import getCategories from '../../../services/getCategories';
 import deleteCommentsByIds from '../../../services/deleteCommentsByIds';
 import search from '../../../services/search';
 
+import pick from '@tinkoff/utils/object/pick';
 import format from 'date-fns/format';
 import find from '@tinkoff/utils/array/find';
+import filter from '@tinkoff/utils/array/filter';
 
 const headerRows = [
     { id: 'name', label: 'Имя' },
@@ -109,7 +111,8 @@ const materialStyles = theme => ({
         padding: '45px'
     },
     card: {
-        maxWidth: '345px'
+        maxWidth: '345px',
+        border: '1px solid transparent'
     },
     cardLink: {
         textDecoration: 'none',
@@ -120,6 +123,9 @@ const materialStyles = theme => ({
         height: 0,
         paddingTop: '56.25%',
         backgroundSize: '190px'
+    },
+    selectedProduct: {
+        border: '1px solid rgb(63, 80, 181)'
     }
 });
 
@@ -165,7 +171,8 @@ class CommentsPage extends Component {
             editableComment: null,
             searchTxt: '',
             tips: [],
-            comments: [],
+            notVerifiedComments: [],
+            selectedProduct: null,
             tabsValue: 0,
             valueForDelete: null,
             rowsPerPage: 10,
@@ -181,21 +188,25 @@ class CommentsPage extends Component {
         ]).then(() => {
             this.setState({
                 loading: false,
-                comments: this.filteredComments()
+                notVerifiedComments: this.filteredCommentsNotVerified()
             });
         });
     }
 
     componentWillReceiveProps (nextProps) {
         if (this.props.comments !== nextProps.comments) {
+            this.setTips(nextProps);
             this.setState({
-                comments: this.filteredComments(nextProps)
+                notVerifiedComments: this.filteredCommentsNotVerified(nextProps)
             });
+        }
+        if (this.props.products !== nextProps.products) {
+            this.setTips(nextProps);
         }
     }
 
-    filteredComments = (props = this.props) => {
-        return props.comments.filter(comment => comment.verified === false);
+    filteredCommentsNotVerified = (props = this.props) => {
+        return props.comments.filter(comment => !comment.verified);
     };
 
     handleFormDone = () => {
@@ -211,8 +222,17 @@ class CommentsPage extends Component {
     };
 
     handleDelete = value => () => {
-        this.props.deleteCommentsByIds(value.id);
+        this.setState({
+            valueForDelete: value
+        });
     };
+
+    handleOpenFormComment = comment => () => {
+        this.setState({
+            formShowed: true,
+            editableComment: comment
+        });
+    }
 
     handleDelete = value => () => {
         this.setState({
@@ -237,37 +257,46 @@ class CommentsPage extends Component {
             });
     };
 
-    handleSearchChange = event => {
-        const value = event.target.value;
-        const { categories, products } = this.props;
+    searchProducts = searchText => {
+        this.props.search(searchText);
+    }
+
+    setTips = (props = this.props) => {
+        const { selectedProduct } = this.state;
+        const { comments, products } = props;
+
+        const newTips = products
+            .map(product => {
+                const productComments = filter(comment => product.id === comment.productId && comment.verified, comments);
+
+                return {
+                    title: product.name,
+                    company: product.company,
+                    comments: productComments,
+                    avatar: product.avatar,
+                    id: product.id
+                };
+            });
+        const newSelectedProduct = selectedProduct ? find(tip => tip.id === selectedProduct.id, newTips) : null;
 
         this.setState({
-            searchTxt: value
+            tips: newTips,
+            selectedProduct: newSelectedProduct
+        });
+    }
+
+    handleSearchChange = event => {
+        const searchTxt = event.target.value;
+
+        this.setState({
+            searchTxt
         });
 
-        value.length
-            ? this.props.search(value).then(() => {
-                const newTips = this.props.products
-                    .slice(0, 10)
-                    .map(product => {
-                        const category = find(category => category.id === product.categoryId, categories);
-
-                        return {
-                            title: product.name,
-                            company: product.company,
-                            comments: product.comments,
-                            avatar: product.avatar,
-                            categoryPath: category.path,
-                            id: product.id
-                        };
-                    });
-
-                this.setState({
-                    tips: newTips
-                });
-            })
+        searchTxt.length !== 0
+            ? this.searchProducts(searchTxt)
             : this.setState({
-                tips: []
+                tips: [],
+                selectedProduct: {}
             });
     };
 
@@ -310,7 +339,7 @@ class CommentsPage extends Component {
         editComment({ ...productPayload, id })
             .then(
                 this.setState({
-                    comments: this.filteredComments()
+                    notVerifiedComments: this.filteredCommentsNotVerified()
                 })
             );
     }
@@ -320,10 +349,16 @@ class CommentsPage extends Component {
     };
 
     handleChangeRowsPerPage = ({ target: { value } }) => {
-        const { comments } = this.state;
-        const rowsPerPage = comments.length > value ? value : comments.length;
+        const { notVerifiedComments } = this.state;
+        const rowsPerPage = notVerifiedComments.length > value ? value : notVerifiedComments.length;
         this.setState({ rowsPerPage });
     };
+
+    handleSelectedProduct = product => () => {
+        this.setState({
+            selectedProduct: product
+        });
+    }
 
     handleTableChange = event => () => {
         this.setState({
@@ -333,8 +368,8 @@ class CommentsPage extends Component {
 
     renderTableNotVerified = (dir) => {
         const { classes } = this.props;
-        const { comments, rowsPerPage, page } = this.state;
-        const emptyRows = rowsPerPage - Math.min(rowsPerPage, comments.length - page * rowsPerPage);
+        const { notVerifiedComments, rowsPerPage, page } = this.state;
+        const emptyRows = rowsPerPage - Math.min(rowsPerPage, notVerifiedComments.length - page * rowsPerPage);
 
         return <Paper className={classes.paper} component="div" dir={dir}>
             <Toolbar
@@ -360,7 +395,7 @@ class CommentsPage extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {comments
+                        {notVerifiedComments
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((value, i) => {
                                 return (
@@ -400,7 +435,7 @@ class CommentsPage extends Component {
             <TablePagination
                 rowsPerPageOptions={[10, 20, 30]}
                 component='div'
-                count={comments.length}
+                count={notVerifiedComments.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={this.handleChangePage}
@@ -411,7 +446,10 @@ class CommentsPage extends Component {
 
     renderSearchPage = () => {
         const { classes } = this.props;
-        const { searchTxt, tips } = this.state;
+        const { searchTxt, tips, rowsPerPage, page, selectedProduct } = this.state;
+        const { comments = [], id } = pick(['id', 'comments'], selectedProduct || {});
+        const emptyRows = rowsPerPage - Math.min(rowsPerPage, comments.length - page * rowsPerPage);
+        const check = (prop) => id === prop;
 
         return <div>
             <div className={classes.searchWrapp}>
@@ -430,8 +468,8 @@ class CommentsPage extends Component {
                     <div className={classes.cardContainer}>
                         {
                             tips.map(tip => {
-                                return <Link key={tip.id} className={classes.cardLink} target='_blank' to={`/${tip.categoryPath}/${tip.id}`}>
-                                    <Card className={classes.card}>
+                                return <div key={tip.id} onClick={this.handleSelectedProduct(tip)} className={classes.cardLink}>
+                                    <Card className={classNames(classes.card, { [classes.selectedProduct]: check(tip.id) })}>
                                         <CardHeader
                                             title={tip.title}
                                             subheader={tip.company}
@@ -442,11 +480,81 @@ class CommentsPage extends Component {
                                             title={tip.title}
                                         />
                                     </Card>
-                                </Link>;
+                                </div>;
                             })
                         }
                     </div>
                 </div>
+            }
+            {
+                !!id && <Paper className={classes.paper} component="div">
+                    <Toolbar
+                        className={classes.toolbar}
+                    >
+                        <Typography variant='h6' id='tableTitle'>
+                            Комментарии в продукте
+                        </Typography>
+                        <div className={classes.spacer} />
+                    </Toolbar>
+                    <div className={classes.tableWrapper}>
+                        <Table className={classes.table} aria-labelledby='tableTitle'>
+                            <TableHead>
+                                <TableRow>
+                                    {headerRows.map(
+                                        (row, i) => (
+                                            <TableCell key={i}>
+                                                {row.label}
+                                            </TableCell>
+                                        )
+                                    )}
+                                    <TableCell align='right' />
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {comments
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((value, i) => {
+                                        return (
+                                            <Tooltip key={i} title={value.text}>
+                                                <TableRow
+                                                    hover
+                                                    role='checkbox'
+                                                    tabIndex={-1}
+                                                    className={classes.row}
+                                                >
+                                                    {tableCells.map((tableCell, i) => <TableCell key={i}>{tableCell.prop(value)}</TableCell>)}
+                                                    <TableCell padding='checkbox' align='right'>
+                                                        <div className={classes.valueActions}>
+                                                            <IconButton onClick={this.handleOpenFormComment(value)}>
+                                                                <EditIcon />
+                                                            </IconButton>
+                                                            <IconButton onClick={this.handleDelete(value)}>
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            </Tooltip>
+                                        );
+                                    })}
+                                {emptyRows > 0 && (
+                                    <TableRow style={{ height: 49 * emptyRows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
+                    <TablePagination
+                        rowsPerPageOptions={[10, 20, 30]}
+                        component='div'
+                        count={comments.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={this.handleChangePage}
+                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    />
+                </Paper>
             }
         </div>;
     }
