@@ -95,9 +95,8 @@ class Header extends Component {
 
         return <div className={styles.headerContainer}>
             <div className={styles.headerTop}>
-                <Link className={styles.logo} to='/'>
-                    <div className={styles.logoLeft}>raze</div>
-                    <div className={styles.logoRight}>Your<br/>knife<br/><div className={styles.logoGreen}>world</div></div>
+                <Link className={styles.logoLink} to='/'>
+                    <img className={styles.logo} src='/src/apps/client/ui/components/Header/images/logo.png' alt='logo'/>
                 </Link>
                 <div className={classNames(styles.searchForm, {
                     [styles.searchFormFlex]: searchVisible
