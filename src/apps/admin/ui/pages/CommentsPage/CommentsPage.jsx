@@ -113,7 +113,7 @@ const materialStyles = theme => ({
     },
     cardLink: {
         textDecoration: 'none',
-        margin: '0 10px 0px 10px',
+        margin: '20px 10px',
         width: '254px'
     },
     media: {
@@ -247,7 +247,7 @@ class CommentsPage extends Component {
 
         value.length
             ? this.props.search(value).then(() => {
-                const newTips = products
+                const newTips = this.props.products
                     .slice(0, 10)
                     .map(product => {
                         const category = find(category => category.id === product.categoryId, categories);
