@@ -121,7 +121,6 @@ class Helmet extends Component {
 
     render () {
         const { meta } = this.state;
-        console.log(meta);
 
         return <ReactHelmet>
             <title>{meta.title}</title>
