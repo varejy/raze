@@ -173,7 +173,7 @@ const materialStyles = theme => ({
         justifyContent: 'space-between',
         alignItems: 'center'
     },
-    metaAddDefault: {
+    metaAdd: {
         marginLeft: '12px',
         marginTop: '8px'
     },
@@ -184,7 +184,7 @@ const materialStyles = theme => ({
         alignItems: 'center'
     },
     metaKeyword: {
-        marginRight: '12px',
+        margin: '4px',
         marginBottom: '20px'
     }
 });
@@ -258,7 +258,8 @@ class ProductForm extends Component {
             initialAvatarFile: product.avatar,
             initialFiles: product.files,
             removedFiles: [],
-            category: category
+            category: category,
+            keywordsInput: ''
         };
     }
 
@@ -363,49 +364,6 @@ class ProductForm extends Component {
         };
     };
 
-    handleSubmit = event => {
-        event.preventDefault();
-
-        const { id, product } = this.state;
-        const productPayload = this.getProductPayload(product);
-
-        (id ? this.props.editProduct({ ...productPayload, id }) : this.props.saveProduct(productPayload))
-            .then(product => {
-                const { files, removedFiles } = this.state;
-                const formData = new FormData();
-                const oldFiles = [];
-
-                files.forEach((file, i) => {
-                    if (file.content) {
-                        formData.append(`product-${product.id}-file-${i}`, file.content);
-                    } else {
-                        oldFiles.push({
-                            path: file.path,
-                            index: i
-                        });
-                    }
-                });
-                formData.append('removedFiles', JSON.stringify(removedFiles));
-                formData.append('oldFiles', JSON.stringify(oldFiles));
-
-                return this.props.updateProductFiles(formData, product.id);
-            })
-            .then(product => {
-                const { avatar } = this.state;
-
-                if (avatar.content) {
-                    const formData = new FormData();
-
-                    formData.append(`product-${product.id}-avatar`, avatar.content);
-
-                    return this.props.updateProductAvatar(formData, product.id);
-                }
-            })
-            .then(() => {
-                this.props.onDone();
-            });
-    };
-
     handleFeatureAdd = () => {
         const { product } = this.state;
 
@@ -454,6 +412,49 @@ class ProductForm extends Component {
         }, () => {
             if (prop === 'categoryId') {
                 this.handleCategoryIdChange(event);
+            }
+        });
+    };
+
+    handleKeywordChange = () => event => {
+        this.setState({
+            keywordsInput: event.target.value,
+            product: {
+                ...this.state.product,
+                keywords: this.state.product.keywords === undefined ? '' : this.state.product.keywords
+            }
+        });
+    };
+
+    handleKeywordAdd = () => {
+        const { product, keywordsInput } = this.state;
+        const keyword = trim(keywordsInput);
+
+        if (!keyword) {
+            return;
+        }
+
+        const keywordsArray = product.keywords !== '' ? product.keywords.split(', ') : [];
+        const newKeywords = [...keywordsArray, keyword];
+
+        this.setState({
+            product: {
+                ...this.state.product,
+                keywords: newKeywords.join(', ')
+            },
+            keywordsInput: ''
+        });
+    };
+
+    handleKeywordDelete = (i) => () => {
+        const { product } = this.state;
+        const keywordsArray = product.keywords.split(', ');
+        const newKeywords = remove(i, 1, keywordsArray);
+
+        this.setState({
+            product: {
+                ...this.state.product,
+                keywords: newKeywords.join(', ')
             }
         });
     };
@@ -582,49 +583,52 @@ class ProductForm extends Component {
         });
     };
 
-    handleKeywordAdd = () => {
-        const { product } = this.state;
+    handleSubmit = event => {
+        event.preventDefault();
 
-        const keywordsInput = trim(product.keywordsInput);
+        const { id, product } = this.state;
+        const productPayload = this.getProductPayload(product);
 
-        if (!keywordsInput) {
-            return;
-        }
+        (id ? this.props.editProduct({ ...productPayload, id }) : this.props.saveProduct(productPayload))
+            .then(product => {
+                const { files, removedFiles } = this.state;
+                const formData = new FormData();
+                const oldFiles = [];
 
-        product.keywords = [...product.keywords, product.keywordsInput];
-        product.keywordsInput = '';
+                files.forEach((file, i) => {
+                    if (file.content) {
+                        formData.append(`product-${product.id}-file-${i}`, file.content);
+                    } else {
+                        oldFiles.push({
+                            path: file.path,
+                            index: i
+                        });
+                    }
+                });
+                formData.append('removedFiles', JSON.stringify(removedFiles));
+                formData.append('oldFiles', JSON.stringify(oldFiles));
 
-        this.setState({
-            product
-        });
-    };
+                return this.props.updateProductFiles(formData, product.id);
+            })
+            .then(product => {
+                const { avatar } = this.state;
 
-    handleKeywordChange = (prop) => event => {
-        const { product } = this.state;
+                if (avatar.content) {
+                    const formData = new FormData();
 
-        product[prop] = event.target.value;
+                    formData.append(`product-${product.id}-avatar`, avatar.content);
 
-        if (product.keywords === undefined) {
-            product.keywords = [];
-        }
-        this.setState({
-            product
-        });
-    };
-
-    handleKeywordDelete = (i) => () => {
-        const { product } = this.state;
-
-        product.keywords = remove(i, 1, product.keywords);
-
-        this.setState({
-            product
-        });
+                    return this.props.updateProductAvatar(formData, product.id);
+                }
+            })
+            .then(() => {
+                this.props.onDone();
+            });
     };
 
     render () {
         const { classes } = this.props;
-        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
+        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile, keywordsInput } = this.state;
         const titleFiltersLength = !this.category.filters.length && 'В этой категории еще нет фильтров';
         const dataAvailable = (product.name && product.company && product.price);
 
@@ -871,7 +875,7 @@ class ProductForm extends Component {
                     fullWidth
                     required
                 />
-                <div className={classes.metaAddDefault}>
+                <div className={classes.metaAdd}>
                     <Tooltip
                         title={dataAvailable
                             ? 'Добавить значение по умолчанию'
@@ -894,7 +898,7 @@ class ProductForm extends Component {
                     fullWidth
                     required
                 />
-                <div className={classes.metaAddDefault}>
+                <div className={classes.metaAdd}>
                     <Tooltip
                         title={dataAvailable
                             ? 'Добавить значение по умолчанию'
@@ -910,13 +914,13 @@ class ProductForm extends Component {
             <div className={classes.metaAddKeywords}>
                 <TextField
                     label='Новое ключевое слово'
-                    value={product.keywordsInput}
-                    onChange={this.handleKeywordChange('keywordsInput')}
+                    value={keywordsInput}
+                    onChange={this.handleKeywordChange()}
                     margin='normal'
                     variant='outlined'
                     fullWidth
                 />
-                <div className={classes.metaAddDefault}>
+                <div className={classes.metaAdd}>
                     <Tooltip title='Добавить ключевое слово' placement='bottom'>
                         <Fab size='small' color='primary' onClick={this.handleKeywordAdd} aria-label="Add">
                             <AddIcon />
@@ -927,7 +931,7 @@ class ProductForm extends Component {
             <div className={classes.keywordsWrapper}>
                 {
                     product.keywords &&
-                    product.keywords.map((option, i) => <Chip
+                    product.keywords.split(', ').map((option, i) => <Chip
                         key={i}
                         label={option}
                         variant='outlined'

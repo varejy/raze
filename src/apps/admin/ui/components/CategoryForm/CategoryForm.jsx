@@ -24,8 +24,11 @@ import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import Chip from '@material-ui/core/Chip';
+import remove from '@tinkoff/utils/array/remove';
 
-const CATEGORY_VALUES = ['name', 'path', 'hidden', 'filters', 'metaTitle', 'metaDescription'];
+const CATEGORY_VALUES = ['name', 'path', 'hidden', 'filters', 'metaTitle', 'metaDescription', 'keywords'];
 
 const mapDispatchToProps = (dispatch) => ({
     saveCategory: payload => dispatch(saveCategory(payload)),
@@ -43,9 +46,19 @@ const materialStyles = theme => ({
         justifyContent: 'space-between',
         alignItems: 'center'
     },
-    metaAddDefault: {
+    metaAdd: {
         marginLeft: '12px',
         marginTop: '8px'
+    },
+    metaAddKeywords: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    metaKeyword: {
+        margin: '4px',
+        marginBottom: '20px'
     }
 });
 
@@ -74,7 +87,8 @@ class CategoryForm extends Component {
                 hidden: false,
                 ...pick(CATEGORY_VALUES, category)
             },
-            id: prop('id', category)
+            id: prop('id', category),
+            keywordsInput: ''
         };
     }
 
@@ -110,6 +124,49 @@ class CategoryForm extends Component {
                 }
             });
         }
+    };
+
+    handleKeywordChange = () => event => {
+        this.setState({
+            keywordsInput: event.target.value,
+            category: {
+                ...this.state.category,
+                keywords: this.state.category.keywords === undefined ? '' : this.state.category.keywords
+            }
+        });
+    };
+
+    handleKeywordAdd = () => {
+        const { category, keywordsInput } = this.state;
+        const keyword = trim(keywordsInput);
+
+        if (!keyword) {
+            return;
+        }
+
+        const keywordsArray = category.keywords !== '' ? category.keywords.split(', ') : [];
+        const newKeywords = [...keywordsArray, keyword];
+
+        this.setState({
+            category: {
+                ...this.state.category,
+                keywords: newKeywords.join(', ')
+            },
+            keywordsInput: ''
+        });
+    };
+
+    handleKeywordDelete = (i) => () => {
+        const { category } = this.state;
+        const keywordsArray = category.keywords.split(', ');
+        const newKeywords = remove(i, 1, keywordsArray);
+
+        this.setState({
+            category: {
+                ...this.state.category,
+                keywords: newKeywords.join(', ')
+            }
+        });
     };
 
     handleSubmit = event => {
@@ -156,7 +213,7 @@ class CategoryForm extends Component {
     };
 
     render () {
-        const { category, id } = this.state;
+        const { category, id, keywordsInput } = this.state;
         const { classes } = this.props;
         const dataAvailable = category.name;
 
@@ -205,7 +262,7 @@ class CategoryForm extends Component {
                     fullWidth
                     required
                 />
-                <div className={classes.metaAddDefault}>
+                <div className={classes.metaAdd}>
                     <Tooltip
                         title={dataAvailable
                             ? 'Добавить значение по умолчанию'
@@ -228,7 +285,7 @@ class CategoryForm extends Component {
                     fullWidth
                     required
                 />
-                <div className={classes.metaAddDefault}>
+                <div className={classes.metaAdd}>
                     <Tooltip
                         title={dataAvailable
                             ? 'Добавить значение по умолчанию'
@@ -240,6 +297,36 @@ class CategoryForm extends Component {
                         </Fab>
                     </Tooltip>
                 </div>
+            </div>
+            <div className={classes.metaAddKeywords}>
+                <TextField
+                    label='Новое ключевое слово'
+                    value={keywordsInput}
+                    onChange={this.handleKeywordChange()}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                />
+                <div className={classes.metaAdd}>
+                    <Tooltip title='Добавить ключевое слово' placement='bottom'>
+                        <Fab size='small' color='primary' onClick={this.handleKeywordAdd} aria-label="Add">
+                            <AddIcon />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
+            <div className={classes.keywordsWrapper}>
+                {
+                    category.keywords &&
+                    category.keywords.split(', ').map((option, i) => <Chip
+                        key={i}
+                        label={option}
+                        variant='outlined'
+                        color='primary'
+                        onDelete={this.handleKeywordDelete(i)}
+                        className={classes.metaKeyword}
+                    />)
+                }
             </div>
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>
