@@ -2,6 +2,7 @@ export const OKEY_STATUS_CODE = 200;
 export const FORBIDDEN_STATUS_CODE = 403;
 export const NOT_FOUND_STATUS_CODE = 404;
 export const SERVER_ERROR_STATUS_CODE = 500;
+export const TOP_PRODUCTS_MAX_LENGTH = 8;
 
 export const DATABASE_URL = 'mongodb://localhost/edc';
 
