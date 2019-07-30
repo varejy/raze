@@ -173,7 +173,7 @@ class Basket extends Component {
                                             <div className={styles.itemInfo}>
                                                 <h2 className={styles.itemName}>{item.product.name}</h2>
                                                 <div className={styles.itemCategory}>{item.product.company}</div>
-                                                <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
+                                                <h2 className={styles.itemPrice}>{item.product.discountPrice || item.product.price} UAH</h2>
                                             </div>
                                         </Link>
                                         <div className={styles.itemAmount}>
