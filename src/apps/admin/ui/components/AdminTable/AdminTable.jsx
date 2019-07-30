@@ -80,6 +80,7 @@ class AdminTable extends React.Component {
         onDelete: noop,
         onFormOpen: noop,
         onFiltersOpen: noop,
+        onProductClone: noop,
         filters: true
     };
 

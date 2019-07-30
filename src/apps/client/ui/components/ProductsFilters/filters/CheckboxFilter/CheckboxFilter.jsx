@@ -64,7 +64,7 @@ class CheckboxFilter extends Component {
             <h3 className={classNames(styles.filterName, styles.filterTxt)}>{filter.name}</h3>
             <ul className={styles.list}>
                 {
-                    filter.options.map((prop, i) => {
+                    filter.options.sort().map((prop, i) => {
                         const value = propOr([prop], false, optionsMap);
 
                         return (

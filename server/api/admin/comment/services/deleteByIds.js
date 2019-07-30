@@ -9,8 +9,8 @@ export default function deleteByIds (req, res) {
     deleteByIdsQuery(ids)
         .then(() => {
             getComments()
-                .then(commnets => {
-                    res.status(OKEY_STATUS_CODE).send(commnets);
+                .then(comments => {
+                    res.status(OKEY_STATUS_CODE).send(comments);
                 });
         })
         .catch(() => {

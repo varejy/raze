@@ -1,5 +1,5 @@
 .filter{
-    margin-bottom: 45px;
+    margin-bottom: 32px;
     display: flex;
     flex-direction: column;
 
@@ -9,7 +9,7 @@
 }
 
 .list {
-    margin-top: 23px;
+    margin-top: 1px;
 
     @media (max-width: 1023px) {
         margin-top: 10px;
@@ -17,7 +17,7 @@
 }
 
 .filterTxt{
-    font-family: Montserrat, arial;
+    font-family: MontserratSemiBold, arial;
     font-weight: bold;
     text-align: left;
     color: #232323;

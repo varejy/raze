@@ -2,7 +2,7 @@
     display: none;
 
     @media (max-width: 1023px){
-        font-family: MontserratMedium, arial;
+        font-family: MontserratSemiBold, arial;
         font-size: 14px;
         color: #00a046;
         padding: 18px;

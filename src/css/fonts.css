@@ -19,11 +19,6 @@
 }
 
 @font-face {
-  font-family: 'PFBeauSansProBlack';
-  src: url('./font/PFBeauSansPro-Black.ttf') format('truetype');
-}
-
-@font-face {
   font-family: 'MontserratRegular';
   src: url('./font/Montserrat-Regular.ttf') format('truetype');
 }
@@ -31,24 +26,4 @@
 @font-face {
   font-family: 'MontserratSemiBold';
   src: url('./font/Montserrat-SemiBold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'MontserratBold';
-  src: url('./font/Montserrat-ExtraBold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'MontserratMedium';
-  src: url('./font/Montserrat-Medium.ttf') format('truetype');
-}
-
-@font-face {
-    font-family: 'Montserrat';
-    src: url('./font/montserrat-black.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'MyriadProRegular';
-  src: url('./font/MyriadProRegular.ttf') format('truetype');
 }
