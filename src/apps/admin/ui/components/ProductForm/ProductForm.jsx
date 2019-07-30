@@ -49,6 +49,7 @@ import arrayMove from '../../../utils/arrayMove';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
+const GREY = '#e0e0e0';
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
     'metaTitle', 'metaDescription'];
 
@@ -226,6 +227,8 @@ class ProductForm extends Component {
 
                 return acc;
             }, {}, product.tags),
+            metaTitle: '',
+            metaDescription: '',
             ...pick(PRODUCTS_VALUES, product)
         };
 
@@ -249,20 +252,6 @@ class ProductForm extends Component {
             removedFiles: [],
             category: category
         };
-    }
-
-    componentWillMount () {
-        const { product } = this.state;
-
-        if (!product.metaTitle && !product.metaDescription) {
-            this.setState({
-                product: {
-                    ...this.state.product,
-                    metaTitle: '',
-                    metaDescription: ''
-                }
-            });
-        }
     }
 
     componentDidMount () {
@@ -295,19 +284,16 @@ class ProductForm extends Component {
         const TITLE_DEFAULT = `${productCompany} ${productName}`;
         const DESCRIPTION_DEFAULT = `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice
             ? product.price : product.discountPrice} грн.`;
-        const dataAvailable = (product.name && product.company && product.price);
 
-        if (dataAvailable) {
-            this.handleChange(option);
-            this.setState({
-                product: {
-                    ...this.state.product,
-                    [option]: option === 'metaTitle'
-                        ? TITLE_DEFAULT
-                        : DESCRIPTION_DEFAULT
-                }
-            });
-        }
+        this.handleChange(option);
+        this.setState({
+            product: {
+                ...this.state.product,
+                [option]: option === 'metaTitle'
+                    ? TITLE_DEFAULT
+                    : DESCRIPTION_DEFAULT
+            }
+        });
     };
 
     getProductPayload = (
@@ -825,7 +811,11 @@ class ProductForm extends Component {
                             : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
                         placement='bottom'
                     >
-                        <Fab color={dataAvailable ? 'primary' : '#e0e0e0'} size='small' onClick={this.handleDefaultMetaAdd('metaTitle')}>
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaTitle') : undefined}
+                        >
                             <AutoRenew />
                         </Fab>
                     </Tooltip>
@@ -848,7 +838,11 @@ class ProductForm extends Component {
                             : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
                         placement='bottom'
                     >
-                        <Fab color={dataAvailable ? 'primary' : '#e0e0e0'} size='small' onClick={this.handleDefaultMetaAdd('metaDescription')}>
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaDescription') : undefined}
+                        >
                             <AutoRenew />
                         </Fab>
                     </Tooltip>

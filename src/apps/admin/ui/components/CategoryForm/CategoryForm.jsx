@@ -25,6 +25,7 @@ import { withStyles } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import Fab from '@material-ui/core/Fab';
 
+const GREY = '#e0e0e0';
 const CATEGORY_VALUES = ['name', 'path', 'hidden', 'filters', 'metaTitle', 'metaDescription'];
 
 const mapDispatchToProps = (dispatch) => ({
@@ -71,25 +72,13 @@ class CategoryForm extends Component {
 
         this.state = {
             category: {
+                metaTitle: '',
+                metaDescription: '',
                 hidden: false,
                 ...pick(CATEGORY_VALUES, category)
             },
             id: prop('id', category)
         };
-    }
-
-    componentWillMount () {
-        const { category } = this.state;
-
-        if (!category.metaTitle && !category.metaDescription) {
-            this.setState({
-                category: {
-                    ...this.state.category,
-                    metaTitle: '',
-                    metaDescription: ''
-                }
-            });
-        }
     }
 
     handleDefaultMetaAdd = (option) => () => {
@@ -98,18 +87,15 @@ class CategoryForm extends Component {
         const TITLE_DEFAULT = `${categoryName}`;
         const DESCRIPTION_DEFAULT = `Купите ${categoryName.toLowerCase()} в интернет-магазине «Raze». Качественные ${
             categoryName.toLowerCase()} от лучших брендов в Украине по низким ценам.`;
-        const dataAvailable = category.name;
 
-        if (dataAvailable) {
-            this.setState({
-                category: {
-                    ...this.state.category,
-                    [option]: option === 'metaTitle'
-                        ? TITLE_DEFAULT
-                        : DESCRIPTION_DEFAULT
-                }
-            });
-        }
+        this.setState({
+            category: {
+                ...this.state.category,
+                [option]: option === 'metaTitle'
+                    ? TITLE_DEFAULT
+                    : DESCRIPTION_DEFAULT
+            }
+        });
     };
 
     handleSubmit = event => {
@@ -212,7 +198,11 @@ class CategoryForm extends Component {
                             : 'Заполните полe "Название" для добавления значения по умолчанию'}
                         placement='bottom'
                     >
-                        <Fab color={dataAvailable ? 'primary' : '#e0e0e0'} size='small' onClick={this.handleDefaultMetaAdd('metaTitle')}>
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaTitle') : undefined}
+                        >
                             <AutoRenew />
                         </Fab>
                     </Tooltip>
@@ -235,7 +225,11 @@ class CategoryForm extends Component {
                             : 'Заполните полe "Название" для добавления значения по умолчанию'}
                         placement='bottom'
                     >
-                        <Fab color={dataAvailable ? 'primary' : '#e0e0e0'} size='small' onClick={this.handleDefaultMetaAdd('metaDescription')}>
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaDescription') : undefined}
+                        >
                             <AutoRenew />
                         </Fab>
                     </Tooltip>
