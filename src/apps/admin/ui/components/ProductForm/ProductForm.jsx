@@ -13,6 +13,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import AutoRenew from '@material-ui/icons/AutorenewRounded';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CopyIcon from '@material-ui/icons/FileCopy';
@@ -42,11 +43,13 @@ import keys from '@tinkoff/utils/object/keys';
 import map from '@tinkoff/utils/array/map';
 import pickBy from '@tinkoff/utils/object/pickBy';
 import propOr from '@tinkoff/utils/object/propOr';
+import trim from '@tinkoff/utils/string/trim';
 
 import arrayMove from '../../../utils/arrayMove';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
+const GREY = '#e0e0e0';
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
     'metaTitle', 'metaDescription'];
 
@@ -163,6 +166,16 @@ const materialStyles = theme => ({
     },
     selectFilterOptions: {
         width: '538px'
+    },
+    metaForm: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    metaAddDefault: {
+        marginLeft: '12px',
+        marginTop: '8px'
     }
 });
 
@@ -214,6 +227,8 @@ class ProductForm extends Component {
 
                 return acc;
             }, {}, product.tags),
+            metaTitle: '',
+            metaDescription: '',
             ...pick(PRODUCTS_VALUES, product)
         };
 
@@ -261,6 +276,25 @@ class ProductForm extends Component {
             });
         }
     }
+
+    handleDefaultMetaAdd = (option) => () => {
+        const { product } = this.state;
+        const productName = trim(product.name);
+        const productCompany = trim(product.company);
+        const TITLE_DEFAULT = `${productCompany} ${productName}`;
+        const DESCRIPTION_DEFAULT = `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice
+            ? product.price : product.discountPrice} грн.`;
+
+        this.handleChange(option);
+        this.setState({
+            product: {
+                ...this.state.product,
+                [option]: option === 'metaTitle'
+                    ? TITLE_DEFAULT
+                    : DESCRIPTION_DEFAULT
+            }
+        });
+    };
 
     getProductPayload = (
         {
@@ -443,7 +477,7 @@ class ProductForm extends Component {
                 filters
             }
         });
-    }
+    };
 
     handleCategoryIdChange = (event) => {
         const { categories } = this.props;
@@ -485,7 +519,7 @@ class ProductForm extends Component {
         this.setState({
             product
         });
-    }
+    };
 
     handleCopyFilterToFeature = (name, value) => () => {
         const { product } = this.state;
@@ -509,7 +543,7 @@ class ProductForm extends Component {
                 features: isNew ? [...features, { prop: name, value }] : features
             }
         });
-    }
+    };
 
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { product } = this.state;
@@ -525,6 +559,7 @@ class ProductForm extends Component {
         const { classes } = this.props;
         const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
         const titleFiltersLength = !this.category.filters.length && 'В этой категории еще нет фильтров';
+        const dataAvailable = (product.name && product.company && product.price);
 
         if (loading) {
             return <div className={classes.loader}>
@@ -759,22 +794,60 @@ class ProductForm extends Component {
             </div>
             <Divider className={classes.divider}/>
             <Typography variant='h6'>SEO</Typography>
-            <TextField
-                label='Title'
-                value={product.metaTitle}
-                onChange={this.handleChange('metaTitle')}
-                margin='normal'
-                variant='outlined'
-                fullWidth
-            />
-            <TextField
-                label='Description'
-                value={product.metaDescription}
-                onChange={this.handleChange('metaDescription')}
-                margin='normal'
-                variant='outlined'
-                fullWidth
-            />
+            <div className={classes.metaForm}>
+                <TextField
+                    label='Title'
+                    value={product.metaTitle}
+                    onChange={this.handleChange('metaTitle')}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                    required
+                />
+                <div className={classes.metaAddDefault}>
+                    <Tooltip
+                        title={dataAvailable
+                            ? 'Добавить значение по умолчанию'
+                            : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
+                        placement='bottom'
+                    >
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaTitle') : undefined}
+                        >
+                            <AutoRenew />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
+            <div className={classes.metaForm}>
+                <TextField
+                    label='Description'
+                    value={product.metaDescription}
+                    onChange={this.handleChange('metaDescription')}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                    required
+                />
+                <div className={classes.metaAddDefault}>
+                    <Tooltip
+                        title={dataAvailable
+                            ? 'Добавить значение по умолчанию'
+                            : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
+                        placement='bottom'
+                    >
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaDescription') : undefined}
+                        >
+                            <AutoRenew />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>
                     Сохранить
