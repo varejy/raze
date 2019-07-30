@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { any } from 'prop-types';
 
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -37,11 +37,13 @@ import pick from '@tinkoff/utils/object/pick';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
 import reduce from '@tinkoff/utils/array/reduce';
+import findIndex from '@tinkoff/utils/array/findIndex';
 import compose from '@tinkoff/utils/function/compose';
 import keys from '@tinkoff/utils/object/keys';
 import map from '@tinkoff/utils/array/map';
 import pickBy from '@tinkoff/utils/object/pickBy';
 import propOr from '@tinkoff/utils/object/propOr';
+import propEq from '@tinkoff/utils/object/propEq';
 
 import arrayMove from '../../../utils/arrayMove';
 
@@ -163,6 +165,16 @@ const materialStyles = theme => ({
     },
     selectFilterOptions: {
         width: '538px'
+    },
+    filtersRoot: {
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center'
+    },
+    buttonWrapp: {
+        width: '94%',
+        display: 'flex',
+        justifyContent: 'flex-end'
     }
 });
 
@@ -511,6 +523,30 @@ class ProductForm extends Component {
         });
     }
 
+    handleCopyFilterToFeatureAll = () => () => {
+        const { product } = this.state;
+
+        const newFeatures = reduce((acc, filter, i) => {
+            const value = !product.filters[i] ? '' : product.filters[i].value;
+            const id = findIndex(propEq('prop', filter.name), product.features)
+
+            if (id !== -1) {
+                acc[id] = { prop: filter.name, value };
+            } else {
+                return [...acc, { prop: filter.name, value }]
+            }
+
+            return acc;
+        }, product.features, this.category.filters)
+
+        this.setState({
+            product: {
+                ...product,
+                features: newFeatures
+            }
+        });
+    }
+
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { product } = this.state;
         this.setState({
@@ -608,81 +644,89 @@ class ProductForm extends Component {
                     product.categoryId ? titleFiltersLength : 'Вы не выбрали категорию'
                 }</Typography>
             </div>
-            <div>
-                {
-                    product.categoryId && this.category.filters.map((filter, i) => {
-                        const value = !product.filters[i] ? '' : product.filters[i].value;
+            {
+                product.categoryId && <div className={classes.filtersRoot}>
+                    <div>
+                        {
+                            this.category.filters.map((filter, i) => {
+                                const value = !product.filters[i] ? '' : product.filters[i].value;
 
-                        return filter.type === 'range'
-                            ? <FormGroup key={i} className={classes.filter} row>
-                                <div className={classes.filterGroup}>
-                                    <div className={classes.filterName}>
-                                        <Typography variant='h6'>{filter.name}</Typography>
-                                    </div>
-                                    <TextField
-                                        className={classes.featureField}
-                                        label='Значение'
-                                        value={value}
-                                        onChange={this.handleFilterChange(i)}
-                                        margin='normal'
-                                        variant='outlined'
-                                        required
-                                        type='number'
-                                    />
-                                    <Tooltip
-                                        title='Копировать в характеристики'
-                                        placement='bottom'
-                                    >
-                                        <IconButton aria-label='Copy' onClick={this.handleCopyFilterToFeature(filter.name, value)}>
-                                            <CopyIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                </div>
-                            </FormGroup>
-                            : <div key={i} className={classes.filterGroup}>
-                                <div className={classes.filterName}>
-                                    <Typography variant='h6'>{filter.name}</Typography>
-                                </div>
-                                <TextField
-                                    select
-                                    label='Значение'
-                                    value={value}
-                                    onChange={this.handleFilterChange(i)}
-                                    margin='normal'
-                                    className={classes.selectFilterOptions}
-                                    variant='outlined'
-                                    InputLabelProps={{
-                                        shrink: !!filter.options
-                                    }}
-                                    required
-                                >
-                                    {[
-                                        '-',
-                                        ...filter.options
-                                    ].map((option, i) => (
-                                        <MenuItem key={i} value={option}>
-                                            {option}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                                <Tooltip
-                                    title='Копировать в характеристики'
-                                    placement='bottom'
-                                >
-                                    <IconButton aria-label='Copy' onClick={this.handleCopyFilterToFeature(filter.name, value)}>
-                                        <CopyIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </div>;
-                    })
-                }
-            </div>
+                                return filter.type === 'range'
+                                    ? <FormGroup key={i} className={classes.filter} row>
+                                        <div className={classes.filterGroup}>
+                                            <div className={classes.filterName}>
+                                                <Typography variant='h6'>{filter.name}</Typography>
+                                            </div>
+                                            <TextField
+                                                className={classes.selectFilterOptions}
+                                                label='Значение'
+                                                value={value}
+                                                onChange={this.handleFilterChange(i)}
+                                                margin='normal'
+                                                variant='outlined'
+                                                required
+                                                type='number'
+                                            />
+                                            <Tooltip
+                                                title='Копировать в характеристики'
+                                                placement='bottom'
+                                            >
+                                                <IconButton aria-label='Copy' onClick={this.handleCopyFilterToFeature(filter.name, value)}>
+                                                    <CopyIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                    </FormGroup>
+                                    : <div key={i} className={classes.filterGroup}>
+                                        <div className={classes.filterName}>
+                                            <Typography variant='h6'>{filter.name}</Typography>
+                                        </div>
+                                        <TextField
+                                            select
+                                            label='Значение'
+                                            value={value}
+                                            onChange={this.handleFilterChange(i)}
+                                            margin='normal'
+                                            className={classes.selectFilterOptions}
+                                            variant='outlined'
+                                            InputLabelProps={{
+                                                shrink: !!filter.options
+                                            }}
+                                            required
+                                        >
+                                            {[
+                                                '-',
+                                                ...filter.options
+                                            ].map((option, i) => (
+                                                <MenuItem key={i} value={option}>
+                                                    {option}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                        <Tooltip
+                                            title='Копировать в характеристики'
+                                            placement='bottom'
+                                        >
+                                            <IconButton aria-label='Copy' onClick={this.handleCopyFilterToFeature(filter.name, value)}>
+                                                <CopyIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </div>;
+                            })
+                        }
+                    </div>
+                    {
+                        this.category.filters.length !== 1 && <div>
+                            <IconButton aria-label='Copy' onClick={this.handleCopyFilterToFeatureAll()}>
+                                <CopyIcon />
+                            </IconButton>
+                        </div>
+                    }
+                </div>
+            }
             <Divider className={classes.divider}/>
             <div className={classes.features}>
                 <Typography variant='h6'>Характеристики</Typography>
-                <Fab color='primary' size='small' onClick={this.handleFeatureAdd}>
-                    <AddIcon />
-                </Fab>
             </div>
             <div>
                 <SlidesFeature
@@ -695,6 +739,11 @@ class ProductForm extends Component {
                     useDragHandle
                     classes={classes}
                 />
+                <div className={classes.buttonWrapp}>
+                    <Fab color='primary' size='small' onClick={this.handleFeatureAdd}>
+                        <AddIcon />
+                    </Fab>
+                </div>
             </div>
             <Divider className={classes.divider}/>
             <ProductAvatarFile onAvatarFileUpload={this.handleAvatarFileUpload} initialAvatarFile={initialAvatarFile}/>
