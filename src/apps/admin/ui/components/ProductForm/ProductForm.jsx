@@ -50,6 +50,7 @@ import arrayMove from '../../../utils/arrayMove';
 import Tooltip from '@material-ui/core/Tooltip';
 import Chip from '@material-ui/core/Chip';
 
+const GREY = '#e0e0e0';
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
     'metaTitle', 'metaDescription', 'keywords'];
 
@@ -441,6 +442,22 @@ class ProductForm extends Component {
             product: {
                 ...this.state.product,
                 keywords: newKeywords.join(', ')
+            },
+            keywordsInput: ''
+        });
+    };
+
+    handleDefaultKeywordsAdd = () => {
+        const { product, category } = this.state;
+        const productName = trim(product.name);
+        const productCompany = trim(product.company);
+        const productCategory = trim(category.name);
+        const KEYWORDS_DEFAULT = `RAZE, ${productCategory}, ${productCompany}, ${productName}`;
+
+        this.setState({
+            product: {
+                ...this.state.product,
+                keywords: KEYWORDS_DEFAULT
             },
             keywordsInput: ''
         });
@@ -882,7 +899,11 @@ class ProductForm extends Component {
                             : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
                         placement='bottom'
                     >
-                        <Fab color={dataAvailable ? 'primary' : '#e0e0e0'} size='small' onClick={this.handleDefaultMetaAdd('metaTitle')}>
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaTitle') : undefined}
+                        >
                             <AutoRenew />
                         </Fab>
                     </Tooltip>
@@ -905,7 +926,11 @@ class ProductForm extends Component {
                             : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
                         placement='bottom'
                     >
-                        <Fab color={dataAvailable ? 'primary' : '#e0e0e0'} size='small' onClick={this.handleDefaultMetaAdd('metaDescription')}>
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaDescription') : undefined}
+                        >
                             <AutoRenew />
                         </Fab>
                     </Tooltip>
@@ -924,6 +949,23 @@ class ProductForm extends Component {
                     <Tooltip title='Добавить ключевое слово' placement='bottom'>
                         <Fab size='small' color='primary' onClick={this.handleKeywordAdd} aria-label="Add">
                             <AddIcon />
+                        </Fab>
+                    </Tooltip>
+                </div>
+                <div className={classes.metaAdd}>
+                    <Tooltip
+                        title={dataAvailable
+                            ? 'Добавить ключевые слова по умолчанию'
+                            : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
+                        placement='bottom'
+                    >
+                        <Fab
+                            size='small'
+                            color={dataAvailable ? 'primary' : GREY}
+                            onClick={dataAvailable ? this.handleDefaultKeywordsAdd : undefined}
+                            aria-label="Add"
+                        >
+                            <AutoRenew />
                         </Fab>
                     </Tooltip>
                 </div>

@@ -28,6 +28,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Chip from '@material-ui/core/Chip';
 import remove from '@tinkoff/utils/array/remove';
 
+const GREY = '#e0e0e0';
 const CATEGORY_VALUES = ['name', 'path', 'hidden', 'filters', 'metaTitle', 'metaDescription', 'keywords'];
 
 const mapDispatchToProps = (dispatch) => ({
@@ -156,6 +157,20 @@ class CategoryForm extends Component {
         });
     };
 
+    handleDefaultKeywordsAdd = () => {
+        const { category } = this.state;
+        const productCategory = trim(category.name);
+        const KEYWORDS_DEFAULT = `RAZE, ${productCategory}`;
+
+        this.setState({
+            category: {
+                ...this.state.category,
+                keywords: KEYWORDS_DEFAULT
+            },
+            keywordsInput: ''
+        });
+    };
+
     handleKeywordDelete = (i) => () => {
         const { category } = this.state;
         const keywordsArray = category.keywords.split(', ');
@@ -269,7 +284,11 @@ class CategoryForm extends Component {
                             : 'Заполните полe "Название" для добавления значения по умолчанию'}
                         placement='bottom'
                     >
-                        <Fab color={dataAvailable ? 'primary' : '#e0e0e0'} size='small' onClick={this.handleDefaultMetaAdd('metaTitle')}>
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaTitle') : undefined}
+                        >
                             <AutoRenew />
                         </Fab>
                     </Tooltip>
@@ -292,7 +311,11 @@ class CategoryForm extends Component {
                             : 'Заполните полe "Название" для добавления значения по умолчанию'}
                         placement='bottom'
                     >
-                        <Fab color={dataAvailable ? 'primary' : '#e0e0e0'} size='small' onClick={this.handleDefaultMetaAdd('metaDescription')}>
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaDescription') : undefined}
+                        >
                             <AutoRenew />
                         </Fab>
                     </Tooltip>
@@ -311,6 +334,22 @@ class CategoryForm extends Component {
                     <Tooltip title='Добавить ключевое слово' placement='bottom'>
                         <Fab size='small' color='primary' onClick={this.handleKeywordAdd} aria-label="Add">
                             <AddIcon />
+                        </Fab>
+                    </Tooltip>
+                </div>
+                <div className={classes.metaAdd}>
+                    <Tooltip
+                        title={dataAvailable
+                            ? 'Добавить значение по умолчанию'
+                            : 'Заполните полe "Название" для добавления значения по умолчанию'}
+                        placement='bottom'
+                    >
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultKeywordsAdd : undefined}
+                        >
+                            <AutoRenew />
                         </Fab>
                     </Tooltip>
                 </div>
