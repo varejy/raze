@@ -162,6 +162,7 @@
     background-size: 100% auto;
     width: 32px;
     height: 32px;
+    cursor: auto;
 }
 
 .buttonLeft .buttonEnabled{
@@ -176,4 +177,5 @@
     background-size: 100% auto;
     width: 32px;
     height: 32px;
+    cursor: auto;
 }

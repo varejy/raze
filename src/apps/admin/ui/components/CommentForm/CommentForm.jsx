@@ -111,6 +111,7 @@ class CommentForm extends Component {
         comment: PropTypes.object.isRequired,
         products: PropTypes.array,
         categories: PropTypes.array,
+        editCommentForm: PropTypes.bool,
         editComment: PropTypes.func,
         getProducts: PropTypes.func,
         getCategories: PropTypes.func,
@@ -120,6 +121,7 @@ class CommentForm extends Component {
 
     static defaultProps = {
         onDone: noop,
+        editCommentForm: false,
         comment: {},
         categories: [],
         products: []
@@ -213,7 +215,7 @@ class CommentForm extends Component {
     };
 
     render () {
-        const { classes } = this.props;
+        const { classes, editCommentForm } = this.props;
         const { comment, product, categoryPath } = this.state;
         const formatCommentDate = this.formatCommentDate(comment);
 
@@ -275,16 +277,26 @@ class CommentForm extends Component {
                 variant="outlined"
             />
             <Divider className={classes.divider} />
-            <FormControl margin='normal'>
-                <Button variant='contained' color="primary" className={classes.buttonTested} type='submit'>
-                    Одобрить
-                </Button>
-            </FormControl>
-            <FormControl margin='normal'>
-                <Button variant='contained' onClick={this.handleDelete} className={classes.buttonDelete} type='button'>
-                    Удалить
-                </Button>
-            </FormControl>
+            {
+                editCommentForm
+                    ? <FormControl margin='normal'>
+                        <Button variant='contained' color="primary" className={classes.buttonTested} type='submit'>
+                            Сохранить
+                        </Button>
+                    </FormControl>
+                    : <div>
+                    <FormControl margin='normal'>
+                        <Button variant='contained' color="primary" className={classes.buttonTested} type='submit'>
+                            Одобрить
+                    </Button>
+                    </FormControl>
+                    <FormControl margin='normal'>
+                        <Button variant='contained' onClick={this.handleDelete} className={classes.buttonDelete} type='button'>
+                            Удалить
+                    </Button>
+                    </FormControl>
+                </div>
+            }
         </form>;
     }
 }
