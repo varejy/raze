@@ -14,6 +14,8 @@ import find from '@tinkoff/utils/array/find';
 
 import styles from './Search.css';
 
+const MAX_LENGTH_TIPS_NAMES = 23;
+
 const mapStateToProps = ({ application }) => {
     return {
         categories: application.categories
@@ -99,7 +101,7 @@ class Search extends Component {
     };
 
     getTipName = name => {
-        return name.length > 23 ? name.substring(0, 23) + '...' : name
+        return name.length > MAX_LENGTH_TIPS_NAMES ? `${name.substring(0, MAX_LENGTH_TIPS_NAMES)}...` : name
     }
 
     componentWillReceiveProps (nextProps) {
