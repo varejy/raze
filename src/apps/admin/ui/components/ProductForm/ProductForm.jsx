@@ -13,6 +13,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import AutoRenew from '@material-ui/icons/AutorenewRounded';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CopyIcon from '@material-ui/icons/FileCopy';
@@ -42,13 +43,16 @@ import keys from '@tinkoff/utils/object/keys';
 import map from '@tinkoff/utils/array/map';
 import pickBy from '@tinkoff/utils/object/pickBy';
 import propOr from '@tinkoff/utils/object/propOr';
+import trim from '@tinkoff/utils/string/trim';
 
 import arrayMove from '../../../utils/arrayMove';
 
 import Tooltip from '@material-ui/core/Tooltip';
+import Chip from '@material-ui/core/Chip';
 
+const GREY = '#e0e0e0';
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
-    'metaTitle', 'metaDescription'];
+    'metaTitle', 'metaDescription', 'keywords'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -163,6 +167,26 @@ const materialStyles = theme => ({
     },
     selectFilterOptions: {
         width: '538px'
+    },
+    metaForm: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    metaAdd: {
+        marginLeft: '12px',
+        marginTop: '8px'
+    },
+    metaAddKeywords: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    metaKeyword: {
+        margin: '4px',
+        marginBottom: '20px'
     }
 });
 
@@ -235,8 +259,23 @@ class ProductForm extends Component {
             initialAvatarFile: product.avatar,
             initialFiles: product.files,
             removedFiles: [],
-            category: category
+            category: category,
+            keywordsInput: ''
         };
+    }
+
+    componentWillMount () {
+        const { product } = this.state;
+
+        if (!product.metaTitle && !product.metaDescription) {
+            this.setState({
+                product: {
+                    ...this.state.product,
+                    metaTitle: '',
+                    metaDescription: ''
+                }
+            });
+        }
     }
 
     componentDidMount () {
@@ -262,6 +301,28 @@ class ProductForm extends Component {
         }
     }
 
+    handleDefaultMetaAdd = (option) => () => {
+        const { product } = this.state;
+        const productName = trim(product.name);
+        const productCompany = trim(product.company);
+        const TITLE_DEFAULT = `${productCompany} ${productName}`;
+        const DESCRIPTION_DEFAULT = `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice
+            ? product.price : product.discountPrice} грн.`;
+        const dataAvailable = (product.name && product.company && product.price);
+
+        if (dataAvailable) {
+            this.handleChange(option);
+            this.setState({
+                product: {
+                    ...this.state.product,
+                    [option]: option === 'metaTitle'
+                        ? TITLE_DEFAULT
+                        : DESCRIPTION_DEFAULT
+                }
+            });
+        }
+    };
+
     getProductPayload = (
         {
             name,
@@ -277,7 +338,8 @@ class ProductForm extends Component {
             notAvailable,
             id,
             metaTitle,
-            metaDescription
+            metaDescription,
+            keywords
         }) => {
         const tags = compose(
             keys,
@@ -298,51 +360,9 @@ class ProductForm extends Component {
             hidden,
             id,
             metaTitle,
-            metaDescription
+            metaDescription,
+            keywords
         };
-    };
-
-    handleSubmit = event => {
-        event.preventDefault();
-
-        const { id, product } = this.state;
-        const productPayload = this.getProductPayload(product);
-
-        (id ? this.props.editProduct({ ...productPayload, id }) : this.props.saveProduct(productPayload))
-            .then(product => {
-                const { files, removedFiles } = this.state;
-                const formData = new FormData();
-                const oldFiles = [];
-
-                files.forEach((file, i) => {
-                    if (file.content) {
-                        formData.append(`product-${product.id}-file-${i}`, file.content);
-                    } else {
-                        oldFiles.push({
-                            path: file.path,
-                            index: i
-                        });
-                    }
-                });
-                formData.append('removedFiles', JSON.stringify(removedFiles));
-                formData.append('oldFiles', JSON.stringify(oldFiles));
-
-                return this.props.updateProductFiles(formData, product.id);
-            })
-            .then(product => {
-                const { avatar } = this.state;
-
-                if (avatar.content) {
-                    const formData = new FormData();
-
-                    formData.append(`product-${product.id}-avatar`, avatar.content);
-
-                    return this.props.updateProductAvatar(formData, product.id);
-                }
-            })
-            .then(() => {
-                this.props.onDone();
-            });
     };
 
     handleFeatureAdd = () => {
@@ -397,6 +417,65 @@ class ProductForm extends Component {
         });
     };
 
+    handleKeywordChange = () => event => {
+        this.setState({
+            keywordsInput: event.target.value,
+            product: {
+                ...this.state.product,
+                keywords: this.state.product.keywords === undefined ? '' : this.state.product.keywords
+            }
+        });
+    };
+
+    handleKeywordAdd = () => {
+        const { product, keywordsInput } = this.state;
+        const keyword = trim(keywordsInput);
+
+        if (!keyword) {
+            return;
+        }
+
+        const keywordsArray = product.keywords !== '' ? product.keywords.split(', ') : [];
+        const newKeywords = [...keywordsArray, keyword];
+
+        this.setState({
+            product: {
+                ...this.state.product,
+                keywords: newKeywords.join(', ')
+            },
+            keywordsInput: ''
+        });
+    };
+
+    handleDefaultKeywordsAdd = () => {
+        const { product, category } = this.state;
+        const productName = trim(product.name);
+        const productCompany = trim(product.company);
+        const productCategory = trim(category.name);
+        const KEYWORDS_DEFAULT = `RAZE, ${productCategory}, ${productCompany}, ${productName}`;
+
+        this.setState({
+            product: {
+                ...this.state.product,
+                keywords: KEYWORDS_DEFAULT
+            },
+            keywordsInput: ''
+        });
+    };
+
+    handleKeywordDelete = (i) => () => {
+        const { product } = this.state;
+        const keywordsArray = product.keywords.split(', ');
+        const newKeywords = remove(i, 1, keywordsArray);
+
+        this.setState({
+            product: {
+                ...this.state.product,
+                keywords: newKeywords.join(', ')
+            }
+        });
+    };
+
     handleTagChange = prop => (event, value) => {
         const { product } = this.state;
 
@@ -443,7 +522,7 @@ class ProductForm extends Component {
                 filters
             }
         });
-    }
+    };
 
     handleCategoryIdChange = (event) => {
         const { categories } = this.props;
@@ -485,7 +564,7 @@ class ProductForm extends Component {
         this.setState({
             product
         });
-    }
+    };
 
     handleCopyFilterToFeature = (name, value) => () => {
         const { product } = this.state;
@@ -509,7 +588,7 @@ class ProductForm extends Component {
                 features: isNew ? [...features, { prop: name, value }] : features
             }
         });
-    }
+    };
 
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { product } = this.state;
@@ -521,10 +600,54 @@ class ProductForm extends Component {
         });
     };
 
+    handleSubmit = event => {
+        event.preventDefault();
+
+        const { id, product } = this.state;
+        const productPayload = this.getProductPayload(product);
+
+        (id ? this.props.editProduct({ ...productPayload, id }) : this.props.saveProduct(productPayload))
+            .then(product => {
+                const { files, removedFiles } = this.state;
+                const formData = new FormData();
+                const oldFiles = [];
+
+                files.forEach((file, i) => {
+                    if (file.content) {
+                        formData.append(`product-${product.id}-file-${i}`, file.content);
+                    } else {
+                        oldFiles.push({
+                            path: file.path,
+                            index: i
+                        });
+                    }
+                });
+                formData.append('removedFiles', JSON.stringify(removedFiles));
+                formData.append('oldFiles', JSON.stringify(oldFiles));
+
+                return this.props.updateProductFiles(formData, product.id);
+            })
+            .then(product => {
+                const { avatar } = this.state;
+
+                if (avatar.content) {
+                    const formData = new FormData();
+
+                    formData.append(`product-${product.id}-avatar`, avatar.content);
+
+                    return this.props.updateProductAvatar(formData, product.id);
+                }
+            })
+            .then(() => {
+                this.props.onDone();
+            });
+    };
+
     render () {
         const { classes } = this.props;
-        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
+        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile, keywordsInput } = this.state;
         const titleFiltersLength = !this.category.filters.length && 'В этой категории еще нет фильтров';
+        const dataAvailable = (product.name && product.company && product.price);
 
         if (loading) {
             return <div className={classes.loader}>
@@ -759,22 +882,107 @@ class ProductForm extends Component {
             </div>
             <Divider className={classes.divider}/>
             <Typography variant='h6'>SEO</Typography>
-            <TextField
-                label='Title'
-                value={product.metaTitle}
-                onChange={this.handleChange('metaTitle')}
-                margin='normal'
-                variant='outlined'
-                fullWidth
-            />
-            <TextField
-                label='Description'
-                value={product.metaDescription}
-                onChange={this.handleChange('metaDescription')}
-                margin='normal'
-                variant='outlined'
-                fullWidth
-            />
+            <div className={classes.metaForm}>
+                <TextField
+                    label='Title'
+                    value={product.metaTitle}
+                    onChange={this.handleChange('metaTitle')}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                    required
+                />
+                <div className={classes.metaAdd}>
+                    <Tooltip
+                        title={dataAvailable
+                            ? 'Добавить значение по умолчанию'
+                            : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
+                        placement='bottom'
+                    >
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaTitle') : undefined}
+                        >
+                            <AutoRenew />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
+            <div className={classes.metaForm}>
+                <TextField
+                    label='Description'
+                    value={product.metaDescription}
+                    onChange={this.handleChange('metaDescription')}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                    required
+                />
+                <div className={classes.metaAdd}>
+                    <Tooltip
+                        title={dataAvailable
+                            ? 'Добавить значение по умолчанию'
+                            : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
+                        placement='bottom'
+                    >
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaDescription') : undefined}
+                        >
+                            <AutoRenew />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
+            <div className={classes.metaAddKeywords}>
+                <TextField
+                    label='Новое ключевое слово'
+                    value={keywordsInput}
+                    onChange={this.handleKeywordChange()}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                />
+                <div className={classes.metaAdd}>
+                    <Tooltip title='Добавить ключевое слово' placement='bottom'>
+                        <Fab size='small' color='primary' onClick={this.handleKeywordAdd} aria-label="Add">
+                            <AddIcon />
+                        </Fab>
+                    </Tooltip>
+                </div>
+                <div className={classes.metaAdd}>
+                    <Tooltip
+                        title={dataAvailable
+                            ? 'Добавить ключевые слова по умолчанию'
+                            : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
+                        placement='bottom'
+                    >
+                        <Fab
+                            size='small'
+                            color={dataAvailable ? 'primary' : GREY}
+                            onClick={dataAvailable ? this.handleDefaultKeywordsAdd : undefined}
+                            aria-label="Add"
+                        >
+                            <AutoRenew />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
+            <div className={classes.keywordsWrapper}>
+                {
+                    product.keywords &&
+                    product.keywords.split(', ').map((option, i) => <Chip
+                        key={i}
+                        label={option}
+                        variant='outlined'
+                        color='primary'
+                        onDelete={this.handleKeywordDelete(i)}
+                        className={classes.metaKeyword}
+                    />)
+                }
+            </div>
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>
                     Сохранить

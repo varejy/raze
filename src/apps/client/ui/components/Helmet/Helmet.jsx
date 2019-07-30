@@ -19,20 +19,24 @@ const STATIC_ROUTES = [
 const STATIC_ROUTES_META = {
     main: {
         title: 'main',
-        description: 'main'
+        description: 'main',
+        keywords: 'mainKeywords'
     },
     search: {
         title: 'search',
-        description: 'search'
+        description: 'search',
+        keywords: 'searchKeywords'
     },
     order: {
         title: 'order',
-        description: 'order'
+        description: 'order',
+        keywords: 'orderKeywords'
     }
 };
 const NOT_FOUND_META = {
     title: '404',
-    description: '404'
+    description: '404',
+    keywords: '404'
 };
 
 const mapStateToProps = ({ application }) => {
@@ -80,7 +84,8 @@ class Helmet extends Component {
             if (product) {
                 return {
                     title: product.metaTitle,
-                    description: product.metaDescription
+                    description: product.metaDescription,
+                    keywords: product.keywords
                 };
             }
 
@@ -93,7 +98,8 @@ class Helmet extends Component {
             if (category) {
                 return {
                     title: category.metaTitle,
-                    description: category.metaDescription
+                    description: category.metaDescription,
+                    keywords: category.keywords
                 };
             }
 
