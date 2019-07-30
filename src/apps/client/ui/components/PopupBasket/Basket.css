@@ -117,8 +117,9 @@
     width: 20px;
     height: 20px;
     cursor: pointer;
-    top: -10px;
-    left: -10px;
+    z-index: 2;
+    top: 0px;
+    left: 0px;
     position: absolute;
 }
 
