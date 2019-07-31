@@ -34,6 +34,11 @@ class Accordion extends Component {
     }
 
     handleChange = panel => () => {
+        this.setState({
+            panel1: false,
+            panel2: false,
+            panel3: false
+        });
         this.setState({ [panel]: this.state[panel] !== true });
     };
 
@@ -50,7 +55,7 @@ class Accordion extends Component {
                     <Typography className={classes.heading}>Главная страница</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <MetaForm/>
+                    <MetaForm page='main'/>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
             <ExpansionPanel expanded={this.state.panel2} onChange={this.handleChange('panel2')}>
@@ -62,7 +67,7 @@ class Accordion extends Component {
                     <Typography className={classes.heading}>Страница заказа</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <MetaForm/>
+                    <MetaForm page='order'/>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
             <ExpansionPanel expanded={this.state.panel3} onChange={this.handleChange('panel3')}>
@@ -74,7 +79,7 @@ class Accordion extends Component {
                     <Typography className={classes.heading}>Страница поиска</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <MetaForm/>
+                    <MetaForm page='search'/>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         </div>;

@@ -7,6 +7,8 @@ import AddIcon from '@material-ui/icons/Add';
 import Chip from '@material-ui/core/Chip';
 import AutoRenew from '@material-ui/icons/AutorenewRounded';
 import { withStyles } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
 
 const materialStyles = () => ({
     metaContainer: {
@@ -131,6 +133,11 @@ class MetaForm extends Component {
                         />)
                 }
             </div>
+            <FormControl margin='normal'>
+                <Button variant='contained' color='primary' type='submit'>
+                    Сохранить
+                </Button>
+            </FormControl>
         </div>;
     }
 }
