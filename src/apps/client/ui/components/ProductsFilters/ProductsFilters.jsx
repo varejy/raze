@@ -12,9 +12,9 @@ import filterUtil from '@tinkoff/utils/array/filter';
 import find from '@tinkoff/utils/array/find';
 import split from '@tinkoff/utils/string/split';
 import reduceObj from '@tinkoff/utils/object/reduce';
+import reduce from '@tinkoff/utils/array/reduce';
 import prop from '@tinkoff/utils/object/prop';
-import propEq from '@tinkoff/utils/object/propEq';
-import type from '@tinkoff/utils/type';
+import object from '@tinkoff/utils/is/object';
 import includes from '@tinkoff/utils/array/includes';
 import flatten from '@tinkoff/utils/array/flatten';
 import any from '@tinkoff/utils/array/any';
@@ -24,6 +24,8 @@ import classNames from 'classnames';
 
 import cyrillicToTranslit from 'cyrillic-to-translit-js';
 import queryString from 'query-string';
+
+const translit = cyrillicToTranslit();
 
 import { withRouter } from 'react-router-dom';
 
@@ -60,15 +62,9 @@ class ProductsFilters extends Component {
             ]),
             reload: false
         };
-        this.checkboxValues = [{
-            id: null,
-            values: []
-        }];
-        this.rangeValues = [{
-            id: null,
-            values: []
-        }];
         this.filtersMap = {};
+
+        this.getQueryParametrs();
     }
 
     static propTypes = {
@@ -83,10 +79,6 @@ class ProductsFilters extends Component {
         location: {},
         history: {}
     };
-
-    componentWillMount = () => {
-        this.getQueryParametrs();
-    }
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.products !== this.props.products) {
@@ -104,14 +96,6 @@ class ProductsFilters extends Component {
                 ]),
                 reload: true
             }, () => { this.setState({reload: false})});
-            this.checkboxValues = [{
-                id: null,
-                values: []
-            }];
-            this.rangeValues = [{
-                id: null,
-                values: []
-            }];
             this.filtersMap = {};
             this.getQueryParametrs(nextProps);
         }
@@ -128,21 +112,16 @@ class ProductsFilters extends Component {
             filters.forEach(filter => {
                 if (filter.id === key) {
                     if (filter.type === 'checkbox') {
-                        const findValues = [];
-                        filter.options.forEach((option, i) => {
-                            includes(cyrillicToTranslit().transform(filter.options[i]), values) && findValues.push(option);
-                        });
+                        const findValues = reduce((acc, option) => {
+                            if (includes(translit.transform(option), values)) {
+                                return [...acc, option];
+                            }
+                            return acc
+                        }, [], filter.options);
                         this.filtersMap[filter.id] = {
                             filter,
                             values: findValues
                         };
-                        this.checkboxValues = [
-                            ...this.checkboxValues,
-                            {
-                                id: filter.id,
-                                values: findValues
-                            }
-                        ];
                     } else {
                         this.filtersMap[filter.id] = {
                             filter,
@@ -151,16 +130,6 @@ class ProductsFilters extends Component {
                                 max: +values[1]
                             }
                         };
-                        this.rangeValues = [
-                            ...this.rangeValues,
-                            {
-                                id: filter.id,
-                                values: {
-                                    min: +values[0],
-                                    max: +values[1]
-                                }
-                            }
-                        ];
                     }
                 }
             });
@@ -277,9 +246,9 @@ class ProductsFilters extends Component {
     };
 
     handleFilter = filter => values => {
-        const location = this.props.location.pathname;
+        const { location } = this.props;
         const { filtersMap } = this;
-        let queries = '';
+        let queries = {};
 
         this.filtersMap[filter.id] = {
             filter,
@@ -287,14 +256,29 @@ class ProductsFilters extends Component {
         };
 
         for (const key in filtersMap) {
+            const translitValues = reduce((acc, value) => {
+                return [
+                    ...acc,
+                    [translit.transform(value)]
+                ];
+            }, [], filtersMap[key].values);
+
             filtersMap[key].filter.type === 'checkbox'
-                ? queries += `&${filtersMap[key].filter.id}=${filtersMap[key].values}`
-                : queries += `&${filtersMap[key].filter.id}=${filtersMap[key].values.min},${filtersMap[key].values.max}`;
+                ? queries = {
+                    ...queries,
+                    [filtersMap[key].filter.id]: translitValues
+                }
+                : queries = {
+                    ...queries,
+                    [filtersMap[key].filter.id]: `${filtersMap[key].values.min},${filtersMap[key].values.max}`
+                };
         }
 
-        queries = queries.substring(1);
+        const stringifyedQueries = queryString.stringify(queries);
 
-        this.props.history.push(`${location}?${cyrillicToTranslit().transform(queries)}`);
+        location.search = stringifyedQueries;
+
+        console.log(location)
 
         this.filter();
     };
@@ -326,27 +310,24 @@ class ProductsFilters extends Component {
     };
 
     renderFilter = filter => {
+        const queryFilter= this.filtersMap[filter.id];
+
         switch (filter.type) {
         case 'checkbox':
-            const queryFilterCheckbox = find(propEq('id', filter.id), this.checkboxValues);
-            let nextOptionsMap = {};
-
-            if (type(queryFilterCheckbox) === 'Object') {
-                queryFilterCheckbox.values.forEach(value => {
-                    nextOptionsMap = {
-                        ...nextOptionsMap,
-                        [value]: !nextOptionsMap[value]
+            if (object(queryFilter)) {
+                const newValues = queryFilter.values.reduce((acc, value) => {
+                    return {
+                        ...acc,
+                        [value]: !acc[value]
                     };
-                });
-                return <CheckboxFilter filter={filter} queryFilter={nextOptionsMap} onFilter={this.handleFilter(filter)} />;
+                }, []);
+                return <CheckboxFilter filter={filter} queryFilter={newValues} onFilter={this.handleFilter(filter)} />;
             } else {
                 return <CheckboxFilter filter={filter} onFilter={this.handleFilter(filter)} />;
             }
         case 'range':
-            const queryFilterRange = find(propEq('id', filter.id), this.rangeValues);
-
-            if (type(queryFilterRange) === 'Object') {
-                return <RangeFilter filter={filter} queryValues={queryFilterRange.values} onFilter={this.handleFilter(filter)} />;
+            if (object(queryFilter)) {
+                return <RangeFilter filter={filter} queryValues={queryFilter} onFilter={this.handleFilter(filter)} />;
             } else {
                 return <RangeFilter filter={filter} onFilter={this.handleFilter(filter)} />;
             }

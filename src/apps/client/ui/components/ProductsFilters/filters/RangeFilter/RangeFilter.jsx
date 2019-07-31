@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import pick from '@tinkoff/utils/object/pick';
+import empty from '@tinkoff/utils/is/empty';
 
 import InputRange from 'react-input-range';
 
@@ -26,7 +27,7 @@ class RangeFilter extends Component {
         this.state = {
             defaultValue: price,
             step: this.getStep(price),
-            value: this.props.queryValues !== {} ? price : this.props.queryValues
+            value: empty(this.props.queryValues) ? price : this.props.queryValues.values
         };
     }
 
@@ -37,7 +38,7 @@ class RangeFilter extends Component {
             this.setState({
                 defaultValue: price,
                 step: this.getStep(price),
-                value: this.props.queryValues !== {} ? price : this.props.queryValues
+                value: empty(this.props.queryValues) ? price : this.props.queryValues.values
             });
         }
     }
