@@ -12,9 +12,7 @@ import trim from '@tinkoff/utils/string/trim';
 import remove from '@tinkoff/utils/array/remove';
 import updateSeo from '../../../services/updateSeo';
 import getAllSeo from '../../../services/getAllSeo';
-import setSeo from '../../../actions/setSeo';
 import { connect } from 'react-redux';
-import findIndex from '@tinkoff/utils/array/findIndex';
 import find from '@tinkoff/utils/array/find';
 
 const materialStyles = () => ({
@@ -49,8 +47,7 @@ const mapStateToProps = ({ seo }) => {
 };
 const mapDispatchToProps = (dispatch) => ({
     updateSeo: payload => dispatch(updateSeo(payload)),
-    getAllSeo: payload => dispatch(getAllSeo(payload)),
-    setSeo: payload => dispatch(setSeo(payload))
+    getAllSeo: payload => dispatch(getAllSeo(payload))
 });
 
 class MetaForm extends Component {
@@ -58,9 +55,7 @@ class MetaForm extends Component {
         classes: PropTypes.object.isRequired,
         updateSeo: PropTypes.func.isRequired,
         getAllSeo: PropTypes.func.isRequired,
-        setSeo: PropTypes.func.isRequired,
-        page: PropTypes.string.isRequired,
-        allSeo: PropTypes.array.isRequired
+        page: PropTypes.string.isRequired
     };
 
     static defaultProps = {
@@ -70,8 +65,18 @@ class MetaForm extends Component {
     constructor (...args) {
         super(...args);
 
-        const { page, getAllSeo, allSeo } = this.props;
-        getAllSeo();
+        const { page } = this.props;
+
+        this.state = {
+            seo: this.getSeoData(this.props),
+            keywordsInput: '',
+            page: page
+        };
+    }
+
+    getSeoData = (props) => {
+        props.getAllSeo();
+        const { page, allSeo } = props;
         const seoPage = find(seoPage => seoPage.name === page, allSeo);
         const newSeo = {
             name: page,
@@ -79,13 +84,8 @@ class MetaForm extends Component {
             metaDescription: '',
             keywords: ''
         };
-
-        this.state = {
-            seo: !seoPage ? newSeo : seoPage,
-            keywordsInput: '',
-            page: page
-        };
-    }
+        return !seoPage ? newSeo : seoPage;
+    };
 
     handleKeywordChange = () => event => {
         this.setState({
@@ -158,15 +158,11 @@ class MetaForm extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { setSeo, allSeo } = this.props;
-        const { seo, page } = this.state;
+        const { seo } = this.state;
         const seoPayload = this.getSeoPayload(seo);
-        const currentSeoIndex = findIndex(seoPage => seoPage.name === page, allSeo);
-        const newAllSeo = remove(currentSeoIndex, 1, allSeo);
-        const newSeo = [...newAllSeo, seo];
 
         this.props.updateSeo(seoPayload);
-        setSeo(newSeo);
+        this.props.getAllSeo();
     };
 
     render () {
