@@ -238,6 +238,8 @@ class ProductForm extends Component {
 
                 return acc;
             }, {}, product.tags),
+            metaTitle: '',
+            metaDescription: '',
             ...pick(PRODUCTS_VALUES, product)
         };
 
@@ -262,20 +264,6 @@ class ProductForm extends Component {
             category: category,
             keywordsInput: ''
         };
-    }
-
-    componentWillMount () {
-        const { product } = this.state;
-
-        if (!product.metaTitle && !product.metaDescription) {
-            this.setState({
-                product: {
-                    ...this.state.product,
-                    metaTitle: '',
-                    metaDescription: ''
-                }
-            });
-        }
     }
 
     componentDidMount () {
@@ -308,19 +296,16 @@ class ProductForm extends Component {
         const TITLE_DEFAULT = `${productCompany} ${productName}`;
         const DESCRIPTION_DEFAULT = `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice
             ? product.price : product.discountPrice} грн.`;
-        const dataAvailable = (product.name && product.company && product.price);
 
-        if (dataAvailable) {
-            this.handleChange(option);
-            this.setState({
-                product: {
-                    ...this.state.product,
-                    [option]: option === 'metaTitle'
-                        ? TITLE_DEFAULT
-                        : DESCRIPTION_DEFAULT
-                }
-            });
-        }
+        this.handleChange(option);
+        this.setState({
+            product: {
+                ...this.state.product,
+                [option]: option === 'metaTitle'
+                    ? TITLE_DEFAULT
+                    : DESCRIPTION_DEFAULT
+            }
+        });
     };
 
     getProductPayload = (

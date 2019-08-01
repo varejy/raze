@@ -85,6 +85,8 @@ class CategoryForm extends Component {
 
         this.state = {
             category: {
+                metaTitle: '',
+                metaDescription: '',
                 hidden: false,
                 ...pick(CATEGORY_VALUES, category)
             },
@@ -93,38 +95,21 @@ class CategoryForm extends Component {
         };
     }
 
-    componentWillMount () {
-        const { category } = this.state;
-
-        if (!category.metaTitle && !category.metaDescription) {
-            this.setState({
-                category: {
-                    ...this.state.category,
-                    metaTitle: '',
-                    metaDescription: ''
-                }
-            });
-        }
-    }
-
     handleDefaultMetaAdd = (option) => () => {
         const { category } = this.state;
         const categoryName = trim(category.name);
         const TITLE_DEFAULT = `${categoryName}`;
         const DESCRIPTION_DEFAULT = `Купите ${categoryName.toLowerCase()} в интернет-магазине «Raze». Качественные ${
             categoryName.toLowerCase()} от лучших брендов в Украине по низким ценам.`;
-        const dataAvailable = category.name;
 
-        if (dataAvailable) {
-            this.setState({
-                category: {
-                    ...this.state.category,
-                    [option]: option === 'metaTitle'
-                        ? TITLE_DEFAULT
-                        : DESCRIPTION_DEFAULT
-                }
-            });
-        }
+        this.setState({
+            category: {
+                ...this.state.category,
+                [option]: option === 'metaTitle'
+                    ? TITLE_DEFAULT
+                    : DESCRIPTION_DEFAULT
+            }
+        });
     };
 
     handleKeywordChange = () => event => {
