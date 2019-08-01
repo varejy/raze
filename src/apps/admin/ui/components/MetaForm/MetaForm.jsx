@@ -70,29 +70,20 @@ class MetaForm extends Component {
     constructor (...args) {
         super(...args);
 
+        const { page, getAllSeo, allSeo } = this.props;
+        getAllSeo();
+        const seoPage = find(seoPage => seoPage.name === page, allSeo);
+        const newSeo = { name: page, metaTitle: '', metaDescription: '', keywords: '' };
+
         this.state = {
-            seo: '',
+            seo: !seoPage ? newSeo : seoPage,
             keywordsInput: '',
-            page: ''
+            page: page
         };
     }
 
-    componentDidMount() {
+    componentDidMount () {
         console.log(this.props.getAllSeo());
-    }
-
-    componentWillReceiveProps (nextProps) {
-        if (this.props.allSeo !== nextProps.allSeo) {
-            nextProps.getAllSeo();
-            const { page, allSeo } = nextProps;
-            const seoPage = find(seoPage => seoPage.name === page, allSeo);
-            const newSeo = { name: page, metaTitle: '', metaDescription: '', keywords: '' };
-            this.setState({
-                ...this.state,
-                seo: !seoPage ? newSeo : seoPage,
-                page: page
-            });
-        }
     }
 
     handleKeywordChange = () => event => {
