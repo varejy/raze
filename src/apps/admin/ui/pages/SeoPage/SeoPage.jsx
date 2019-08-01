@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
-import Accordion from './Accordion';
+import SeoTabs from '../../components/SeoTabs/SeoTabs';
 
 const materialStyles = () => ({
     paper: {
@@ -35,7 +35,7 @@ class SeoPage extends Component {
                 <div className={classes.headerContainer}>
                     <Typography variant='h6' id='seoTitle'>SEO</Typography>
                 </div>
-                <Accordion/>
+                <SeoTabs/>
             </Paper>
         </div>;
     }

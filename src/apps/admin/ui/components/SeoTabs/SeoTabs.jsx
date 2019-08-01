@@ -6,7 +6,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from '@material-ui/core/Typography';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import MetaForm from './MetaForm';
+import MetaForm from '../MetaForm/MetaForm';
+import updateSeo from '../../../services/updateSeo';
 
 const materialStyles = () => ({
     root: {
@@ -19,7 +20,7 @@ const materialStyles = () => ({
     }
 });
 
-class Accordion extends Component {
+class SeoTabs extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired
     };
@@ -86,4 +87,4 @@ class Accordion extends Component {
     }
 }
 
-export default (withStyles(materialStyles)(Accordion));
+export default (withStyles(materialStyles)(SeoTabs));

@@ -4,9 +4,9 @@ const Schema = mongoose.Schema;
 
 const Seo = new Schema({
     name: { type: String, required: true },
-    keywords: [{ type: String, required: true }],
-    metaTitle: [{ type: String, required: true }],
-    metaDescription: [{ type: String, required: true }]
+    keywords: { type: String, required: true },
+    metaTitle: { type: String, required: true },
+    metaDescription: { type: String, required: true }
 });
 
 export default mongoose.model('Seo', Seo);

@@ -1,10 +1,10 @@
 import express from 'express';
 
-import getSeoData from './services/getAllSeo';
+import getAllSeo from './services/getAllSeo';
 
 const router = express.Router();
 
 router.route('/')
-    .get(getSeoData);
+    .get(getAllSeo);
 
 export default router;
