@@ -75,7 +75,6 @@ class MetaForm extends Component {
     }
 
     getSeoData = (props) => {
-        props.getAllSeo();
         const { page, allSeo } = props;
         const seoPage = find(seoPage => seoPage.name === page, allSeo);
         const newSeo = {
@@ -161,8 +160,7 @@ class MetaForm extends Component {
         const { seo } = this.state;
         const seoPayload = this.getSeoPayload(seo);
 
-        this.props.updateSeo(seoPayload);
-        this.props.getAllSeo();
+        this.props.updateSeo(seoPayload).then(this.props.getAllSeo());
     };
 
     render () {
@@ -170,48 +168,49 @@ class MetaForm extends Component {
         const { keywordsInput, seo } = this.state;
 
         return <div className={classes.metaContainer}>
-            <div className={classes.metaForm}>
-                <TextField
-                    label='Title'
-                    value={seo.metaTitle}
-                    margin='normal'
-                    variant='outlined'
-                    fullWidth
-                    required
-                    onChange={this.handleChange('metaTitle')}
-                />
-            </div>
-            <div className={classes.metaForm}>
-                <TextField
-                    label='Description'
-                    value={seo.metaDescription}
-                    margin='normal'
-                    variant='outlined'
-                    fullWidth
-                    required
-                    onChange={this.handleChange('metaDescription')}
-                />
-            </div>
-            <div className={classes.metaAddKeywords}>
-                <TextField
-                    label='Новое ключевое слово'
-                    value={keywordsInput}
-                    margin='normal'
-                    variant='outlined'
-                    fullWidth
-                    onChange={this.handleKeywordChange()}
-                />
-                <div className={classes.metaAdd}>
-                    <Tooltip title='Добавить ключевое слово' placement='bottom'>
-                        <Fab size='small' color='primary' aria-label="Add" onClick={this.handleKeywordAdd}>
-                            <AddIcon/>
-                        </Fab>
-                    </Tooltip>
+            <form onSubmit={this.handleSubmit}>
+                <div className={classes.metaForm}>
+                    <TextField
+                        label='Title'
+                        value={seo.metaTitle}
+                        margin='normal'
+                        variant='outlined'
+                        fullWidth
+                        required
+                        onChange={this.handleChange('metaTitle')}
+                    />
                 </div>
-            </div>
-            <div className={classes.keywordsWrapper}>
-                {
-                    seo.keywords &&
+                <div className={classes.metaForm}>
+                    <TextField
+                        label='Description'
+                        value={seo.metaDescription}
+                        margin='normal'
+                        variant='outlined'
+                        fullWidth
+                        required
+                        onChange={this.handleChange('metaDescription')}
+                    />
+                </div>
+                <div className={classes.metaAddKeywords}>
+                    <TextField
+                        label='Новое ключевое слово'
+                        value={keywordsInput}
+                        margin='normal'
+                        variant='outlined'
+                        fullWidth
+                        onChange={this.handleKeywordChange()}
+                    />
+                    <div className={classes.metaAdd}>
+                        <Tooltip title='Добавить ключевое слово' placement='bottom'>
+                            <Fab size='small' color='primary' aria-label="Add" onClick={this.handleKeywordAdd}>
+                                <AddIcon/>
+                            </Fab>
+                        </Tooltip>
+                    </div>
+                </div>
+                <div className={classes.keywordsWrapper}>
+                    {
+                        seo.keywords &&
                         seo.keywords.split(', ').map((option, i) => <Chip
                             key={i}
                             label={option}
@@ -220,13 +219,14 @@ class MetaForm extends Component {
                             className={classes.metaKeyword}
                             onDelete={this.handleKeywordDelete(i)}
                         />)
-                }
-            </div>
-            <FormControl margin='normal'>
-                <Button variant='contained' color='primary' type='submit' onClick={this.handleSubmit}>
+                    }
+                </div>
+                <FormControl margin='normal'>
+                    <Button variant='contained' color='primary' type='submit'>
                     Сохранить
-                </Button>
-            </FormControl>
+                    </Button>
+                </FormControl>
+            </form>
         </div>;
     }
 }
