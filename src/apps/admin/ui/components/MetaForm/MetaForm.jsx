@@ -73,17 +73,18 @@ class MetaForm extends Component {
         const { page, getAllSeo, allSeo } = this.props;
         getAllSeo();
         const seoPage = find(seoPage => seoPage.name === page, allSeo);
-        const newSeo = { name: page, metaTitle: '', metaDescription: '', keywords: '' };
+        const newSeo = {
+            name: page,
+            metaTitle: '',
+            metaDescription: '',
+            keywords: ''
+        };
 
         this.state = {
             seo: !seoPage ? newSeo : seoPage,
             keywordsInput: '',
             page: page
         };
-    }
-
-    componentDidMount () {
-        console.log(this.props.getAllSeo());
     }
 
     handleKeywordChange = () => event => {
@@ -172,7 +173,7 @@ class MetaForm extends Component {
         const { classes } = this.props;
         const { keywordsInput, seo } = this.state;
 
-        return <div className={classes.metaContainer} onSubmit={this.handleSubmit}>
+        return <div className={classes.metaContainer}>
             <div className={classes.metaForm}>
                 <TextField
                     label='Title'
