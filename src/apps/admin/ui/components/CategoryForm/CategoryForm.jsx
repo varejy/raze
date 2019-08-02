@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import AutoRenew from '@material-ui/icons/AutorenewRounded';
 
 import { connect } from 'react-redux';
 import saveCategory from '../../../services/saveCategory';
@@ -16,11 +17,15 @@ import editCategory from '../../../services/editCategory';
 import noop from '@tinkoff/utils/function/noop';
 import prop from '@tinkoff/utils/object/prop';
 import pick from '@tinkoff/utils/object/pick';
+import trim from '@tinkoff/utils/string/trim';
 
 import Filters from '../Filters/Filters';
 import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
+import Fab from '@material-ui/core/Fab';
 
+const GREY = '#e0e0e0';
 const CATEGORY_VALUES = ['name', 'path', 'hidden', 'filters', 'metaTitle', 'metaDescription'];
 
 const mapDispatchToProps = (dispatch) => ({
@@ -32,6 +37,16 @@ const materialStyles = theme => ({
     divider: {
         marginTop: 2 * theme.spacing.unit,
         marginBottom: 2 * theme.spacing.unit
+    },
+    metaForm: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    metaAddDefault: {
+        marginLeft: '12px',
+        marginTop: '8px'
     }
 });
 
@@ -57,12 +72,31 @@ class CategoryForm extends Component {
 
         this.state = {
             category: {
+                metaTitle: '',
+                metaDescription: '',
                 hidden: false,
                 ...pick(CATEGORY_VALUES, category)
             },
             id: prop('id', category)
         };
     }
+
+    handleDefaultMetaAdd = (option) => () => {
+        const { category } = this.state;
+        const categoryName = trim(category.name);
+        const TITLE_DEFAULT = `${categoryName}`;
+        const DESCRIPTION_DEFAULT = `Купите ${categoryName.toLowerCase()} в интернет-магазине «Raze». Качественные ${
+            categoryName.toLowerCase()} от лучших брендов в Украине по низким ценам.`;
+
+        this.setState({
+            category: {
+                ...this.state.category,
+                [option]: option === 'metaTitle'
+                    ? TITLE_DEFAULT
+                    : DESCRIPTION_DEFAULT
+            }
+        });
+    };
 
     handleSubmit = event => {
         event.preventDefault();
@@ -110,6 +144,7 @@ class CategoryForm extends Component {
     render () {
         const { category, id } = this.state;
         const { classes } = this.props;
+        const dataAvailable = category.name;
 
         return <form onSubmit={this.handleSubmit}>
             <Typography variant='h5'>{id ? 'Редактирование категории' : 'Добавление новой категории'}</Typography>
@@ -146,22 +181,60 @@ class CategoryForm extends Component {
             </div>
             <Divider className={classes.divider}/>
             <Typography variant='h6'>SEO</Typography>
-            <TextField
-                label='Title'
-                value={category.metaTitle}
-                onChange={this.handleChange('metaTitle')}
-                margin='normal'
-                variant='outlined'
-                fullWidth
-            />
-            <TextField
-                label='Description'
-                value={category.metaDescription}
-                onChange={this.handleChange('metaDescription')}
-                margin='normal'
-                variant='outlined'
-                fullWidth
-            />
+            <div className={classes.metaForm}>
+                <TextField
+                    label='Title'
+                    value={category.metaTitle}
+                    onChange={this.handleChange('metaTitle')}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                    required
+                />
+                <div className={classes.metaAddDefault}>
+                    <Tooltip
+                        title={dataAvailable
+                            ? 'Добавить значение по умолчанию'
+                            : 'Заполните полe "Название" для добавления значения по умолчанию'}
+                        placement='bottom'
+                    >
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaTitle') : undefined}
+                        >
+                            <AutoRenew />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
+            <div className={classes.metaForm}>
+                <TextField
+                    label='Description'
+                    value={category.metaDescription}
+                    onChange={this.handleChange('metaDescription')}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                    required
+                />
+                <div className={classes.metaAddDefault}>
+                    <Tooltip
+                        title={dataAvailable
+                            ? 'Добавить значение по умолчанию'
+                            : 'Заполните полe "Название" для добавления значения по умолчанию'}
+                        placement='bottom'
+                    >
+                        <Fab
+                            color={dataAvailable ? 'primary' : GREY}
+                            size='small'
+                            onClick={dataAvailable ? this.handleDefaultMetaAdd('metaDescription') : undefined}
+                        >
+                            <AutoRenew />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>
                     Сохранить
