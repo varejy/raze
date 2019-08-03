@@ -79,6 +79,11 @@ const materialStyles = () => ({
         border: '1px solid rgb(63, 80, 181)'
     }
 });
+const PAGES = [
+    { header: 'Главная страница', page: 'main' },
+    { header: 'Страница заказа', page: 'order' },
+    { header: 'Страница поиска', pages: 'search' }
+];
 const mapStateToProps = ({ products }) => {
     return {
         products: products.products
@@ -180,7 +185,7 @@ class SeoPage extends Component {
                 <div className={classes.headerContainer}>
                     <Typography variant='h6' id='seoTitle'>SEO</Typography>
                 </div>
-                <SeoTabs/>
+                <SeoTabs pages={PAGES}/>
             </Paper>
         </div>;
     };
@@ -234,6 +239,18 @@ class SeoPage extends Component {
         </div>;
     };
 
+    renderEditCategorySeoPage = () => {
+        const { classes } = this.props;
+
+        return <div>
+            <Paper className={classes.paper}>
+                <div className={classes.headerContainer}>
+                    <Typography variant='h6' id='seoTitle'>SEO</Typography>
+                </div>
+            </Paper>
+        </div>;
+    };
+
     render () {
         const { classes } = this.props;
         const { loading, tabsValue } = this.state;
@@ -255,6 +272,7 @@ class SeoPage extends Component {
                 >
                     <Tab onClick={this.handleTableChange(0)} label="Редактирование SEO" />
                     <Tab onClick={this.handleTableChange(1)} label="Поиск по товарам" />
+                    <Tab onClick={this.handleTableChange(2)} label="Редактирование SEO категорий" />
                 </Tabs>
             </AppBar>
             <SwipeableViews
@@ -263,6 +281,7 @@ class SeoPage extends Component {
             >
                 {this.renderEditSeo(0)}
                 {this.renderSearchPage(1)}
+                {this.renderEditCategorySeoPage(2)}
             </SwipeableViews>
         </div>;
     }

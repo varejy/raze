@@ -7,7 +7,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from '@material-ui/core/Typography';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import MetaForm from '../MetaForm/MetaForm';
-import updateSeo from '../../../services/updateSeo';
 
 const materialStyles = () => ({
     root: {
@@ -22,67 +21,56 @@ const materialStyles = () => ({
 
 class SeoTabs extends Component {
     static propTypes = {
-        classes: PropTypes.object.isRequired
+        classes: PropTypes.object.isRequired,
+        pages: PropTypes.array.isRequired
     };
 
     constructor (props) {
         super(props);
+
         this.state = {
-            panel1: false,
-            panel2: false,
-            panel3: false
+            panel: this.setDefault
         };
     }
 
-    handleChange = panel => () => {
+    setDefault = () => {
+        let defaultPanel = {};
+        this.props.pages.map((page, i) => { defaultPanel['panel' + i] = false; });
+
         this.setState({
-            panel1: false,
-            panel2: false,
-            panel3: false
+            panel: this.state.default
         });
-        this.setState({ [panel]: this.state[panel] !== true });
+    };
+
+    handleChange = panelClicked => () => {
+        this.setDefault();
+        this.setState({ panel: {
+            ...this.state.panel,
+            [panelClicked]: this.state.panel[panelClicked] !== true
+        }
+        });
     };
 
     render () {
-        const { classes } = this.props;
+        const { classes, pages } = this.props;
 
         return <div className={classes.root}>
-            <ExpansionPanel expanded={this.state.panel1} onChange={this.handleChange('panel1')}>
-                <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon/>}
-                    aria-controls="panel1bh-content"
-                    id="panel1bh-header"
-                >
-                    <Typography className={classes.heading}>Главная страница</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                    <MetaForm page='main'/>
-                </ExpansionPanelDetails>
-            </ExpansionPanel>
-            <ExpansionPanel expanded={this.state.panel2} onChange={this.handleChange('panel2')}>
-                <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon/>}
-                    aria-controls="panel2bh-content"
-                    id="panel2bh-header"
-                >
-                    <Typography className={classes.heading}>Страница заказа</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                    <MetaForm page='order'/>
-                </ExpansionPanelDetails>
-            </ExpansionPanel>
-            <ExpansionPanel expanded={this.state.panel3} onChange={this.handleChange('panel3')}>
-                <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon/>}
-                    aria-controls="panel3bh-content"
-                    id="panel3bh-header"
-                >
-                    <Typography className={classes.heading}>Страница поиска</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                    <MetaForm page='search'/>
-                </ExpansionPanelDetails>
-            </ExpansionPanel>
+            {
+                pages.map((page, i) => {
+                    return <ExpansionPanel key={i} expanded={this.state[`panel${i}`]} onChange={this.handleChange(`panel${i}`)}>
+                        <ExpansionPanelSummary
+                            expandIcon={<ExpandMoreIcon/>}
+                            aria-controls={`panel${i}bh-content`}
+                            id={`panel${i}bh-header`}
+                        >
+                            <Typography className={classes.heading}>{pages[i].header}</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                            <MetaForm page={pages[i].page}/>
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>;
+                })
+            }
         </div>;
     }
 }
