@@ -35,21 +35,18 @@ class SeoTabs extends Component {
         super(props);
 
         this.state = {
-            panel: this.setDefault
+            panel: this.setDefault()
         };
     }
 
     setDefault = () => {
         let defaultPanel = {};
-        this.props.pages.map((page, i) => { defaultPanel['panel' + i] = false; });
+        this.props.pages.map((page, i) => { defaultPanel[`panel${i}`] = false; });
 
-        this.setState({
-            panel: this.state.default
-        });
+        return defaultPanel;
     };
 
     handleChange = panelClicked => () => {
-        this.setDefault();
         this.setState({ panel: {
             ...this.state.panel,
             [panelClicked]: this.state.panel[panelClicked] !== true
@@ -63,7 +60,7 @@ class SeoTabs extends Component {
         return <div className={classes.root}>
             {
                 pages.map((page, i) => {
-                    return <ExpansionPanel key={i} expanded={this.state[`panel${i}`]} onChange={this.handleChange(`panel${i}`)}>
+                    return <ExpansionPanel key={i} expanded={this.state.panel[`panel${i}`]} onClick={this.handleChange(`panel${i}`)}>
                         <ExpansionPanelSummary
                             expandIcon={<ExpandMoreIcon/>}
                             aria-controls={`panel${i}bh-content`}

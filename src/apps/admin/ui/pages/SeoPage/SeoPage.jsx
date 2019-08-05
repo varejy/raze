@@ -188,7 +188,7 @@ class SeoPage extends Component {
         });
     };
 
-    renderEditSeo = () => {
+    renderEditPagesSeo = () => {
         const { classes } = this.props;
 
         return <div>
@@ -201,7 +201,7 @@ class SeoPage extends Component {
         </div>;
     };
 
-    renderEditCategorySeoPage = () => {
+    renderEditCategoriesSeo = () => {
         const { classes, categories } = this.props;
         let categoriesMap = [];
         categories.map(category => {
@@ -295,8 +295,8 @@ class SeoPage extends Component {
                 index={tabsValue}
                 onChangeIndex={this.handleChangeIndex}
             >
-                {this.renderEditSeo(0)}
-                {this.renderEditCategorySeoPage(1)}
+                {this.renderEditPagesSeo(0)}
+                {this.renderEditCategoriesSeo(1)}
                 {this.renderSearchPage(2)}
             </SwipeableViews>
         </div>;
