@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes, { any } from 'prop-types';
+import PropTypes from 'prop-types';
 
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -756,9 +756,9 @@ class ProductForm extends Component {
                                 title='Скопировать все фильтры в характеристики'
                                 placement='bottom'
                             >
-                            <IconButton aria-label='Copy' onClick={this.handleCopyFilterToFeatureAll}>
-                                <CopyIcon />
-                            </IconButton>
+                                <IconButton aria-label='Copy' onClick={this.handleCopyFilterToFeatureAll}>
+                                    <CopyIcon />
+                                </IconButton>
                             </Tooltip>
                         </div>
                     }
