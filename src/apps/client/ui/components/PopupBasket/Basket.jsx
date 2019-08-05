@@ -173,24 +173,33 @@ class Basket extends Component {
                                         <div className={styles.itemInfo}>
                                             <h2 className={styles.itemName}>{item.product.name}</h2>
                                             <div className={styles.itemCategory}>{item.product.company}</div>
-                                            <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
+                                            {
+                                                item.product.discountPrice
+                                                    ? <div className={styles.prices}>
+                                                        <h3 className={styles.previousPrice}>{item.product.price} грн</h3>
+                                                        <h2
+                                                            className={classNames(styles.itemPrice, styles.priceDiscount)}>{item.product.discountPrice} грн
+                                                        </h2>
+                                                    </div>
+                                                    : <h2 className={styles.itemPrice}>{item.product.price} грн</h2>
+                                            }
                                         </div>
                                     </Link>
                                     <div className={styles.itemAmount}>
                                         <div className={styles.amountButton}
                                             onClick={this.handleCountClick(i, 'minus')}>-
-                                            </div>
+                                        </div>
                                         <div className={styles.countWrapp}>{productsMap[i]}</div>
                                         <div className={styles.amountButton}
                                             onClick={this.handleCountClick(i, 'plus')}>+
-                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             )}
                         </Scroll>
                     </div>
                     <div className={styles.priceBlock}>
-                        <div className={styles.line}/>
+                        <div className={styles.line} />
                         <div className={styles.priceTotal}>Итог: {this.totalPrice()} грн</div>
                     </div>
                     {
@@ -199,7 +208,7 @@ class Basket extends Component {
                                 <button
                                     className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
                                     onClick={this.handleCloseBasket}>
-                                продолжить покупки
+                                    продолжить покупки
                                 </button>
                                 <Link className={styles.link} to='/order'>
                                     <button

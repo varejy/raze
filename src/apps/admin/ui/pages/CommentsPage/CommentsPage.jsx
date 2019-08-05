@@ -236,8 +236,6 @@ class CommentsPage extends Component {
         });
     };
 
-    
-
     handleDelete = value => () => {
         this.setState({
             valueForDelete: value
