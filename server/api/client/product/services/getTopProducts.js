@@ -13,7 +13,7 @@ export default function getTopProducts (req, res) {
         .then(products => {
             const topProducts = products
                 .slice(0, TOP_PRODUCTS_MAX_LENGTH)
-                .filter(product => includes('topSales', product.tags))
+                .filter(product => includes('topSales', product.tags));
             res.status(OKEY_STATUS_CODE).send(topProducts);
         })
         .catch(() => {

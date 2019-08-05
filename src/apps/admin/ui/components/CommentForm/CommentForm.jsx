@@ -285,17 +285,17 @@ class CommentForm extends Component {
                         </Button>
                     </FormControl>
                     : <div>
-                    <FormControl margin='normal'>
-                        <Button variant='contained' color="primary" className={classes.buttonTested} type='submit'>
+                        <FormControl margin='normal'>
+                            <Button variant='contained' color="primary" className={classes.buttonTested} type='submit'>
                             Одобрить
-                    </Button>
-                    </FormControl>
-                    <FormControl margin='normal'>
-                        <Button variant='contained' onClick={this.handleDelete} className={classes.buttonDelete} type='button'>
+                            </Button>
+                        </FormControl>
+                        <FormControl margin='normal'>
+                            <Button variant='contained' onClick={this.handleDelete} className={classes.buttonDelete} type='button'>
                             Удалить
-                    </Button>
-                    </FormControl>
-                </div>
+                            </Button>
+                        </FormControl>
+                    </div>
             }
         </form>;
     }

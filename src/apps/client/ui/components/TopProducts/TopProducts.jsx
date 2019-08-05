@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Product from '../Product/Product';
 import styles from './TopProducts.css';
@@ -14,9 +15,18 @@ const mapStateToProps = ({ application }) => {
 };
 
 class TopProducts extends Component {
+    static propTypes = {
+        categories: PropTypes.object.isRequired,
+        topProducts: PropTypes.array
+    };
+
+    static defaultProps = {
+        topProducts: []
+    };
 
     render () {
         const { categories, topProducts } = this.props;
+
         return <div className={styles.root}>
             <div className={styles.title}>топ продаж</div>
             <div className={styles.productsWrapp}>
@@ -24,7 +34,7 @@ class TopProducts extends Component {
                     topProducts.map((product, i) => {
                         const category = find(category => category.id === product.categoryId)(categories);
 
-                        return <Product key={i} category={category} product={product} />
+                        return <Product key={i} category={category} product={product} />;
                     })
                 }
             </div>

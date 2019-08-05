@@ -42,7 +42,7 @@ export default function (state = initialState, action) {
             }
         };
     case SET_TOP_PRODUCTS:
-        return { ...state, topProducts: action.payload }
+        return { ...state, topProducts: action.payload };
     case SET_MAIN_SLIDES:
         return { ...state, mainSlides: action.payload };
     default:
