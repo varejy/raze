@@ -128,7 +128,16 @@ class PopupBasket extends Component {
                                 <div className={styles.itemInfo}>
                                     <h2 className={styles.itemName}>{product.name}</h2>
                                     <div className={styles.itemCategory}>{product.company}</div>
-                                    <h2 className={styles.itemPrice}>{product.discountPrice || product.price} UAH</h2>
+                                    {
+                                        product.discountPrice
+                                            ? <div className={styles.prices}>
+                                                <h3 className={styles.previousPrice}>{product.price} грн</h3>
+                                                <h2
+                                                    className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн
+                                                </h2>
+                                            </div>
+                                            : <h2 className={styles.itemPrice}>{product.discountPrice || product.price} грн</h2>
+                                    }
                                     {this.handleDuplicates() && <div className={styles.isInBasket}>*Этот товар уже в корзине</div>}
                                 </div>
                             </div>
