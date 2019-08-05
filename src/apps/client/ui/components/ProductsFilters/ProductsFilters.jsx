@@ -22,10 +22,7 @@ import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
 import classNames from 'classnames';
 
-import cyrillicToTranslit from 'cyrillic-to-translit-js';
 import queryString from 'query-string';
-
-const translit = cyrillicToTranslit();
 
 import { withRouter } from 'react-router-dom';
 
@@ -107,13 +104,13 @@ class ProductsFilters extends Component {
         const query = queryString.parse(search);
 
         for (const key in query) {
-            const values = split(',', query[key]);
-
             filters.forEach(filter => {
                 if (filter.id === key) {
+                    const values = split(',', query[key]);
+
                     if (filter.type === 'checkbox') {
                         const findValues = reduce((acc, option) => {
-                            if (includes(translit.transform(option), values)) {
+                            if (includes(option, values)) {
                                 return [...acc, option];
                             }
                             return acc
@@ -246,39 +243,28 @@ class ProductsFilters extends Component {
     };
 
     handleFilter = filter => values => {
-        const { location } = this.props;
+        const { location, history } = this.props;
         const { filtersMap } = this;
-        let queries = {};
 
         this.filtersMap[filter.id] = {
             filter,
             values
         };
 
-        for (const key in filtersMap) {
-            const translitValues = reduce((acc, value) => {
-                return [
-                    ...acc,
-                    [translit.transform(value)]
-                ];
-            }, [], filtersMap[key].values);
+        const queries = reduceObj((acc, filter) => {
+            return {
+                ...acc,
+                [filter.filter.id]: filter.filter.type === 'checkbox'
+                    ? reduce((acc, value) => {
+                        return acc + ',' + value
+                    }, '', filter.values).substring(1)
+                    : `${filter.values.min},${filter.values.max}`
+            }
+        }, {}, filtersMap)
 
-            filtersMap[key].filter.type === 'checkbox'
-                ? queries = {
-                    ...queries,
-                    [filtersMap[key].filter.id]: translitValues
-                }
-                : queries = {
-                    ...queries,
-                    [filtersMap[key].filter.id]: `${filtersMap[key].values.min},${filtersMap[key].values.max}`
-                };
-        }
+        const stringifyedQueries = queryString.stringify(queries, { encodeURIComponent: uri => uri });
 
-        const stringifyedQueries = queryString.stringify(queries);
-
-        location.search = stringifyedQueries;
-
-        console.log(location)
+        history.push(`${location.pathname}?${stringifyedQueries}`);
 
         this.filter();
     };
