@@ -22,7 +22,13 @@ const materialStyles = () => ({
 class SeoTabs extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
-        pages: PropTypes.array.isRequired
+        pages: PropTypes.array.isRequired,
+        option: PropTypes.string.isRequired,
+        categories: PropTypes.array.isRequired
+    };
+
+    static defaultProps = {
+        categories: []
     };
 
     constructor (props) {
@@ -52,7 +58,7 @@ class SeoTabs extends Component {
     };
 
     render () {
-        const { classes, pages } = this.props;
+        const { classes, pages, option, categories } = this.props;
 
         return <div className={classes.root}>
             {
@@ -66,7 +72,7 @@ class SeoTabs extends Component {
                             <Typography className={classes.heading}>{pages[i].header}</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
-                            <MetaForm page={pages[i].page}/>
+                            <MetaForm page={pages[i].page} option={option} category={categories[i]}/>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>;
                 })

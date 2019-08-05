@@ -21,6 +21,7 @@ import editProduct from '../../../services/editProduct';
 import pick from '@tinkoff/utils/object/pick';
 import prop from '@tinkoff/utils/object/prop';
 import search from '../../../services/search';
+import editCategory from '../../../services/editCategory';
 
 const materialStyles = () => ({
     metaContainer: {
@@ -58,7 +59,8 @@ const mapDispatchToProps = (dispatch) => ({
     updateSeo: payload => dispatch(updateSeo(payload)),
     getAllSeo: payload => dispatch(getAllSeo(payload)),
     editProduct: payload => dispatch(editProduct(payload)),
-    search: payload => dispatch(search(payload))
+    search: payload => dispatch(search(payload)),
+    editCategory: payload => dispatch(editCategory(payload))
 });
 
 class MetaForm extends Component {
@@ -70,29 +72,35 @@ class MetaForm extends Component {
         page: PropTypes.string.isRequired,
         product: PropTypes.object,
         searchQuery: PropTypes.string.isRequired,
-        search: PropTypes.func
+        search: PropTypes.func,
+        option: PropTypes.string.isRequired,
+        editCategory: PropTypes.func.isRequired,
+        category: PropTypes.object
     };
 
     static defaultProps = {
         allSeo: [],
         product: {},
+        category: {},
         searchQuery: ''
     };
 
     constructor (...args) {
         super(...args);
 
-        const { page, product } = this.props;
+        const { page, product, category, option } = this.props;
         const newProduct = {
             ...pick(PRODUCTS_VALUES, product)
         };
 
         this.state = {
-            seo: page !== 'product' ? this.getSeoData(this.props) : {},
+            seo: option !== 'seo' ? {} : this.getSeoData(this.props),
             keywordsInput: '',
             page: page,
             product: newProduct,
-            id: prop('id', product)
+            id: prop('id', product),
+            category: category,
+            categoryId: category.id
         };
     }
 
@@ -238,46 +246,47 @@ class MetaForm extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { seo, page, id, product } = this.state;
-        if (page !== 'product') {
+        const { seo, id, product, category, categoryId } = this.state;
+        const { option } = this.props;
+        if (option === 'seo') {
             const seoPayload = this.getSeoPayload(seo);
 
             this.props.updateSeo(seoPayload).then(this.props.getAllSeo());
-        } else {
+        } else if (option === 'product') {
             const productPayload = this.getProductPayload(product);
 
-            this.props.editProduct({ ...productPayload, id });
-            this.searchProducts(this.props.searchQuery);
+            this.props.editProduct({ ...productPayload, id }).then(this.searchProducts(this.props.searchQuery));
+        } else if (option === 'category') {
+            this.props.editCategory({ ...category, categoryId });
         }
     };
 
     render () {
-        const { classes } = this.props;
-        const { keywordsInput, page } = this.state;
-        const seoOption = page !== 'product' ? 'seo' : 'product';
+        const { classes, option } = this.props;
+        const { keywordsInput } = this.state;
 
         return <div className={classes.metaContainer}>
             <form onSubmit={this.handleSubmit}>
                 <div className={classes.metaForm}>
                     <TextField
                         label='Title'
-                        value={this.state[seoOption].metaTitle}
+                        value={this.state[option].metaTitle}
                         margin='normal'
                         variant='outlined'
                         fullWidth
                         required
-                        onChange={this.handleChange('metaTitle', seoOption)}
+                        onChange={this.handleChange('metaTitle', option)}
                     />
                 </div>
                 <div className={classes.metaForm}>
                     <TextField
                         label='Description'
-                        value={this.state[seoOption].metaDescription}
+                        value={this.state[option].metaDescription}
                         margin='normal'
                         variant='outlined'
                         fullWidth
                         required
-                        onChange={this.handleChange('metaDescription', seoOption)}
+                        onChange={this.handleChange('metaDescription', option)}
                     />
                 </div>
                 <div className={classes.metaAddKeywords}>
@@ -287,11 +296,11 @@ class MetaForm extends Component {
                         margin='normal'
                         variant='outlined'
                         fullWidth
-                        onChange={this.handleKeywordChange(seoOption)()}
+                        onChange={this.handleKeywordChange(option)()}
                     />
                     <div className={classes.metaAdd}>
                         <Tooltip title='Добавить ключевое слово' placement='bottom'>
-                            <Fab size='small' color='primary' aria-label="Add" onClick={this.handleKeywordAdd(seoOption)}>
+                            <Fab size='small' color='primary' aria-label="Add" onClick={this.handleKeywordAdd(option)}>
                                 <AddIcon/>
                             </Fab>
                         </Tooltip>
@@ -299,14 +308,14 @@ class MetaForm extends Component {
                 </div>
                 <div className={classes.keywordsWrapper}>
                     {
-                        this.state[seoOption].keywords &&
-                        this.state[seoOption].keywords.split(', ').map((option, i) => <Chip
+                        this.state[option].keywords &&
+                        this.state[option].keywords.split(', ').map((chip, i) => <Chip
                             key={i}
-                            label={option}
+                            label={chip}
                             variant='outlined'
                             color='primary'
                             className={classes.metaKeyword}
-                            onDelete={this.handleKeywordDelete(seoOption, i)}
+                            onDelete={this.handleKeywordDelete(option, i)}
                         />)
                     }
                 </div>

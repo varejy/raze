@@ -6,6 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import SeoTabs from '../../components/SeoTabs/SeoTabs';
 import getAllSeo from '../../../services/getAllSeo';
+import getCategories from '../../../services/getCategories';
 
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -82,15 +83,17 @@ const materialStyles = () => ({
 const PAGES = [
     { header: 'Главная страница', page: 'main' },
     { header: 'Страница заказа', page: 'order' },
-    { header: 'Страница поиска', pages: 'search' }
+    { header: 'Страница поиска', page: 'search' }
 ];
-const mapStateToProps = ({ products }) => {
+const mapStateToProps = ({ products, application }) => {
     return {
-        products: products.products
+        products: products.products,
+        categories: application.categories
     };
 };
 const mapDispatchToProps = (dispatch) => ({
     getAllSeo: payload => dispatch(getAllSeo(payload)),
+    getCategories: payload => dispatch(getCategories(payload)),
     search: payload => dispatch(search(payload))
 });
 
@@ -99,7 +102,14 @@ class SeoPage extends Component {
         classes: PropTypes.object.isRequired,
         getAllSeo: PropTypes.func.isRequired,
         search: PropTypes.func,
-        products: PropTypes.array
+        products: PropTypes.array,
+        categories: PropTypes.array,
+        getCategories: PropTypes.func
+    };
+
+    static defaultProps = {
+        products: [],
+        categories: []
     };
 
     constructor (...args) {
@@ -126,6 +136,7 @@ class SeoPage extends Component {
                     loading: false
                 });
             });
+        this.props.getCategories();
     }
 
     handleTableChange = event => () => {
@@ -185,7 +196,24 @@ class SeoPage extends Component {
                 <div className={classes.headerContainer}>
                     <Typography variant='h6' id='seoTitle'>SEO</Typography>
                 </div>
-                <SeoTabs pages={PAGES}/>
+                <SeoTabs pages={PAGES} option='seo'/>
+            </Paper>
+        </div>;
+    };
+
+    renderEditCategorySeoPage = () => {
+        const { classes, categories } = this.props;
+        let categoriesMap = [];
+        categories.map(category => {
+            categoriesMap.push({ header: `Редактирование категории '${category.name}'`, page: category.name });
+        });
+
+        return <div>
+            <Paper className={classes.paper}>
+                <div className={classes.headerContainer}>
+                    <Typography variant='h6' id='seoTitle'>SEO</Typography>
+                </div>
+                <SeoTabs pages={categoriesMap} categories={categories} option='category'/>
             </Paper>
         </div>;
     };
@@ -233,21 +261,9 @@ class SeoPage extends Component {
             }
             {
                 !!id && <Paper className={classes.paper} component="div">
-                    <MetaForm page='product' product={selectedProduct} searchQuery={searchTxt}/>
+                    <MetaForm page='product' product={selectedProduct} searchQuery={searchTxt} option='product'/>
                 </Paper>
             }
-        </div>;
-    };
-
-    renderEditCategorySeoPage = () => {
-        const { classes } = this.props;
-
-        return <div>
-            <Paper className={classes.paper}>
-                <div className={classes.headerContainer}>
-                    <Typography variant='h6' id='seoTitle'>SEO</Typography>
-                </div>
-            </Paper>
         </div>;
     };
 
@@ -270,9 +286,9 @@ class SeoPage extends Component {
                     textColor="primary"
                     variant="fullWidth"
                 >
-                    <Tab onClick={this.handleTableChange(0)} label="Редактирование SEO" />
-                    <Tab onClick={this.handleTableChange(1)} label="Поиск по товарам" />
-                    <Tab onClick={this.handleTableChange(2)} label="Редактирование SEO категорий" />
+                    <Tab onClick={this.handleTableChange(0)} label="Редактирование SEO страниц" />
+                    <Tab onClick={this.handleTableChange(1)} label="Редактирование SEO категорий" />
+                    <Tab onClick={this.handleTableChange(2)} label="Поиск по товарам" />
                 </Tabs>
             </AppBar>
             <SwipeableViews
@@ -280,8 +296,8 @@ class SeoPage extends Component {
                 onChangeIndex={this.handleChangeIndex}
             >
                 {this.renderEditSeo(0)}
-                {this.renderSearchPage(1)}
-                {this.renderEditCategorySeoPage(2)}
+                {this.renderEditCategorySeoPage(1)}
+                {this.renderSearchPage(2)}
             </SwipeableViews>
         </div>;
     }
