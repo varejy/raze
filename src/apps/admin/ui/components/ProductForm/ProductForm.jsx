@@ -300,7 +300,7 @@ class ProductForm extends Component {
         this.handleChange(option);
         this.setState({
             product: {
-                ...this.state.product,
+                ...product,
                 [option]: option === 'metaTitle'
                     ? TITLE_DEFAULT
                     : DESCRIPTION_DEFAULT
@@ -407,7 +407,7 @@ class ProductForm extends Component {
             keywordsInput: event.target.value,
             product: {
                 ...this.state.product,
-                keywords: this.state.product.keywords === undefined ? '' : this.state.product.keywords
+                keywords: this.state.product.keywords || ''
             }
         });
     };
@@ -425,7 +425,7 @@ class ProductForm extends Component {
 
         this.setState({
             product: {
-                ...this.state.product,
+                ...product,
                 keywords: newKeywords.join(', ')
             },
             keywordsInput: ''
@@ -441,7 +441,7 @@ class ProductForm extends Component {
 
         this.setState({
             product: {
-                ...this.state.product,
+                ...product,
                 keywords: KEYWORDS_DEFAULT
             },
             keywordsInput: ''
@@ -455,7 +455,7 @@ class ProductForm extends Component {
 
         this.setState({
             product: {
-                ...this.state.product,
+                ...product,
                 keywords: newKeywords.join(', ')
             }
         });
