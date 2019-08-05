@@ -173,17 +173,19 @@ class Basket extends Component {
                                         <div className={styles.itemInfo}>
                                             <h2 className={styles.itemName}>{item.product.name}</h2>
                                             <div className={styles.itemCategory}>{item.product.company}</div>
-                                            <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
+                                            <h2 className={styles.itemPrice}>{item.product.price.toLocaleString('ru')} грн</h2>
                                         </div>
                                     </Link>
                                     <div className={styles.itemAmount}>
                                         <div className={styles.amountButton}
-                                            onClick={this.handleCountClick(i, 'minus')}>-
-                                            </div>
+                                            onClick={this.handleCountClick(i, 'minus')}>
+                                            -
+                                        </div>
                                         <div className={styles.countWrapp}>{productsMap[i]}</div>
                                         <div className={styles.amountButton}
-                                            onClick={this.handleCountClick(i, 'plus')}>+
-                                            </div>
+                                            onClick={this.handleCountClick(i, 'plus')}>
+                                            +
+                                        </div>
                                     </div>
                                 </div>
                             )}

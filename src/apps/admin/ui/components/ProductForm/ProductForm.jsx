@@ -282,8 +282,8 @@ class ProductForm extends Component {
         const productName = trim(product.name);
         const productCompany = trim(product.company);
         const TITLE_DEFAULT = `${productCompany} ${productName}`;
-        const DESCRIPTION_DEFAULT = `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice
-            ? product.price : product.discountPrice} грн.`;
+        const DESCRIPTION_DEFAULT = `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice.toLocaleString('ru')
+            ? product.price.toLocaleString('ru') : product.discountPrice.toLocaleString('ru')} грн.`;
 
         this.handleChange(option);
         this.setState({
@@ -608,7 +608,7 @@ class ProductForm extends Component {
             </TextField>
             <TextField
                 label='Цена'
-                value={product.price}
+                value={product.price.toLocaleString('ru')}
                 onChange={this.handleChange('price')}
                 InputProps={{ inputProps: { min: 0 } }}
                 margin='normal'
@@ -619,7 +619,7 @@ class ProductForm extends Component {
             />
             <TextField
                 label='Скидочная цена'
-                value={product.discountPrice}
+                value={product.discountPrice.toLocaleString('ru')}
                 onChange={this.handleChange('discountPrice')}
                 InputProps={{ inputProps: { min: 1 } }}
                 margin='normal'

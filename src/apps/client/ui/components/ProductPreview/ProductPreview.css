@@ -189,14 +189,14 @@
 }
 
 .parameterName{
-    font-family: HelveticaNeueCyrLight;
+    font-family: HelveticaNeueCyrBold;
     font-size: 11px;
     line-height: 24px;
     color: #000000;
 }
 
 .parameterValue{
-    font-family: HelveticaNeueCyrBold;
+    font-family: HelveticaNeueCyrLight;
     font-size: 11px;
     line-height: 24px;
     color: #000000;
