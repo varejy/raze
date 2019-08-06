@@ -179,11 +179,11 @@ class Basket extends Component {
                                     <div className={styles.itemAmount}>
                                         <div className={styles.amountButton}
                                             onClick={this.handleCountClick(i, 'minus')}>-
-                                            </div>
+                                        </div>
                                         <div className={styles.countWrapp}>{productsMap[i]}</div>
                                         <div className={styles.amountButton}
                                             onClick={this.handleCountClick(i, 'plus')}>+
-                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             )}

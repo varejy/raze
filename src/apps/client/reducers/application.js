@@ -3,7 +3,8 @@ import {
     SET_PRODUCTS_TO_MAP,
     SET_MAIN_SLIDES,
     SET_MEDIA_INFO,
-    SET_PRODUCT_TO_MAP
+    SET_PRODUCT_TO_MAP,
+    SET_TOP_PRODUCTS
 } from '../types/types';
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
     categories: [],
     productsMap: {},
     productMap: {},
+    topProducts: [],
     mainSlides: []
 };
 
@@ -39,6 +41,8 @@ export default function (state = initialState, action) {
                 ...action.payload
             }
         };
+    case SET_TOP_PRODUCTS:
+        return { ...state, topProducts: action.payload };
     case SET_MAIN_SLIDES:
         return { ...state, mainSlides: action.payload };
     default:
