@@ -8,6 +8,7 @@ const Product = new Schema({
     company: { type: String, required: true },
     price: { type: Number, required: true },
     discountPrice: { type: Number },
+    discountTime: { type: String },
     description: { type: String, required: true },
     features: [{
         prop: { type: String, required: true },

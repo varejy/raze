@@ -2,6 +2,7 @@ import request from 'superagent';
 import base from '../base';
 
 import setProductToMap from '../../actions/setProductToMap';
+import checkingRemainingTime from '../../utils/checkingRemainingTime';
 
 export default function getProductById (id) {
     return dispatch => {
@@ -11,9 +12,22 @@ export default function getProductById (id) {
                 .query({ id })
         )
             .then(product => {
-                dispatch(setProductToMap({
-                    [product.id]: product
-                }));
+                if (!product.discountTime) {
+                    dispatch(setProductToMap({
+                        [product.id]: product
+                    }));
+                } else {
+                    if (checkingRemainingTime(product.discountTime).length) {
+                        dispatch(setProductToMap({
+                            [product.id]: product
+                        }));
+                    } else {
+                        product.discountPrice = '';
+                        dispatch(setProductToMap({
+                            [product.id]: product
+                        }));
+                    }
+                }
             })
             .catch(() => {
                 dispatch(setProductToMap({

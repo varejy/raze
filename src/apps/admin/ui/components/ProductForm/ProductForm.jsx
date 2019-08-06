@@ -47,11 +47,13 @@ import trim from '@tinkoff/utils/string/trim';
 
 import arrayMove from '../../../utils/arrayMove';
 
+import format from 'date-fns/format';
+
 import Tooltip from '@material-ui/core/Tooltip';
 
 const GREY = '#e0e0e0';
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
-    'metaTitle', 'metaDescription'];
+    'metaTitle', 'metaDescription', 'discountTime'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -176,6 +178,16 @@ const materialStyles = theme => ({
     metaAddDefault: {
         marginLeft: '12px',
         marginTop: '8px'
+    },
+    dateInput: {
+        margin: '12px'
+    },
+    discountTimeWrapp: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    discountTimeCheckbox: {
+        width: '172px'
     }
 });
 
@@ -229,6 +241,7 @@ class ProductForm extends Component {
             }, {}, product.tags),
             metaTitle: '',
             metaDescription: '',
+            discountTime: '',
             ...pick(PRODUCTS_VALUES, product)
         };
 
@@ -302,6 +315,7 @@ class ProductForm extends Component {
             company,
             price,
             discountPrice,
+            discountTime,
             description,
             tagsMap,
             features,
@@ -323,6 +337,7 @@ class ProductForm extends Component {
             company,
             price: +price,
             discountPrice: discountPrice && +discountPrice,
+            discountTime,
             description,
             features,
             categoryId,
@@ -555,6 +570,34 @@ class ProductForm extends Component {
         });
     };
 
+    handleDiscountTimeVisibleChange = () => {
+        const { product } = this.state;
+
+        !product.discountTime.length
+            ? this.setState({
+                product: {
+                    ...product,
+                    discountTime: '-'
+                }
+            })
+            : this.setState({
+                product: {
+                    ...product,
+                    discountTime: ''
+                }
+            });
+    }
+
+    handleDiscountTimeChange = (event) => {
+        const { product } = this.state;
+        this.setState({
+            product: {
+                ...product,
+                discountTime: format(event.target.value, 'YYYY-MM-DDThh:mm')
+            }
+        });
+    }
+
     render () {
         const { classes } = this.props;
         const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
@@ -627,6 +670,35 @@ class ProductForm extends Component {
                 type='number'
                 fullWidth
             />
+            <div className={classes.discountTimeWrapp}>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={!!product.discountTime.length}
+                            onChange={this.handleDiscountTimeVisibleChange}
+                            color='primary'
+                        />
+                    }
+                    label='Временная скидка'
+                    className={classes.discountTimeCheckbox}
+                    disabled={hiddenCheckboxIsDisables}
+                />
+                {
+                    !!product.discountTime.length && <TextField
+                        id="datetime-local"
+                        label="Акция действует до"
+                        type="datetime-local"
+                        defaultValue="2017-05-24T10:30"
+                        value={product.discountTime}
+                        className={classes.dateInput}
+                        onChange={this.handleDiscountTimeChange}
+                        required
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                    />
+                }
+            </div>
             <TextField
                 label='Описание'
                 value={product.description}

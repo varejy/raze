@@ -5,6 +5,7 @@ const VALUES = [
     'company',
     'price',
     'discountPrice',
+    'discountTime',
     'description',
     'features',
     'categoryId',
