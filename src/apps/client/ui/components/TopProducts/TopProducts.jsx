@@ -16,7 +16,7 @@ const mapStateToProps = ({ application }) => {
 
 class TopProducts extends Component {
     static propTypes = {
-        categories: PropTypes.object.isRequired,
+        categories: PropTypes.array.isRequired,
         topProducts: PropTypes.array
     };
 
