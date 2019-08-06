@@ -127,8 +127,7 @@ class Liked extends Component {
                         </Scroll>
                     </div>
                         : <div className={styles.noLikedItems}>
-                            К сожалению, Вы не добавили в избранное товары.<br/>
-                            Исправить ситуацию Вы можете выбрав товар в каталоге.
+                            Вы не добавили товары в Избранное
                         </div>
                     }
                 </div>

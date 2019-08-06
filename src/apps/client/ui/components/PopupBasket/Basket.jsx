@@ -148,12 +148,15 @@ class Basket extends Component {
                         <div className={styles.header}>корзина</div>
                         <div className={styles.closeButton} onClick={this.handleCloseBasket}>+</div>
                     </div>
-                    <div className={styles.amountTxt}>
-                        <div>Количество</div>
-                    </div>
-                    <div className={styles.items}>
-                        <Scroll theme='light'>
-                            {basket.map((item, i) => productsMap[i] !== 0 &&
+                    {
+                        basket.length
+                            ? <div>
+                                <div className={styles.amountTxt}>
+                                    <div>Количество</div>
+                                </div>
+                                <div className={styles.items}>
+                                    <Scroll theme='light'>
+                                        {basket.map((item, i) => productsMap[i] !== 0 &&
                                 <div className={styles.item} key={i}>
                                     <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
                                         <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png'
@@ -188,31 +191,29 @@ class Basket extends Component {
                                         </div>
                                     </div>
                                 </div>
-                            )}
-                        </Scroll>
-                    </div>
-                    <div className={styles.priceBlock}>
-                        <div className={styles.line}/>
-                        <div className={styles.priceTotal}>Итог: {this.totalPrice()} грн</div>
-                    </div>
-                    {
-                        basket.length
-                            ? <div className={styles.buttonsWrapp}>
-                                <button
-                                    className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
-                                    onClick={this.handleCloseBasket}>
-                                продолжить покупки
-                                </button>
-                                <Link className={styles.link} to='/order'>
+                                        )}
+                                    </Scroll>
+                                </div>
+                                <div className={styles.priceBlock}>
+                                    <div className={styles.line}/>
+                                    <div className={styles.priceTotal}>Итог: {this.totalPrice()} грн</div>
+                                </div>
+                                <div className={styles.buttonsWrapp}>
                                     <button
-                                        className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}
-                                        onClick={this.handleCloseBasket}>оформление
-                                    заказа
+                                        className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
+                                        onClick={this.handleCloseBasket}>
+                                продолжить покупки
                                     </button>
-                                </Link>
+                                    <Link className={styles.link} to='/order'>
+                                        <button
+                                            className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}
+                                            onClick={this.handleCloseBasket}>оформление
+                                    заказа
+                                        </button>
+                                    </Link>
+                                </div>
                             </div>
-                            : <div className={styles.txt}>К сожалению, Вы не добавили в избранное товары.
-                        Исправить ситуацию Вы можете выбрав товар в каталоге.</div>
+                            : <div className={styles.txt}>Вы не добавили в товары в Корзину</div>
                     }
                 </div>
             </div>

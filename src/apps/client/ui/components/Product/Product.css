@@ -122,9 +122,9 @@
 }
 
 .manufacturer{
-    font-size: 7.5px;
+    font-size: 14px;
     font-family: MontserratSemiBold;
-    line-height: 18px;
+    line-height: 14px;
     text-align: center;
     text-transform: uppercase;
 }
@@ -140,7 +140,7 @@
 .price{
     font-family: MontserratSemiBold;
     font-size: 16px;
-    line-height: 24px;
+    line-height: 28px;
     text-align: center;
     color: #000000;
 }
@@ -264,8 +264,8 @@
 
 .name{
     font-family: MontserratSemiBold;
-    font-size: 13.5px;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 22px;
     text-align: center;
     text-transform: uppercase;
 }
