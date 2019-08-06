@@ -420,7 +420,7 @@ class ProductForm extends Component {
             return;
         }
 
-        const keywordsArray = product.keywords !== '' ? product.keywords.split(', ') : [];
+        const keywordsArray = !product.keywords ? [] : product.keywords.split(', ');
         const newKeywords = [...keywordsArray, keyword];
 
         this.setState({

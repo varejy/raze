@@ -130,7 +130,8 @@ class CategoryForm extends Component {
             return;
         }
 
-        const keywordsArray = category.keywords !== '' ? category.keywords.split(', ') : [];
+        const keywordsArray = !category.keywords ? [] : category.keywords.split(', ');
+
         const newKeywords = [...keywordsArray, keyword];
 
         this.setState({
