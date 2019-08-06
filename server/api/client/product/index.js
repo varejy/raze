@@ -4,6 +4,7 @@ import getAvailableProduct from './services/getAvailableProduct';
 import getAvailableProductsByIds from './services/getAvailableProductsByIds';
 import getAvailableProductsByCategory from './services/getAvailableProductsByCategory';
 import availableProductsSearch from './services/availableProductsSearch';
+import getTopProducts from './services/getTopProducts';
 
 const router = express.Router();
 
@@ -15,6 +16,9 @@ router.route('/by-ids')
 
 router.route('/by-category')
     .get(getAvailableProductsByCategory);
+
+router.route('/top')
+    .get(getTopProducts);
 
 router.route('/search')
     .get(availableProductsSearch);
