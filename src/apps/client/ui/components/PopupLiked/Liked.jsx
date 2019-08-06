@@ -103,12 +103,12 @@ class Liked extends Component {
                         <Scroll>
                             {liked.map((item, i) =>
                                 <div className={styles.item} key={i}>
+                                    <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
+                                        <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
+                                    </div>
                                     <Link className={styles.productLink} key={item.id}
                                         to={`/${this.getCategoryPath(item.categoryId)}/${item.id}`}>
                                         <div className={styles.itemImageWrapp}>
-                                            <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
-                                                <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
-                                            </div>
                                             <div className={styles.itemImage}>
                                                 <img
                                                     className={styles.itemAvatar}
