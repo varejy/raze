@@ -50,10 +50,11 @@ import arrayMove from '../../../utils/arrayMove';
 import format from 'date-fns/format';
 
 import Tooltip from '@material-ui/core/Tooltip';
+import Chip from '@material-ui/core/Chip';
 
 const GREY = '#e0e0e0';
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
-    'metaTitle', 'metaDescription', 'discountTime'];
+                        'metaTitle', 'metaDescription', 'discountTime'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -175,7 +176,7 @@ const materialStyles = theme => ({
         justifyContent: 'space-between',
         alignItems: 'center'
     },
-    metaAddDefault: {
+    metaAdd: {
         marginLeft: '12px',
         marginTop: '8px'
     },
@@ -188,6 +189,15 @@ const materialStyles = theme => ({
     },
     discountTimeCheckbox: {
         width: '172px'
+    metaAddKeywords: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    metaKeyword: {
+        margin: '4px',
+        marginBottom: '20px'
     }
 });
 
@@ -263,7 +273,8 @@ class ProductForm extends Component {
             initialAvatarFile: product.avatar,
             initialFiles: product.files,
             removedFiles: [],
-            category: category
+            category: category,
+            keywordsInput: ''
         };
     }
 
@@ -301,7 +312,7 @@ class ProductForm extends Component {
         this.handleChange(option);
         this.setState({
             product: {
-                ...this.state.product,
+                ...product,
                 [option]: option === 'metaTitle'
                     ? TITLE_DEFAULT
                     : DESCRIPTION_DEFAULT
@@ -325,7 +336,8 @@ class ProductForm extends Component {
             notAvailable,
             id,
             metaTitle,
-            metaDescription
+            metaDescription,
+            keywords
         }) => {
         const tags = compose(
             keys,
@@ -347,51 +359,9 @@ class ProductForm extends Component {
             hidden,
             id,
             metaTitle,
-            metaDescription
+            metaDescription,
+            keywords
         };
-    };
-
-    handleSubmit = event => {
-        event.preventDefault();
-
-        const { id, product } = this.state;
-        const productPayload = this.getProductPayload(product);
-
-        (id ? this.props.editProduct({ ...productPayload, id }) : this.props.saveProduct(productPayload))
-            .then(product => {
-                const { files, removedFiles } = this.state;
-                const formData = new FormData();
-                const oldFiles = [];
-
-                files.forEach((file, i) => {
-                    if (file.content) {
-                        formData.append(`product-${product.id}-file-${i}`, file.content);
-                    } else {
-                        oldFiles.push({
-                            path: file.path,
-                            index: i
-                        });
-                    }
-                });
-                formData.append('removedFiles', JSON.stringify(removedFiles));
-                formData.append('oldFiles', JSON.stringify(oldFiles));
-
-                return this.props.updateProductFiles(formData, product.id);
-            })
-            .then(product => {
-                const { avatar } = this.state;
-
-                if (avatar.content) {
-                    const formData = new FormData();
-
-                    formData.append(`product-${product.id}-avatar`, avatar.content);
-
-                    return this.props.updateProductAvatar(formData, product.id);
-                }
-            })
-            .then(() => {
-                this.props.onDone();
-            });
     };
 
     handleFeatureAdd = () => {
@@ -442,6 +412,65 @@ class ProductForm extends Component {
         }, () => {
             if (prop === 'categoryId') {
                 this.handleCategoryIdChange(event);
+            }
+        });
+    };
+
+    handleKeywordChange = () => event => {
+        this.setState({
+            keywordsInput: event.target.value,
+            product: {
+                ...this.state.product,
+                keywords: this.state.product.keywords || ''
+            }
+        });
+    };
+
+    handleKeywordAdd = () => {
+        const { product, keywordsInput } = this.state;
+        const keyword = trim(keywordsInput);
+
+        if (!keyword) {
+            return;
+        }
+
+        const keywordsArray = !product.keywords ? [] : product.keywords.split(', ');
+        const newKeywords = [...keywordsArray, keyword];
+
+        this.setState({
+            product: {
+                ...product,
+                keywords: newKeywords.join(', ')
+            },
+            keywordsInput: ''
+        });
+    };
+
+    handleDefaultKeywordsAdd = () => {
+        const { product, category } = this.state;
+        const productName = trim(product.name);
+        const productCompany = trim(product.company);
+        const productCategory = trim(category.name);
+        const KEYWORDS_DEFAULT = `RAZE, ${productCategory}, ${productCompany}, ${productName}`;
+
+        this.setState({
+            product: {
+                ...product,
+                keywords: KEYWORDS_DEFAULT
+            },
+            keywordsInput: ''
+        });
+    };
+
+    handleKeywordDelete = (i) => () => {
+        const { product } = this.state;
+        const keywordsArray = product.keywords.split(', ');
+        const newKeywords = remove(i, 1, keywordsArray);
+
+        this.setState({
+            product: {
+                ...product,
+                keywords: newKeywords.join(', ')
             }
         });
     };
@@ -597,10 +626,53 @@ class ProductForm extends Component {
             }
         });
     }
+    
+    handleSubmit = event => {
+        event.preventDefault();
+
+        const { id, product } = this.state;
+        const productPayload = this.getProductPayload(product);
+
+        (id ? this.props.editProduct({ ...productPayload, id }) : this.props.saveProduct(productPayload))
+            .then(product => {
+                const { files, removedFiles } = this.state;
+                const formData = new FormData();
+                const oldFiles = [];
+
+                files.forEach((file, i) => {
+                    if (file.content) {
+                        formData.append(`product-${product.id}-file-${i}`, file.content);
+                    } else {
+                        oldFiles.push({
+                            path: file.path,
+                            index: i
+                        });
+                    }
+                });
+                formData.append('removedFiles', JSON.stringify(removedFiles));
+                formData.append('oldFiles', JSON.stringify(oldFiles));
+
+                return this.props.updateProductFiles(formData, product.id);
+            })
+            .then(product => {
+                const { avatar } = this.state;
+
+                if (avatar.content) {
+                    const formData = new FormData();
+
+                    formData.append(`product-${product.id}-avatar`, avatar.content);
+
+                    return this.props.updateProductAvatar(formData, product.id);
+                }
+            })
+            .then(() => {
+                this.props.onDone();
+            });
+    };
 
     render () {
         const { classes } = this.props;
-        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile } = this.state;
+        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile, keywordsInput } = this.state;
         const titleFiltersLength = !this.category.filters.length && 'В этой категории еще нет фильтров';
         const dataAvailable = (product.name && product.company && product.price);
 
@@ -876,7 +948,7 @@ class ProductForm extends Component {
                     fullWidth
                     required
                 />
-                <div className={classes.metaAddDefault}>
+                <div className={classes.metaAdd}>
                     <Tooltip
                         title={dataAvailable
                             ? 'Добавить значение по умолчанию'
@@ -903,7 +975,7 @@ class ProductForm extends Component {
                     fullWidth
                     required
                 />
-                <div className={classes.metaAddDefault}>
+                <div className={classes.metaAdd}>
                     <Tooltip
                         title={dataAvailable
                             ? 'Добавить значение по умолчанию'
@@ -919,6 +991,53 @@ class ProductForm extends Component {
                         </Fab>
                     </Tooltip>
                 </div>
+            </div>
+            <div className={classes.metaAddKeywords}>
+                <TextField
+                    label='Новое ключевое слово'
+                    value={keywordsInput}
+                    onChange={this.handleKeywordChange()}
+                    margin='normal'
+                    variant='outlined'
+                    fullWidth
+                />
+                <div className={classes.metaAdd}>
+                    <Tooltip title='Добавить ключевое слово' placement='bottom'>
+                        <Fab size='small' color='primary' onClick={this.handleKeywordAdd} aria-label="Add">
+                            <AddIcon />
+                        </Fab>
+                    </Tooltip>
+                </div>
+                <div className={classes.metaAdd}>
+                    <Tooltip
+                        title={dataAvailable
+                            ? 'Добавить ключевые слова по умолчанию'
+                            : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
+                        placement='bottom'
+                    >
+                        <Fab
+                            size='small'
+                            color={dataAvailable ? 'primary' : GREY}
+                            onClick={dataAvailable ? this.handleDefaultKeywordsAdd : undefined}
+                            aria-label="Add"
+                        >
+                            <AutoRenew />
+                        </Fab>
+                    </Tooltip>
+                </div>
+            </div>
+            <div className={classes.keywordsWrapper}>
+                {
+                    product.keywords &&
+                    product.keywords.split(', ').map((option, i) => <Chip
+                        key={i}
+                        label={option}
+                        variant='outlined'
+                        color='primary'
+                        onDelete={this.handleKeywordDelete(i)}
+                        className={classes.metaKeyword}
+                    />)
+                }
             </div>
             <FormControl margin='normal'>
                 <Button variant='contained' color='primary' type='submit'>

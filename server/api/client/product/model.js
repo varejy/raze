@@ -28,7 +28,8 @@ const Product = new Schema({
     date: { type: Number, required: true },
     views: { type: Number, required: true },
     metaTitle: { type: String },
-    metaDescription: { type: String }
+    metaDescription: { type: String },
+    keywords: { type: String }
 });
 
 export default mongoose.model('Product', Product);

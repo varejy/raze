@@ -20,7 +20,8 @@ const VALUES = [
     'filters',
     'rating',
     'metaTitle',
-    'metaDescription'
+    'metaDescription',
+    'keywords'
 ];
 
 export default function getProductValues (product) {
