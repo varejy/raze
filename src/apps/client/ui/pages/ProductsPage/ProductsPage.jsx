@@ -88,7 +88,6 @@ class ProductsPage extends Component {
     render () {
         const { loading, products, category } = this.state;
 
-        // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
             return <PageNotFound/>;
         }

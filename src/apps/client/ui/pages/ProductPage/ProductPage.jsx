@@ -237,7 +237,6 @@ class ProductPage extends Component {
         const { viewed } = this.props;
         const { loading, product } = this.state;
 
-        // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
             return <PageNotFound/>;
         }
