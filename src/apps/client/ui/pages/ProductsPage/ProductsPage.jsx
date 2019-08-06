@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Products from '../../components/Products/Products';
 import NotProducts from '../../components/NotProducts/NotProducts';
+import PageNotFound from '../../components/PageNotFound/PageNotFound';
 
 import { connect } from 'react-redux';
 import getProductsByCategory from '../../../services/client/getProductsByCategory';
@@ -87,9 +88,8 @@ class ProductsPage extends Component {
     render () {
         const { loading, products, category } = this.state;
 
-        // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
-            return <div>404</div>;
+            return <PageNotFound/>;
         }
 
         if (loading) {
