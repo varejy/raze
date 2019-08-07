@@ -176,7 +176,16 @@ class Basket extends Component {
                                         <div className={styles.itemInfo}>
                                             <h2 className={styles.itemName}>{item.product.name}</h2>
                                             <div className={styles.itemCategory}>{item.product.company}</div>
-                                            <h2 className={styles.itemPrice}>{item.product.price.toLocaleString('ru')} грн</h2>
+                                            {
+                                                item.product.discountPrice
+                                                    ? <div className={styles.prices}>
+                                                        <h2 className={styles.previousPrice}>{item.product.price.toLocaleString('ru')} грн</h2>
+                                                        <h2 className={classNames(styles.itemPrice, styles.priceDiscount)}>
+                                                            {item.product.discountPrice.toLocaleString('ru')} грн
+                                                        </h2>
+                                                    </div>
+                                                    : <h2 className={styles.itemPrice}>{item.product.price.toLocaleString('ru')} грн</h2>
+                                            }
                                         </div>
                                     </Link>
                                     <div className={styles.itemAmount}>
