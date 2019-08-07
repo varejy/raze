@@ -14,16 +14,14 @@ const SLIDES_WITHOUT_ARROWS = 3;
 const SCREEN_WIDTH_SLIDER_FULL = 1169;
 const mapStateToProps = ({ application }) => {
     return {
-        mediaWidth: application.media.width,
-        langMap: application.langMap
+        mediaWidth: application.media.width
     };
 };
 
 class ProductCardCarousel extends Component {
     static propTypes = {
         sliderImages: PropTypes.array,
-        mediaWidth: PropTypes.number.isRequired,
-        langMap: PropTypes.object.isRequired
+        mediaWidth: PropTypes.number.isRequired
     };
 
     static defaultProps = {
@@ -105,6 +103,7 @@ class ProductCardCarousel extends Component {
                 sliderLeft: activeSlide * mediaWidth
             });
         }
+        this.handleDotClick(newActiveSlideIndex)();
 
         this.startLeft = null;
         this.swipeStatus = END_SWIPE_STATUS;
@@ -182,10 +181,9 @@ class ProductCardCarousel extends Component {
 
     render () {
         const { activeSlide } = this.state;
-        const { sliderImages, mediaWidth } = this.props;
+        const { sliderImages } = this.props;
         const isTop = activeSlide === this.minSlideIndex;
         const isBottom = activeSlide === this.maxSlideIndex;
-        const sliderIsFullScreen = mediaWidth <= SCREEN_WIDTH_SLIDER_FULL;
 
         return <div className={styles.sliders}>
             <div className={styles.sliderLeftContainer}>
@@ -227,7 +225,7 @@ class ProductCardCarousel extends Component {
                     allowDefaultAction
                     touchable
                 >
-                    <div className={styles.slides} style={{ left: !sliderIsFullScreen ? this.sliderPositionMoveCount('bigSliderLeft')() : `${-this.state.sliderLeft}px`, ...this.getTransitionStyles() }}>
+                    <div className={styles.slides} style={{ left: this.sliderPositionMoveCount('bigSliderLeft')(), ...this.getTransitionStyles() }}>
                         {sliderImages.map((sliderImage, i) =>
                             <div className={styles.productPreviewSlide} key={i}>
                                 <img className={styles.slidePhoto} src={sliderImage} alt={`slide${i}`}/>
