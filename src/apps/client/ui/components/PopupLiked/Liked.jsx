@@ -119,7 +119,16 @@ class Liked extends Component {
                                         <div className={styles.itemInfo}>
                                             <h2 className={styles.itemName}>{item.name}</h2>
                                             <div className={styles.itemCompany}>{item.company}</div>
-                                            <h2 className={styles.itemPrice}>{item.price.toLocaleString('ru')} грн</h2>
+                                            {
+                                                item.discountPrice
+                                                    ? <div className={styles.prices}>
+                                                        <h2 className={styles.previousPrice}>{item.price.toLocaleString('ru')} грн</h2>
+                                                        <h2 className={classNames(styles.itemPrice, styles.priceDiscount)}>
+                                                            {item.discountPrice.toLocaleString('ru')} грн
+                                                        </h2>
+                                                    </div>
+                                                    : <h2 className={styles.itemPrice}>{item.price.toLocaleString('ru')} грн</h2>
+                                            }
                                         </div>
                                     </Link>
                                 </div>
