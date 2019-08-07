@@ -124,10 +124,10 @@ class Product extends Component {
                 ? <div className={styles.labels}>
                     <div className={styles.tags}>
                         {product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP.lowPrice.color }}>
-                            {LABELS_MAP.lowPrice.text}</div>}
+                            {LABELS_MAP.lowPrice.text.split(' ').join('\n')}</div>}
                         {product.tags.map((tag, i) =>
                             tag !== 'notAvailable' && <div key={i} className={styles.tag}
-                                style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text}</div>
+                                style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text.split(' ').join('\n')}</div>
                         )}
                     </div>
                 </div>
@@ -151,13 +151,13 @@ class Product extends Component {
                     <div className={styles.prices}>
                         {product.discountPrice
                             ? <div className={styles.prices}>
-                                <div className={styles.previousPrice}>{product.price} грн.</div>
+                                <div className={styles.previousPrice}>{product.price.toLocaleString('ru')} грн</div>
                                 <div
-                                    className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.
+                                    className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice.toLocaleString('ru')} грн
                                 </div>
                             </div>
                             : <div className={styles.prices}>
-                                <div className={styles.price}>{product.price} грн.</div>
+                                <div className={styles.price}>{product.price.toLocaleString('ru')} грн</div>
                             </div>}
                     </div>
                 </div>
