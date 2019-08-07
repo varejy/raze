@@ -131,7 +131,7 @@ class PopupBasket extends Component {
                                     {
                                         product.discountPrice
                                             ? <div className={styles.prices}>
-                                                <h3 className={styles.previousPrice}>{product.price.toLocaleString('ru')} грн</h3>
+                                                <h2 className={styles.previousPrice}>{product.price.toLocaleString('ru')} грн</h2>
                                                 <h2
                                                     className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice.toLocaleString('ru')} грн
                                                 </h2>

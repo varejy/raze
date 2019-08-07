@@ -81,6 +81,7 @@
 .itemPrice{
     font-family: HelveticaNeueCyrBold;
     font-size: 18px;
+    line-height: 18px;
 }
 
 .previouslyAddedTitle{
@@ -173,31 +174,30 @@
 .prices{
     position: relative;
     display: flex;
-    align-items: center;
-    width: 200px;
+    align-items: end;
+    justify-content: start;
+    width: 100%;
 }
 
 .price{
-    font-family: MontserratSemiBold;
-    font-size: 20px;
-    line-height: 24px;
-    text-align: center;
+    font-family: HelveticaNeueCyr;
+    font-size: 18px;
+    line-height: 18px;
     color: #000000;
 }
 
 .priceDiscount{
     color: #ff0000;
-    position: relative;
+    font-size: 18px;
+    line-height: 18px;
+    font-family: HelveticaNeueCyrBold;
 }
 
 .previousPrice{
-    position: absolute;
     color: #000000;
-    font-family: MontserratRegular;
-    font-size: 12.5px;
+    font-family: HelveticaNeueCyr;
+    font-size: 16px;
     line-height: 18px;
-    text-align: center;
-    top: -15px;
     text-decoration: line-through;
-    left: 50px;
+    margin-right: 8px;
 }
