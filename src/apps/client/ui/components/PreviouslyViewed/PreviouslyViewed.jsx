@@ -93,7 +93,7 @@ class PreviouslyViewed extends Component {
                                         <div className={styles.itemInfoContainer}>
                                             <div className={styles.viewedProductName}>{product.name}</div>
                                             <div className={styles.viewedCategoryName}>{product.company}</div>
-                                            <div className={styles.itemPrice}>{product.price} UAH</div>
+                                            <div className={styles.itemPrice}>{product.price.toLocaleString('ru')} грн</div>
                                         </div>
                                     </div>
                                 </div>

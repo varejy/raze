@@ -307,8 +307,8 @@ class ProductForm extends Component {
         const productName = trim(product.name);
         const productCompany = trim(product.company);
         const TITLE_DEFAULT = `${productCompany} ${productName}`;
-        const DESCRIPTION_DEFAULT = `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice
-            ? product.price : product.discountPrice} грн.`;
+        const DESCRIPTION_DEFAULT = `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice.toLocaleString('ru')
+            ? product.price.toLocaleString('ru') : product.discountPrice.toLocaleString('ru')} грн.`;
 
         this.handleChange(option);
         this.setState({

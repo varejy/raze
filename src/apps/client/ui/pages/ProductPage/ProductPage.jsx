@@ -33,6 +33,7 @@ import saveProductsLiked from '../../../services/client/saveProductsLiked';
 import findIndex from '@tinkoff/utils/array/findIndex';
 import remove from '@tinkoff/utils/array/remove';
 import find from '@tinkoff/utils/array/find';
+import noop from '@tinkoff/utils/function/noop';
 import PopupBasket from '../../components/PopupBasketAdding/PopupBasket';
 import openPopup from '../../../actions/openPopup';
 import openBasketPopup from '../../../actions/openBasketPopup';
@@ -107,12 +108,17 @@ class ProductPage extends Component {
         super(...args);
 
         this.state = this.getNewState();
-
-        //this.getDiscountTime();
     }
 
+    componentWillMount = () => {
+        const { product } = this.state;
+        const discountTime = product && product.discountTime;
+
+        this.checkRamainingTime(discountTime);
+    }
     componentDidMount () {
         this.getProduct();
+        this.getDiscountTime();
     }
 
     componentWillReceiveProps (nextProps) {
@@ -143,11 +149,11 @@ class ProductPage extends Component {
         if (loading) {
             this.props.getProductById(productId)
                 .then(() => {
-                    this.setState({
-                        loading: false,
-                        discountTimer: '00д. 00:00:00'
-                    });
+                    const { product } = this.state;
+                    const discountTime = product && product.discountTime;
 
+                    this.checkRamainingTime(discountTime);
+                    this.setState({ loading: false });
                     this.getDiscountTime();
                 });
         } else {
@@ -168,8 +174,7 @@ class ProductPage extends Component {
         return {
             loading: !this.notFoundPage && !product,
             product: product,
-            productId: match.params.id,
-            discountTimer: '00д. 00:00:00'
+            productId: match.params.id
         };
     };
 
@@ -244,32 +249,28 @@ class ProductPage extends Component {
         return !!find(likedProduct => product.id === likedProduct.id, liked);
     };
 
+    checkRamainingTime = (discountTime = '', timer = noop) => {
+        if (!!checkingRemainingTime(discountTime).length === true) {
+            const split = checkingRemainingTime(discountTime).split(":")
+            this.setState({
+                discountTimer: `${split[0]}д. ${split[1]}:${split[2]}:${split[3]}`
+            });
+        }
+        if (!!checkingRemainingTime(discountTime).length === false) {
+            timer && clearInterval(timer);
+            this.setState({
+                discountTimer: ''
+            });
+        }
+    }
+
     getDiscountTime = () => {
         const { product } = this.state;
 
-        if (product) {
-            if (product.discountTime) {
-                const setIntervalTimer = setInterval(() => {
-                    const { product: { discountTime }, product } = this.state;
-                    if (!!checkingRemainingTime(discountTime).length === true) {
-                        const split = checkingRemainingTime(discountTime).split(":")
-                        this.setState({
-                            discountTimer: `${split[0]}д. ${split[1]}:${split[2]}:${split[3]}`
-                        });
-                    }
-                    if (!!checkingRemainingTime(discountTime).length === false) {
-                        clearInterval(setIntervalTimer);
-                        this.setState({
-                            discountTimer: '',
-                            product: {
-                                ...product,
-                                discountPrice: ''
-                            }
-                        });
-                    }
-                }, 1000);
-            }
-        }
+        const setIntervalTimer = product && product.discountTime && setInterval(() => {
+            const { product: { discountTime }} = this.state;
+            this.checkRamainingTime(discountTime, setIntervalTimer);
+        }, 1000);
     }
 
     render () {
@@ -297,14 +298,14 @@ class ProductPage extends Component {
                     <div className={styles.productInfo}>
                         <div className={styles.tags}>
                             { product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP.lowPrice.color }}>
-                                {LABELS_MAP.lowPrice.text}</div>}
+                                {LABELS_MAP.lowPrice.text.split(' ').join('\n')}</div>}
                             { product.tags.map((tag, i) =>
                                 tag !== 'notAvailable' && <div key={i} className={styles.tag}
-                                    style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text}</div>
+                                    style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text.split(' ').join('\n')}</div>
                             )}
                         </div>
                         <div className={styles.productCardHeader}>
-                            <div className={styles.productName}>{product.name}</div>
+                            <div className={styles.productName}>{product.company} {product.name}</div>
                         </div>
                         <div className={styles.stars}>
                             {getStarsArray(product.rating).map((star, i) => <div key={i} className={styles.star}>
@@ -315,8 +316,8 @@ class ProductPage extends Component {
                         <div className={styles.order}>
                             {product.discountPrice
                                 ? <div className={styles.prices}>
-                                    <div className={styles.pricePrevious}>{product.price} грн.</div>
-                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.</div>
+                                    <div className={styles.pricePrevious}>{product.price.toLocaleString('ru')} грн</div>
+                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice.toLocaleString('ru')} грн</div>
                                     {
                                         !!product.discountTime && <div className={classNames(styles.price, styles.priceDiscount)}>
                                             { discountTimer }
@@ -324,7 +325,7 @@ class ProductPage extends Component {
                                     }
                                 </div>
                                 : <div className={styles.prices}>
-                                    <div className={styles.price}>{product.price} грн.</div>
+                                    <div className={styles.price}>{product.price.toLocaleString('ru')} грн</div>
                                 </div>}
 
                             <div className={styles.buttonContainer}>
