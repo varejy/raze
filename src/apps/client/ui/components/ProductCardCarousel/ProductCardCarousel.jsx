@@ -3,26 +3,31 @@ import styles from './ProductCardCarousel.css';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Draggable from '../Draggable/Draggable.jsx';
 
+const PROCESS_SWIPE_STATUS = 'process';
+const END_SWIPE_STATUS = 'end';
+const IGNORE_SWIPE_DISTANCE = 50;
 const BIG_SLIDE_WIDTH = 600;
 const LEFT_SLIDER_HEIGHT = 80;
 const SLIDES_WITHOUT_ARROWS = 3;
 const SCREEN_WIDTH_SLIDER_FULL = 1169;
-const mapStateToProps = ({ application, savedProducts }) => {
+const mapStateToProps = ({ application }) => {
     return {
-        media: application.media
+        mediaWidth: application.media.width,
+        langMap: application.langMap
     };
 };
 
 class ProductCardCarousel extends Component {
     static propTypes = {
         sliderImages: PropTypes.array,
-        media: PropTypes.object.isRequired
+        mediaWidth: PropTypes.number.isRequired,
+        langMap: PropTypes.object.isRequired
     };
 
     static defaultProps = {
-        sliderImages: [],
-        media: {}
+        sliderImages: []
     };
 
     constructor (...args) {
@@ -35,7 +40,80 @@ class ProductCardCarousel extends Component {
 
     state = {
         activeSlide: 0,
-        leftSliderTopIndex: 0
+        leftSliderTopIndex: 0,
+        sliderLeft: 0
+    };
+
+    maxSlide = this.props.sliderImages.length - 1;
+    maxLeft = this.maxSlide * this.props.mediaWidth;
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.mediaWidth !== this.props.mediaWidth) {
+            const { activeSlide } = this.state;
+
+            this.maxLeft = this.maxSlide * nextProps.mediaWidth;
+            this.setState({
+                sliderLeft: activeSlide * nextProps.mediaWidth
+            });
+        }
+    }
+
+    getTransitionStyles = () => {
+        switch (this.swipeStatus) {
+        case PROCESS_SWIPE_STATUS:
+            return { transition: 'none' };
+        case END_SWIPE_STATUS:
+            return { transition: 'left .3s' };
+        default:
+            return { transition: 'left .5s' };
+        }
+    };
+
+    handleSwitchClick = i => e => {
+        const { mediaWidth } = this.props;
+
+        this.setState({
+            sliderLeft: i * mediaWidth,
+            activeSlide: i
+        });
+    };
+
+    handleDragStart = () => {
+        this.startLeft = this.state.sliderLeft;
+        this.swipeStatus = PROCESS_SWIPE_STATUS;
+    };
+
+    handleDragProcess = ({ delta: { client: { x: deltaX } } }) => {
+        const nextSliderLeft = this.startLeft - deltaX;
+
+        if (nextSliderLeft < 0 || nextSliderLeft > this.maxLeft) {
+            return;
+        }
+
+        this.setState({
+            sliderLeft: this.startLeft - deltaX
+        });
+    };
+
+    handleDragEnd = ({ delta: { client: { x: deltaX } } }) => {
+        const { mediaWidth, sliderImages } = this.props;
+        const { activeSlide } = this.state;
+        const newActiveSlideIndex = deltaX > 0 ? activeSlide - 1 : activeSlide + 1;
+
+        if (Math.abs(deltaX) < IGNORE_SWIPE_DISTANCE || newActiveSlideIndex === -1 || newActiveSlideIndex === sliderImages.length) {
+            return this.setState({
+                sliderLeft: activeSlide * mediaWidth
+            });
+        }
+
+        this.startLeft = null;
+        this.swipeStatus = END_SWIPE_STATUS;
+        this.setState({
+            sliderLeft: newActiveSlideIndex * mediaWidth,
+            activeSlide: newActiveSlideIndex
+        }, () => {
+            this.swipeStatus = null;
+        });
     };
 
     handleDotClick = (newIndex) => () => {
@@ -59,6 +137,8 @@ class ProductCardCarousel extends Component {
             activeSlide: newIndex,
             leftSliderTopIndex: newLeftSliderTopIndex
         });
+
+        this.handleSwitchClick(newIndex);
     };
 
     handleArrowClick = (arrowType) => () => {
@@ -87,24 +167,25 @@ class ProductCardCarousel extends Component {
 
     sliderPositionMoveCount = (direction) => () => {
         const { activeSlide, leftSliderTopIndex } = this.state;
-        const { media } = this.props;
-        const sliderIsFullScreen = media.width <= SCREEN_WIDTH_SLIDER_FULL;
-        const leftSliderWidth = media.width * 0.2 + 20;
+        const { mediaWidth } = this.props;
+        const sliderIsFullScreen = mediaWidth <= SCREEN_WIDTH_SLIDER_FULL;
+        const leftSliderWidth = mediaWidth * 0.2 + 20;
 
         if (direction === 'smallSliderLeft') {
             return sliderIsFullScreen ? -leftSliderTopIndex * leftSliderWidth : 0;
         } else if (direction === 'smallSliderTop') {
             return !sliderIsFullScreen ? -leftSliderTopIndex * LEFT_SLIDER_HEIGHT : 0;
         } else {
-            return -activeSlide * (!sliderIsFullScreen ? BIG_SLIDE_WIDTH : (media.width));
+            return -activeSlide * (!sliderIsFullScreen ? BIG_SLIDE_WIDTH : (mediaWidth));
         }
     };
 
     render () {
         const { activeSlide } = this.state;
-        const { sliderImages } = this.props;
+        const { sliderImages, mediaWidth } = this.props;
         const isTop = activeSlide === this.minSlideIndex;
         const isBottom = activeSlide === this.maxSlideIndex;
+        const sliderIsFullScreen = mediaWidth <= SCREEN_WIDTH_SLIDER_FULL;
 
         return <div className={styles.sliders}>
             <div className={styles.sliderLeftContainer}>
@@ -139,12 +220,20 @@ class ProductCardCarousel extends Component {
                 </button>}
             </div>
             <div className={styles.sliderContainer}>
-                <div className={styles.slides} style={{ left: this.sliderPositionMoveCount('bigSliderLeft')() }}>
-                    {sliderImages.map((sliderImage, i) =>
-                        <div className={styles.productPreviewSlide} key={i}>
-                            <img className={styles.slidePhoto} src={sliderImage} alt={`slide${i}`}/>
-                        </div>)}
-                </div>
+                <Draggable
+                    onDragStart={this.handleDragStart}
+                    onDrag={this.handleDragProcess}
+                    onDragEnd={this.handleDragEnd}
+                    allowDefaultAction
+                    touchable
+                >
+                    <div className={styles.slides} style={{ left: !sliderIsFullScreen ? this.sliderPositionMoveCount('bigSliderLeft')() : `${-this.state.sliderLeft}px`, ...this.getTransitionStyles() }}>
+                        {sliderImages.map((sliderImage, i) =>
+                            <div className={styles.productPreviewSlide} key={i}>
+                                <img className={styles.slidePhoto} src={sliderImage} alt={`slide${i}`}/>
+                            </div>)}
+                    </div>
+                </Draggable>
                 <div className={styles.dotsContainer}>
                     <div className={styles.buttonDots}>
                         {sliderImages.map((sliderImage, i) =>
