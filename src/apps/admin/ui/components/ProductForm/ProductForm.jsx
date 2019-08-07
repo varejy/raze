@@ -561,7 +561,7 @@ class ProductForm extends Component {
         const { product } = this.state;
 
         const newFeatures = reduce((acc, filter, i) => {
-            const value = !product.filters[i] ? '' : product.filters[i].value;
+            const value = product.filters[i] && propOr('-', product.filters[i].value, product.filters[i])
             const id = findIndex(propEq('prop', filter.name), product.features)
 
             if (id !== -1) {
