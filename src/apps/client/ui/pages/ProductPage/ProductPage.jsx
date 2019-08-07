@@ -19,6 +19,7 @@ import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCar
 import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
 import Comments from '../../components/Comments/Comments';
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
+import PageNotFound from '../../components/PageNotFound/PageNotFound';
 
 import setBasket from '../../../actions/setBasket';
 import setViewed from '../../../actions/setViewed';
@@ -236,9 +237,8 @@ class ProductPage extends Component {
         const { viewed } = this.props;
         const { loading, product } = this.state;
 
-        // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
-            return <div>404</div>;
+            return <PageNotFound/>;
         }
 
         if (loading) {
