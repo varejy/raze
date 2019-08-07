@@ -724,7 +724,7 @@ class ProductForm extends Component {
             </TextField>
             <TextField
                 label='Цена'
-                value={product.price}
+                value={product.price.toLocaleString('ru')}
                 onChange={this.handleChange('price')}
                 InputProps={{ inputProps: { min: 0 } }}
                 margin='normal'
@@ -735,7 +735,7 @@ class ProductForm extends Component {
             />
             <TextField
                 label='Скидочная цена'
-                value={product.discountPrice}
+                value={product.discountPrice.toLocaleString('ru')}
                 onChange={this.handleChange('discountPrice')}
                 InputProps={{ inputProps: { min: 1 } }}
                 margin='normal'
