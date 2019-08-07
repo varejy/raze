@@ -19,6 +19,7 @@ import ProductCardCarousel from '../../components/ProductCardCarousel/ProductCar
 import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
 import Comments from '../../components/Comments/Comments';
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
+import PageNotFound from '../../components/PageNotFound/PageNotFound';
 
 import setBasket from '../../../actions/setBasket';
 import setViewed from '../../../actions/setViewed';
@@ -236,9 +237,8 @@ class ProductPage extends Component {
         const { viewed } = this.props;
         const { loading, product } = this.state;
 
-        // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
-            return <div>404</div>;
+            return <PageNotFound/>;
         }
 
         if (loading) {
@@ -257,14 +257,14 @@ class ProductPage extends Component {
                     <div className={styles.productInfo}>
                         <div className={styles.tags}>
                             { product.discountPrice && <div className={styles.tag} style={{ color: LABELS_MAP.lowPrice.color }}>
-                                {LABELS_MAP.lowPrice.text}</div>}
+                                {LABELS_MAP.lowPrice.text.split(' ').join('\n')}</div>}
                             { product.tags.map((tag, i) =>
                                 tag !== 'notAvailable' && <div key={i} className={styles.tag}
-                                    style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text}</div>
+                                    style={{ color: LABELS_MAP[tag].color }}>{LABELS_MAP[tag].text.split(' ').join('\n')}</div>
                             )}
                         </div>
                         <div className={styles.productCardHeader}>
-                            <div className={styles.productName}>{product.name}</div>
+                            <div className={styles.productName}>{product.company} {product.name}</div>
                         </div>
                         <div className={styles.stars}>
                             {getStarsArray(product.rating).map((star, i) => <div key={i} className={styles.star}>
@@ -275,11 +275,11 @@ class ProductPage extends Component {
                         <div className={styles.order}>
                             {product.discountPrice
                                 ? <div className={styles.prices}>
-                                    <div className={styles.pricePrevious}>{product.price} грн.</div>
-                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.</div>
+                                    <div className={styles.pricePrevious}>{product.price.toLocaleString('ru')} грн</div>
+                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice.toLocaleString('ru')} грн</div>
                                 </div>
                                 : <div className={styles.prices}>
-                                    <div className={styles.price}>{product.price} грн.</div>
+                                    <div className={styles.price}>{product.price.toLocaleString('ru')} грн</div>
                                 </div>}
 
                             <div className={styles.buttonContainer}>

@@ -22,6 +22,7 @@ import Header from './ui/components/Header/Header';
 import Footer from './ui/components/Footer/Footer';
 import Popup from './ui/components/Popup/Popup';
 import Helmet from './ui/components/Helmet/Helmet';
+import PageNotFound from './ui/components/PageNotFound/PageNotFound';
 
 import PropTypes from 'prop-types';
 import closePopup from './actions/closePopup';
@@ -76,6 +77,7 @@ class App extends Component {
                         <Route exact path='/order' component={OrderPage} />
                         <Route exact path='/:category' component={ProductsPage} />
                         <Route exact path='/:category/:id' component={ProductPage} />
+                        <Route component={PageNotFound} />
                     </Switch>
                 </div>
                 <Footer />

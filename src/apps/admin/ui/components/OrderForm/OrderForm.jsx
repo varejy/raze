@@ -190,7 +190,7 @@ class OrderForm extends Component {
                                 return <TableRow key={i}>
                                     <TableCell colSpan={1}>{product.name}</TableCell>
                                     <TableCell colSpan={3} align="center">{product.count}</TableCell>
-                                    <TableCell colSpan={1} align="right">{product.price}</TableCell>
+                                    <TableCell colSpan={1} align="right">{product.price.toLocaleString('ru')}</TableCell>
                                 </TableRow>;
                             })
                         }

@@ -163,7 +163,7 @@ class ProductPreview extends Component {
                 </div>
                 <div className={styles.productInfoContainer}>
                     <div className={styles.productPreviewHeader}>
-                        <div className={styles.productName}>{product.name}</div>
+                        <div className={styles.productName}>{product.company} {product.name}</div>
                         <div className={styles.likeIcon} onClick={this.handleLikeClick}>
                             <img src={!isLiked
                                 ? '/src/apps/client/ui/components/ProductPreview/images/likeHeart.png'
