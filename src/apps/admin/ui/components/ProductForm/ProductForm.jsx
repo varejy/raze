@@ -54,7 +54,7 @@ import Chip from '@material-ui/core/Chip';
 
 const GREY = '#e0e0e0';
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
-                        'metaTitle', 'metaDescription', 'discountTime'];
+    'metaTitle', 'metaDescription', 'discountTime'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -189,6 +189,7 @@ const materialStyles = theme => ({
     },
     discountTimeCheckbox: {
         width: '172px'
+    },
     metaAddKeywords: {
         width: '100%',
         display: 'flex',
@@ -626,7 +627,7 @@ class ProductForm extends Component {
             }
         });
     }
-    
+
     handleSubmit = event => {
         event.preventDefault();
 

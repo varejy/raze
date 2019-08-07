@@ -3,7 +3,6 @@ import base from '../base';
 
 import { matchPath } from 'react-router';
 
-import checkingRemainingTime from '../../utils/checkingRemainingTime';
 import setProductsToMap from '../../actions/setProductsToMap';
 
 const CATEGORY_PATH = '/:category/';
@@ -27,21 +26,8 @@ export default function getProductsByCategory (req) {
                 })
         )
             .then(products => {
-                const checkingProductsDiscountTime = products.map(product => {
-                    if (!product.discountTime) {
-                        return product;
-                    } else {
-                        if(checkingRemainingTime(product.discountTime).length) {
-                            return product;
-                        } else {
-                            product.discountPrice = '';
-                            return product;
-                        }
-                    }
-                });
-
                 dispatch(setProductsToMap({
-                    [match.params.category]: checkingProductsDiscountTime
+                    [match.params.category]: products
                 }));
             })
             .catch(() => {

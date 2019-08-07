@@ -10,6 +10,7 @@ import saveProductsViewed from '../../../services/client/saveProductsViewed';
 import setLiked from '../../../actions/setLiked';
 
 import getStarsArray from '../../../utils/getStarsArray';
+import checkingRemainingTime from '../../../utils/checkingRemainingTime';
 
 import { Link, withRouter, matchPath } from 'react-router-dom';
 
@@ -106,6 +107,8 @@ class ProductPage extends Component {
         super(...args);
 
         this.state = this.getNewState();
+
+        //this.getDiscountTime();
     }
 
     componentDidMount () {
@@ -139,7 +142,14 @@ class ProductPage extends Component {
 
         if (loading) {
             this.props.getProductById(productId)
-                .then(() => this.setState({ loading: false }));
+                .then(() => {
+                    this.setState({
+                        loading: false,
+                        discountTimer: '00д. 00:00:00'
+                    });
+
+                    this.getDiscountTime();
+                });
         } else {
             const newViewed = this.getViewed();
 
@@ -158,7 +168,8 @@ class ProductPage extends Component {
         return {
             loading: !this.notFoundPage && !product,
             product: product,
-            productId: match.params.id
+            productId: match.params.id,
+            discountTimer: '00д. 00:00:00'
         };
     };
 
@@ -233,10 +244,39 @@ class ProductPage extends Component {
         return !!find(likedProduct => product.id === likedProduct.id, liked);
     };
 
+    getDiscountTime = () => {
+        const { product } = this.state;
+
+        if (product) {
+            if (product.discountTime) {
+                const setIntervalTimer = setInterval(() => {
+                    const { product: { discountTime }, product } = this.state;
+                    if (!!checkingRemainingTime(discountTime).length === true) {
+                        const split = checkingRemainingTime(discountTime).split(":")
+                        this.setState({
+                            discountTimer: `${split[0]}д. ${split[1]}:${split[2]}:${split[3]}`
+                        });
+                    }
+                    if (!!checkingRemainingTime(discountTime).length === false) {
+                        clearInterval(setIntervalTimer);
+                        this.setState({
+                            discountTimer: '',
+                            product: {
+                                ...product,
+                                discountPrice: ''
+                            }
+                        });
+                    }
+                }, 1000);
+            }
+        }
+    }
+
     render () {
         const { viewed } = this.props;
-        const { loading, product } = this.state;
+        const { loading, product, discountTimer } = this.state;
 
+        // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
             return <PageNotFound/>;
         }
@@ -277,6 +317,11 @@ class ProductPage extends Component {
                                 ? <div className={styles.prices}>
                                     <div className={styles.pricePrevious}>{product.price} грн.</div>
                                     <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice} грн.</div>
+                                    {
+                                        !!product.discountTime && <div className={classNames(styles.price, styles.priceDiscount)}>
+                                            { discountTimer }
+                                        </div>
+                                    }
                                 </div>
                                 : <div className={styles.prices}>
                                     <div className={styles.price}>{product.price} грн.</div>

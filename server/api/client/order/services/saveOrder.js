@@ -59,7 +59,7 @@ export default function saveOrder (req, res) {
                             id: product.id,
                             name: product.name,
                             count: elem.count,
-                            price: product.price
+                            price: product.discountPrice || product.price
                         };
                     });
 
