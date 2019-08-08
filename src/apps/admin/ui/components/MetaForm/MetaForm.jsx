@@ -68,13 +68,13 @@ class MetaForm extends Component {
         const { page } = this.props;
 
         this.state = {
-            seo: this.getSeoData(this.props),
+            seo: this.getSeoData(),
             keywordsInput: '',
             page: page
         };
     }
 
-    getSeoData = (props) => {
+    getSeoData = (props = this.props) => {
         const { page, allSeo } = props;
         const seoPage = find(seoPage => seoPage.name === page, allSeo);
         const newSeo = {
@@ -83,7 +83,7 @@ class MetaForm extends Component {
             metaDescription: '',
             keywords: ''
         };
-        return !seoPage ? newSeo : seoPage;
+        return seoPage || newSeo;
     };
 
     handleKeywordChange = () => event => {
@@ -146,7 +146,6 @@ class MetaForm extends Component {
 
     handleChange = prop => event => {
         this.setState({
-            ...this.state,
             seo: {
                 ...this.state.seo,
                 [prop]: event.target.value

@@ -7,7 +7,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from '@material-ui/core/Typography';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import MetaForm from '../MetaForm/MetaForm';
-import updateSeo from '../../../services/updateSeo';
 
 const materialStyles = () => ({
     root: {
@@ -38,9 +37,9 @@ class SeoTabs extends Component {
         this.setState({
             panel1: false,
             panel2: false,
-            panel3: false
+            panel3: false,
+            [panel]: this.state[panel] !== true
         });
-        this.setState({ [panel]: this.state[panel] !== true });
     };
 
     render () {

@@ -49,10 +49,6 @@ class SeoPage extends Component {
         };
     }
 
-    componentWillReceiveProps (nextProps) {
-        nextProps.getAllSeo();
-    }
-
     componentDidMount () {
         this.props.getAllSeo()
             .then(() => {
