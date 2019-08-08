@@ -2,7 +2,6 @@ import { OKEY_STATUS_CODE, NOT_FOUND_STATUS_CODE, SERVER_ERROR_STATUS_CODE } fro
 
 import getProductById from '../queries/getProductById';
 import editProduct from '../queries/editProduct';
-import checkingRemainingTime from '../utils/checkingRemainingTime';
 import getCommentsByProductId from '../../comment/queries/getCommentsByProductId';
 
 import getProductValues from '../utils/getProductValues';

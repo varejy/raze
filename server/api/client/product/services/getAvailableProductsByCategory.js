@@ -29,8 +29,8 @@ export default function getAvailableProductsByCategory (req, res) {
                                 product.discountTime = '';
                                 editProduct(product)
                                     .then((product) => {
-                                       return [...acc, product]
-                                    })
+                                        return [...acc, product];
+                                    });
                             }
                         }
                     }, [], availableProducts);

@@ -251,7 +251,7 @@ class ProductPage extends Component {
 
     checkRamainingTime = (discountTime = '', timer = noop) => {
         if (!!checkingRemainingTime(discountTime).length === true) {
-            const split = checkingRemainingTime(discountTime).split(":")
+            const split = checkingRemainingTime(discountTime).split(':');
             this.setState({
                 discountTimer: `${split[0]}д. ${split[1]}:${split[2]}:${split[3]}`
             });
@@ -268,7 +268,7 @@ class ProductPage extends Component {
         const { product } = this.state;
 
         const setIntervalTimer = product && product.discountTime && setInterval(() => {
-            const { product: { discountTime }} = this.state;
+            const { product: { discountTime } } = this.state;
             this.checkRamainingTime(discountTime, setIntervalTimer);
         }, 1000);
     }

@@ -4,6 +4,8 @@ import findProductsByName from '../queries/findProductsByName';
 import editProduct from '../queries/editProduct';
 import checkingRemainingTime from '../utils/checkingRemainingTime';
 
+import reduce from '@tinkoff/utils/array/reduce';
+
 export default function availableProductsSearch (req, res) {
     const { text } = req.query;
 
@@ -24,8 +26,8 @@ export default function availableProductsSearch (req, res) {
                         product.discountTime = '';
                         editProduct(product)
                             .then((product) => {
-                                return [...acc, product]
-                            })
+                                return [...acc, product];
+                            });
                     }
                 }
             }, [], availableProducts);

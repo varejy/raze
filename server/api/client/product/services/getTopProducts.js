@@ -7,6 +7,7 @@ import editProduct from '../queries/editProduct';
 import checkingRemainingTime from '../utils/checkingRemainingTime';
 
 import includes from '@tinkoff/utils/array/includes';
+import reduce from '@tinkoff/utils/array/reduce';
 
 const TOP_PRODUCTS_MAX_LENGTH = 8;
 
@@ -28,13 +29,11 @@ export default function getTopProducts (req, res) {
                         product.discountTime = '';
                         editProduct(product)
                             .then((product) => {
-                                return [...acc, product]
-                            })
+                                return [...acc, product];
+                            });
                     }
                 }
             }, [], topProducts);
-
-            console.log(checkingProductsDiscountTime)
 
             res.status(OKEY_STATUS_CODE).send(checkingProductsDiscountTime);
         })
