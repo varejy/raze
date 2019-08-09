@@ -58,7 +58,7 @@ class PreviouslyViewed extends Component {
             } else if (mediaWidth < 1310) {
                 this.setState({ containerWidth: 740, maxSlides: 2, slideSetsAmount: viewed.length > 4 ? 2 : 1 });
             } else {
-                this.setState({ containerWidth: 1110, maxSlides: 3, slideSetsAmount: 1 });
+                this.setState({ containerWidth: 1110, maxSlides: 3, slideSetsAmount: viewed.length > 4 ? 1 : 0 });
             }
 
             this.maxLeft = this.maxSlide * containerWidth;
