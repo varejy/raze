@@ -46,9 +46,9 @@ class PreviouslyViewed extends Component {
     maxLeft = this.maxSlide * this.state.containerWidth;
 
     componentWillReceiveProps (nextProps) {
-        if (nextProps.mediaWidth !== this.props.mediaWidth) {
+        if (nextProps.mediaWidth !== this.props.mediaWidth || nextProps.viewed !== this.props.viewed) {
             const { activeSlide, containerWidth } = this.state;
-            const { viewed } = this.props;
+            const { viewed } = nextProps;
             const { mediaWidth } = nextProps;
 
             if (mediaWidth < 550) {
@@ -56,7 +56,7 @@ class PreviouslyViewed extends Component {
             } else if (mediaWidth < 990) {
                 this.setState({ containerWidth: 370, maxSlides: 1, slideSetsAmount: (viewed.length - 1) });
             } else if (mediaWidth < 1310) {
-                this.setState({ containerWidth: 740, maxSlides: 2, slideSetsAmount: viewed.length > 4 ? 2 : 1 });
+                this.setState({ containerWidth: 740, maxSlides: 2, slideSetsAmount: viewed.length > 4 ? 2 : viewed.length > 2 ? 1 : 0 });
             } else {
                 this.setState({ containerWidth: 1110, maxSlides: 3, slideSetsAmount: viewed.length > 4 ? 1 : 0 });
             }
