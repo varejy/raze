@@ -45,21 +45,15 @@ class PreviouslyViewed extends Component {
     maxSlide = this.state.slideSetsAmount;
     maxLeft = this.maxSlide * this.state.containerWidth;
 
-    componentWillReceiveProps (nextProps) {
-        if (nextProps.mediaWidth !== this.props.mediaWidth || nextProps.viewed !== this.props.viewed) {
-            const { activeSlide, containerWidth } = this.state;
-            const { viewed } = nextProps;
-            const { mediaWidth } = nextProps;
+    componentDidMount () {
+        this.setSlides(this.props)();
+    }
 
-            if (mediaWidth < 550) {
-                this.setState({ containerWidth: 256, maxSlides: 1, slideSetsAmount: (viewed.length - 1) });
-            } else if (mediaWidth < 990) {
-                this.setState({ containerWidth: 370, maxSlides: 1, slideSetsAmount: (viewed.length - 1) });
-            } else if (mediaWidth < 1310) {
-                this.setState({ containerWidth: 740, maxSlides: 2, slideSetsAmount: viewed.length > 4 ? 2 : viewed.length > 2 ? 1 : 0 });
-            } else {
-                this.setState({ containerWidth: 1110, maxSlides: 3, slideSetsAmount: viewed.length > 4 ? 1 : 0 });
-            }
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.viewed !== this.props.viewed || nextProps.mediaWidth !== this.props.mediaWidth) {
+            const { activeSlide, containerWidth } = this.state;
+
+            this.setSlides(nextProps)();
 
             this.maxLeft = this.maxSlide * containerWidth;
             this.setState({
@@ -67,6 +61,24 @@ class PreviouslyViewed extends Component {
             });
         }
     }
+
+    setSlides = (props) => () => {
+        const { viewed } = props;
+        const { mediaWidth } = props;
+        const smallSizeSlideSets = viewed.length - 1;
+        const mediumSizeSlideSets = viewed.length > 2 ? 1 : 0;
+        const bigSizeSlideSets = viewed.length > 4 ? 1 : 0;
+
+        if (mediaWidth < 550) {
+            this.setState({ containerWidth: 256, maxSlides: 1, slideSetsAmount: smallSizeSlideSets });
+        } else if (mediaWidth < 990) {
+            this.setState({ containerWidth: 370, maxSlides: 1, slideSetsAmount: smallSizeSlideSets });
+        } else if (mediaWidth < 1310) {
+            this.setState({ containerWidth: 740, maxSlides: 2, slideSetsAmount: viewed.length > 4 ? 2 : mediumSizeSlideSets });
+        } else {
+            this.setState({ containerWidth: 1110, maxSlides: 3, slideSetsAmount: bigSizeSlideSets });
+        }
+    };
 
     getTransitionStyles = () => {
         switch (this.swipeStatus) {
