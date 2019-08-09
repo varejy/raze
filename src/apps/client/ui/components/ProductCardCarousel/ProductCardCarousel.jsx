@@ -49,13 +49,13 @@ class ProductCardCarousel extends Component {
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.mediaWidth !== this.props.mediaWidth) {
-            const { activeSlide, leftSliderTopIndex } = this.state;
+            const { activeSlide } = this.state;
 
             this.maxLeft = this.maxSlide * nextProps.mediaWidth;
             this.maxLeftSmall = this.maxSlide * nextProps.mediaWidth * 0.2 + 20;
             this.setState({
                 sliderLeft: activeSlide * nextProps.mediaWidth,
-                sliderLeftSmall: leftSliderTopIndex * nextProps.mediaWidth * 0.2 + 20
+                sliderLeftSmall: activeSlide * nextProps.mediaWidth * 0.2 + 20
             });
         }
     }
@@ -76,6 +76,7 @@ class ProductCardCarousel extends Component {
 
         this.setState({
             sliderLeft: i * mediaWidth,
+            sliderLeftSmall: i * mediaWidth * 0.2 + 20,
             activeSlide: i
         });
     };
