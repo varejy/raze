@@ -138,12 +138,12 @@ class ProductCardCarousel extends Component {
 
     handleDragEndSmallSlider = ({ delta: { client: { x: deltaX } } }) => {
         const { mediaWidth, sliderImages } = this.props;
-        const { leftSliderTopIndex } = this.state;
+        const { leftSliderTopIndex, activeSlide } = this.state;
         const newActiveSlideIndex = deltaX > 0 ? leftSliderTopIndex - 1 : leftSliderTopIndex + 1;
 
         if (Math.abs(deltaX) < IGNORE_SWIPE_DISTANCE || newActiveSlideIndex === -1 || newActiveSlideIndex === sliderImages.length) {
             return this.setState({
-                sliderLeftSmall: newActiveSlideIndex * mediaWidth * 0.2 + 20
+                sliderLeftSmall: activeSlide * mediaWidth * 0.2 + 20
             });
         }
 
@@ -222,7 +222,7 @@ class ProductCardCarousel extends Component {
     };
 
     render () {
-        const { activeSlide } = this.state;
+        const { activeSlide, sliderLeft } = this.state;
         const { sliderImages } = this.props;
         const isTop = activeSlide === this.minSlideIndex;
         const isBottom = activeSlide === this.maxSlideIndex;
@@ -276,7 +276,10 @@ class ProductCardCarousel extends Component {
                     allowDefaultAction
                     touchable
                 >
-                    <div className={styles.slides} style={{ left: this.sliderPositionMoveCount('bigSliderLeft')(), ...this.getTransitionStyles() }}>
+                    <div
+                        className={styles.slides}
+                        style={{ left: sliderLeft ? `-${sliderLeft}px` : this.sliderPositionMoveCount('bigSliderLeft')(), ...this.getTransitionStyles() }}
+                    >
                         {sliderImages.map((sliderImage, i) =>
                             <div className={styles.productPreviewSlide} key={i}>
                                 <img className={styles.slidePhoto} src={sliderImage} alt={`slide${i}`}/>
