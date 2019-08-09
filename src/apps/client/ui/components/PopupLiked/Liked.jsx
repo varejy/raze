@@ -103,12 +103,12 @@ class Liked extends Component {
                         <Scroll>
                             {liked.map((item, i) =>
                                 <div className={styles.item} key={i}>
+                                    <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
+                                        <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
+                                    </div>
                                     <Link className={styles.productLink} key={item.id}
                                         to={`/${this.getCategoryPath(item.categoryId)}/${item.id}`}>
                                         <div className={styles.itemImageWrapp}>
-                                            <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
-                                                <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png' alt='delete'/>
-                                            </div>
                                             <div className={styles.itemImage}>
                                                 <img
                                                     className={styles.itemAvatar}
@@ -119,7 +119,16 @@ class Liked extends Component {
                                         <div className={styles.itemInfo}>
                                             <h2 className={styles.itemName}>{item.name}</h2>
                                             <div className={styles.itemCompany}>{item.company}</div>
-                                            <h2 className={styles.itemPrice}>{item.price} UAH</h2>
+                                            {
+                                                item.discountPrice
+                                                    ? <div className={styles.prices}>
+                                                        <h2 className={styles.previousPrice}>{item.price.toLocaleString('ru')} грн</h2>
+                                                        <h2 className={classNames(styles.itemPrice, styles.priceDiscount)}>
+                                                            {item.discountPrice.toLocaleString('ru')} грн
+                                                        </h2>
+                                                    </div>
+                                                    : <h2 className={styles.itemPrice}>{item.price.toLocaleString('ru')} грн</h2>
+                                            }
                                         </div>
                                     </Link>
                                 </div>
@@ -127,8 +136,7 @@ class Liked extends Component {
                         </Scroll>
                     </div>
                         : <div className={styles.noLikedItems}>
-                            К сожалению, Вы не добавили в избранное товары.<br/>
-                            Исправить ситуацию Вы можете выбрав товар в каталоге.
+                            Вы не добавили товары в Избранное
                         </div>
                     }
                 </div>

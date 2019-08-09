@@ -148,69 +148,81 @@ class Basket extends Component {
                         <div className={styles.header}>корзина</div>
                         <div className={styles.closeButton} onClick={this.handleCloseBasket}>+</div>
                     </div>
-                    <div className={styles.amountTxt}>
-                        <div>Количество</div>
-                    </div>
-                    <div className={styles.items}>
-                        <Scroll theme='light'>
-                            {basket.map((item, i) => productsMap[i] !== 0 &&
-                                    <div className={styles.item} key={i}>
-                                        <Link className={styles.productLink} key={item.product.id}
-                                            to={`/${this.getCategoryPath(item.product.categoryId)}/${item.product.id}`}>
-                                            <div className={styles.itemImageWrapp}>
-                                                <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
-                                                    <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png'
-                                                        alt='delete'/>
-                                                </div>
-                                                <div className={styles.itemImage}>
-                                                    <img
-                                                        className={styles.itemAvatar}
-                                                        src={item.product.avatar}
-                                                        alt='product'
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className={styles.itemInfo}>
-                                                <h2 className={styles.itemName}>{item.product.name}</h2>
-                                                <div className={styles.itemCategory}>{item.product.company}</div>
-                                                <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
-                                            </div>
-                                        </Link>
-                                        <div className={styles.itemAmount}>
-                                            <div className={styles.amountButton}
-                                                onClick={this.handleCountClick(i, 'minus')}>-
-                                            </div>
-                                            <div className={styles.countWrapp}>{productsMap[i]}</div>
-                                            <div className={styles.amountButton}
-                                                onClick={this.handleCountClick(i, 'plus')}>+
-                                            </div>
-                                        </div>
-                                    </div>
-                            )}
-                        </Scroll>
-                    </div>
-                    <div className={styles.priceBlock}>
-                        <div className={styles.line}/>
-                        <div className={styles.priceTotal}>Итог: {this.totalPrice()} грн</div>
-                    </div>
                     {
                         basket.length
-                            ? <div className={styles.buttonsWrapp}>
-                                <button
-                                    className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
-                                    onClick={this.handleCloseBasket}>
-                                продолжить покупки
-                                </button>
-                                <Link className={styles.link} to='/order'>
+                            ? <div>
+                                <div className={styles.amountTxt}>
+                                    <div>Количество</div>
+                                </div>
+                                <div className={styles.items}>
+                                    <Scroll theme='light'>
+                                        {basket.map((item, i) => productsMap[i] !== 0 &&
+                                <div className={styles.item} key={i}>
+                                    <div className={styles.deleteItem} onClick={this.deleteItem(i)}>
+                                        <img src='/src/apps/client/ui/components/PopupBasket/img/deleteIcon.png'
+                                            alt='delete' />
+                                    </div>
+                                    <Link className={styles.productLink} key={item.product.id}
+                                        to={`/${this.getCategoryPath(item.product.categoryId)}/${item.product.id}`}>
+                                        <div className={styles.itemImageWrapp}>
+                                            <div className={styles.itemImage}>
+                                                <img
+                                                    className={styles.itemAvatar}
+                                                    src={item.product.avatar}
+                                                    alt='product'
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className={styles.itemInfo}>
+                                            <h2 className={styles.itemName}>{item.product.name}</h2>
+                                            <div className={styles.itemCategory}>{item.product.company}</div>
+                                            {
+                                                item.product.discountPrice
+                                                    ? <div className={styles.prices}>
+                                                        <h2 className={styles.previousPrice}>{item.product.price.toLocaleString('ru')} грн</h2>
+                                                        <h2 className={classNames(styles.itemPrice, styles.priceDiscount)}>
+                                                            {item.product.discountPrice.toLocaleString('ru')} грн
+                                                        </h2>
+                                                    </div>
+                                                    : <h2 className={styles.itemPrice}>{item.product.price.toLocaleString('ru')} грн</h2>
+                                            }
+                                        </div>
+                                    </Link>
+                                    <div className={styles.itemAmount}>
+                                        <div className={styles.amountButton}
+                                            onClick={this.handleCountClick(i, 'minus')}>
+                                            -
+                                        </div>
+                                        <div className={styles.countWrapp}>{productsMap[i]}</div>
+                                        <div className={styles.amountButton}
+                                            onClick={this.handleCountClick(i, 'plus')}>
+                                            +
+                                        </div>
+                                    </div>
+                                </div>
+                                        )}
+                                    </Scroll>
+                                </div>
+                                <div className={styles.priceBlock}>
+                                    <div className={styles.line}/>
+                                    <div className={styles.priceTotal}>Итог: {this.totalPrice()} грн</div>
+                                </div>
+                                <div className={styles.buttonsWrapp}>
                                     <button
-                                        className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}
-                                        onClick={this.handleCloseBasket}>оформление
-                                    заказа
+                                        className={classNames(styles.buttonDefault, styles.continueShopping, styles.buttons)}
+                                        onClick={this.handleCloseBasket}>
+                                продолжить покупки
                                     </button>
-                                </Link>
+                                    <Link className={styles.link} to='/order'>
+                                        <button
+                                            className={classNames(styles.buttonDefault, styles.ordering, styles.buttons)}
+                                            onClick={this.handleCloseBasket}>оформление
+                                    заказа
+                                        </button>
+                                    </Link>
+                                </div>
                             </div>
-                            : <div className={styles.txt}>К сожалению, Вы не добавили в избранное товары.
-                        Исправить ситуацию Вы можете выбрав товар в каталоге.</div>
+                            : <div className={styles.txt}>Вы не добавили в товары в Корзину</div>
                     }
                 </div>
             </div>

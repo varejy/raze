@@ -14,6 +14,8 @@ import find from '@tinkoff/utils/array/find';
 
 import styles from './Search.css';
 
+const MAX_LENGTH_TIPS_NAMES = 23;
+
 const mapStateToProps = ({ application }) => {
     return {
         categories: application.categories
@@ -98,6 +100,10 @@ class Search extends Component {
             });
     };
 
+    getTipName = name => {
+        return name.length > MAX_LENGTH_TIPS_NAMES ? `${name.substring(0, MAX_LENGTH_TIPS_NAMES)}...` : name;
+    }
+
     componentWillReceiveProps (nextProps) {
         if (this.props.isMobileVersion !== nextProps.isMobileVersion) {
             const { outsideClickEnabled, turnOnClickOutside, handleCloseSearch } = this.props;
@@ -127,7 +133,7 @@ class Search extends Component {
                                 tips.map((tip, i) => {
                                     return (
                                         <Link key={i} className={styles.tipLink} to={`/${tip.categoryPath}/${tip.id}`}>
-                                            <li className={styles.tip}>{tip.title}</li>
+                                            <li className={styles.tip}>{this.getTipName(tip.title)}</li>
                                         </Link>
                                     );
                                 })

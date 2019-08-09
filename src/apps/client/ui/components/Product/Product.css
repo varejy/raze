@@ -71,19 +71,16 @@
     margin-right: 0;
 }
 
-.tags :first-child{
-    margin-right: 20px;
-}
-
 .tag{
-    width: 45px;
+    width: auto;
     margin-right: 5px;
-    font-family: HelveticaNeueCyrRoman;
+    font-family: HelveticaNeueCyrBold;
     font-size: 6.5px;
     line-height: 14px;
-    text-align: left;
+    text-align: center;
     text-transform: uppercase;
     letter-spacing: 2px;
+    white-space: pre-line;
 }
 
 .labelsEmptyContainer{
@@ -125,9 +122,9 @@
 }
 
 .manufacturer{
-    font-size: 7.5px;
+    font-size: 14px;
     font-family: MontserratSemiBold;
-    line-height: 18px;
+    line-height: 14px;
     text-align: center;
     text-transform: uppercase;
 }
@@ -143,7 +140,7 @@
 .price{
     font-family: MontserratSemiBold;
     font-size: 16px;
-    line-height: 24px;
+    line-height: 28px;
     text-align: center;
     color: #000000;
 }
@@ -186,7 +183,7 @@
     color: #fff;
     font-size: 8.5px;
     flex-wrap: wrap;
-    width: 46px;
+    width: 60px;
     height: 46px;
     cursor: pointer;
     text-transform: uppercase;
@@ -197,7 +194,7 @@
 }
 
 .toolBarItemName {
-    width: 46px;
+    width: 60px;
     text-align: center;
     line-height: 10px;
 }
@@ -267,8 +264,8 @@
 
 .name{
     font-family: MontserratSemiBold;
-    font-size: 13.5px;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 22px;
     text-align: center;
     text-transform: uppercase;
 }
