@@ -83,19 +83,16 @@
     margin-right: 0;
 }
 
-.tags :first-child{
-    margin-right: 30px;
-}
-
 .tag{
-    width: 50px;
+    width: auto;
     margin-right: 10px;
-    font-family: HelveticaNeueCyrRoman;
-    font-size: 7px;
+    font-family: HelveticaNeueCyrBold;
+    font-size: 8px;
     line-height: 16px;
-    text-align: left;
+    text-align: center;
     text-transform: uppercase;
     letter-spacing: 3px;
+    white-space: pre-line;
 }
 
 .productCardHeader{
@@ -250,8 +247,8 @@ a {
 
 .description{
     font-family: HelveticaNeueCyrRoman;
-    font-size: 12px;
-    line-height: 24px;
+    font-size: 16px;
+    line-height: 28px;
     text-align: center;
     color: #000000;
     width: 90%;
@@ -264,8 +261,8 @@ a {
 
 .descriptionText{
     font-family: HelveticaNeueCyrRoman;
-    font-size: 12px;
-    line-height: 24px;
+    font-size: 16px;
+    line-height: 28px;
     text-align: center;
     color: #000000;
     width: 60%;
@@ -305,7 +302,7 @@ a {
 }
 
 .parameterName{
-    font-family: HelveticaNeueCyrLight;
+    font-family: HelveticaNeueCyrBold;
     font-size: 16.5px;
     line-height: 22px;
     color: #000000;
@@ -317,7 +314,7 @@ a {
 }
 
 .parameterValue{
-    font-family: HelveticaNeueCyrBold;
+    font-family: HelveticaNeueCyrLight;
     font-size: 16.5px;
     line-height: 22px;
     color: #000000;
