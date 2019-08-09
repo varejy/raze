@@ -45,17 +45,17 @@ class ProductCardCarousel extends Component {
 
     maxSlide = this.props.sliderImages.length - 1;
     maxLeft = this.maxSlide * this.props.mediaWidth;
-    maxLeftSmall = this.maxSlide * this.props.mediaWidth * 0.2 + 20;
+    maxLeftSmall = this.maxSlide * this.props.mediaWidth * 0.2 + this.props.mediaWidth * 0.025;
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.mediaWidth !== this.props.mediaWidth) {
             const { activeSlide } = this.state;
 
             this.maxLeft = this.maxSlide * nextProps.mediaWidth;
-            this.maxLeftSmall = this.maxSlide * nextProps.mediaWidth * 0.2 + 20;
+            this.maxLeftSmall = this.maxSlide * nextProps.mediaWidth * 0.2 + nextProps.mediaWidth * 0.025;
             this.setState({
                 sliderLeft: activeSlide * nextProps.mediaWidth,
-                sliderLeftSmall: activeSlide * nextProps.mediaWidth * 0.2 + 20
+                sliderLeftSmall: activeSlide * nextProps.mediaWidth * 0.2 + nextProps.mediaWidth * 0.025
             });
         }
     }
@@ -76,7 +76,7 @@ class ProductCardCarousel extends Component {
 
         this.setState({
             sliderLeft: i * mediaWidth,
-            sliderLeftSmall: i * mediaWidth * 0.2 + 20,
+            sliderLeftSmall: i * mediaWidth * 0.2 + mediaWidth * 0.025,
             activeSlide: i
         });
     };
@@ -144,7 +144,7 @@ class ProductCardCarousel extends Component {
 
         if (Math.abs(deltaX) < IGNORE_SWIPE_DISTANCE || newActiveSlideIndex === -1 || newActiveSlideIndex === sliderImages.length) {
             return this.setState({
-                sliderLeftSmall: activeSlide * mediaWidth * 0.2 + 20
+                sliderLeftSmall: activeSlide * mediaWidth * 0.2 + mediaWidth * 0.025
             });
         }
 
@@ -211,7 +211,7 @@ class ProductCardCarousel extends Component {
         const { activeSlide, leftSliderTopIndex } = this.state;
         const { mediaWidth } = this.props;
         const sliderIsFullScreen = mediaWidth <= SCREEN_WIDTH_SLIDER_FULL;
-        const leftSliderWidth = mediaWidth * 0.2 + 20;
+        const leftSliderWidth = mediaWidth * 0.2 + mediaWidth * 0.025;
 
         if (direction === 'smallSliderLeft') {
             return sliderIsFullScreen ? -leftSliderTopIndex * leftSliderWidth : 0;
