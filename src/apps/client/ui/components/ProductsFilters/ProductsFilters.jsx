@@ -68,7 +68,7 @@ class ProductsFilters extends Component {
         onFilter: PropTypes.func.isRequired,
         products: PropTypes.array,
         location: PropTypes.object,
-        history: PropTypes.object,
+        history: PropTypes.object
     };
 
     static defaultProps = {
@@ -92,7 +92,7 @@ class ProductsFilters extends Component {
                     this.getFilters(nextProps)
                 ]),
                 reload: true
-            }, () => { this.setState({reload: false})});
+            }, () => { this.setState({ reload: false }); });
             this.filtersMap = {};
             this.getQueryParametrs(nextProps);
         }
@@ -113,7 +113,7 @@ class ProductsFilters extends Component {
                             if (includes(option, values)) {
                                 return [...acc, option];
                             }
-                            return acc
+                            return acc;
                         }, [], filter.options);
                         this.filtersMap[filter.id] = {
                             filter,
@@ -256,11 +256,11 @@ class ProductsFilters extends Component {
                 ...acc,
                 [filter.filter.id]: filter.filter.type === 'checkbox'
                     ? reduce((acc, value) => {
-                        return acc + ',' + value
+                        return acc + ',' + value;
                     }, '', filter.values).substring(1)
                     : `${filter.values.min},${filter.values.max}`
-            }
-        }, {}, filtersMap)
+            };
+        }, {}, filtersMap);
 
         const stringifyedQueries = queryString.stringify(queries, { encodeURIComponent: uri => uri });
 
@@ -296,7 +296,7 @@ class ProductsFilters extends Component {
     };
 
     renderFilter = filter => {
-        const queryFilter= this.filtersMap[filter.id];
+        const queryFilter = this.filtersMap[filter.id];
 
         switch (filter.type) {
         case 'checkbox':
@@ -345,7 +345,7 @@ class ProductsFilters extends Component {
                 [styles.filtersInvisible]: !filtersVisible
             })}>
                 {
-                   !reload && filters.map((filter, i) => <div key={i}>
+                    !reload && filters.map((filter, i) => <div key={i}>
                         {this.renderFilter(filter)}
                     </div>)
                 }
