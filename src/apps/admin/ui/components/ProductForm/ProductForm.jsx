@@ -306,8 +306,9 @@ class ProductForm extends Component {
         const productName = trim(product.name);
         const productCompany = trim(product.company);
         const TITLE_DEFAULT = `${productCompany} ${productName}`;
-        const DESCRIPTION_DEFAULT = `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice.toLocaleString('ru')
-            ? product.price.toLocaleString('ru') : product.discountPrice.toLocaleString('ru')} грн.`;
+        const DESCRIPTION_DEFAULT =
+            `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice.toLocaleString('ru')
+                ? product.price.toLocaleString('ru') : product.discountPrice.toLocaleString('ru')} грн.`;
 
         this.handleChange(option);
         this.setState({
@@ -591,17 +592,17 @@ class ProductForm extends Component {
         const { product } = this.state;
 
         const newFeatures = reduce((acc, filter, i) => {
-            const value = propOr('value', '', product.filters[i])
-            const id = findIndex(propEq('prop', filter.name), product.features)
+            const value = propOr('value', '', product.filters[i]);
+            const id = findIndex(propEq('prop', filter.name), product.features);
 
             if (id !== -1) {
                 acc[id] = { prop: filter.name, value };
             } else {
-                return [...acc, { prop: filter.name, value }]
+                return [...acc, { prop: filter.name, value }];
             }
 
             return acc;
-        }, product.features, this.category.filters)
+        }, product.features, this.category.filters);
 
         this.setState({
             product: {
