@@ -94,7 +94,7 @@ class MetaForm extends Component {
         };
 
         this.state = {
-            seo: option !== 'seo' ? {} : this.getSeoData(this.props),
+            seo: option !== 'seo' ? {} : this.getSeoData(),
             keywordsInput: '',
             page: page,
             product: newProduct,
@@ -104,7 +104,7 @@ class MetaForm extends Component {
         };
     }
 
-    getSeoData = (props) => {
+    getSeoData = (props = this.props) => {
         const { page, allSeo } = props;
         const seoPage = find(seoPage => seoPage.name === page, allSeo);
         const newSeo = {
@@ -113,7 +113,7 @@ class MetaForm extends Component {
             metaDescription: '',
             keywords: ''
         };
-        return !seoPage ? newSeo : seoPage;
+        return seoPage || newSeo;
     };
 
     componentWillReceiveProps (nextProps) {
@@ -231,7 +231,6 @@ class MetaForm extends Component {
 
     handleChange = (prop, option) => event => {
         this.setState({
-            ...this.state,
             [option]: {
                 ...this.state[option],
                 [prop]: event.target.value

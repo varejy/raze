@@ -1,5 +1,5 @@
 import Product from '../model';
 
-export default function nullifyCategories (ids) {
+export default function getProductsByIds (ids) {
     return Product.find({ id: { $in: ids } });
 }

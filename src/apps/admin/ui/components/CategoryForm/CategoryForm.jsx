@@ -104,7 +104,7 @@ class CategoryForm extends Component {
 
         this.setState({
             category: {
-                ...this.state.category,
+                ...category,
                 [option]: option === 'metaTitle'
                     ? TITLE_DEFAULT
                     : DESCRIPTION_DEFAULT
@@ -117,7 +117,7 @@ class CategoryForm extends Component {
             keywordsInput: event.target.value,
             category: {
                 ...this.state.category,
-                keywords: this.state.category.keywords === undefined ? '' : this.state.category.keywords
+                keywords: this.state.category.keywords || ''
             }
         });
     };
@@ -130,12 +130,13 @@ class CategoryForm extends Component {
             return;
         }
 
-        const keywordsArray = category.keywords !== '' ? category.keywords.split(', ') : [];
+        const keywordsArray = !category.keywords ? [] : category.keywords.split(', ');
+
         const newKeywords = [...keywordsArray, keyword];
 
         this.setState({
             category: {
-                ...this.state.category,
+                ...category,
                 keywords: newKeywords.join(', ')
             },
             keywordsInput: ''
@@ -149,7 +150,7 @@ class CategoryForm extends Component {
 
         this.setState({
             category: {
-                ...this.state.category,
+                ...category,
                 keywords: KEYWORDS_DEFAULT
             },
             keywordsInput: ''
@@ -163,7 +164,7 @@ class CategoryForm extends Component {
 
         this.setState({
             category: {
-                ...this.state.category,
+                ...category,
                 keywords: newKeywords.join(', ')
             }
         });

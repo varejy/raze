@@ -176,6 +176,12 @@ const materialStyles = theme => ({
     },
     selectEmpty: {
         marginTop: 2 * theme.spacing.unit
+    },
+    buttonWrapp: {
+        width: '90%',
+        display: 'flex',
+        margin: '15px',
+        justifyContent: 'flex-end'
     }
 });
 
@@ -282,11 +288,6 @@ class Filters extends Component {
         return <div className={classes.createFiltersWrapp}>
             <div className={classes.createFiltersHeader}>
                 <Typography className={classes.filterTitle} variant='h5'>Фильтр</Typography>
-                <div>
-                    <Fab size="small" color='primary' onClick={this.handleFilterAdd} aria-label="Add">
-                        <AddIcon />
-                    </Fab>
-                </div>
             </div>
             <SlidesFilters
                 axis='xy'
@@ -301,6 +302,11 @@ class Filters extends Component {
                 useDragHandle
                 classes={classes}
             />
+            <div className={classes.buttonWrapp}>
+                <Fab size="small" color='primary' onClick={this.handleFilterAdd} aria-label="Add">
+                    <AddIcon />
+                </Fab>
+            </div>
         </div>;
     }
 }

@@ -128,7 +128,16 @@ class PopupBasket extends Component {
                                 <div className={styles.itemInfo}>
                                     <h2 className={styles.itemName}>{product.name}</h2>
                                     <div className={styles.itemCategory}>{product.company}</div>
-                                    <h2 className={styles.itemPrice}>{product.price} UAH</h2>
+                                    {
+                                        product.discountPrice
+                                            ? <div className={styles.prices}>
+                                                <h2 className={styles.previousPrice}>{product.price.toLocaleString('ru')} грн</h2>
+                                                <h2
+                                                    className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice.toLocaleString('ru')} грн
+                                                </h2>
+                                            </div>
+                                            : <h2 className={styles.itemPrice}>{product.price.toLocaleString('ru')} грн</h2>
+                                    }
                                     {this.handleDuplicates() && <div className={styles.isInBasket}>*Этот товар уже в корзине</div>}
                                 </div>
                             </div>
@@ -161,7 +170,7 @@ class PopupBasket extends Component {
                                         <div className={styles.itemInfo}>
                                             <h2 className={styles.itemName}>{item.product.name}</h2>
                                             <div className={styles.itemCategory}>{item.product.company}</div>
-                                            <h2 className={styles.itemPrice}>{item.product.price} UAH</h2>
+                                            <h2 className={styles.itemPrice}>{item.product.price.toLocaleString('ru')} грн</h2>
                                         </div>
                                     </div>
                                     <div className={styles.itemAmount}>

@@ -125,7 +125,6 @@ class SeoPage extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        nextProps.getAllSeo();
         this.setTips(nextProps);
     }
 
