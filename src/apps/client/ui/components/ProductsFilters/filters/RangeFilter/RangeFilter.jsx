@@ -71,6 +71,10 @@ class RangeFilter extends Component {
         });
     }
 
+    handleSendValues = (value) => {
+        this.props.onFilter(value);
+    }
+
     render () {
         const { defaultValue: { min, max }, value, step } = this.state;
         const { filter } = this.props;
@@ -94,7 +98,7 @@ class RangeFilter extends Component {
                 step={step}
                 value={value}
                 onChange={this.handleInputChange}
-                onChangeComplete={this.props.onFilter}
+                onChangeComplete={this.handleSendValues}
             />
         </section>;
     }

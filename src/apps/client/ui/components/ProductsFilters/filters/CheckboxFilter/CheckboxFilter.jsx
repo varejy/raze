@@ -23,17 +23,11 @@ class CheckboxFilter extends Component {
     constructor (prop) {
         super(prop);
 
-        this.state = {
-            optionsMap: {}
-        };
-    }
-
-    componentDidMount () {
         const { queryFilter } = this.props;
 
-        this.setState({
+        this.state = {
             optionsMap: queryFilter
-        });
+        };
     }
 
     handleLabelChecked = prop => () => {

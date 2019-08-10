@@ -20,11 +20,14 @@ import flatten from '@tinkoff/utils/array/flatten';
 import any from '@tinkoff/utils/array/any';
 import getMinOfArray from '../../../utils/getMinOfArray';
 import getMaxOfArray from '../../../utils/getMaxOfArray';
+import cyrillicToTranslit from 'cyrillic-to-translit-js';
 import classNames from 'classnames';
 
 import queryString from 'query-string';
 
 import { withRouter } from 'react-router-dom';
+
+const translit = (txt) => cyrillicToTranslit().transform(txt);
 
 const DEFAULT_FILTERS = [
     {
@@ -105,7 +108,7 @@ class ProductsFilters extends Component {
 
         for (const key in query) {
             filters.forEach(filter => {
-                if (filter.id === key) {
+                if (translit(filter.name) === key) {
                     const values = split(',', query[key]);
 
                     if (filter.type === 'checkbox') {
@@ -140,7 +143,11 @@ class ProductsFilters extends Component {
             find(productFilter => productFilter.id === filter.id)
         )(product.filters);
 
-        return filter.prop ? product[filter.prop] : productFilterValue;
+        if(filter.prop === 'price') {
+            return product.discountPrice || product[filter.prop]
+        }else {
+            return filter.prop ? product[filter.prop] : productFilterValue;
+        }
     };
 
     getDefaultFilters = (props = this.props) => {
@@ -254,7 +261,7 @@ class ProductsFilters extends Component {
         const queries = reduceObj((acc, filter) => {
             return {
                 ...acc,
-                [filter.filter.id]: filter.filter.type === 'checkbox'
+                [translit(filter.filter.name)]: filter.filter.type === 'checkbox'
                     ? reduce((acc, value) => {
                         return acc + ',' + value;
                     }, '', filter.values).substring(1)
@@ -306,7 +313,7 @@ class ProductsFilters extends Component {
                         ...acc,
                         [value]: !acc[value]
                     };
-                }, []);
+                }, {});
                 return <CheckboxFilter filter={filter} queryFilter={newValues} onFilter={this.handleFilter(filter)} />;
             } else {
                 return <CheckboxFilter filter={filter} onFilter={this.handleFilter(filter)} />;
