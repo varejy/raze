@@ -19,20 +19,14 @@ export default function getAvailableProductsByCategory (req, res) {
                         .sort((prev, next) => next.date - prev.date);
 
                     const checkingProductsDiscountTime = reduce((acc, product) => {
-                        if (!product.discountTime) {
-                            return [...acc, product];
-                        } else {
-                            if (checkingRemainingTime(product.discountTime).length) {
-                                return [...acc, product];
-                            } else {
-                                product.discountPrice = '';
-                                product.discountTime = '';
-                                editProduct(product)
-                                    .then((product) => {
-                                        return [...acc, product];
-                                    });
-                            }
+                        if (product.discountTime && !checkingRemainingTime(product.discountTime).length) {
+                            product.discountPrice = '';
+                            product.discountTime = '';
+
+                            editProduct(product);
                         }
+
+                        return [...acc, product];
                     }, [], availableProducts);
 
                     res.status(OKEY_STATUS_CODE).send(checkingProductsDiscountTime);
