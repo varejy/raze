@@ -19,21 +19,15 @@ export default function getTopProducts (req, res) {
                 .filter(product => includes('topSales', product.tags));
 
             const checkingProductsDiscountTime = reduce((acc, product) => {
-                if (!product.discountTime) {
-                    return [...acc, product];
-                } else {
-                    if (checkingRemainingTime(product.discountTime).length) {
-                        return [...acc, product];
-                    } else {
-                        product.discountPrice = '';
-                        product.discountTime = '';
-                        editProduct(product)
-                            .then((product) => {
-                                return [...acc, product];
-                            });
-                    }
+                if (product.discountTime && !checkingRemainingTime(product.discountTime).length) {
+                    product.discountPrice = '';
+                    product.discountTime = '';
+
+                    editProduct(product);
                 }
-            }, [], topProducts);
+
+                return [...acc, product];
+            }, [], availableProducts);
 
             res.status(OKEY_STATUS_CODE).send(checkingProductsDiscountTime);
         })
