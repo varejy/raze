@@ -21,12 +21,14 @@ import adminProductApi from './api/admin/product';
 import adminCommentApi from './api/admin/comment';
 import adminMainSliderApi from './api/admin/mainSlider';
 import adminOrderApi from './api/admin/order';
+import adminSeoApi from './api/admin/seo';
 import clientCategoryApi from './api/client/category';
 import clientProductApi from './api/client/product';
 import clientCommentApi from './api/client/comment';
 import clientMainSliderApi from './api/client/mainSlider';
 import clientSavedProductsApi from './api/client/savedProducts';
 import clientOrderApi from './api/client/order';
+import clientSeoApi from './api/client/seo';
 
 import { DATABASE_URL } from './constants/constants';
 import actions from './actions';
@@ -82,12 +84,14 @@ app.use('/api/admin/product', adminProductApi);
 app.use('/api/admin/comment', adminCommentApi);
 app.use('/api/admin/main-slider', adminMainSliderApi);
 app.use('/api/admin/order', adminOrderApi);
+app.use('/api/admin/seo', adminSeoApi);
 app.use('/api/client/category', clientCategoryApi);
 app.use('/api/client/product', clientProductApi);
 app.use('/api/client/comment', clientCommentApi);
 app.use('/api/client/main-slider', clientMainSliderApi);
 app.use('/api/client/saved-products', clientSavedProductsApi);
 app.use('/api/client/order', clientOrderApi);
+app.use('/api/client/seo', clientSeoApi);
 
 // admin
 app.get(/^\/admin/, function (req, res) {
