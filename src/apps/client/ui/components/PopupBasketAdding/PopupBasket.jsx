@@ -12,7 +12,7 @@ import closePopup from '../../../actions/closePopup';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
 import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
-import CrossButton from "../CrossButton/CrossButton";
+import CrossButton from '../CrossButton/CrossButton';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {

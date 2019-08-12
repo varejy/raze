@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import CrossButton from '../CrossButton/CrossButton';
 import Scroll from '../Scroll/Scroll';
 
 import { connect } from 'react-redux';
