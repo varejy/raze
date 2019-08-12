@@ -283,7 +283,6 @@ class MetaForm extends Component {
 
     handleChange = (prop, option) => event => {
         this.setState({
-            ...this.state,
             [option]: {
                 ...this.state[option],
                 [prop]: event.target.value
