@@ -22,7 +22,9 @@ import pick from '@tinkoff/utils/object/pick';
 import prop from '@tinkoff/utils/object/prop';
 import search from '../../../services/search';
 import editCategory from '../../../services/editCategory';
+import AutoRenew from '@material-ui/icons/AutorenewRounded';
 
+const GREY = '#e0e0e0';
 const materialStyles = () => ({
     metaContainer: {
         width: '100%'
@@ -46,18 +48,24 @@ const materialStyles = () => ({
     metaKeyword: {
         margin: '4px',
         marginBottom: '20px'
+    },
+    metaAddTitleDescription: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
     }
 });
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
     'metaTitle', 'metaDescription', 'keywords'];
-const mapStateToProps = ({ seo }) => {
+const mapStateToProps = ({ seo, application }) => {
     return {
-        allSeo: seo.allSeo
+        allStaticSeo: seo.allSeo,
+        categories: application.categories
     };
 };
 const mapDispatchToProps = (dispatch) => ({
-    updateSeo: payload => dispatch(updateSeo(payload)),
-    getAllSeo: payload => dispatch(getAllSeo(payload)),
+    updateStaticSeo: payload => dispatch(updateSeo(payload)),
+    getAllStaticSeo: payload => dispatch(getAllSeo(payload)),
     editProduct: payload => dispatch(editProduct(payload)),
     search: payload => dispatch(search(payload)),
     editCategory: payload => dispatch(editCategory(payload))
@@ -66,8 +74,8 @@ const mapDispatchToProps = (dispatch) => ({
 class MetaForm extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
-        updateSeo: PropTypes.func.isRequired,
-        getAllSeo: PropTypes.func.isRequired,
+        updateStaticSeo: PropTypes.func.isRequired,
+        getAllStaticSeo: PropTypes.func.isRequired,
         editProduct: PropTypes.func.isRequired,
         page: PropTypes.string.isRequired,
         product: PropTypes.object,
@@ -75,14 +83,16 @@ class MetaForm extends Component {
         search: PropTypes.func,
         option: PropTypes.string.isRequired,
         editCategory: PropTypes.func.isRequired,
-        category: PropTypes.object
+        category: PropTypes.object,
+        categories: PropTypes.array.isRequired
     };
 
     static defaultProps = {
-        allSeo: [],
+        allStaticSeo: [],
         product: {},
         category: {},
-        searchQuery: ''
+        searchQuery: '',
+        categories: []
     };
 
     constructor (...args) {
@@ -94,7 +104,7 @@ class MetaForm extends Component {
         };
 
         this.state = {
-            seo: option !== 'seo' ? {} : this.getSeoData(this.props),
+            staticSeo: option !== 'staticSeo' ? {} : this.getStaticSeoData(this.props),
             keywordsInput: '',
             page: page,
             product: newProduct,
@@ -104,16 +114,16 @@ class MetaForm extends Component {
         };
     }
 
-    getSeoData = (props) => {
-        const { page, allSeo } = props;
-        const seoPage = find(seoPage => seoPage.name === page, allSeo);
-        const newSeo = {
+    getStaticSeoData = (props) => {
+        const { page, allStaticSeo } = props;
+        const seoStaticPage = find(seoPage => seoPage.name === page, allStaticSeo);
+        const newSeoStaticPage = {
             name: page,
             metaTitle: '',
             metaDescription: '',
             keywords: ''
         };
-        return !seoPage ? newSeo : seoPage;
+        return seoStaticPage || newSeoStaticPage;
     };
 
     componentWillReceiveProps (nextProps) {
@@ -168,6 +178,48 @@ class MetaForm extends Component {
             [option]: {
                 ...this.state[option],
                 keywords: newKeywords.join(', ')
+            }
+        });
+    };
+
+    handleDefaultKeywordsAdd = (option) => () => {
+        const productName = trim(this.state.product.name);
+        const productCompany = trim(this.state.product.company);
+        const productCategory = find(category => category.id === this.state.product.categoryId, this.props.categories);
+        const productCategoryName = productCategory ? trim(productCategory.name) : '';
+        const categoryName = trim(this.state.category.name);
+        const KEYWORDS_DEFAULT = option === 'product'
+            ? `RAZE, ${productCategoryName}, ${productCompany}, ${productName}`
+            : `RAZE, ${categoryName}`;
+
+        this.setState({
+            [option]: {
+                ...this.state[option],
+                keywords: KEYWORDS_DEFAULT
+            },
+            keywordsInput: ''
+        });
+    };
+
+    handleDefaultMetaAdd = (meta, option) => () => {
+        const categoryName = trim(this.state.category.name);
+        const productName = trim(this.state.product.name);
+        const productCompany = trim(this.state.product.company);
+        const TITLE_DEFAULT = option === 'product' ? `${productCompany} ${productName}` : `${categoryName}`;
+        const DESCRIPTION_DEFAULT = option === 'product'
+            ? `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${
+                !this.state.product.discountPrice.toLocaleString('ru')
+                    ? this.state.product.price.toLocaleString('ru')
+                    : this.state.product.discountPrice.toLocaleString('ru')} грн.`
+            : `Купите ${categoryName.toLowerCase()} в интернет-магазине «Raze». Качественные ${
+                categoryName.toLowerCase()} от лучших брендов в Украине по низким ценам.`;
+
+        this.setState({
+            [option]: {
+                ...this.state[option],
+                [meta]: meta === 'metaTitle'
+                    ? TITLE_DEFAULT
+                    : DESCRIPTION_DEFAULT
             }
         });
     };
@@ -246,12 +298,12 @@ class MetaForm extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { seo, id, product, category, categoryId } = this.state;
+        const { staticSeo, id, product, category, categoryId } = this.state;
         const { option } = this.props;
-        if (option === 'seo') {
-            const seoPayload = this.getSeoPayload(seo);
+        if (option === 'staticSeo') {
+            const seoPayload = this.getSeoPayload(staticSeo);
 
-            this.props.updateSeo(seoPayload).then(this.props.getAllSeo());
+            this.props.updateStaticSeo(seoPayload).then(this.props.getAllStaticSeo());
         } else if (option === 'product') {
             const productPayload = this.getProductPayload(product);
 
@@ -263,31 +315,72 @@ class MetaForm extends Component {
 
     render () {
         const { classes, option } = this.props;
-        const { keywordsInput } = this.state;
+        const { keywordsInput, product, category } = this.state;
+        const dataAvailable = (product.name && product.company && product.price) || category.name;
 
         return <div className={classes.metaContainer}>
             <form onSubmit={this.handleSubmit}>
-                <div className={classes.metaForm}>
-                    <TextField
-                        label='Title'
-                        value={this.state[option].metaTitle}
-                        margin='normal'
-                        variant='outlined'
-                        fullWidth
-                        required
-                        onChange={this.handleChange('metaTitle', option)}
-                    />
+                <div className={classes.metaAddTitleDescription}>
+                    <div className={classes.metaForm}>
+                        <TextField
+                            label='Title'
+                            value={this.state[option].metaTitle}
+                            margin='normal'
+                            variant='outlined'
+                            fullWidth
+                            required
+                            onChange={this.handleChange('metaTitle', option)}
+                        />
+                    </div>
+                    {option !== 'staticSeo' &&
+                        <div className={classes.metaAdd}>
+                            <Tooltip
+                                title={dataAvailable
+                                    ? 'Добавить значение по умолчанию'
+                                    : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
+                                placement='bottom'
+                            >
+                                <Fab
+                                    color={dataAvailable ? 'primary' : GREY}
+                                    size='small'
+                                    onClick={dataAvailable ? this.handleDefaultMetaAdd('metaTitle', option) : undefined}
+                                >
+                                    <AutoRenew/>
+                                </Fab>
+                            </Tooltip>
+                        </div>
+                    }
                 </div>
-                <div className={classes.metaForm}>
-                    <TextField
-                        label='Description'
-                        value={this.state[option].metaDescription}
-                        margin='normal'
-                        variant='outlined'
-                        fullWidth
-                        required
-                        onChange={this.handleChange('metaDescription', option)}
-                    />
+                <div className={classes.metaAddTitleDescription}>
+                    <div className={classes.metaForm}>
+                        <TextField
+                            label='Description'
+                            value={this.state[option].metaDescription}
+                            margin='normal'
+                            variant='outlined'
+                            fullWidth
+                            required
+                            onChange={this.handleChange('metaDescription', option)}
+                        />
+                    </div>
+                    {option !== 'staticSeo' &&
+                        <div className={classes.metaAdd}>
+                            <Tooltip
+                                title={dataAvailable
+                                    ? 'Добавить значение по умолчанию'
+                                    : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
+                                placement='bottom'
+                            >
+                                <Fab
+                                    color={dataAvailable ? 'primary' : GREY}
+                                    size='small'
+                                    onClick={dataAvailable ? this.handleDefaultMetaAdd('metaDescription', option) : undefined}
+                                >
+                                    <AutoRenew />
+                                </Fab>
+                            </Tooltip>
+                        </div>
+                    }
                 </div>
                 <div className={classes.metaAddKeywords}>
                     <TextField
@@ -305,6 +398,25 @@ class MetaForm extends Component {
                             </Fab>
                         </Tooltip>
                     </div>
+                    {option !== 'staticSeo' &&
+                        <div className={classes.metaAdd}>
+                            <Tooltip
+                                title={dataAvailable
+                                    ? 'Добавить ключевые слова по умолчанию'
+                                    : 'Заполните поля "Название", "Компания" и "Цена" для добавления значения по умолчанию'}
+                                placement='bottom'
+                            >
+                                <Fab
+                                    size='small'
+                                    color={dataAvailable ? 'primary' : GREY}
+                                    onClick={dataAvailable ? this.handleDefaultKeywordsAdd(option) : undefined}
+                                    aria-label="Add"
+                                >
+                                    <AutoRenew />
+                                </Fab>
+                            </Tooltip>
+                        </div>
+                    }
                 </div>
                 <div className={classes.keywordsWrapper}>
                     {

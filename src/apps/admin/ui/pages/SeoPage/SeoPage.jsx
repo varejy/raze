@@ -64,7 +64,8 @@ const materialStyles = () => ({
     },
     card: {
         maxWidth: '345px',
-        border: '1px solid transparent'
+        border: '1px solid transparent',
+        cursor: 'pointer'
     },
     cardLink: {
         textDecoration: 'none',
@@ -125,8 +126,9 @@ class SeoPage extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        nextProps.getAllSeo();
-        this.setTips(nextProps);
+        if (this.props.products !== nextProps.products) {
+            this.setTips(nextProps);
+        }
     }
 
     componentDidMount () {
@@ -173,7 +175,6 @@ class SeoPage extends Component {
     setTips = (props = this.props) => {
         const { selectedProduct } = this.state;
         const { products } = props;
-
         const newTips = products
             .map(product => {
                 return {
@@ -196,7 +197,7 @@ class SeoPage extends Component {
                 <div className={classes.headerContainer}>
                     <Typography variant='h6' id='seoTitle'>SEO</Typography>
                 </div>
-                <SeoTabs pages={PAGES} option='seo'/>
+                <SeoTabs pages={PAGES} option='staticSeo'/>
             </Paper>
         </div>;
     };

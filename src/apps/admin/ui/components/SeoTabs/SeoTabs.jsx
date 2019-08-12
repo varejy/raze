@@ -35,16 +35,9 @@ class SeoTabs extends Component {
         super(props);
 
         this.state = {
-            panel: this.setDefault()
+            panel: {}
         };
     }
-
-    setDefault = () => {
-        let defaultPanel = {};
-        this.props.pages.map((page, i) => { defaultPanel[`panel${i}`] = false; });
-
-        return defaultPanel;
-    };
 
     handleChange = panelClicked => () => {
         this.setState({ panel: {
