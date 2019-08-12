@@ -112,7 +112,9 @@ const materialStyles = theme => ({
     },
     card: {
         maxWidth: '345px',
-        border: '1px solid transparent'
+        border: '1px solid transparent',
+        cursor: 'pointer',
+        paddingBottom: '16px'
     },
     cardLink: {
         textDecoration: 'none',
