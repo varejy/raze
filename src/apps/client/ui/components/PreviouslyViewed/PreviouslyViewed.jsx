@@ -45,8 +45,15 @@ class PreviouslyViewed extends Component {
     maxSlide = this.state.slideSetsAmount;
     maxLeft = this.maxSlide * this.state.containerWidth;
 
-    componentDidMount () {
+    componentWillMount () {
+        const { activeSlide, containerWidth } = this.state;
+
         this.setSlides(this.props)();
+        this.maxSlide = this.state.slideSetsAmount;
+        this.maxLeft = this.maxSlide * containerWidth;
+        this.setState({
+            sliderLeft: activeSlide * containerWidth
+        });
     }
 
     componentWillReceiveProps (nextProps) {
@@ -54,7 +61,7 @@ class PreviouslyViewed extends Component {
             const { activeSlide, containerWidth } = this.state;
 
             this.setSlides(nextProps)();
-
+            this.maxSlide = this.state.slideSetsAmount;
             this.maxLeft = this.maxSlide * containerWidth;
             this.setState({
                 sliderLeft: activeSlide * containerWidth
@@ -63,8 +70,7 @@ class PreviouslyViewed extends Component {
     }
 
     setSlides = (props) => () => {
-        const { viewed } = props;
-        const { mediaWidth } = props;
+        const { viewed, mediaWidth } = props;
         const smallSizeSlideSets = viewed.length - 1;
         const mediumSizeSlideSets = viewed.length > 2 ? 1 : 0;
         const bigSizeSlideSets = viewed.length > 4 ? 1 : 0;
