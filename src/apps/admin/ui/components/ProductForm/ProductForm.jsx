@@ -48,6 +48,9 @@ import propEq from '@tinkoff/utils/object/propEq';
 import trim from '@tinkoff/utils/string/trim';
 
 import arrayMove from '../../../utils/arrayMove';
+import metaDescriptionDefaultGenerate from '../../../utils/metaDescriptionDefaultGenerate';
+import metaTitleDefaultGenerate from '../../../utils/metaTitleDefaultGenerate';
+import keywordsDefaultGenerate from '../../../utils/keywordsDefaultGenerate';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import Chip from '@material-ui/core/Chip';
@@ -303,12 +306,8 @@ class ProductForm extends Component {
 
     handleDefaultMetaAdd = (option) => () => {
         const { product } = this.state;
-        const productName = trim(product.name);
-        const productCompany = trim(product.company);
-        const TITLE_DEFAULT = `${productCompany} ${productName}`;
-        const DESCRIPTION_DEFAULT =
-            `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${!product.discountPrice.toLocaleString('ru')
-                ? product.price.toLocaleString('ru') : product.discountPrice.toLocaleString('ru')} грн.`;
+        const TITLE_DEFAULT = metaTitleDefaultGenerate('product', product);
+        const DESCRIPTION_DEFAULT = metaDescriptionDefaultGenerate('product', product);
 
         this.handleChange(option);
         this.setState({
@@ -447,10 +446,7 @@ class ProductForm extends Component {
 
     handleDefaultKeywordsAdd = () => {
         const { product, category } = this.state;
-        const productName = trim(product.name);
-        const productCompany = trim(product.company);
-        const productCategory = trim(category.name);
-        const KEYWORDS_DEFAULT = `RAZE, ${productCategory}, ${productCompany}, ${productName}`;
+        const KEYWORDS_DEFAULT = keywordsDefaultGenerate('product', product, category.name);
 
         this.setState({
             product: {
