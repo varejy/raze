@@ -103,6 +103,8 @@ class MetaForm extends Component {
             ...pick(PRODUCTS_VALUES, product)
         };
 
+        this.initialStaticSeo = this.getStaticSeoData(this.props);
+
         this.state = {
             staticSeo: option !== 'staticSeo' ? {} : this.getStaticSeoData(this.props),
             keywordsInput: '',
@@ -294,20 +296,21 @@ class MetaForm extends Component {
         this.props.search(searchText);
     };
 
-    checkMetaDataChange = (option) => () => {
+    checkMetaDataChange = (option) => {
         const META = ['metaTitle', 'metaDescription', 'keywords'];
-        const staticSeo = this.getStaticSeoData(this.props);
         let isMetaDataChanged = false;
 
-        for (let i = 0; i < META.length; i++) {
-            if (option !== 'staticSeo' && this.props[option][META[i]] !== this.state[option][META[i]]) {
-                isMetaDataChanged = true;
-                break;
-            } else if (option === 'staticSeo' && staticSeo[META[i]] !== this.state.staticSeo[META[i]]) {
-                isMetaDataChanged = true;
-                break;
+        META.forEach((meta) => {
+            if (option !== 'staticSeo') {
+                if (this.props[option][meta] !== this.state[option][meta]) {
+                    isMetaDataChanged = true;
+                }
+            } else {
+                if (this.initialStaticSeo[meta] !== this.state.staticSeo[meta]) {
+                    isMetaDataChanged = true;
+                }
             }
-        }
+        });
 
         return isMetaDataChanged;
     };
@@ -334,7 +337,7 @@ class MetaForm extends Component {
         const { classes, option } = this.props;
         const { keywordsInput, product, category } = this.state;
         const dataAvailable = (product.name && product.company && product.price) || category.name;
-        const isMetaDataChanged = this.checkMetaDataChange(option)();
+        const isMetaDataChanged = this.checkMetaDataChange(option);
 
         return <div className={classes.metaContainer}>
             <form onSubmit={this.handleSubmit}>
