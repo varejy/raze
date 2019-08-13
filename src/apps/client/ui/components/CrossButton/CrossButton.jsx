@@ -12,13 +12,20 @@ export default function CrossButton (props) {
         className={classNames(styles.buttonDefault, styles.button)}
         onClick={props.onClick}
     >
-        <span className={classNames(styles.line, styles.lineTop)}/>
-        <span className={classNames(styles.line, styles.lineBottom)}/>
+        <span className={classNames(styles.line, styles.lineTop, {
+            [styles.lineBlack]: props.color === 'black',
+            [styles.lineWhite]: props.color === 'white'
+        })}/>
+        <span className={classNames(styles.line, styles.lineBottom, {
+            [styles.lineBlack]: props.color === 'black',
+            [styles.lineWhite]: props.color === 'white'
+        })}/>
     </button>;
 }
 
 CrossButton.propTypes = {
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    color: PropTypes.string
 };
 
 CrossButton.defaultProps = {

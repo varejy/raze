@@ -626,7 +626,7 @@ class ProductForm extends Component {
                 features: newFeatures
             }
         });
-    }
+    };
 
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { product } = this.state;
