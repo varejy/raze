@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import CrossButton from '../CrossButton/CrossButton';
 import Scroll from '../Scroll/Scroll';
 
 import { connect } from 'react-redux';
@@ -71,11 +70,7 @@ class Popup extends Component {
     };
 
     renderPopup = content => <div className={styles.popup}>
-        <div className={styles.coverage} onClick={this.props.closePopup}>
-            <div className={styles.cross}>
-                <CrossButton />
-            </div>
-        </div>
+        <div className={styles.coverage} onClick={this.props.closePopup}/>
         <div className={styles.container}>
             <Scroll>
                 { content }

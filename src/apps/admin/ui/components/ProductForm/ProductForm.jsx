@@ -608,17 +608,17 @@ class ProductForm extends Component {
         const { product } = this.state;
 
         const newFeatures = reduce((acc, filter, i) => {
-            const value = propOr('value', '', product.filters[i])
-            const id = findIndex(propEq('prop', filter.name), product.features)
+            const value = propOr('value', '', product.filters[i]);
+            const id = findIndex(propEq('prop', filter.name), product.features);
 
             if (id !== -1) {
                 acc[id] = { prop: filter.name, value };
             } else {
-                return [...acc, { prop: filter.name, value }]
+                return [...acc, { prop: filter.name, value }];
             }
 
             return acc;
-        }, product.features, this.category.filters)
+        }, product.features, this.category.filters);
 
         this.setState({
             product: {
@@ -626,7 +626,7 @@ class ProductForm extends Component {
                 features: newFeatures
             }
         });
-    }
+    };
 
     onDragEnd = ({ oldIndex, newIndex }) => {
         const { product } = this.state;

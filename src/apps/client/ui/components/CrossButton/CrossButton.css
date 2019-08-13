@@ -11,7 +11,6 @@
     display: block;
     width: 25px;
     height: 3px;
-    background-color: #ffffff;
 }
 
 .lineTop {
@@ -22,4 +21,12 @@
 .lineBottom {
     transform: rotate(-45deg);
     transform-origin: 30% 15%;
+}
+
+.lineWhite{
+    background-color: #ffffff;
+}
+
+.lineBlack{
+    background-color: #000000;
 }

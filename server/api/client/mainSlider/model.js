@@ -7,7 +7,9 @@ const mainSlider = new Schema({
     slides: [{
         path: { type: String, required: true },
         title: { type: String },
-        description: { type: String }
+        description: { type: String },
+        url: { type: String },
+        target: { type: Boolean }
     }]
 });
 

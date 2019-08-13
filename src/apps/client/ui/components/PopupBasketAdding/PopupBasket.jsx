@@ -12,6 +12,7 @@ import closePopup from '../../../actions/closePopup';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
 import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
+import CrossButton from '../CrossButton/CrossButton';
 
 const mapStateToProps = ({ savedProducts }) => {
     return {
@@ -118,6 +119,9 @@ class PopupBasket extends Component {
 
         return <section>
             <div className={styles.root}>
+                <div className={styles.cross} onClick={this.handleClosePopup}>
+                    <CrossButton color='black'/>
+                </div>
                 <div className={styles.itemsWrapper}>
                     <div>
                         {productCount > 0 && <div className={styles.item}>
