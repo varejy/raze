@@ -7,7 +7,7 @@ const Product = new Schema({
     name: { type: String, required: true },
     company: { type: String, required: true },
     price: { type: Number, required: true },
-    discountPrice: { type: Number },
+    discountPrice: { type: String },
     discountTime: { type: String },
     description: { type: String, required: true },
     features: [{

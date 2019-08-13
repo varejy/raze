@@ -104,24 +104,23 @@ class ProductPage extends Component {
         basket: []
     };
 
-    constructor (...args) {
+    constructor(...args) {
         super(...args);
 
-        this.state = this.getNewState();
+        const { product } = this.getNewState();
+        const discountTime = product && product.discountTime;
+
+        this.state = {
+            ...this.getNewState(),
+            discountTimer: this.getRamainingTimer(discountTime)
+        }
 
         this.setIntervalTimer = noop;
     }
 
-    componentWillMount = () => {
-        const { product } = this.state;
-        const discountTime = product && product.discountTime;
-
-        this.checkRamainingTime(discountTime);
-    }
-
     componentDidMount () {
         this.getProduct();
-        this.getDiscountTime();
+        this.setDiscountTimer();
     }
 
     componentWillReceiveProps (nextProps) {
@@ -159,9 +158,11 @@ class ProductPage extends Component {
                     const { product } = this.state;
                     const discountTime = product && product.discountTime;
 
-                    this.checkRamainingTime(discountTime);
-                    this.setState({ loading: false });
-                    this.getDiscountTime();
+                    this.setState({
+                        loading: false,
+                        discountTimer: this.getRamainingTimer(discountTime)
+                    });
+                    this.setDiscountTimer();
                 });
         } else {
             const newViewed = this.getViewed();
@@ -256,27 +257,26 @@ class ProductPage extends Component {
         return !!find(likedProduct => product.id === likedProduct.id, liked);
     };
 
-    checkRamainingTime = (discountTime = '', timer = noop) => {
-        if (!!getRemainingTime(discountTime).length === true) {
-            const split = getRemainingTime(discountTime).split(':');
-            this.setState({
-                discountTimer: `${split[0]}д. ${split[1]}:${split[2]}:${split[3]}`
-            });
-        }
-        if (!!getRemainingTime(discountTime).length === false) {
+    getRamainingTimer = (discountTime = '', timer = noop) => {
+        const remainingTime = getRemainingTime(discountTime);
+        if (!!remainingTime.length) {
+            const split = remainingTime.split(':');
+
+            return `${split[0]}д. ${split[1]}:${split[2]}:${split[3]}`
+        } else {
             timer && clearInterval(timer);
-            this.setState({
-                discountTimer: ''
-            });
+            return ''
         }
     }
 
-    getDiscountTime = () => {
+    setDiscountTimer = () => {
         const { product } = this.state;
 
         this.setIntervalTimer = product && product.discountTime && setInterval(() => {
             const { product: { discountTime } } = this.state;
-            this.checkRamainingTime(discountTime, this.setIntervalTimer);
+            this.setState({
+                discountTimer: this.getRamainingTimer(discountTime, this.setIntervalTimer)
+            });
         }, 1000);
     }
 

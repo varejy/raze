@@ -43,13 +43,12 @@ import compose from '@tinkoff/utils/function/compose';
 import keys from '@tinkoff/utils/object/keys';
 import map from '@tinkoff/utils/array/map';
 import pickBy from '@tinkoff/utils/object/pickBy';
+import empty from '@tinkoff/utils/is/empty';
 import propOr from '@tinkoff/utils/object/propOr';
 import propEq from '@tinkoff/utils/object/propEq';
 import trim from '@tinkoff/utils/string/trim';
 
 import arrayMove from '../../../utils/arrayMove';
-
-import format from 'date-fns/format';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import Chip from '@material-ui/core/Chip';
@@ -286,6 +285,7 @@ class ProductForm extends Component {
             initialAvatarFile: product.avatar,
             initialFiles: product.files,
             removedFiles: [],
+            discountTimeVisible: empty(product) ? !!newProduct.discountTime.length : !!product.discountTime.length,
             category: category,
             keywordsInput: ''
         };
@@ -639,20 +639,18 @@ class ProductForm extends Component {
     };
 
     handleDiscountTimeVisibleChange = () => {
-        const { product } = this.state;
+        const { product, discountTimeVisible} = this.state;
 
-        !product.discountTime.length
+        discountTimeVisible
             ? this.setState({
                 product: {
                     ...product,
-                    discountTime: '-'
-                }
+                    discountTime: ''
+                },
+                discountTimeVisible: !discountTimeVisible
             })
             : this.setState({
-                product: {
-                    ...product,
-                    discountTime: ''
-                }
+                discountTimeVisible: !discountTimeVisible
             });
     }
 
@@ -711,10 +709,10 @@ class ProductForm extends Component {
 
     render () {
         const { classes } = this.props;
-        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile, keywordsInput } = this.state;
+        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile, keywordsInput, discountTimeVisible } = this.state;
         const titleFiltersLength = !this.category.filters.length && 'В этой категории еще нет фильтров';
         const dataAvailable = (product.name && product.company && product.price);
-
+        
         if (loading) {
             return <div className={classes.loader}>
                 <CircularProgress />
@@ -785,17 +783,16 @@ class ProductForm extends Component {
                 <FormControlLabel
                     control={
                         <Checkbox
-                            checked={!!product.discountTime.length}
+                            checked={discountTimeVisible}
                             onChange={this.handleDiscountTimeVisibleChange}
                             color='primary'
                         />
                     }
                     label='Временная скидка'
                     className={classes.discountTimeCheckbox}
-                    disabled={hiddenCheckboxIsDisables}
                 />
                 {
-                    !!product.discountTime.length && <TextField
+                    discountTimeVisible && <TextField
                         id="datetime-local"
                         label="Акция действует до"
                         type="datetime-local"
