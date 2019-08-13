@@ -23,9 +23,8 @@ import prop from '@tinkoff/utils/object/prop';
 import search from '../../../services/search';
 import editCategory from '../../../services/editCategory';
 import AutoRenew from '@material-ui/icons/AutorenewRounded';
-import metaDescriptionDefaultGenerate from '../../../utils/metaDescriptionDefaultGenerate';
-import metaTitleDefaultGenerate from '../../../utils/metaTitleDefaultGenerate';
-import keywordsDefaultGenerate from '../../../utils/keywordsDefaultGenerate';
+import { getProductMetaTitleDefault, getProductMetaDescriptionDefault, getProductKeywordsDefault } from '../../../utils/defaultMetaProductGenerate';
+import { getCategoryMetaTitleDefault, getCategoryMetaDescriptionDefault, getCategoryKeywordsDefault } from '../../../utils/defaultMetaCategoryGenerate';
 
 const GREY = '#e0e0e0';
 const materialStyles = () => ({
@@ -192,7 +191,9 @@ class MetaForm extends Component {
         const { categories } = this.props;
         const productCategory = find(category => category.id === product.categoryId, categories);
         const productCategoryName = productCategory ? productCategory.name : '';
-        const KEYWORDS_DEFAULT = keywordsDefaultGenerate(option, option === 'product' ? product : category, productCategoryName);
+        const KEYWORDS_DEFAULT = option === 'product'
+            ? getProductKeywordsDefault(product, productCategoryName)
+            : getCategoryKeywordsDefault(category);
 
         this.setState({
             [option]: {
@@ -205,8 +206,12 @@ class MetaForm extends Component {
 
     handleDefaultMetaAdd = (meta, option) => () => {
         const { product, category } = this.state;
-        const TITLE_DEFAULT = metaTitleDefaultGenerate(option, option === 'product' ? product : category);
-        const DESCRIPTION_DEFAULT = metaDescriptionDefaultGenerate(option, option === 'product' ? product : category);
+        const TITLE_DEFAULT = option === 'product'
+            ? getProductMetaTitleDefault(product)
+            : getCategoryMetaTitleDefault(category);
+        const DESCRIPTION_DEFAULT = option === 'product'
+            ? getProductMetaDescriptionDefault(product)
+            : getCategoryMetaDescriptionDefault(category);
 
         this.setState({
             [option]: {

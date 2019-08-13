@@ -19,9 +19,7 @@ import prop from '@tinkoff/utils/object/prop';
 import pick from '@tinkoff/utils/object/pick';
 import trim from '@tinkoff/utils/string/trim';
 
-import metaDescriptionDefaultGenerate from '../../../utils/metaDescriptionDefaultGenerate';
-import metaTitleDefaultGenerate from '../../../utils/metaTitleDefaultGenerate';
-import keywordsDefaultGenerate from '../../../utils/keywordsDefaultGenerate';
+import { getCategoryMetaTitleDefault, getCategoryMetaDescriptionDefault, getCategoryKeywordsDefault } from '../../../utils/defaultMetaCategoryGenerate';
 
 import Filters from '../Filters/Filters';
 import Divider from '@material-ui/core/Divider';
@@ -101,8 +99,8 @@ class CategoryForm extends Component {
 
     handleDefaultMetaAdd = (option) => () => {
         const { category } = this.state;
-        const TITLE_DEFAULT = metaTitleDefaultGenerate('category', category);
-        const DESCRIPTION_DEFAULT = metaDescriptionDefaultGenerate('category', category);
+        const TITLE_DEFAULT = getCategoryMetaTitleDefault(category);
+        const DESCRIPTION_DEFAULT = getCategoryMetaDescriptionDefault(category);
 
         this.setState({
             category: {
@@ -147,7 +145,7 @@ class CategoryForm extends Component {
 
     handleDefaultKeywordsAdd = () => {
         const { category } = this.state;
-        const KEYWORDS_DEFAULT = keywordsDefaultGenerate('category', category);
+        const KEYWORDS_DEFAULT = getCategoryKeywordsDefault(category);
 
         this.setState({
             category: {

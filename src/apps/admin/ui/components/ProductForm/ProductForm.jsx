@@ -48,9 +48,7 @@ import propEq from '@tinkoff/utils/object/propEq';
 import trim from '@tinkoff/utils/string/trim';
 
 import arrayMove from '../../../utils/arrayMove';
-import metaDescriptionDefaultGenerate from '../../../utils/metaDescriptionDefaultGenerate';
-import metaTitleDefaultGenerate from '../../../utils/metaTitleDefaultGenerate';
-import keywordsDefaultGenerate from '../../../utils/keywordsDefaultGenerate';
+import { getProductMetaTitleDefault, getProductMetaDescriptionDefault, getProductKeywordsDefault } from '../../../utils/defaultMetaProductGenerate';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import Chip from '@material-ui/core/Chip';
@@ -306,8 +304,8 @@ class ProductForm extends Component {
 
     handleDefaultMetaAdd = (option) => () => {
         const { product } = this.state;
-        const TITLE_DEFAULT = metaTitleDefaultGenerate('product', product);
-        const DESCRIPTION_DEFAULT = metaDescriptionDefaultGenerate('product', product);
+        const TITLE_DEFAULT = getProductMetaTitleDefault(product);
+        const DESCRIPTION_DEFAULT = getProductMetaDescriptionDefault(product);
 
         this.handleChange(option);
         this.setState({
@@ -446,7 +444,7 @@ class ProductForm extends Component {
 
     handleDefaultKeywordsAdd = () => {
         const { product, category } = this.state;
-        const KEYWORDS_DEFAULT = keywordsDefaultGenerate('product', product, category.name);
+        const KEYWORDS_DEFAULT = getProductKeywordsDefault(product, category.name);
 
         this.setState({
             product: {
