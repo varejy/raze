@@ -10,7 +10,7 @@ import saveProductsViewed from '../../../services/client/saveProductsViewed';
 import setLiked from '../../../actions/setLiked';
 
 import getStarsArray from '../../../utils/getStarsArray';
-import checkingRemainingTime from '../../../utils/checkingRemainingTime';
+import getRemainingTime from '../../../utils/getRemainingTime';
 
 import { Link, withRouter, matchPath } from 'react-router-dom';
 
@@ -108,6 +108,8 @@ class ProductPage extends Component {
         super(...args);
 
         this.state = this.getNewState();
+
+        this.setIntervalTimer = noop;
     }
 
     componentWillMount = () => {
@@ -116,6 +118,7 @@ class ProductPage extends Component {
 
         this.checkRamainingTime(discountTime);
     }
+
     componentDidMount () {
         this.getProduct();
         this.getDiscountTime();
@@ -137,6 +140,10 @@ class ProductPage extends Component {
         if (nextProps.location.pathname !== pathname) {
             this.setState(this.getNewState(nextProps), this.getProduct);
         }
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.setIntervalTimer);
     }
 
     getProduct = () => {
@@ -250,13 +257,13 @@ class ProductPage extends Component {
     };
 
     checkRamainingTime = (discountTime = '', timer = noop) => {
-        if (!!checkingRemainingTime(discountTime).length === true) {
-            const split = checkingRemainingTime(discountTime).split(':');
+        if (!!getRemainingTime(discountTime).length === true) {
+            const split = getRemainingTime(discountTime).split(':');
             this.setState({
                 discountTimer: `${split[0]}д. ${split[1]}:${split[2]}:${split[3]}`
             });
         }
-        if (!!checkingRemainingTime(discountTime).length === false) {
+        if (!!getRemainingTime(discountTime).length === false) {
             timer && clearInterval(timer);
             this.setState({
                 discountTimer: ''
@@ -267,9 +274,9 @@ class ProductPage extends Component {
     getDiscountTime = () => {
         const { product } = this.state;
 
-        const setIntervalTimer = product && product.discountTime && setInterval(() => {
+        this.setIntervalTimer = product && product.discountTime && setInterval(() => {
             const { product: { discountTime } } = this.state;
-            this.checkRamainingTime(discountTime, setIntervalTimer);
+            this.checkRamainingTime(discountTime, this.setIntervalTimer);
         }, 1000);
     }
 
@@ -277,7 +284,6 @@ class ProductPage extends Component {
         const { viewed } = this.props;
         const { loading, product, discountTimer } = this.state;
 
-        // TODO: Сделать страницу Not Found
         if (this.notFoundPage) {
             return <PageNotFound/>;
         }

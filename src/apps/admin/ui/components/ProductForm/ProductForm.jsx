@@ -56,7 +56,7 @@ import Chip from '@material-ui/core/Chip';
 
 const GREY = '#e0e0e0';
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
-    'metaTitle', 'metaDescription', 'discountTime'];
+    'metaTitle', 'metaDescription', 'keywords', 'discountTime'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -661,7 +661,7 @@ class ProductForm extends Component {
         this.setState({
             product: {
                 ...product,
-                discountTime: format(event.target.value, 'YYYY-MM-DDThh:mm')
+                discountTime: event.target.value
             }
         });
     }
@@ -799,7 +799,6 @@ class ProductForm extends Component {
                         id="datetime-local"
                         label="Акция действует до"
                         type="datetime-local"
-                        defaultValue="2017-05-24T10:30"
                         value={product.discountTime}
                         className={classes.dateInput}
                         onChange={this.handleDiscountTimeChange}

@@ -15,6 +15,7 @@ const VALUES = [
     'notAvailable',
     'id',
     'metaTitle',
+    'keywords',
     'metaDescription'
 ];
 

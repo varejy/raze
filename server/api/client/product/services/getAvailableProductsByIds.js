@@ -2,9 +2,10 @@ import { OKEY_STATUS_CODE, SERVER_ERROR_STATUS_CODE } from '../../../../constant
 
 import getProductsByIds from '../queries/getProductsByIds';
 import editProduct from '../queries/editProduct';
-import checkingRemainingTime from '../utils/checkingRemainingTime';
+import getRemainingTime from '../utils/getRemainingTime';
 
 import reduce from '@tinkoff/utils/array/reduce';
+import noop from '@tinkoff/utils/function/noop';
 
 export default function getAvailableProductsByIds (req, res) {
     const ids = req.body;
@@ -16,11 +17,12 @@ export default function getAvailableProductsByIds (req, res) {
                 .sort((prev, next) => next.date - prev.date);
 
             const checkingProductsDiscountTime = reduce((acc, product) => {
-                if (product.discountTime && !checkingRemainingTime(product.discountTime).length) {
+                if (product.discountTime && !getRemainingTime(product.discountTime).length) {
                     product.discountPrice = '';
                     product.discountTime = '';
 
-                    editProduct(product);
+                    editProduct(product)
+                        .then(noop);
                 }
 
                 return [...acc, product];
