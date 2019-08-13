@@ -15,6 +15,7 @@ import ProductPreview from '../ProductPreview/ProductPreview';
 import PopupBasket from '../PopupBasketAdding/PopupBasket';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
+import formatMoney from '../../../utils/formatMoney';
 import saveProductsLiked from '../../../services/client/saveProductsLiked';
 import findIndex from '@tinkoff/utils/array/findIndex';
 import openBasketPopup from '../../../actions/openBasketPopup';
@@ -151,13 +152,13 @@ class Product extends Component {
                     <div className={styles.prices}>
                         {product.discountPrice
                             ? <div className={styles.prices}>
-                                <div className={styles.previousPrice}>{product.price.toLocaleString('ru')} грн</div>
+                                <div className={styles.previousPrice}>{formatMoney(product.price)}</div>
                                 <div
-                                    className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice.toLocaleString('ru')} грн
+                                    className={classNames(styles.price, styles.priceDiscount)}>{formatMoney(product.discountPrice)}
                                 </div>
                             </div>
                             : <div className={styles.prices}>
-                                <div className={styles.price}>{product.price.toLocaleString('ru')} грн</div>
+                                <div className={styles.price}>{formatMoney(product.price)}</div>
                             </div>}
                     </div>
                 </div>
