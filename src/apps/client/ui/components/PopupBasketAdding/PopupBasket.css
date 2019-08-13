@@ -5,6 +5,7 @@
     justify-content: space-around;
     padding: 31px 28px;
     background-color: #fff;
+    position: relative;
 }
 
 .itemsWrapper{
@@ -200,4 +201,17 @@
     line-height: 18px;
     text-decoration: line-through;
     margin-right: 8px;
+}
+
+.cross {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    z-index: 50;
 }
