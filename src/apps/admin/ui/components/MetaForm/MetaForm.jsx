@@ -294,6 +294,24 @@ class MetaForm extends Component {
         this.props.search(searchText);
     };
 
+    checkMetaDataChange = (option) => () => {
+        const META = ['metaTitle', 'metaDescription', 'keywords'];
+        const staticSeo = this.getStaticSeoData(this.props);
+        let isMetaDataChanged = false;
+
+        for (let i = 0; i < META.length; i++) {
+            if (option !== 'staticSeo' && this.props[option][META[i]] !== this.state[option][META[i]]) {
+                isMetaDataChanged = true;
+                break;
+            } else if (option === 'staticSeo' && staticSeo[META[i]] !== this.state.staticSeo[META[i]]) {
+                isMetaDataChanged = true;
+                break;
+            }
+        }
+
+        return isMetaDataChanged;
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -316,6 +334,7 @@ class MetaForm extends Component {
         const { classes, option } = this.props;
         const { keywordsInput, product, category } = this.state;
         const dataAvailable = (product.name && product.company && product.price) || category.name;
+        const isMetaDataChanged = this.checkMetaDataChange(option)();
 
         return <div className={classes.metaContainer}>
             <form onSubmit={this.handleSubmit}>
@@ -431,7 +450,7 @@ class MetaForm extends Component {
                     }
                 </div>
                 <FormControl margin='normal'>
-                    <Button variant='contained' color='primary' type='submit'>
+                    <Button variant='contained' color={isMetaDataChanged ? 'primary' : GREY} type='submit'>
                     Сохранить
                     </Button>
                 </FormControl>
