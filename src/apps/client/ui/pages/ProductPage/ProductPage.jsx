@@ -104,7 +104,7 @@ class ProductPage extends Component {
         basket: []
     };
 
-    constructor(...args) {
+    constructor (...args) {
         super(...args);
 
         const { product } = this.getNewState();
@@ -113,7 +113,7 @@ class ProductPage extends Component {
         this.state = {
             ...this.getNewState(),
             discountTimer: this.getRamainingTimer(discountTime)
-        }
+        };
 
         this.setIntervalTimer = noop;
     }
@@ -141,7 +141,7 @@ class ProductPage extends Component {
         }
     }
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         clearInterval(this.setIntervalTimer);
     }
 
@@ -259,13 +259,13 @@ class ProductPage extends Component {
 
     getRamainingTimer = (discountTime = '', timer = noop) => {
         const remainingTime = getRemainingTime(discountTime);
-        if (!!remainingTime.length) {
+        if (remainingTime.length) {
             const split = remainingTime.split(':');
 
-            return `${split[0]}д. ${split[1]}:${split[2]}:${split[3]}`
+            return `${split[0]}д. ${split[1]}:${split[2]}:${split[3]}`;
         } else {
             timer && clearInterval(timer);
-            return ''
+            return '';
         }
     }
 

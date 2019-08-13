@@ -639,7 +639,7 @@ class ProductForm extends Component {
     };
 
     handleDiscountTimeVisibleChange = () => {
-        const { product, discountTimeVisible} = this.state;
+        const { product, discountTimeVisible } = this.state;
 
         discountTimeVisible
             ? this.setState({
@@ -709,10 +709,20 @@ class ProductForm extends Component {
 
     render () {
         const { classes } = this.props;
-        const { product, loading, categoriesOptions, id, hiddenCheckboxIsDisables, initialFiles, initialAvatarFile, keywordsInput, discountTimeVisible } = this.state;
+        const {
+            product,
+            loading,
+            categoriesOptions,
+            id,
+            hiddenCheckboxIsDisables,
+            initialFiles,
+            initialAvatarFile,
+            keywordsInput,
+            discountTimeVisible
+        } = this.state;
         const titleFiltersLength = !this.category.filters.length && 'В этой категории еще нет фильтров';
         const dataAvailable = (product.name && product.company && product.price);
-        
+
         if (loading) {
             return <div className={classes.loader}>
                 <CircularProgress />
