@@ -14,7 +14,7 @@ const materialStyles = () => ({
     },
     heading: {
         fontSize: '15px',
-        flexBasis: '33.33%',
+        flexBasis: '100%',
         flexShrink: 0
     }
 });

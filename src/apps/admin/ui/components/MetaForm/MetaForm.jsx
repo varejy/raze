@@ -23,6 +23,7 @@ import prop from '@tinkoff/utils/object/prop';
 import search from '../../../services/search';
 import editCategory from '../../../services/editCategory';
 import AutoRenew from '@material-ui/icons/AutorenewRounded';
+import getCategories from '../../../services/getCategories';
 import { getProductMetaTitleDefault, getProductMetaDescriptionDefault, getProductKeywordsDefault } from '../../../utils/defaultMetaProductGenerate';
 import { getCategoryMetaTitleDefault, getCategoryMetaDescriptionDefault, getCategoryKeywordsDefault } from '../../../utils/defaultMetaCategoryGenerate';
 
@@ -70,7 +71,8 @@ const mapDispatchToProps = (dispatch) => ({
     getAllStaticSeo: payload => dispatch(getAllSeo(payload)),
     editProduct: payload => dispatch(editProduct(payload)),
     search: payload => dispatch(search(payload)),
-    editCategory: payload => dispatch(editCategory(payload))
+    editCategory: payload => dispatch(editCategory(payload)),
+    getCategories: payload => dispatch(getCategories(payload))
 });
 
 class MetaForm extends Component {
@@ -86,7 +88,9 @@ class MetaForm extends Component {
         option: PropTypes.string.isRequired,
         editCategory: PropTypes.func.isRequired,
         category: PropTypes.object,
-        categories: PropTypes.array.isRequired
+        categories: PropTypes.array.isRequired,
+        getCategories: PropTypes.func.isRequired,
+        allStaticSeo: PropTypes.array.isRequired
     };
 
     static defaultProps = {
@@ -114,7 +118,8 @@ class MetaForm extends Component {
             product: newProduct,
             id: prop('id', product),
             category: category,
-            categoryId: category.id
+            categoryId: category.id,
+            isDataSubmitted: false
         };
     }
 
@@ -139,8 +144,18 @@ class MetaForm extends Component {
             this.setState({
                 id: prop('id', nextProps.product),
                 product: newProduct,
-                keywordsInput: ''
+                keywordsInput: '',
+                isDataSubmitted: false
             });
+        }
+
+        if (this.props.category || nextProps.category) {
+            this.setState({ isDataSubmitted: false });
+        }
+
+        if (this.props.allStaticSeo !== nextProps.allStaticSeo) {
+            this.initialStaticSeo = this.getStaticSeoData(nextProps);
+            this.setState({ isDataSubmitted: false });
         }
     }
 
@@ -295,21 +310,21 @@ class MetaForm extends Component {
 
     checkMetaDataChange = (option) => {
         const META = ['metaTitle', 'metaDescription', 'keywords'];
-        let isMetaDataChanged = false;
+        let isMetaDataNotChanged = true;
 
         META.forEach((meta) => {
             if (option !== 'staticSeo') {
                 if (this.props[option][meta] !== this.state[option][meta]) {
-                    isMetaDataChanged = true;
+                    isMetaDataNotChanged = false;
                 }
             } else {
                 if (this.initialStaticSeo[meta] !== this.state.staticSeo[meta]) {
-                    isMetaDataChanged = true;
+                    isMetaDataNotChanged = false;
                 }
             }
         });
 
-        return isMetaDataChanged;
+        return isMetaDataNotChanged;
     };
 
     handleSubmit = event => {
@@ -320,21 +335,21 @@ class MetaForm extends Component {
         if (option === 'staticSeo') {
             const seoPayload = this.getSeoPayload(staticSeo);
 
-            this.props.updateStaticSeo(seoPayload).then(this.props.getAllStaticSeo());
+            this.props.updateStaticSeo(seoPayload).then(this.props.getAllStaticSeo()).then(this.setState({ isDataSubmitted: true }));
         } else if (option === 'product') {
             const productPayload = this.getProductPayload(product);
 
-            this.props.editProduct({ ...productPayload, id }).then(this.searchProducts(this.props.searchQuery));
+            this.props.editProduct({ ...productPayload, id }).then(this.searchProducts(this.props.searchQuery)).then(this.setState({ isDataSubmitted: true }));
         } else if (option === 'category') {
-            this.props.editCategory({ ...category, categoryId });
+            this.props.editCategory({ ...category, categoryId }).then(this.props.getCategories()).then(this.setState({ isDataSubmitted: true }));
         }
     };
 
     render () {
         const { classes, option } = this.props;
-        const { keywordsInput, product, category } = this.state;
+        const { keywordsInput, product, category, isDataSubmitted } = this.state;
         const dataAvailable = (product.name && product.company && product.price) || category.name;
-        const isMetaDataChanged = this.checkMetaDataChange(option);
+        const isMetaDataChanged = this.checkMetaDataChange(option) || isDataSubmitted;
 
         return <div className={classes.metaContainer}>
             <form onSubmit={this.handleSubmit}>
@@ -450,7 +465,7 @@ class MetaForm extends Component {
                     }
                 </div>
                 <FormControl margin='normal'>
-                    <Button variant='contained' color={isMetaDataChanged ? 'primary' : GREY} type='submit'>
+                    <Button variant='contained' color={!isMetaDataChanged ? 'primary' : GREY} type='submit'>
                     Сохранить
                     </Button>
                 </FormControl>
