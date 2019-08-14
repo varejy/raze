@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 
 import find from '@tinkoff/utils/array/find';
+import formatMoney from '../../../utils/formatMoney';
 import Draggable from '../Draggable/Draggable';
 
 const PRODUCT_CARD_WIDTH = 370;
@@ -198,7 +199,16 @@ class PreviouslyViewed extends Component {
                                             <div className={styles.itemInfoContainer}>
                                                 <div className={styles.viewedProductName}>{product.name}</div>
                                                 <div className={styles.viewedCategoryName}>{product.company}</div>
-                                                <div className={styles.itemPrice}>{product.price.toLocaleString('ru')} UAH</div>
+                                                {
+                                                    product.discountPrice
+                                                        ? <div className={styles.prices}>
+                                                            <h2 className={styles.previousPrice}>{formatMoney(product.price)}</h2>
+                                                            <h2 className={classNames(styles.itemPrice, styles.priceDiscount)}>
+                                                                {formatMoney(product.discountPrice)}
+                                                            </h2>
+                                                        </div>
+                                                        : <h2 className={styles.itemPrice}>{formatMoney(product.price)}</h2>
+                                                }
                                             </div>
                                         </div>
                                     </div>

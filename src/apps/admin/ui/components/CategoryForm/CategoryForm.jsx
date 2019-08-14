@@ -19,6 +19,8 @@ import prop from '@tinkoff/utils/object/prop';
 import pick from '@tinkoff/utils/object/pick';
 import trim from '@tinkoff/utils/string/trim';
 
+import { getCategoryMetaTitleDefault, getCategoryMetaDescriptionDefault, getCategoryKeywordsDefault } from '../../../utils/defaultMetaCategoryGenerate';
+
 import Filters from '../Filters/Filters';
 import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core';
@@ -97,10 +99,8 @@ class CategoryForm extends Component {
 
     handleDefaultMetaAdd = (option) => () => {
         const { category } = this.state;
-        const categoryName = trim(category.name);
-        const TITLE_DEFAULT = `${categoryName}`;
-        const DESCRIPTION_DEFAULT = `Купите ${categoryName.toLowerCase()} в интернет-магазине «Raze». Качественные ${
-            categoryName.toLowerCase()} от лучших брендов в Украине по низким ценам.`;
+        const TITLE_DEFAULT = getCategoryMetaTitleDefault(category);
+        const DESCRIPTION_DEFAULT = getCategoryMetaDescriptionDefault(category);
 
         this.setState({
             category: {
@@ -145,8 +145,7 @@ class CategoryForm extends Component {
 
     handleDefaultKeywordsAdd = () => {
         const { category } = this.state;
-        const productCategory = trim(category.name);
-        const KEYWORDS_DEFAULT = `RAZE, ${productCategory}`;
+        const KEYWORDS_DEFAULT = getCategoryKeywordsDefault(category);
 
         this.setState({
             category: {

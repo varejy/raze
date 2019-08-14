@@ -112,7 +112,9 @@ const materialStyles = theme => ({
     },
     card: {
         maxWidth: '345px',
-        border: '1px solid transparent'
+        border: '1px solid transparent',
+        cursor: 'pointer',
+        paddingBottom: '16px'
     },
     cardLink: {
         textDecoration: 'none',
@@ -228,12 +230,6 @@ class CommentsPage extends Component {
             editCommentForm: true,
             editableComment: comment
         });
-    }
-
-    handleDelete = value => () => {
-        this.setState({
-            valueForDelete: value
-        });
     };
 
     handleDelete = value => () => {
@@ -261,7 +257,7 @@ class CommentsPage extends Component {
 
     searchProducts = searchText => {
         this.props.search(searchText);
-    }
+    };
 
     setTips = (props = this.props) => {
         const { selectedProduct } = this.state;
@@ -285,7 +281,7 @@ class CommentsPage extends Component {
             tips: newTips,
             selectedProduct: newSelectedProduct
         });
-    }
+    };
 
     handleSearchChange = event => {
         const searchTxt = event.target.value;
@@ -344,7 +340,7 @@ class CommentsPage extends Component {
                     notVerifiedComments: this.filteredCommentsNotVerified()
                 })
             );
-    }
+    };
 
     handleChangePage = (event, page) => {
         this.setState({ page });
@@ -360,13 +356,13 @@ class CommentsPage extends Component {
         this.setState({
             selectedProduct: product
         });
-    }
+    };
 
     handleTableChange = event => () => {
         this.setState({
             tabsValue: event
         });
-    }
+    };
 
     renderTableNotVerified = (dir) => {
         const { classes } = this.props;
@@ -444,7 +440,7 @@ class CommentsPage extends Component {
                 onChangeRowsPerPage={this.handleChangeRowsPerPage}
             />
         </Paper>;
-    }
+    };
 
     renderSearchPage = () => {
         const { classes } = this.props;
@@ -559,7 +555,7 @@ class CommentsPage extends Component {
                 </Paper>
             }
         </div>;
-    }
+    };
 
     render () {
         const { classes } = this.props;
@@ -581,7 +577,7 @@ class CommentsPage extends Component {
                     variant="fullWidth"
                 >
                     <Tab onClick={this.handleTableChange(0)} label="Неверифицированные комментарии" />
-                    <Tab onClick={this.handleTableChange(1)} label="Поиск" />
+                    <Tab onClick={this.handleTableChange(1)} label="Поиск по товарам" />
                 </Tabs>
             </AppBar>
             <SwipeableViews

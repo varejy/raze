@@ -27,6 +27,7 @@ import prop from '@tinkoff/utils/object/prop';
 import propEq from '@tinkoff/utils/object/propEq';
 import find from '@tinkoff/utils/array/find';
 import format from 'date-fns/format';
+import formatMoney from '../../../../client/utils/formatMoney';
 
 const mapStateToProps = ({ application }) => {
     return {
@@ -190,7 +191,7 @@ class OrderForm extends Component {
                                 return <TableRow key={i}>
                                     <TableCell colSpan={1}>{product.name}</TableCell>
                                     <TableCell colSpan={3} align="center">{product.count}</TableCell>
-                                    <TableCell colSpan={1} align="right">{product.price.toLocaleString('ru')}</TableCell>
+                                    <TableCell colSpan={1} align="right">{formatMoney(product.price)}</TableCell>
                                 </TableRow>;
                             })
                         }

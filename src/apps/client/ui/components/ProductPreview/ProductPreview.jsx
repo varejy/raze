@@ -12,6 +12,7 @@ import PopupBasket from '../PopupBasketAdding/PopupBasket';
 import openPopup from '../../../actions/openPopup';
 import closePopup from '../../../actions/closePopup';
 import openBasketPopup from '../../../actions/openBasketPopup';
+import CrossButton from '../CrossButton/CrossButton';
 
 const SLIDER_IS_FULL_SCREEN_DEVICE_WIDTH = 720;
 const PREVIEW_WIDTH = 700;
@@ -122,6 +123,10 @@ class ProductPreview extends Component {
         this.props.openBasketPopup();
     };
 
+    handleClosePopup = () => {
+        this.props.closePopup();
+    };
+
     render () {
         const { product, media } = this.props;
         const { slidesQuantity, leftPosition } = this.state;
@@ -130,6 +135,9 @@ class ProductPreview extends Component {
         const inBasket = this.isInBasket();
 
         return <div className={styles.productPreviewContainer}>
+            <div className={styles.cross} onClick={this.handleClosePopup}>
+                <CrossButton color='white'/>
+            </div>
             <div className={styles.productPreview}>
                 <div className={styles.productPhotoContainer}>
                     <div className={styles.slides} style={{ left: `-${leftPosition.toString()}px` }}>
