@@ -12,6 +12,7 @@ import { Link, withRouter } from 'react-router-dom';
 import find from '@tinkoff/utils/array/find';
 import Draggable from '../Draggable/Draggable';
 
+const PRODUCT_CARD_WIDTH = 370;
 const PROCESS_SWIPE_STATUS = 'process';
 const END_SWIPE_STATUS = 'end';
 const IGNORE_SWIPE_DISTANCE = 50;
@@ -46,10 +47,10 @@ class PreviouslyViewed extends Component {
     maxLeft = this.maxSlide * this.state.containerWidth;
 
     componentWillMount () {
-        const { activeSlide, containerWidth } = this.state;
+        const { activeSlide, containerWidth, slideSetsAmount } = this.state;
 
-        this.setSlides(this.props)();
-        this.maxSlide = this.state.slideSetsAmount;
+        this.setSlides(this.props);
+        this.maxSlide = slideSetsAmount;
         this.maxLeft = this.maxSlide * containerWidth;
         this.setState({
             sliderLeft: activeSlide * containerWidth
@@ -60,7 +61,7 @@ class PreviouslyViewed extends Component {
         if (nextProps.viewed !== this.props.viewed || nextProps.mediaWidth !== this.props.mediaWidth) {
             const { activeSlide, containerWidth } = this.state;
 
-            this.setSlides(nextProps)();
+            this.setSlides(nextProps);
             this.maxSlide = this.state.slideSetsAmount;
             this.maxLeft = this.maxSlide * containerWidth;
             this.setState({
@@ -69,7 +70,7 @@ class PreviouslyViewed extends Component {
         }
     }
 
-    setSlides = (props) => () => {
+    setSlides = (props) => {
         const { viewed, mediaWidth } = props;
         const smallSizeSlideSets = viewed.length - 1;
         const mediumSizeSlideSets = viewed.length > 2 ? 1 : 0;
@@ -115,19 +116,25 @@ class PreviouslyViewed extends Component {
     };
 
     handleDragEnd = ({ delta: { client: { x: deltaX } } }) => {
-        const { activeSlide, containerWidth, slideSetsAmount } = this.state;
+        const { activeSlide, containerWidth, slideSetsAmount, maxSlides } = this.state;
+        const extraSlides = this.props.viewed.length % maxSlides;
+        const twoSlidesMove = extraSlides ? PRODUCT_CARD_WIDTH : 0;
+        const threeSlidesMove = extraSlides === 2 ? PRODUCT_CARD_WIDTH : extraSlides === 1 ? -PRODUCT_CARD_WIDTH : 0;
+        const move = maxSlides === 3 ? threeSlidesMove : maxSlides === 2 ? twoSlidesMove : 0;
         const newActiveSlideIndex = deltaX > 0 ? activeSlide - 1 : activeSlide + 1;
 
         if (Math.abs(deltaX) < IGNORE_SWIPE_DISTANCE || newActiveSlideIndex === -1 || newActiveSlideIndex === (slideSetsAmount + 1)) {
             return this.setState({
-                sliderLeft: activeSlide * containerWidth
+                sliderLeft: activeSlide * containerWidth - move
             });
         }
 
         this.startLeft = null;
         this.swipeStatus = END_SWIPE_STATUS;
         this.setState({
-            sliderLeft: newActiveSlideIndex * containerWidth,
+            sliderLeft: newActiveSlideIndex === slideSetsAmount
+                ? newActiveSlideIndex * containerWidth - move
+                : newActiveSlideIndex * containerWidth,
             activeSlide: newActiveSlideIndex
         }, () => {
             this.swipeStatus = null;
@@ -135,17 +142,22 @@ class PreviouslyViewed extends Component {
     };
 
     handleArrowClick = (arrowType) => () => {
-        const { containerWidth, sliderLeft, activeSlide } = this.state;
+        const { containerWidth, sliderLeft, activeSlide, maxSlides } = this.state;
+        const extraSlides = this.props.viewed.length % maxSlides;
+        const twoSlidesMove = extraSlides ? containerWidth - PRODUCT_CARD_WIDTH : containerWidth;
+        const threeSlidesMove = extraSlides === 2 ? containerWidth - PRODUCT_CARD_WIDTH
+            : extraSlides === 1 ? containerWidth - PRODUCT_CARD_WIDTH * 2 : containerWidth;
+        const move = maxSlides === 3 ? threeSlidesMove : maxSlides === 2 ? twoSlidesMove : containerWidth;
 
         if (arrowType === 'left') {
             this.setState({
                 activeSlide: activeSlide - 1,
-                sliderLeft: sliderLeft - containerWidth
+                sliderLeft: sliderLeft - move
             });
         } else {
             this.setState({
                 activeSlide: activeSlide + 1,
-                sliderLeft: sliderLeft + containerWidth
+                sliderLeft: sliderLeft + move
             });
         }
     };
@@ -159,6 +171,11 @@ class PreviouslyViewed extends Component {
     render () {
         const { viewed } = this.props;
         const { sliderLeft, containerWidth, maxSlides, slideSetsAmount } = this.state;
+        const extraSlides = viewed.length % maxSlides;
+        const twoSlidesMove = extraSlides ? PRODUCT_CARD_WIDTH : 0;
+        const threeSlidesMove = extraSlides === 2 ? PRODUCT_CARD_WIDTH : extraSlides === 1 ? -PRODUCT_CARD_WIDTH : 0;
+        const move = maxSlides === 3 ? threeSlidesMove : maxSlides === 2 ? twoSlidesMove : 0;
+        const maxLeftPosition = slideSetsAmount * containerWidth - move;
 
         return <div className={classNames(styles.productPreviouslyViewed, styles.infoContainer)}>
             {!!viewed.length && <div className={styles.bottomHeader}>недавно просматривали</div>}
@@ -201,12 +218,12 @@ class PreviouslyViewed extends Component {
                     </button>
                     <button
                         className={classNames(styles.buttonRight)}
-                        onClick={this.state.sliderLeft !== containerWidth * slideSetsAmount
+                        onClick={this.state.sliderLeft !== maxLeftPosition
                             ? this.handleArrowClick('right')
                             : undefined }
                     >
                         <div
-                            className={this.state.sliderLeft === containerWidth * slideSetsAmount
+                            className={this.state.sliderLeft === maxLeftPosition
                                 ? styles.buttonDisabled
                                 : styles.buttonEnabled }/>
                     </button>
