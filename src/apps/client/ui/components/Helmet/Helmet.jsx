@@ -16,23 +16,6 @@ const STATIC_ROUTES = [
     { id: 'search', path: '/search', exact: true },
     { id: 'order', path: '/order', exact: true }
 ];
-const STATIC_ROUTES_META = {
-    main: {
-        title: 'main',
-        description: 'main',
-        keywords: 'mainKeywords'
-    },
-    search: {
-        title: 'search',
-        description: 'search',
-        keywords: 'searchKeywords'
-    },
-    order: {
-        title: 'order',
-        description: 'order',
-        keywords: 'orderKeywords'
-    }
-};
 const NOT_FOUND_META = {
     title: '404',
     description: '404',
@@ -42,7 +25,8 @@ const NOT_FOUND_META = {
 const mapStateToProps = ({ application }) => {
     return {
         productMap: application.productMap,
-        categories: application.categories
+        categories: application.categories,
+        staticSeo: application.staticSeo
     };
 };
 
@@ -50,13 +34,15 @@ class Helmet extends Component {
     static propTypes = {
         location: PropTypes.object,
         productMap: PropTypes.object,
-        categories: PropTypes.array
+        categories: PropTypes.array,
+        staticSeo: PropTypes.array
     };
 
     static defaultProps = {
         location: {},
         productMap: {},
-        categories: []
+        categories: [],
+        staticSeo: []
     };
 
     constructor (...args) {
@@ -68,14 +54,22 @@ class Helmet extends Component {
     }
 
     getMeta = (props = this.props) => {
-        const { location: { pathname }, productMap, categories } = props;
+        const { location: { pathname }, productMap, categories, staticSeo } = props;
         const meta = propOr('meta', {}, this.state);
         const productPage = matchPath(pathname, { path: PRODUCT_PATH, exact: true });
         const categoryPage = matchPath(pathname, { path: CATEGORY_PATH, exact: true });
         const staticRouteMatch = find(route => matchPath(pathname, route), STATIC_ROUTES);
 
         if (staticRouteMatch) {
-            return STATIC_ROUTES_META[staticRouteMatch.id];
+            const staticSeoPage = find(page => page.name === staticRouteMatch.id, staticSeo);
+
+            if (staticSeoPage) {
+                return {
+                    title: staticSeoPage.metaTitle,
+                    description: staticSeoPage.metaDescription,
+                    keywords: staticSeoPage.keywords
+                };
+            }
         }
 
         if (productPage) {
