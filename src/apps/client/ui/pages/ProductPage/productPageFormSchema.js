@@ -1,7 +1,7 @@
 import FormFieldInput from '../../components/Form/fields/FormFieldInput/FormFieldInput';
 import FormFieldButton from '../../components/Form/fields/FormFieldButton/FormFieldButton';
 
-export default function ({ setting: { buttonDisabled }}) {
+export default function ({ setting: { buttonDisabled } }) {
     return {
         fields: [
             {
@@ -20,7 +20,7 @@ export default function ({ setting: { buttonDisabled }}) {
                 disabled: buttonDisabled,
                 name: 'submit',
                 title: 'отправить'
-            },
+            }
         ]
     };
 }

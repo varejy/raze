@@ -6,7 +6,7 @@ import includes from '@tinkoff/utils/array/includes';
 import noop from '@tinkoff/utils/function/noop';
 
 export default function saveEmail (req, res) {
-    const { email } = req.body
+    const { email } = req.body;
     const { id } = req.query;
 
     getProductById(id)
@@ -18,7 +18,7 @@ export default function saveEmail (req, res) {
             product.emailsForNotifications = [ ...product.emailsForNotifications, email ];
 
             editProduct(product)
-                .then(noop)
+                .then(noop);
 
             res.status(OKEY_STATUS_CODE).end();
         })

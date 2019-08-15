@@ -24,7 +24,6 @@ import PageNotFound from '../../components/PageNotFound/PageNotFound';
 import Form from '../../components/Form/Form';
 import getSchema from './productPageFormSchema';
 
-
 import setBasket from '../../../actions/setBasket';
 import setViewed from '../../../actions/setViewed';
 
@@ -95,7 +94,8 @@ class ProductPage extends Component {
         setLiked: PropTypes.func.isRequired,
         saveProductsLiked: PropTypes.func.isRequired,
         openPopup: PropTypes.func.isRequired,
-        openBasketPopup: PropTypes.func.isRequired
+        openBasketPopup: PropTypes.func.isRequired,
+        saveEmailToProduct: PropTypes.func
     };
 
     static defaultProps = {
@@ -165,7 +165,7 @@ class ProductPage extends Component {
             product: product,
             productId: match.params.id,
             notAvailableVisible: product.notAvailable,
-            disabled: true,
+            disabled: true
         };
     };
 
@@ -237,17 +237,17 @@ class ProductPage extends Component {
     handleNotAvailableInputValueChange = (values, changes) => {
         this.setState({
             disabled: !changes.email.length
-        })
+        });
     }
 
     handleSendEmailToProduct = (values) => {
         const { productId } = this.state;
 
-        this.props.saveEmailToProduct([ productId, values.email ])
+        this.props.saveEmailToProduct([ productId, values.email ]);
 
         this.setState({
             notAvailableVisible: false
-        })
+        });
     }
 
     isLiked = () => {
