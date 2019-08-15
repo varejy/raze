@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import getProductById from '../../../services/client/getProductById';
 import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
 import saveProductsViewed from '../../../services/client/saveProductsViewed';
+import saveEmailToProduct from '../../../services/client/saveEmailToProduct';
 import setLiked from '../../../actions/setLiked';
 
 import getStarsArray from '../../../utils/getStarsArray';
@@ -72,7 +73,8 @@ const mapDispatchToProps = (dispatch) => ({
     setLiked: payload => dispatch(setLiked(payload)),
     saveProductsLiked: payload => dispatch(saveProductsLiked(payload)),
     openPopup: payload => dispatch(openPopup(payload)),
-    openBasketPopup: (payload) => dispatch(openBasketPopup(payload))
+    openBasketPopup: (payload) => dispatch(openBasketPopup(payload)),
+    saveEmailToProduct: (payload) => dispatch(saveEmailToProduct(payload))
 });
 
 class ProductPage extends Component {
@@ -158,7 +160,8 @@ class ProductPage extends Component {
         return {
             loading: !this.notFoundPage && !product,
             product: product,
-            productId: match.params.id
+            productId: match.params.id,
+            notAvailableInputValue: ''
         };
     };
 
@@ -227,6 +230,23 @@ class ProductPage extends Component {
         saveProductsLiked(newLiked.map((product) => product.id));
     };
 
+    handleNotAvailableInputValueChange = event => {
+        this.setState({
+            notAvailableInputValue: event.target.value
+        })
+    }
+
+    handleSendEmailToProduct = (event) => {
+        event.preventDefault();
+        const { productId, notAvailableInputValue } = this.state;
+
+        this.props.saveEmailToProduct([ productId, notAvailableInputValue ])
+
+        this.setState({
+            notAvailableInputValue: ''
+        })
+    }
+
     isLiked = () => {
         const { liked } = this.props;
         const { product } = this.state;
@@ -235,7 +255,9 @@ class ProductPage extends Component {
 
     render () {
         const { viewed } = this.props;
-        const { loading, product } = this.state;
+        const { loading, product, notAvailableInputValue} = this.state;
+
+        console.log(product)
 
         if (this.notFoundPage) {
             return <PageNotFound/>;
@@ -287,7 +309,8 @@ class ProductPage extends Component {
                                     <button className={classNames(
                                         styles.buttonDefault, styles.orderButton, product.notAvailable && styles.orderButtonDisabled
                                     )}
-                                    onClick={this.handleSendProductToBasket}>
+                                    onClick={this.handleSendProductToBasket}
+                                    disabled={product.notAvailable}>
                                     Оформление заказа
                                     </button>
                                 </Link>
@@ -310,16 +333,31 @@ class ProductPage extends Component {
                             </div>
                         </div>
                         {product.notAvailable &&
-                        <div className={styles.notAvailableContent}>
-                            <div className={styles.notAvailableMessage}>
-                                Товара нет в наличии, но Вы
-                                можете оставить е-мейл и мы свяжемся с Вами,
-                                как только он появится
+                            <div className={styles.notAvailableContent}>
+                                <div className={styles.notAvailableMessage}>
+                                    Товара нет в наличии, но Вы
+                                    можете оставить е-мейл и мы свяжемся с Вами,
+                                    как только он появится
                             </div>
-                            <div>
-                                <input className={styles.notAvailableInput} placeholder='Введите е-мейл'/>
+                                <form onSubmit={this.handleSendEmailToProduct} className={styles.contentWrapp}>
+                                    <div>
+                                        <input
+                                            className={styles.notAvailableInput}
+                                            value={notAvailableInputValue}
+                                            placeholder='Введите е-мейл'
+                                            onChange={(value) => this.handleNotAvailableInputValueChange(value)}
+                                        />
+                                    </div>
+                                    <button
+                                        type='submit'
+                                        className={classNames(
+                                            styles.buttonDefault, styles.saveEmailButton
+                                        )}
+                                        >
+                                            Оставить почту
+                                    </button>
+                                </form>
                             </div>
-                        </div>
                         }
                     </div>
                 </div>

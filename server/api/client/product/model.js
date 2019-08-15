@@ -23,6 +23,7 @@ const Product = new Schema({
     notAvailable: { type: Boolean, required: true },
     hidden: { type: Boolean, required: true },
     tags: [{ type: String, required: true }],
+    emailsForNotifications: [{ type: String, required: false }],
     categoryId: { type: String, required: true },
     date: { type: Number, required: true },
     views: { type: Number, required: true },

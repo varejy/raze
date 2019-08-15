@@ -395,8 +395,6 @@ a {
 .notAvailableContent{
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    width: 100%;
 }
 
 .notAvailableMessage{
@@ -410,14 +408,33 @@ a {
     margin-bottom: 15px;
 }
 
+.contentWrapp {
+    display: flex;
+    justify-content: space-evenly;
+}
+
 .notAvailableInput{
     width: 232px;
     height: 38px;
     padding: 14px;
-    color: #d9d9d9;
+    color: #131313;
     font-family: HelveticaNeueCyrRoman;
     font-size: 11px;
     outline: none;
+}
+
+.saveEmailButton {
+    height: 38px;
+    width: 134px;
+    background-color: #00a046;
+    color: #ffffff;
+    font-family: HelveticaNeueCyrBold;
+    font-size: 12px;
+    line-height: 30px;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-left: 10px;
 }
 
 .productDescription{

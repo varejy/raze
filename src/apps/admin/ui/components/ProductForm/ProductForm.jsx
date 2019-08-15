@@ -54,7 +54,7 @@ import Chip from '@material-ui/core/Chip';
 
 const GREY = '#e0e0e0';
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
-    'metaTitle', 'metaDescription', 'keywords'];
+    'metaTitle', 'metaDescription', 'keywords', 'emailsForNotifications'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>

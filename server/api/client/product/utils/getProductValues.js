@@ -20,6 +20,7 @@ const VALUES = [
     'rating',
     'metaTitle',
     'metaDescription',
+    'emailsForNotifications',
     'keywords'
 ];
 
