@@ -11,6 +11,7 @@ import Scroll from '../Scroll/Scroll';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import find from '@tinkoff/utils/array/find';
+import formatMoney from '../../../utils/formatMoney';
 
 const mapStateToProps = ({ popup, savedProducts, application }) => {
     return {
@@ -122,12 +123,12 @@ class Liked extends Component {
                                             {
                                                 item.discountPrice
                                                     ? <div className={styles.prices}>
-                                                        <h2 className={styles.previousPrice}>{item.price.toLocaleString('ru')} грн</h2>
+                                                        <h2 className={styles.previousPrice}>{formatMoney(item.price)}</h2>
                                                         <h2 className={classNames(styles.itemPrice, styles.priceDiscount)}>
-                                                            {item.discountPrice.toLocaleString('ru')} грн
+                                                            {formatMoney(item.discountPrice)}
                                                         </h2>
                                                     </div>
-                                                    : <h2 className={styles.itemPrice}>{item.price.toLocaleString('ru')} грн</h2>
+                                                    : <h2 className={styles.itemPrice}>{formatMoney(item.price)}</h2>
                                             }
                                         </div>
                                     </Link>

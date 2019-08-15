@@ -11,6 +11,7 @@ import setBasket from '../../../actions/setBasket';
 import closePopup from '../../../actions/closePopup';
 import find from '@tinkoff/utils/array/find';
 import remove from '@tinkoff/utils/array/remove';
+import formatMoney from '../../../utils/formatMoney';
 import saveProductsToBasket from '../../../services/client/saveProductsToBasket';
 import CrossButton from '../CrossButton/CrossButton';
 
@@ -135,12 +136,12 @@ class PopupBasket extends Component {
                                     {
                                         product.discountPrice
                                             ? <div className={styles.prices}>
-                                                <h2 className={styles.previousPrice}>{product.price.toLocaleString('ru')} грн</h2>
+                                                <h2 className={styles.previousPrice}>{formatMoney(product.price)}</h2>
                                                 <h2
-                                                    className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice.toLocaleString('ru')} грн
+                                                    className={classNames(styles.price, styles.priceDiscount)}>{formatMoney(product.discountPrice)}
                                                 </h2>
                                             </div>
-                                            : <h2 className={styles.itemPrice}>{product.price.toLocaleString('ru')} грн</h2>
+                                            : <h2 className={styles.itemPrice}>{formatMoney(product.price)}</h2>
                                     }
                                     {this.handleDuplicates() && <div className={styles.isInBasket}>*Этот товар уже в корзине</div>}
                                 </div>
@@ -174,7 +175,7 @@ class PopupBasket extends Component {
                                         <div className={styles.itemInfo}>
                                             <h2 className={styles.itemName}>{item.product.name}</h2>
                                             <div className={styles.itemCategory}>{item.product.company}</div>
-                                            <h2 className={styles.itemPrice}>{item.product.price.toLocaleString('ru')} грн</h2>
+                                            <h2 className={styles.itemPrice}>{formatMoney(item.product.price)}</h2>
                                         </div>
                                     </div>
                                     <div className={styles.itemAmount}>

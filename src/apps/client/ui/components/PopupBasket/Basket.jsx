@@ -13,6 +13,7 @@ import styles from './Basket.css';
 
 import { Link } from 'react-router-dom';
 import find from '@tinkoff/utils/array/find';
+import formatMoney from '../../../utils/formatMoney';
 
 const mapStateToProps = ({ popup, savedProducts, application }) => {
     return {
@@ -179,12 +180,12 @@ class Basket extends Component {
                                             {
                                                 item.product.discountPrice
                                                     ? <div className={styles.prices}>
-                                                        <h2 className={styles.previousPrice}>{item.product.price.toLocaleString('ru')} грн</h2>
+                                                        <h2 className={styles.previousPrice}>{formatMoney(item.product.price)}</h2>
                                                         <h2 className={classNames(styles.itemPrice, styles.priceDiscount)}>
-                                                            {item.product.discountPrice.toLocaleString('ru')} грн
+                                                            {formatMoney(item.product.discountPrice)}
                                                         </h2>
                                                     </div>
-                                                    : <h2 className={styles.itemPrice}>{item.product.price.toLocaleString('ru')} грн</h2>
+                                                    : <h2 className={styles.itemPrice}>{formatMoney(item.product.price)}</h2>
                                             }
                                         </div>
                                     </Link>
