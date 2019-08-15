@@ -119,7 +119,7 @@ class MetaForm extends Component {
             id: prop('id', product),
             category: category,
             categoryId: category.id,
-            isDataSubmitted: false
+            isLoading: false
         };
     }
 
@@ -144,18 +144,12 @@ class MetaForm extends Component {
             this.setState({
                 id: prop('id', nextProps.product),
                 product: newProduct,
-                keywordsInput: '',
-                isDataSubmitted: false
+                keywordsInput: ''
             });
         }
 
-        if (this.props.category || nextProps.category) {
-            this.setState({ isDataSubmitted: false });
-        }
-
-        if (this.props.allStaticSeo !== nextProps.allStaticSeo) {
+        if (this.initialStaticSeo !== nextProps.allStaticSeo) {
             this.initialStaticSeo = this.getStaticSeoData(nextProps);
-            this.setState({ isDataSubmitted: false });
         }
     }
 
@@ -169,6 +163,19 @@ class MetaForm extends Component {
         });
     };
 
+    getKeywords = (option) => {
+        const { keywordsInput } = this.state;
+        const keyword = trim(keywordsInput);
+        const splittedKeyword = keyword.split(' ');
+        const keywordsArray = this.state[option].keywords !== '' ? this.state[option].keywords.split(', ') : [];
+        let newKeywords = [...keywordsArray];
+        splittedKeyword.forEach(keyword => {
+            newKeywords.push(keyword);
+        });
+
+        return newKeywords;
+    };
+
     handleKeywordAdd = (option) => () => {
         const { keywordsInput } = this.state;
         const keyword = trim(keywordsInput);
@@ -177,8 +184,7 @@ class MetaForm extends Component {
             return;
         }
 
-        const keywordsArray = this.state[option].keywords !== '' ? this.state[option].keywords.split(', ') : [];
-        const newKeywords = [...keywordsArray, keyword];
+        const newKeywords = this.getKeywords(option);
 
         this.setState({
             [option]: {
@@ -310,16 +316,16 @@ class MetaForm extends Component {
 
     checkMetaDataChange = (option) => {
         const META = ['metaTitle', 'metaDescription', 'keywords'];
-        let isMetaDataNotChanged = true;
+        let isMetaDataNotChanged = false;
 
         META.forEach((meta) => {
             if (option !== 'staticSeo') {
                 if (this.props[option][meta] !== this.state[option][meta]) {
-                    isMetaDataNotChanged = false;
+                    isMetaDataNotChanged = true;
                 }
             } else {
                 if (this.initialStaticSeo[meta] !== this.state.staticSeo[meta]) {
-                    isMetaDataNotChanged = false;
+                    isMetaDataNotChanged = true;
                 }
             }
         });
@@ -327,29 +333,60 @@ class MetaForm extends Component {
         return isMetaDataNotChanged;
     };
 
-    handleSubmit = event => {
-        event.preventDefault();
+    checkKeywordsInput = (option) => {
+        const { keywordsInput } = this.state;
 
-        const { staticSeo, id, product, category, categoryId } = this.state;
+        if (keywordsInput) {
+            const keyword = trim(keywordsInput);
+
+            if (!keyword) {
+                return;
+            }
+
+            const newKeywords = this.getKeywords(option);
+
+            this.setState({
+                [option]: {
+                    ...this.state[option],
+                    keywords: newKeywords.join(', ')
+                },
+                keywordsInput: ''
+            }, this.submit);
+        }
+    };
+
+    submit = () => {
         const { option } = this.props;
+        const { staticSeo, id, product, category, categoryId } = this.state;
+
+        this.setState({ isLoading: true });
+
         if (option === 'staticSeo') {
             const seoPayload = this.getSeoPayload(staticSeo);
 
-            this.props.updateStaticSeo(seoPayload).then(this.props.getAllStaticSeo()).then(this.setState({ isDataSubmitted: true }));
+            this.props.updateStaticSeo(seoPayload).then(this.props.getAllStaticSeo()).then(this.setState({ isLoading: false }));
         } else if (option === 'product') {
             const productPayload = this.getProductPayload(product);
 
-            this.props.editProduct({ ...productPayload, id }).then(this.searchProducts(this.props.searchQuery)).then(this.setState({ isDataSubmitted: true }));
+            this.props.editProduct({ ...productPayload, id }).then(this.searchProducts(this.props.searchQuery)).then(this.setState({ isLoading: false }));
         } else if (option === 'category') {
-            this.props.editCategory({ ...category, categoryId }).then(this.props.getCategories()).then(this.setState({ isDataSubmitted: true }));
+            this.props.editCategory({ ...category, categoryId }).then(this.props.getCategories()).then(this.setState({ isLoading: false }));
         }
+    };
+
+    handleSubmit = event => {
+        event.preventDefault();
+        const { option } = this.props;
+
+        this.submit();
+        this.checkKeywordsInput(option);
     };
 
     render () {
         const { classes, option } = this.props;
-        const { keywordsInput, product, category, isDataSubmitted } = this.state;
+        const { keywordsInput, product, category, isLoading } = this.state;
         const dataAvailable = (product.name && product.company && product.price) || category.name;
-        const isMetaDataChanged = this.checkMetaDataChange(option) || isDataSubmitted;
+        const isMetaDataChanged = this.checkMetaDataChange(option);
 
         return <div className={classes.metaContainer}>
             <form onSubmit={this.handleSubmit}>
@@ -465,7 +502,7 @@ class MetaForm extends Component {
                     }
                 </div>
                 <FormControl margin='normal'>
-                    <Button variant='contained' color={!isMetaDataChanged ? 'primary' : GREY} type='submit'>
+                    <Button variant='contained' color={isMetaDataChanged && !isLoading ? 'primary' : GREY} type='submit'>
                     Сохранить
                     </Button>
                 </FormControl>
