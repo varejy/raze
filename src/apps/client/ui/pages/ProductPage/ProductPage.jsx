@@ -11,6 +11,7 @@ import setLiked from '../../../actions/setLiked';
 
 import getStarsArray from '../../../utils/getStarsArray';
 import getRemainingTime from '../../../utils/getRemainingTime';
+import formatMoney from '../../../utils/formatMoney';
 
 import { Link, withRouter, matchPath } from 'react-router-dom';
 
@@ -322,8 +323,8 @@ class ProductPage extends Component {
                         <div className={styles.order}>
                             {product.discountPrice
                                 ? <div className={styles.prices}>
-                                    <div className={styles.pricePrevious}>{product.price.toLocaleString('ru')} грн</div>
-                                    <div className={classNames(styles.price, styles.priceDiscount)}>{product.discountPrice.toLocaleString('ru')} грн</div>
+                                    <div className={styles.pricePrevious}>{formatMoney(product.price)}</div>
+                                    <div className={classNames(styles.price, styles.priceDiscount)}>{formatMoney(product.discountPrice)}</div>
                                     {
                                         !!product.discountTime && <div className={classNames(styles.price, styles.priceDiscount)}>
                                             { discountTimer }
@@ -331,7 +332,7 @@ class ProductPage extends Component {
                                     }
                                 </div>
                                 : <div className={styles.prices}>
-                                    <div className={styles.price}>{product.price.toLocaleString('ru')} грн</div>
+                                    <div className={styles.price}>{formatMoney(product.price)}</div>
                                 </div>}
 
                             <div className={styles.buttonContainer}>

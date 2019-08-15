@@ -23,6 +23,8 @@ import prop from '@tinkoff/utils/object/prop';
 import search from '../../../services/search';
 import editCategory from '../../../services/editCategory';
 import AutoRenew from '@material-ui/icons/AutorenewRounded';
+import { getProductMetaTitleDefault, getProductMetaDescriptionDefault, getProductKeywordsDefault } from '../../../utils/defaultMetaProductGenerate';
+import { getCategoryMetaTitleDefault, getCategoryMetaDescriptionDefault, getCategoryKeywordsDefault } from '../../../utils/defaultMetaCategoryGenerate';
 
 const GREY = '#e0e0e0';
 const materialStyles = () => ({
@@ -185,14 +187,13 @@ class MetaForm extends Component {
     };
 
     handleDefaultKeywordsAdd = (option) => () => {
-        const productName = trim(this.state.product.name);
-        const productCompany = trim(this.state.product.company);
-        const productCategory = find(category => category.id === this.state.product.categoryId, this.props.categories);
-        const productCategoryName = productCategory ? trim(productCategory.name) : '';
-        const categoryName = trim(this.state.category.name);
+        const { product, category } = this.state;
+        const { categories } = this.props;
+        const productCategory = find(category => category.id === product.categoryId, categories);
+        const productCategoryName = productCategory ? productCategory.name : '';
         const KEYWORDS_DEFAULT = option === 'product'
-            ? `RAZE, ${productCategoryName}, ${productCompany}, ${productName}`
-            : `RAZE, ${categoryName}`;
+            ? getProductKeywordsDefault(product, productCategoryName)
+            : getCategoryKeywordsDefault(category);
 
         this.setState({
             [option]: {
@@ -204,17 +205,13 @@ class MetaForm extends Component {
     };
 
     handleDefaultMetaAdd = (meta, option) => () => {
-        const categoryName = trim(this.state.category.name);
-        const productName = trim(this.state.product.name);
-        const productCompany = trim(this.state.product.company);
-        const TITLE_DEFAULT = option === 'product' ? `${productCompany} ${productName}` : `${categoryName}`;
+        const { product, category } = this.state;
+        const TITLE_DEFAULT = option === 'product'
+            ? getProductMetaTitleDefault(product)
+            : getCategoryMetaTitleDefault(category);
         const DESCRIPTION_DEFAULT = option === 'product'
-            ? `Купите ${productName} от бренда ${productCompany} в интернет-магазине «Raze» по низкой цене - ${
-                !this.state.product.discountPrice.toLocaleString('ru')
-                    ? this.state.product.price.toLocaleString('ru')
-                    : this.state.product.discountPrice.toLocaleString('ru')} грн.`
-            : `Купите ${categoryName.toLowerCase()} в интернет-магазине «Raze». Качественные ${
-                categoryName.toLowerCase()} от лучших брендов в Украине по низким ценам.`;
+            ? getProductMetaDescriptionDefault(product)
+            : getCategoryMetaDescriptionDefault(category);
 
         this.setState({
             [option]: {
