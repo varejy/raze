@@ -30,9 +30,11 @@ export default class FormFieldButton extends Component {
             <button
                 name={name}
                 className={classNames(styles.buttonDefault, styles.button, {
-                    [styles.uppercase]: schema.uppercase
+                    [styles.uppercase]: schema.uppercase,
+                    [styles.disabled]: schema.disabled
                 })}
                 onClick={this.handleClick}
+                disabled={schema.disabled}
                 type={schema.type}
             >
                 { schema.title }

@@ -21,6 +21,9 @@ import FeedBackForm from '../../components/FeedBackForm/FeedBackForm';
 import Comments from '../../components/Comments/Comments';
 import PreviouslyViewed from '../../components/PreviouslyViewed/PreviouslyViewed';
 import PageNotFound from '../../components/PageNotFound/PageNotFound';
+import Form from '../../components/Form/Form';
+import getSchema from './productPageFormSchema';
+
 
 import setBasket from '../../../actions/setBasket';
 import setViewed from '../../../actions/setViewed';
@@ -161,7 +164,8 @@ class ProductPage extends Component {
             loading: !this.notFoundPage && !product,
             product: product,
             productId: match.params.id,
-            notAvailableInputValue: ''
+            notAvailableVisible: product.notAvailable,
+            disabled: true,
         };
     };
 
@@ -230,20 +234,19 @@ class ProductPage extends Component {
         saveProductsLiked(newLiked.map((product) => product.id));
     };
 
-    handleNotAvailableInputValueChange = event => {
+    handleNotAvailableInputValueChange = (values, changes) => {
         this.setState({
-            notAvailableInputValue: event.target.value
+            disabled: !changes.email.length
         })
     }
 
-    handleSendEmailToProduct = (event) => {
-        event.preventDefault();
-        const { productId, notAvailableInputValue } = this.state;
+    handleSendEmailToProduct = (values) => {
+        const { productId } = this.state;
 
-        this.props.saveEmailToProduct([ productId, notAvailableInputValue ])
+        this.props.saveEmailToProduct([ productId, values.email ])
 
         this.setState({
-            notAvailableInputValue: ''
+            notAvailableVisible: false
         })
     }
 
@@ -255,9 +258,7 @@ class ProductPage extends Component {
 
     render () {
         const { viewed } = this.props;
-        const { loading, product, notAvailableInputValue} = this.state;
-
-        console.log(product)
+        const { loading, product, disabled, notAvailableVisible } = this.state;
 
         if (this.notFoundPage) {
             return <PageNotFound/>;
@@ -332,31 +333,25 @@ class ProductPage extends Component {
                                 </div>
                             </div>
                         </div>
-                        {product.notAvailable &&
-                            <div className={styles.notAvailableContent}>
+                        {notAvailableVisible
+                            ? <div className={styles.notAvailableContent}>
                                 <div className={styles.notAvailableMessage}>
                                     Товара нет в наличии, но Вы
                                     можете оставить е-мейл и мы свяжемся с Вами,
                                     как только он появится
+                                </div>
+                                <Form
+                                    schema={getSchema({
+                                        setting: {
+                                            buttonDisabled: disabled
+                                        }
+                                    })}
+                                    onChange={this.handleNotAvailableInputValueChange}
+                                    onSubmit={this.handleSendEmailToProduct}
+                                />
                             </div>
-                                <form onSubmit={this.handleSendEmailToProduct} className={styles.contentWrapp}>
-                                    <div>
-                                        <input
-                                            className={styles.notAvailableInput}
-                                            value={notAvailableInputValue}
-                                            placeholder='Введите е-мейл'
-                                            onChange={(value) => this.handleNotAvailableInputValueChange(value)}
-                                        />
-                                    </div>
-                                    <button
-                                        type='submit'
-                                        className={classNames(
-                                            styles.buttonDefault, styles.saveEmailButton
-                                        )}
-                                        >
-                                            Оставить почту
-                                    </button>
-                                </form>
+                            : <div className={styles.descriptionText}>
+                                Мы свяжемся с вами когда товар появится в наличии !
                             </div>
                         }
                     </div>

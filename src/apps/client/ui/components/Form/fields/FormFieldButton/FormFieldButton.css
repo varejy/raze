@@ -14,6 +14,10 @@
      }
 }
 
+.buttonField_position_start {
+    align-items: flex-start;
+}
+
 .buttonField_position_end {
     align-items: flex-end;
 }
@@ -51,4 +55,11 @@
 
 .uppercase {
     text-transform: uppercase;
+}
+
+.disabled {
+    background-color: #d9d9d9;
+    &:hover {
+        background-color: #d9d9d9;
+    }
 }

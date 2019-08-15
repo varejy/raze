@@ -394,6 +394,7 @@ a {
 
 .notAvailableContent{
     display: flex;
+    width: 233px;
     flex-direction: column;
 }
 

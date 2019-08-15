@@ -52,7 +52,8 @@ export default class FormFieldInput extends Component {
                 value={value}
                 placeholder={isRequired ? `${schema.placeholder}*` : schema.placeholder}
                 className={classNames(styles.input, {
-                    [styles.inputInvalid]: !!validationMessage
+                    [styles.inputInvalid]: !!validationMessage,
+                    [styles.smallVersion]: schema.theme === 'smallVersion'
                 })}
                 onChange={this.handleChange}
                 onBlur={this.handleBlur}

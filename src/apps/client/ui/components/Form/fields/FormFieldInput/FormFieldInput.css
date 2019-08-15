@@ -23,3 +23,7 @@
 .inputInvalid {
     border: 2px solid red;
 }
+
+.smallVersion {
+    width: 234px;
+}
