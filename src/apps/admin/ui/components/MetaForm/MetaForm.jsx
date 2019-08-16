@@ -315,22 +315,29 @@ class MetaForm extends Component {
     };
 
     checkMetaDataChange = (option) => {
+        const { keywordsInput } = this.state;
         const META = ['metaTitle', 'metaDescription', 'keywords'];
-        let isMetaDataNotChanged = false;
+        let isMetaDataChanged = false;
+
+        if (keywordsInput) {
+            isMetaDataChanged = true;
+
+            return isMetaDataChanged;
+        }
 
         META.forEach((meta) => {
             if (option !== 'staticSeo') {
                 if (this.props[option][meta] !== this.state[option][meta]) {
-                    isMetaDataNotChanged = true;
+                    isMetaDataChanged = true;
                 }
             } else {
                 if (this.initialStaticSeo[meta] !== this.state.staticSeo[meta]) {
-                    isMetaDataNotChanged = true;
+                    isMetaDataChanged = true;
                 }
             }
         });
 
-        return isMetaDataNotChanged;
+        return isMetaDataChanged;
     };
 
     checkKeywordsInput = (option) => {
@@ -364,7 +371,7 @@ class MetaForm extends Component {
         if (option === 'staticSeo') {
             const seoPayload = this.getSeoPayload(staticSeo);
 
-            this.props.updateStaticSeo(seoPayload).then(this.props.getAllStaticSeo()).then(this.setState({ isLoading: false }));
+            this.props.updateStaticSeo(seoPayload).then(this.props.getAllStaticSeo).then(this.setState({ isLoading: false }));
         } else if (option === 'product') {
             const productPayload = this.getProductPayload(product);
 
