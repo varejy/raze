@@ -20,7 +20,7 @@ const VALUES = [
     'rating',
     'metaTitle',
     'metaDescription',
-    'keywords'
+    'metaKeywords'
 ];
 
 export default function getProductValues (product) {

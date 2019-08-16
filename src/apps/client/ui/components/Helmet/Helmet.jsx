@@ -19,7 +19,7 @@ const STATIC_ROUTES = [
 const NOT_FOUND_META = {
     title: '404',
     description: '404',
-    keywords: '404'
+    metaKeywords: '404'
 };
 
 const mapStateToProps = ({ application }) => {
@@ -67,7 +67,7 @@ class Helmet extends Component {
                 return {
                     title: staticSeoPage.metaTitle,
                     description: staticSeoPage.metaDescription,
-                    keywords: staticSeoPage.keywords
+                    metaKeywords: staticSeoPage.metaKeywords
                 };
             }
         }
@@ -79,7 +79,7 @@ class Helmet extends Component {
                 return {
                     title: product.metaTitle,
                     description: product.metaDescription,
-                    keywords: product.keywords
+                    metaKeywords: product.metaKeywords
                 };
             }
 
@@ -93,7 +93,7 @@ class Helmet extends Component {
                 return {
                     title: category.metaTitle,
                     description: category.metaDescription,
-                    keywords: category.keywords
+                    metaKeywords: category.metaKeywords
                 };
             }
 
