@@ -28,7 +28,7 @@ const Product = new Schema({
     views: { type: Number, required: true },
     metaTitle: { type: String },
     metaDescription: { type: String },
-    keywords: { type: String }
+    metaKeywords: { type: String }
 });
 
 export default mongoose.model('Product', Product);

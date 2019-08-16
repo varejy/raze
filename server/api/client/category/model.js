@@ -16,7 +16,7 @@ const Category = new Schema({
     }],
     metaTitle: { type: String },
     metaDescription: { type: String },
-    keywords: { type: String }
+    metaKeywords: { type: String }
 });
 
 export default mongoose.model('Category', Category);
