@@ -5,6 +5,7 @@ import getProductById from '../src/apps/client/services/server/getProductById';
 import getTopProducts from '../src/apps/client/services/server/getTopProducts';
 import getMainSlides from '../src/apps/client/services/server/getMainSlides';
 import getSavedProducts from '../src/apps/client/services/server/getSavedProducts';
+import getSeo from '../src/apps/client/services/server/getSeo';
 
 export default [
     getMobileDetect,
@@ -13,5 +14,6 @@ export default [
     getProductById,
     getTopProducts,
     getMainSlides,
-    getSavedProducts
+    getSavedProducts,
+    getSeo
 ];
