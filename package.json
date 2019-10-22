@@ -127,7 +127,7 @@
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "scrollbar-width": "^3.1.1",
-    "superagent": "3.5.2",
+    "superagent": "5.0.2",
     "uniqid": "^5.0.3",
     "react-router": "latest"
   }
