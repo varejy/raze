@@ -21,7 +21,8 @@ const VALUES = [
     'metaTitle',
     'metaDescription',
     'emailsForNotifications',
-    'keywords'
+    'keywords',
+    'metaKeywords'
 ];
 
 export default function getProductValues (product) {

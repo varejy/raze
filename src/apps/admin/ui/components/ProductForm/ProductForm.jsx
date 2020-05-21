@@ -55,7 +55,7 @@ import Chip from '@material-ui/core/Chip';
 
 const GREY = '#e0e0e0';
 const PRODUCTS_VALUES = ['name', 'company', 'price', 'discountPrice', 'categoryId', 'hidden', 'notAvailable', 'description', 'features', 'filters',
-    'metaTitle', 'metaDescription', 'keywords', 'emailsForNotifications'];
+    'metaTitle', 'metaDescription', 'metaKeywords', 'keywords', 'emailsForNotifications'];
 
 const ButtonSortable = SortableHandle(({ imageClassName }) => (
     <ReorderIcon className={imageClassName}> reorder </ReorderIcon>
@@ -334,7 +334,7 @@ class ProductForm extends Component {
             id,
             metaTitle,
             metaDescription,
-            keywords
+            metaKeywords
         }) => {
         const tags = compose(
             keys,
@@ -356,7 +356,7 @@ class ProductForm extends Component {
             id,
             metaTitle,
             metaDescription,
-            keywords
+            metaKeywords
         };
     };
 
@@ -417,7 +417,7 @@ class ProductForm extends Component {
             keywordsInput: event.target.value,
             product: {
                 ...this.state.product,
-                keywords: this.state.product.keywords || ''
+                metaKeywords: this.state.product.metaKeywords || ''
             }
         });
     };
@@ -430,13 +430,13 @@ class ProductForm extends Component {
             return;
         }
 
-        const keywordsArray = !product.keywords ? [] : product.keywords.split(', ');
+        const keywordsArray = !product.metaKeywords ? [] : product.metaKeywords.split(', ');
         const newKeywords = [...keywordsArray, keyword];
 
         this.setState({
             product: {
                 ...product,
-                keywords: newKeywords.join(', ')
+                metaKeywords: newKeywords.join(', ')
             },
             keywordsInput: ''
         });
@@ -449,7 +449,7 @@ class ProductForm extends Component {
         this.setState({
             product: {
                 ...product,
-                keywords: KEYWORDS_DEFAULT
+                metaKeywords: KEYWORDS_DEFAULT
             },
             keywordsInput: ''
         });
@@ -457,13 +457,13 @@ class ProductForm extends Component {
 
     handleKeywordDelete = (i) => () => {
         const { product } = this.state;
-        const keywordsArray = product.keywords.split(', ');
+        const keywordsArray = product.metaKeywords.split(', ');
         const newKeywords = remove(i, 1, keywordsArray);
 
         this.setState({
             product: {
                 ...product,
-                keywords: newKeywords.join(', ')
+                metaKeywords: newKeywords.join(', ')
             }
         });
     };
@@ -1006,8 +1006,8 @@ class ProductForm extends Component {
             </div>
             <div className={classes.keywordsWrapper}>
                 {
-                    product.keywords &&
-                    product.keywords.split(', ').map((option, i) => <Chip
+                    product.metaKeywords &&
+                    product.metaKeywords.split(', ').map((option, i) => <Chip
                         key={i}
                         label={option}
                         variant='outlined'

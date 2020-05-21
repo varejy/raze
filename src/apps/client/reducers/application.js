@@ -4,7 +4,8 @@ import {
     SET_MAIN_SLIDES,
     SET_MEDIA_INFO,
     SET_PRODUCT_TO_MAP,
-    SET_TOP_PRODUCTS
+    SET_TOP_PRODUCTS,
+    SET_SEO
 } from '../types/types';
 
 const initialState = {
@@ -16,7 +17,8 @@ const initialState = {
     productsMap: {},
     productMap: {},
     topProducts: [],
-    mainSlides: []
+    mainSlides: [],
+    staticSeo: []
 };
 
 export default function (state = initialState, action) {
@@ -45,6 +47,8 @@ export default function (state = initialState, action) {
         return { ...state, topProducts: action.payload };
     case SET_MAIN_SLIDES:
         return { ...state, mainSlides: action.payload };
+    case SET_SEO:
+        return { ...state, staticSeo: action.payload };
     default:
         return state;
     }

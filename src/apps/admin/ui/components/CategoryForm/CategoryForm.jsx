@@ -31,7 +31,7 @@ import Chip from '@material-ui/core/Chip';
 import remove from '@tinkoff/utils/array/remove';
 
 const GREY = '#e0e0e0';
-const CATEGORY_VALUES = ['name', 'path', 'hidden', 'filters', 'metaTitle', 'metaDescription', 'keywords'];
+const CATEGORY_VALUES = ['name', 'path', 'hidden', 'filters', 'metaTitle', 'metaDescription', 'metaKeywords'];
 
 const mapDispatchToProps = (dispatch) => ({
     saveCategory: payload => dispatch(saveCategory(payload)),
@@ -117,7 +117,7 @@ class CategoryForm extends Component {
             keywordsInput: event.target.value,
             category: {
                 ...this.state.category,
-                keywords: this.state.category.keywords || ''
+                metaKeywords: this.state.category.metaKeywords || ''
             }
         });
     };
@@ -130,14 +130,14 @@ class CategoryForm extends Component {
             return;
         }
 
-        const keywordsArray = !category.keywords ? [] : category.keywords.split(', ');
+        const keywordsArray = !category.metaKeywords ? [] : category.metaKeywords.split(', ');
 
         const newKeywords = [...keywordsArray, keyword];
 
         this.setState({
             category: {
                 ...category,
-                keywords: newKeywords.join(', ')
+                metaKeywords: newKeywords.join(', ')
             },
             keywordsInput: ''
         });
@@ -150,7 +150,7 @@ class CategoryForm extends Component {
         this.setState({
             category: {
                 ...category,
-                keywords: KEYWORDS_DEFAULT
+                metaKeywords: KEYWORDS_DEFAULT
             },
             keywordsInput: ''
         });
@@ -158,13 +158,13 @@ class CategoryForm extends Component {
 
     handleKeywordDelete = (i) => () => {
         const { category } = this.state;
-        const keywordsArray = category.keywords.split(', ');
+        const keywordsArray = category.metaKeywords.split(', ');
         const newKeywords = remove(i, 1, keywordsArray);
 
         this.setState({
             category: {
                 ...category,
-                keywords: newKeywords.join(', ')
+                metaKeywords: newKeywords.join(', ')
             }
         });
     };
@@ -326,7 +326,7 @@ class CategoryForm extends Component {
                     <Tooltip
                         title={dataAvailable
                             ? 'Добавить значение по умолчанию'
-                            : 'Заполните полe "Название" для добавления значения по умолчанию'}
+                            : 'Заполните поле "Название" для добавления значения по умолчанию'}
                         placement='bottom'
                     >
                         <Fab
@@ -341,8 +341,8 @@ class CategoryForm extends Component {
             </div>
             <div className={classes.keywordsWrapper}>
                 {
-                    category.keywords &&
-                    category.keywords.split(', ').map((option, i) => <Chip
+                    category.metaKeywords &&
+                    category.metaKeywords.split(', ').map((option, i) => <Chip
                         key={i}
                         label={option}
                         variant='outlined'

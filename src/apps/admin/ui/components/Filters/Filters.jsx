@@ -214,7 +214,7 @@ class Filters extends Component {
                 { name: '', type: '' }
             ]
         });
-    }
+    };
 
     handleFilterOptionAdd = i => () => {
         const { filters } = this.state;
@@ -231,7 +231,7 @@ class Filters extends Component {
         this.setState({
             filters
         });
-    }
+    };
 
     handleFilterChange = (prop, i) => event => {
         const { filters } = this.state;
@@ -262,7 +262,7 @@ class Filters extends Component {
         this.setState({
             filters
         });
-    }
+    };
 
     onDragStart = () => {
         this.setState({
